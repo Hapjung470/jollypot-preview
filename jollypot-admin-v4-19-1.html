@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>졸리팟 어드민 (Lean) — jollypot-admin-v4-19-1 (딥링크 생성기 명칭 통일)</title>
+<style>
+/* =========================================================
+   졸리팟 어드민 — Lean MVP 프로토타입  v2 (메이저)
+   변경: 메뉴 순서 / 큐레이션 용어·동작화(섹션추가·편집·새로고침) /
+        레시피 발행계정 매핑 / 카테고리 상세·추가·수정 화면 /
+        레시피 삭제 / 전 버튼 동작화(모달·토스트·확인)
+   어드민 셸=중립 업무 톤 · 레시피/홈 프리뷰(.phone)=소비자 토큰
+   ========================================================= */
+:root{
+  --a-bg:#F4F5F7;--a-panel:#FFFFFF;--a-sidebar:#1F2430;--a-sidebar-2:#2A3140;
+  --a-sidebar-text:#AEB6C6;--a-line:#E4E7EC;--a-line-2:#EEF0F3;
+  --a-text:#2A2A2A;--a-text-2:#6B6B6B;--a-text-3:#98A0AE;
+  --brand:#FDB813;--primary:#C75D3E;--sage:#8FA68E;--error:#D64545;--info:#3D6B8C;--success:#5B8A6B;
+  --c-surface:#F5F0E8;--c-surface-alt:#F7F2EA;--c-border:#EDE8E0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Apple SD Gothic Neo","Pretendard",sans-serif;
+  background:var(--a-bg);color:var(--a-text);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,textarea,select{font-family:inherit;font-size:14px}
+.app{display:flex;min-height:100vh}
+
+/* ===== 사이드바 ===== */
+.sidebar{width:236px;flex:0 0 236px;background:var(--a-sidebar);color:var(--a-sidebar-text);
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;z-index:60}
+.brand{display:flex;align-items:center;gap:10px;padding:20px 20px 18px}
+.brand .logo{width:30px;height:30px;border-radius:9px;background:var(--brand);display:flex;align-items:center;justify-content:center;font-size:17px}
+.brand b{color:#fff;font-size:16px;font-weight:700}
+.brand span{color:var(--a-text-3);font-size:11px;display:block;margin-top:1px}
+.nav{padding:6px 12px;flex:1}
+.nav-label{font-size:11px;color:#5E6675;padding:14px 12px 6px;letter-spacing:.04em}
+.nav-item{display:flex;align-items:center;gap:11px;width:100%;padding:11px 12px;border-radius:9px;
+  color:var(--a-sidebar-text);font-size:14px;text-align:left;margin-bottom:2px}
+.nav-item .ic{width:18px;text-align:center;font-size:15px;opacity:.9}
+.nav-item:hover{background:var(--a-sidebar-2);color:#fff}
+.nav-item.active{background:var(--a-sidebar-2);color:#fff;font-weight:600}
+.nav-item .badge{margin-left:auto;background:var(--error);color:#fff;font-size:11px;font-weight:700;
+  min-width:19px;height:19px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 6px}
+.sidebar-foot{padding:14px 20px;border-top:1px solid #2C323F;font-size:11px;color:#5E6675}
+.overlay{display:none}
+
+/* ===== 메인 ===== */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:60px;background:var(--a-panel);border-bottom:1px solid var(--a-line);display:flex;
+  align-items:center;gap:14px;padding:0 24px;position:sticky;top:0;z-index:30}
+.menu-btn{display:none}
+.topbar h1{font-size:18px;font-weight:700;white-space:nowrap}
+.topbar .crumb{color:var(--a-text-3);font-size:13px;margin-left:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--a-bg);
+  border:1px solid var(--a-line);border-radius:9px;padding:8px 12px;width:260px;color:var(--a-text-3)}
+.search input{border:none;background:none;outline:none;flex:1;color:var(--a-text);min-width:0}
+.top-ic{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  font-size:16px;position:relative;color:var(--a-text-2);flex-shrink:0}
+.top-ic:hover{background:var(--a-bg)}
+.top-ic .dot{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--error);border:2px solid #fff}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--sage);color:#fff;display:flex;
+  align-items:center;justify-content:center;font-weight:600;font-size:13px;flex-shrink:0}
+.content{padding:24px}
+
+/* ===== 공통 ===== */
+.screen{display:none}
+.screen.active{display:block}
+.card{background:var(--a-panel);border:1px solid var(--a-line);border-radius:14px}
+.card-h{padding:16px 18px;border-bottom:1px solid var(--a-line-2);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card-h h2{font-size:15px;font-weight:700}
+.card-h .sub{color:var(--a-text-2);font-size:12px}
+.card-h .right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.section-title{font-size:13px;color:var(--a-text-2);font-weight:600;margin:0 2px 12px}
+.btn{height:38px;padding:0 16px;border-radius:9px;font-size:13px;font-weight:600;display:inline-flex;
+  align-items:center;gap:7px;border:1px solid var(--a-line);background:#fff;color:var(--a-text);white-space:nowrap}
+.btn:hover{background:var(--a-bg)}
+.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn.primary:hover{background:#b35136}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--a-text-2)}
+.btn.danger{color:var(--error);border-color:#F0CFCF}
+.btn.danger:hover{background:#FBEFEF}
+.btn.ai{color:var(--info);border-color:#CFE0EC}
+.btn.ai:hover{background:#EEF5FA}
+.btn.sm{height:30px;padding:0 11px;font-size:12px;border-radius:8px}
+.linklike{color:var(--info);font-weight:600;font-size:14px;text-align:left}
+.linklike:hover{text-decoration:underline}
+.chip{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:7px;
+  font-size:12px;font-weight:600;background:var(--a-bg);color:var(--a-text-2)}
+.chip.sel{background:#2A2A2A;color:#fff}
+.chip button{color:inherit;font-size:13px;margin-left:2px}
+.tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;font-size:11px;font-weight:600}
+.tag.sage{background:rgba(143,166,142,.16);color:#5B7A5C}
+.tag.yellow{background:rgba(253,184,19,.16);color:#9A6E00}
+.tag.gray{background:var(--a-bg);color:var(--a-text-2)}
+.status{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600}
+.status::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.status.pub{color:var(--success)}.status.hide{color:var(--a-text-3)}.status.ai{color:var(--info)}.status.fail{color:var(--error)}
+
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:20px}
+.kpi{background:var(--a-panel);border:1px solid var(--a-line);border-radius:14px;padding:18px}
+.kpi .lab{font-size:12px;color:var(--a-text-2);display:flex;align-items:center;gap:7px}
+.kpi .num{font-size:30px;font-weight:700;margin-top:8px;letter-spacing:-.01em}
+.kpi .delta{font-size:12px;color:var(--a-text-3);margin-top:4px}
+.kpi.alert{border-color:#F0CFCF;background:#FCF4F4}
+.kpi.alert .num{color:var(--error)}
+.kpi .ic{width:26px;height:26px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
+.dash-2col{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:start}
+
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;color:var(--a-text-2);font-weight:600;font-size:12px;padding:11px 14px;
+  border-bottom:1px solid var(--a-line-2);background:#FAFBFC;white-space:nowrap}
+.tbl td{padding:12px 14px;border-bottom:1px solid var(--a-line-2);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#FCFCFD}
+.thumb{width:52px;height:40px;border-radius:7px;object-fit:cover;background:var(--a-bg);display:block}
+.t-title{font-weight:600;color:var(--a-text)}
+.t-sub{color:var(--a-text-3);font-size:12px}
+.num-cell{font-variant-numeric:tabular-nums}
+.row-act{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.check{width:16px;height:16px;accent-color:var(--primary)}
+.filterbar{display:flex;align-items:center;gap:8px;padding:14px 18px;flex-wrap:wrap;border-bottom:1px solid var(--a-line-2)}
+.sel{height:34px;border:1px solid var(--a-line);border-radius:8px;padding:0 10px;background:#fff;color:var(--a-text);font-size:13px}
+.inline-search{display:flex;align-items:center;gap:7px;border:1px solid var(--a-line);border-radius:8px;padding:0 10px;height:34px;color:var(--a-text-3);margin-left:auto}
+.inline-search input{border:none;outline:none;background:none;width:160px;color:var(--a-text)}
+.list-head{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.subtabs{display:flex;gap:4px;background:#EDEFF2;padding:4px;border-radius:11px;width:fit-content}
+.subtab{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;color:var(--a-text-2);white-space:nowrap}
+.subtab.active{background:#fff;color:var(--a-text);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.bulkbar{display:none;align-items:center;gap:12px;padding:10px 18px;background:#FCF4F1;border-bottom:1px solid #F0D9D0;font-size:13px;flex-wrap:wrap}
+.bulkbar.show{display:flex}
+
+.ingest-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:20px;align-items:start}
+textarea.urls{width:100%;min-height:150px;border:1px solid var(--a-line);border-radius:10px;padding:12px 14px;resize:vertical;color:var(--a-text);outline:none;line-height:1.7}
+textarea.urls:focus{border-color:var(--primary)}
+.hint{font-size:12px;color:var(--a-text-3);margin-top:8px}
+.queue-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--a-line-2);border-radius:10px;margin-bottom:8px;flex-wrap:wrap}
+.queue-item .qright{margin-left:auto;display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+#cmtTbody td{vertical-align:top}
+/* 댓글 목록 열 너비(데스크톱 표 전용): 댓글 칸이 남는 공간을 흡수 → 레시피·작성·액션은 내용폭만 차지해 우측 밀착.
+   모바일(≤900px)은 카드 레이아웃을 쓰므로 적용 제외(width:1%가 카드에서 라벨·텍스트 겹침 유발). */
+@media(min-width:901px){
+  #cmtTbody td[data-label="레시피"],#cmtTbody td[data-label="작성"]{white-space:nowrap;width:1%;padding-left:22px}
+  #cmtTbody td.cell-act{width:1%;white-space:nowrap}
+  #cmtTbody td.cell-act .row-act{flex-wrap:nowrap}
+}
+.queue-item .qt{flex:1;min-width:0}
+.queue-item .qt b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.queue-item .qt small{color:var(--a-text-3)}
+.bar{height:5px;border-radius:3px;background:var(--a-line);overflow:hidden;width:90px;margin-top:6px}
+.bar>i{display:block;height:100%;background:var(--info)}
+
+.edit-grid{display:grid;grid-template-columns:1fr 430px;gap:20px;align-items:start}
+.edit-head{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.edit-tabs{display:flex;gap:2px;border-bottom:1px solid var(--a-line-2);margin-bottom:18px;overflow:auto}
+.edit-tab{padding:11px 14px;font-size:13px;font-weight:600;color:var(--a-text-2);border-bottom:2px solid transparent;white-space:nowrap}
+.edit-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--a-text-2);margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;border:1px solid var(--a-line);border-radius:9px;padding:9px 12px;color:var(--a-text);outline:none}
+.field input:focus,.field textarea:focus{border-color:var(--primary)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ing-row{display:grid;grid-template-columns:24px 1fr 120px 36px;gap:8px;align-items:center;margin-bottom:8px}
+.ing-row .h{font-size:12px;color:var(--a-text-3)}
+.step-row{display:flex;gap:10px;margin-bottom:10px}
+.step-no{width:26px;height:26px;border-radius:50%;background:var(--sage);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:4px}
+
+.preview-wrap{position:sticky;top:84px}
+.preview-bar{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.preview-bar .lab{font-size:12px;color:var(--a-text-2);font-weight:600}
+.mini-toggle{display:flex;gap:3px;background:#EDEFF2;padding:3px;border-radius:8px;margin-left:auto}
+.mini-toggle button{padding:5px 10px;font-size:11px;font-weight:600;border-radius:6px;color:var(--a-text-2)}
+.mini-toggle button.on{background:#fff;color:var(--a-text)}
+.phone{width:390px;max-width:100%;border:1px solid var(--c-border);border-radius:26px;overflow:hidden;background:#fff;box-shadow:0 8px 30px rgba(0,0,0,.10);margin:0 auto}
+.phone .pv-hero{position:relative;width:100%;aspect-ratio:1/1;background:#000}
+.phone .pv-hero img{width:100%;height:100%;object-fit:cover;display:block}
+.phone .pv-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.phone .pv-play span{width:54px;height:54px;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px}
+.phone .pv-ailabel{position:absolute;top:12px;left:12px;background:rgba(42,42,42,.82);color:#fff;font-size:11px;font-weight:600;padding:5px 9px;border-radius:7px}
+.pv-body{padding:16px}
+.pv-title{font-size:18px;font-weight:700;color:var(--a-text);line-height:1.35}
+.pv-source{font-size:12px;color:var(--info);margin-top:6px;display:inline-block}
+.pv-meta{display:flex;gap:16px;margin-top:12px;color:var(--a-text-2);font-size:13px}
+.pv-creator{display:flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:14px;padding:12px;margin-top:14px}
+.pv-creator img{width:38px;height:38px;border-radius:50%}
+.pv-creator b{font-size:14px;font-weight:500}
+.pv-creator .fl{margin-left:auto;border:1px solid var(--primary);color:var(--primary);font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px}
+.pv-div{height:8px;background:var(--c-surface);margin:18px -16px}
+.pv-h2{font-size:16px;font-weight:700;margin-bottom:12px}
+.pv-ing{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--c-border);font-size:14px}
+.pv-ing:last-child{border:none}
+.pv-ing .q{color:var(--a-text-2)}
+.pv-step{display:flex;gap:11px;margin-bottom:16px}
+.pv-step .n{width:24px;height:24px;border-radius:50%;background:var(--sage);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pv-step .st{font-size:14px;font-weight:500}
+.pv-step .sd{font-size:13px;color:var(--a-text-2);margin-top:3px}
+.pv-step .ts{font-size:12px;color:var(--a-text-3);margin-top:4px}
+.pv-disc{font-size:11px;color:var(--a-text-3);background:var(--c-surface-alt);border-radius:8px;padding:9px 11px;margin-top:8px;line-height:1.5}
+.pv-bar{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--c-border);background:#fff}
+.pv-bar .e{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--a-text-2);font-size:11px}
+.pv-bar .buy{flex:2;background:var(--primary);color:#fff;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
+
+.report-grid{display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start}
+.rep-item{display:flex;align-items:flex-start;gap:12px;padding:14px;border:1px solid var(--a-line-2);border-radius:12px;margin-bottom:10px;cursor:pointer;background:#fff;min-height:84px}
+.rep-item:hover{border-color:var(--a-line);background:#FCFCFD}
+.rep-item.sel{border-color:var(--primary);background:#FCF6F3}
+.rep-item img{flex:0 0 56px;width:56px;height:56px;min-height:56px;border-radius:9px;object-fit:cover;align-self:flex-start;display:block}
+.rep-item .rt{flex:1 1 auto;min-width:0;align-self:stretch}
+.rep-item .rt b{font-size:14px;font-weight:600;display:block}
+.rep-count{background:#FBEAEA;color:var(--error);font-weight:700;font-size:12px;border-radius:8px;padding:3px 9px;flex:0 0 auto;align-self:flex-start;height:fit-content}
+.rep-detail{position:sticky;top:84px}
+/* 에디터 노트 검수 큐 */
+.nq-flag{font-size:11px;font-weight:700;border-radius:8px;padding:3px 8px;flex:0 0 auto;align-self:flex-start}
+.nq-flag.green{background:rgba(91,138,107,.14);color:#3F7355}
+.nq-flag.red{background:#FBEAEA;color:#B23B3B}
+.fs-gate{display:flex;align-items:center;gap:9px;padding:11px 12px;border:1px solid #F0D9D0;background:#FCF4F4;border-radius:10px;margin:12px 0;font-size:12.5px;color:#9A3B3B}
+.fs-gate input{width:17px;height:17px;accent-color:var(--error);flex-shrink:0}
+.btn.disabled{opacity:.45;pointer-events:none}
+.note-prev{background:#fff;border:1px solid var(--c-border);border-radius:12px;padding:12px;margin-top:4px}
+/* 에디터 노트 — 후보 생성 히어로(워크플로 진입점, 항상 노출) */
+.gen-hero{margin-bottom:16px;padding:18px 20px;border:1px solid #F0C9BC;background:linear-gradient(180deg,#FDF6F3,#fff)}
+.gen-hero .gh-top{display:flex;align-items:center;gap:10px;margin-bottom:13px;flex-wrap:wrap}
+.gen-hero .gh-top b{font-size:15px;color:var(--a-text)}
+.gen-hero .gh-flow{font-size:11.5px;font-weight:600;color:var(--a-text-3);background:#fff;border:1px solid #F0C9BC;border-radius:20px;padding:4px 12px;white-space:nowrap}
+.gen-hero .gh-flow .on{color:var(--primary);font-weight:700}
+.gen-hero .gh-row{display:flex;gap:10px;align-items:stretch}
+.gen-hero .gh-row input{flex:1;min-width:0;border:1px solid var(--a-line);border-radius:10px;padding:0 18px;height:52px;font-size:15px;color:var(--a-text);outline:none;background:#fff}
+.gen-hero .gh-row input:focus{border-color:var(--primary)}
+.gen-hero .gh-row .btn{height:52px;padding:0 26px;font-size:15px;white-space:nowrap;flex-shrink:0}
+.gen-hero .gh-hint{font-size:12.5px;color:var(--a-text-3);margin-top:11px;line-height:1.65}
+.gen-hero .gh-src{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px}
+.gen-hero .gh-src .lab{font-size:11.5px;font-weight:700;color:var(--a-text-2);margin-right:2px}
+.gen-hero .gh-src .gh-chip{font-size:11px;font-weight:600;border-radius:20px;padding:3px 10px;border:1px solid var(--a-line);color:var(--a-text-3);background:#fff}
+.gen-hero .gh-src .gh-chip.on{border-color:#CDE3D3;color:#3F7355;background:#F1F8F3}
+@media(max-width:640px){
+  .gen-hero .gh-row{flex-direction:column;gap:10px}
+  .gen-hero .gh-row input{flex:none;width:100%;height:54px;font-size:15px}
+  .gen-hero .gh-row .btn{flex:none;width:100%;height:50px}
+}
+/* 에디터 노트 플로우 */
+.flow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap}
+.fstep{flex:1;min-width:150px;background:var(--a-bg);border:1px solid var(--a-line);border-radius:10px;padding:10px 12px;font-size:12.5px;font-weight:600}
+.fstep b{color:var(--primary);margin-right:5px}
+.fstep small{display:block;color:var(--a-text-3);font-weight:400;font-size:11px;margin-top:3px}
+.farrow{align-self:center;color:var(--a-text-3);font-weight:700;font-size:15px}
+/* 사용방법 */
+.help-btn{height:34px;padding:0 12px;border:1px solid var(--a-line);border-radius:9px;font-size:13px;font-weight:600;color:var(--a-text-2);display:inline-flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap}
+.help-btn:hover{background:var(--a-bg);color:var(--a-text)}
+.help h4{font-size:13.5px;font-weight:700;margin:16px 0 7px;display:flex;align-items:center;gap:6px}
+.help h4:first-child{margin-top:0}
+.help ul{margin:0;padding-left:18px;font-size:13px;line-height:1.7;color:var(--a-text-2)}
+.help li b{color:var(--a-text)}
+.help .lead{font-size:13px;color:var(--a-text-2);background:var(--a-bg);border-radius:9px;padding:10px 12px;line-height:1.6}
+.help .lead b{color:var(--a-text)}
+.help .flow{margin:6px 0 2px}
+.rd-reason{padding:10px 12px;background:#FCF4F4;border:1px solid #F0D9D0;border-radius:9px;font-size:13px;color:#9A3B3B;margin-bottom:8px}
+.rd-reason small{display:block;color:var(--a-text-3);margin-top:3px}
+.cmt-body{font-size:13px}.cmt-meta{color:var(--a-text-3);font-size:12px;margin-top:3px}
+.cmt-photo{margin-top:7px;display:flex;gap:6px;flex-wrap:wrap}
+.cmt-photo img{width:54px;height:54px;border-radius:8px;object-fit:cover}
+.reply-badge{font-size:11px;color:var(--info);font-weight:600;margin-top:5px;display:inline-block}
+/* 요리후기 */
+#rvwTbody td{vertical-align:top}
+.rv-stars{color:#E8A317;font-size:13px;letter-spacing:1px;margin-bottom:2px}
+.rv-stars .off{color:var(--a-line)}
+.rv-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.rv-chip{font-size:11px;font-weight:600;color:#5B7A5C;background:rgba(143,166,142,.16);border-radius:11px;padding:2px 9px}
+.rv-photo{position:relative;flex:none}
+.rv-photo img{width:60px;height:60px;border-radius:9px;object-fit:cover;background:var(--a-bg)}
+.rv-photo .pcount{position:absolute;right:3px;bottom:3px;background:rgba(42,42,42,.72);color:#fff;font-size:10px;font-weight:600;border-radius:7px;padding:1px 5px}
+.rv-metric{font-size:12px;color:var(--a-text-2);white-space:nowrap}
+.creator-tag{font-size:10px;font-weight:700;color:#5B7A5C;background:rgba(143,166,142,.18);border-radius:6px;padding:1px 6px;margin-left:5px}
+/* 요리후기 — 공식 후기 작성 컴포저 (레시피 편집 탭) */
+.rv-composer{border:1px solid var(--a-line);border-radius:13px;padding:16px 18px;background:#fff}
+.rvc-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.rvc-head b{font-size:14px}
+/* 작성 계정(졸리팟 ID) 지정 */
+.acct-row{display:flex;gap:8px;align-items:stretch}
+.acct-input{flex:1;min-width:0;border:1px solid var(--a-line);border-radius:10px;padding:0 14px;height:40px;font-size:13.5px;color:var(--a-text);outline:none}
+.acct-input:focus{border-color:var(--primary)}
+.acct-row .btn{height:40px;white-space:nowrap;flex-shrink:0}
+.acct-result{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;border:1px solid #CDE3D3;background:#F1F8F3;border-radius:11px}
+.acct-result img{width:36px;height:36px;border-radius:50%;object-fit:cover;flex:none}
+.acct-result .an{font-size:13.5px;font-weight:600;color:var(--a-text)}
+.acct-result .as{font-size:11.5px;color:var(--a-text-3);margin-top:2px}
+.acct-result .ok{margin-left:auto;font-size:11px;font-weight:700;color:#3F7355}
+.prov{font-size:10px;font-weight:700;border-radius:6px;padding:1px 6px;margin-left:5px}
+.prov.kakao{background:#FEE500;color:#3C1E1E}
+.prov.naver{background:#03C75A;color:#fff}
+.prov.email{background:#EEE;color:#555}
+.acct-note{font-size:11.5px;line-height:1.6;color:#9A7B3B;background:#FBF6EC;border:1px solid #E7D6BC;border-radius:10px;padding:10px 12px;margin-top:10px}
+.rvc-lab{display:block;font-size:12.5px;font-weight:700;color:var(--a-text-2);margin:14px 0 7px}
+.rvc-photos{display:flex;gap:9px;flex-wrap:wrap}
+.rvc-thumb{position:relative;width:74px;height:74px;border-radius:10px;overflow:hidden;flex:none}
+.rvc-thumb img{width:100%;height:100%;object-fit:cover}
+.rvc-del{position:absolute;top:3px;right:3px;width:19px;height:19px;border-radius:50%;background:rgba(42,42,42,.72);color:#fff;border:none;cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center}
+.rvc-add{width:74px;height:74px;border:1.5px dashed var(--a-line);border-radius:10px;background:var(--a-bg);color:var(--a-text-3);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:18px;flex:none}
+.rvc-add span{font-size:11px;font-weight:600}
+.rvc-stars{display:flex;gap:4px;font-size:26px;color:var(--a-line);cursor:pointer;user-select:none}
+.rvc-stars span{transition:.1s}
+.rvc-stars span.on{color:#E8A317}
+.rvc-chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip-pick{font-size:12.5px;font-weight:600;color:var(--a-text-2);background:#fff;border:1px solid var(--a-line);border-radius:18px;padding:6px 13px;cursor:pointer}
+.chip-pick.on{color:#3F7355;background:rgba(143,166,142,.16);border-color:#CDE3D3}
+.rvc-body{width:100%;border:1px solid var(--a-line);border-radius:10px;padding:11px 13px;font-family:inherit;font-size:13.5px;line-height:1.6;color:var(--a-text);outline:none;resize:vertical}
+.rvc-body:focus{border-color:var(--primary)}
+/* 이 레시피의 후기 간이 관리 */
+.rv-mini-item{display:flex;align-items:center;gap:12px;padding:11px 13px;border:1px solid var(--a-line-2);border-radius:11px;margin-bottom:8px}
+.rv-mini-item img{width:52px;height:52px;border-radius:9px;object-fit:cover;flex:none}
+.rv-mini-item .mm{flex:1;min-width:0}
+.rv-mini-item .mm .b{font-size:13px;color:var(--a-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rv-mini-item .mm .s{font-size:11.5px;color:var(--a-text-3);margin-top:3px}
+.rv-mini-item.pinned{border-color:#F0C9BC;background:#FDF6F3}
+.rv-mini-item .pin{font-size:11px;font-weight:700;color:var(--primary);background:#fff;border:1px solid #F0C9BC;border-radius:6px;padding:1px 6px;margin-left:6px}
+/* 요리후기 상세(보기) 모달 */
+.rvd-photos{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
+.rvd-photos img{width:150px;height:150px;border-radius:11px;object-fit:cover;flex:none}
+.rvd-row{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.rvd-row .avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;flex:none;background:var(--a-bg)}
+.rvd-row b{font-size:14px}
+.rvd-body{font-size:14px;line-height:1.7;color:var(--a-text);white-space:pre-line;margin:12px 0}
+.rvd-metric{display:flex;gap:16px;font-size:13px;color:var(--a-text-2);padding:12px 0;border-top:1px solid var(--a-line-2);border-bottom:1px solid var(--a-line-2);margin:6px 0 14px}
+.rvd-link{display:flex;align-items:center;gap:10px;background:var(--a-bg);border:1px solid var(--a-line-2);border-radius:11px;padding:10px 12px;margin-bottom:14px}
+.rvd-link img{width:46px;height:46px;border-radius:9px;object-fit:cover}
+.rvd-cmt{font-size:13px;padding:8px 0;border-top:1px solid var(--a-line-2)}
+.rvd-cmt b{color:var(--a-text-2)}
+@media(min-width:901px){
+  #rvwTbody td[data-label="레시피"],#rvwTbody td[data-label="지표"],#rvwTbody td[data-label="작성"]{white-space:nowrap;width:1%;padding-left:20px}
+  #rvwTbody td.cell-act{width:1%}
+  #rvwTbody td.cell-act .row-act{flex-wrap:nowrap}
+}
+.th-item{padding:11px 0;border-bottom:1px solid var(--a-line-2)}
+.th-item:last-child{border:none}
+.th-item.reply{background:var(--c-surface-alt);border:1px solid var(--c-border);border-radius:11px;padding:11px 13px;margin-top:8px}
+.th-item b{font-size:13px}
+.reply-box{margin-top:14px}
+.reply-box textarea{width:100%;border:1px solid var(--a-line);border-radius:10px;padding:10px 12px;resize:vertical;min-height:74px;outline:none}
+.reply-box textarea:focus{border-color:var(--primary)}
+.rb-actions{display:flex;align-items:center;gap:8px;margin-top:8px}
+.set-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;align-items:start}
+.set-grid .full{grid-column:1/-1}
+.log-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--a-line-2);font-size:13px}
+.log-row:last-child{border:none}
+.log-row time{color:var(--a-text-3);width:120px;flex-shrink:0;font-size:12px}
+.log-row .who{color:var(--info);font-weight:600;width:80px;flex-shrink:0}
+.chart{display:flex;align-items:flex-end;gap:10px;height:120px;padding:8px 4px 0}
+.chart .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.chart .col .b{width:100%;max-width:34px;background:var(--brand);border-radius:6px 6px 0 0}
+.chart .col small{font-size:11px;color:var(--a-text-3)}
+/* 분석 대시보드 */
+.period-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.period-bar .seg{display:flex;gap:3px;background:#EDEFF2;padding:3px;border-radius:9px}
+.period-bar .seg button{padding:7px 13px;font-size:12px;font-weight:600;border-radius:7px;color:var(--a-text-2)}
+.period-bar .seg button.on{background:#fff;color:var(--a-text);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.period-bar input[type=date]{height:34px;border:1px solid var(--a-line);border-radius:8px;padding:0 8px;color:var(--a-text);background:#fff}
+.trend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-bottom:20px}
+/* 목록 누적 번호(No.) (v4-16) */
+.cell-no{width:1%;white-space:nowrap;color:#9a9a9a;font-size:12px;font-variant-numeric:tabular-nums;text-align:right;padding-right:14px}
+th.col-no{width:1%;white-space:nowrap;text-align:right;padding-right:14px}
+@media(max-width:900px){.cell-no{display:inline-block;text-align:left}.cell-no::before{content:"No. "}}
+/* 대시보드 — 오늘 할 일 / 핵심 인사이트 (v4-15) */
+.action-strip{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 18px;padding:11px 14px;background:#fff;border:1px solid var(--a-line);border-radius:12px}
+.action-strip .as-lab{font-size:13px;font-weight:700;color:var(--a-ink-2,#6b6b6b);margin-right:2px}
+.as-chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--a-line);background:#fafafa;border-radius:999px;padding:7px 13px;font-size:13px;cursor:pointer;color:inherit}
+.as-chip:hover{border-color:#cfcfcf}
+.as-chip b{font-weight:700}
+.as-chip.alert{background:#FBEAEA;border-color:#F2C9C9;color:#9a2b2b}
+.dash-sec-title{font-size:15px;font-weight:700;margin:6px 0 12px}
+.insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:20px}
+.insight .card-h h2{font-size:14px}
+.ret-row,.fnl{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:13px}
+.ret-row>span{width:30px;color:var(--a-ink-2,#6b6b6b);font-weight:600}
+.ret-bar,.fb{flex:1;height:9px;background:#eee;border-radius:6px;overflow:hidden}
+.ret-bar>i,.fb>i{display:block;height:100%;background:var(--sage);border-radius:6px}
+.ret-row>b,.fnl>b{width:74px;text-align:right;font-weight:700}
+.fnl .fl{width:78px;color:var(--a-ink-2,#6b6b6b)}
+.fnl .cv{font-size:11px;color:var(--info);font-weight:700;margin-left:3px}
+.fb>i{background:var(--brand)}
+.zr{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--a-line-2)}
+.zr:last-of-type{border-bottom:0}
+.zr .zk{font-size:13px;font-weight:600}
+.zr .zc{font-size:12px;color:var(--a-ink-2,#6b6b6b)}
+.mini-stat{display:flex;align-items:baseline;gap:9px;margin:0 0 10px}
+.mini-stat .v{font-size:23px;font-weight:700;letter-spacing:-.01em}
+.mini-stat .d{font-size:12px;font-weight:700}
+.up{color:var(--success)}.down{color:var(--error)}
+.toprow{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--a-line-2)}
+.toprow:last-child{border:none}
+.toprow .rank{width:18px;font-weight:700;color:var(--a-text-3);flex-shrink:0}
+.toprow img{width:42px;height:32px;border-radius:6px;object-fit:cover;flex-shrink:0}
+.toprow .tn{flex:1;min-width:0;font-size:13px;font-weight:600}
+.toprow .tv{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;flex-shrink:0}
+.proto-note{font-size:11px;color:var(--a-text-3);text-align:center;padding:16px}
+/* 페이지네이션 */
+.pager{display:flex;align-items:center;gap:6px;justify-content:center;padding:14px 16px;flex-wrap:wrap;font-size:12px;color:var(--a-text-2);border-top:1px solid var(--a-line-2)}
+.pager .tot{margin-right:auto;color:var(--a-text-3)}
+.pager .pg{min-width:30px;height:30px;border:1px solid var(--a-line);border-radius:8px;font-size:12px;font-weight:600;color:var(--a-text-2);display:inline-flex;align-items:center;justify-content:center;padding:0 9px;background:#fff}
+.pager .pg:hover{background:var(--a-bg)}
+.pager .pg.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.pager .pg.disabled{opacity:.4;pointer-events:none}
+.pager .ell{color:var(--a-text-3);padding:0 2px}
+.pager .per{margin-left:auto}
+.pager .per select{height:30px;border:1px solid var(--a-line);border-radius:8px;font-size:12px;padding:0 6px;background:#fff;color:var(--a-text-2)}
+/* 상태 칩 세그먼트(검수대기/발행) */
+.statseg{display:inline-flex;border:1px solid var(--a-line);border-radius:8px;overflow:hidden;flex-shrink:0}
+.statseg button{padding:6px 12px;font-size:12px;font-weight:700;color:var(--a-text-2);background:#fff;white-space:nowrap}
+.statseg button + button{border-left:1px solid var(--a-line)}
+.statseg button.on{background:#2A2A2A;color:#fff}
+/* 예약 상태 */
+.status.sched{color:var(--info)}
+.sched-box{background:#EEF5FA;border:1px solid #CFE0EC;border-radius:10px;padding:11px 13px;font-size:12.5px;color:#2f5f7e;line-height:1.55}
+.sched-box b{color:#234b66}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:var(--a-bg);border:1px solid var(--a-line);border-radius:5px;padding:1px 5px;color:var(--a-text-2)}
+
+/* 큐레이션 */
+.cur-row{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;padding:13px 14px;border:1px solid var(--a-line-2);border-radius:11px;margin-bottom:9px;background:#fff}
+.cur-row .handle{color:var(--a-text-3);cursor:grab;font-size:16px;flex-shrink:0}
+.cur-row .nm{font-weight:600;font-size:14px}
+.cur-row .grow{flex:1 1 40px}
+.cur-row .metas{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.toggle{width:42px;height:24px;border-radius:12px;background:var(--success);position:relative;flex-shrink:0;cursor:pointer;border:none}
+.toggle::after{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:2px;right:2px;transition:.15s}
+.toggle.off{background:var(--a-line)}
+.toggle.off::after{right:auto;left:2px}
+/* 섹션 에디터(레시피 피커) */
+.fill-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.fill-modes + .hint{margin-top:0;padding-top:12px;border-top:1px solid var(--a-line-2)}
+.fm{display:flex;align-items:center;gap:10px;border:1px solid var(--a-line);border-radius:11px;padding:12px 14px;cursor:pointer;min-height:60px}
+.fm.sel{border-color:var(--primary);background:#FCF6F3}
+.fm input{flex-shrink:0}
+.fmx{min-width:0}
+.fm b{display:block;font-size:13px;line-height:1.4}
+.fm span{display:block;font-size:11px;color:var(--a-text-3);line-height:1.4;margin-top:2px}
+.pin-row,.pool-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--a-line-2)}
+.pin-row:last-child,.pool-row:last-child{border:none}
+.pin-row.dragging{opacity:.5;background:var(--c-surface)}
+.pin-row img,.pool-row img{width:44px;height:34px;border-radius:7px;object-fit:cover;flex-shrink:0}
+.pin-row .pn,.pool-row .pn{flex:1;min-width:0;font-size:13px;font-weight:600}
+.pin-row .pn small,.pool-row .pn small{display:block;color:var(--a-text-3);font-weight:400;font-size:11px}
+.pin-row .drag{font-size:17px;color:var(--a-text-3);cursor:grab;touch-action:none;flex-shrink:0;padding:0 2px}
+.pin-row .drag:active{cursor:grabbing}
+/* 에디터 노트 */
+.tag.red{background:#FBEAEA;color:#B23B3B}
+.note-card{border:1px solid var(--a-line);border-radius:11px;padding:12px 14px;margin-bottom:10px}
+.note-card .nh{display:flex;align-items:center;gap:8px;margin-bottom:7px;flex-wrap:wrap}
+.note-card .nh .toggle{margin-left:auto}
+.note-card .nb{font-size:13.5px;line-height:1.5}
+.note-card .na{display:flex;gap:6px;justify-content:flex-end;margin-top:9px;flex-wrap:wrap}
+/* 프론트 프리뷰 에디터 노트 블록 */
+.pv-note{background:var(--c-surface-alt);border:1px solid var(--c-border);border-radius:12px;padding:11px 12px;margin-bottom:9px}
+.pv-note .h{display:flex;align-items:center;gap:6px;font-size:11px;color:#9A6E00;font-weight:600;margin-bottom:5px}
+.pv-note .b{font-size:13px;line-height:1.5}
+.pv-note .s{font-size:11px;color:var(--a-text-3);margin-top:4px}
+
+/* 토스트 / 모달 */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#2A2A2A;
+  color:#fff;padding:12px 20px;border-radius:10px;font-size:13.5px;font-weight:600;z-index:200;opacity:0;
+  pointer-events:none;transition:.25s;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal{position:fixed;inset:0;z-index:150;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modal-back{position:absolute;inset:0;background:rgba(20,22,30,.5)}
+.modal-box{position:relative;background:#fff;border-radius:16px;width:480px;max-width:100%;max-height:88vh;
+  overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-box header{display:flex;align-items:center;padding:18px 20px;border-bottom:1px solid var(--a-line-2);position:sticky;top:0;background:#fff}
+.modal-box header h3{font-size:16px;font-weight:700;flex:1}
+.modal-box header .x{font-size:22px;color:var(--a-text-3);width:32px;height:32px;border-radius:8px}
+.modal-box header .x:hover{background:var(--a-bg)}
+.modal-body{padding:20px}
+.modal-body p{font-size:14px;color:var(--a-text-2);line-height:1.6}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--a-line-2);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.kv{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--a-line-2);font-size:13px}
+.kv:last-child{border:none}.kv span{color:var(--a-text-3)}
+
+/* ===================== 반응형 ===================== */
+@media(max-width:1000px){
+  .edit-grid,.ingest-grid,.report-grid,.set-grid,.dash-2col{grid-template-columns:1fr}
+  .preview-wrap,.rep-detail{position:static}
+  .set-grid .full{grid-column:auto}
+}
+@media(max-width:900px){
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .25s ease;box-shadow:0 0 40px rgba(0,0,0,.3)}
+  .sidebar.open{transform:none}
+  .overlay{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:55;opacity:0;pointer-events:none;transition:opacity .25s}
+  .overlay.show{opacity:1;pointer-events:auto}
+  .menu-btn{display:flex}
+  .search{display:none}
+  .topbar{padding:0 14px;gap:10px}
+  .content{padding:16px}
+  .kpi-row{grid-template-columns:repeat(2,1fr);gap:12px}
+  .kpi .num{font-size:26px}
+  table.tbl{display:block;min-width:0;width:auto}
+  table.tbl thead{display:none}
+  table.tbl tbody{display:block}
+  table.tbl tr{display:flex;flex-wrap:wrap;align-items:center;gap:9px 16px;border:1px solid var(--a-line);
+    border-radius:12px;margin:0 14px 10px;padding:13px 15px;background:#fff}
+  table.tbl tr:first-child{margin-top:14px}
+  table.tbl tr:hover td{background:transparent}
+  table.tbl td{display:flex;align-items:center;gap:7px;border:none;padding:0;font-size:13.5px;white-space:normal}
+  table.tbl td::before{content:attr(data-label);font-size:11px;color:var(--a-text-3);font-weight:600;flex-shrink:0}
+  table.tbl td.cell-check{display:none}
+  table.tbl td.cell-main{flex-basis:100%;padding-bottom:4px}
+  table.tbl td.cell-main::before{display:none}
+  table.tbl td.cell-act{flex-basis:100%;justify-content:flex-end;padding-top:10px;margin-top:4px;border-top:1px solid var(--a-line-2)}
+  table.tbl td.cell-act::before{display:none}
+  table.tbl td.cell-act .row-act{width:100%;justify-content:flex-end}
+  .proto-note{padding:14px}
+  .subtabs{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+  .subtab{flex-shrink:0}
+  .fill-modes{grid-template-columns:1fr}
+  .edit-tabs{flex-wrap:wrap;overflow:visible}
+}
+.badge-new{display:inline-block;background:var(--primary);color:#fff;font-size:10px;font-weight:700;border-radius:5px;padding:1px 5px;margin-left:5px;vertical-align:middle}
+.tab-count{display:inline-block;background:var(--a-bg);color:var(--a-text-2);font-size:11px;font-weight:700;border-radius:8px;padding:0 6px;margin-left:5px}
+.edit-tab.active .tab-count{background:rgba(199,93,62,.12);color:var(--primary)}
+@media(max-width:560px){
+  .kpi-row{grid-template-columns:1fr}
+  .phone{width:100%}
+  .topbar h1{font-size:16px}
+  .crumb{display:none}
+  .field-row{grid-template-columns:1fr}
+  .list-head .btn.primary{margin-left:0;width:100%;justify-content:center}
+  .help-btn .hb-t{display:none}
+  .help-btn{padding:0 10px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="overlay" id="ov" onclick="toggleNav(false)"></div>
+
+  <!-- ===================== 사이드바 ===================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="logo">🍳</div><div><b>졸리팟</b><span>Admin · Lean</span></div></div>
+    <nav class="nav">
+      <div class="nav-label">운영</div>
+      <button class="nav-item active" data-screen="dashboard"><span class="ic">▦</span>대시보드</button>
+      <button class="nav-item" data-screen="curation"><span class="ic">🏠</span>큐레이션</button>
+      <button class="nav-item" data-screen="recipes"><span class="ic">🍲</span>레시피</button>
+      <button class="nav-item" data-screen="editornotes"><span class="ic">📝</span>에디터 노트<span class="badge" style="background:var(--info)">5</span></button>
+      <button class="nav-item" data-screen="reviews"><span class="ic">🍳</span>요리후기<span class="badge">1</span></button>
+      <button class="nav-item" data-screen="comments"><span class="ic">💬</span>댓글<span class="badge">1</span></button>
+      <button class="nav-item" data-screen="reports"><span class="ic">🚩</span>신고<span class="badge">2</span></button>
+      <button class="nav-item" data-screen="members"><span class="ic">👤</span>회원</button>
+      <div class="nav-div"></div>
+      <button class="nav-item" data-screen="deeplink"><span class="ic">🔗</span>딥링크 생성기</button>
+      <div class="nav-label">시스템</div>
+      <button class="nav-item" data-screen="settings"><span class="ic">⚙</span>운영 설정</button>
+    </nav>
+    <div class="sidebar-foot">jollypot-admin-v4-19-1<br>Lean · 1인 관리자 · 2026.06</div>
+  </aside>
+
+  <!-- ===================== 메인 ===================== -->
+  <div class="main">
+    <div class="topbar">
+      <button class="menu-btn top-ic" onclick="toggleNav()">☰</button>
+      <h1 id="pageTitle">대시보드</h1>
+      <span class="crumb" id="pageCrumb">오늘의 운영 현황</span>
+      <div class="search">🔍<input placeholder="레시피·댓글·신고·회원 검색"></div>
+      <button class="help-btn" onclick="showHelp()" title="이 화면 사용방법">❓<span class="hb-t">사용방법</span></button>
+      <button class="top-ic" onclick="toast('알림 7건 — 신고 처리를 확인해 주세요')">🔔<span class="dot"></span></button>
+      <div class="avatar">운</div>
+    </div>
+
+    <div class="content">
+
+      <!-- ============ 대시보드 (분석 허브) ============ -->
+      <section class="screen active" id="dashboard">
+        <div id="dashMain">
+          <!-- 오늘 할 일 (액션 우선) -->
+          <div class="action-strip">
+            <span class="as-lab">오늘 할 일</span>
+            <button class="as-chip alert" onclick="go('reports')">🚩 미처리 신고 <b>2</b></button>
+            <button class="as-chip" onclick="go('editornotes')">📝 에디터 노트 검수 <b>5</b></button>
+            <button class="as-chip" onclick="go('recipes');setTimeout(function(){rtab('ingest')},50)">⟳ 수집 실패 재시도 <b>1</b></button>
+          </div>
+
+          <!-- 오늘 스냅샷 KPI (전일 대비) -->
+          <div class="kpi-row">
+            <div class="kpi" style="cursor:pointer" onclick="openMetric('dau','활성 사용자(DAU)')"><div class="lab"><span class="ic" style="background:#E9F3EC">🟢</span>활성 사용자(DAU)</div><div class="num">64</div><div class="delta up">▲ 6% vs 어제</div></div>
+            <div class="kpi" style="cursor:pointer" onclick="go('recipes')"><div class="lab"><span class="ic" style="background:#E9F3EC">✓</span>오늘 발행</div><div class="num">8</div><div class="delta">수집 9 · 실패 1</div></div>
+            <div class="kpi" style="cursor:pointer" onclick="openMetric('saves','저장 수')"><div class="lab"><span class="ic" style="background:#FBF1DD">🔖</span>오늘 저장</div><div class="num">73</div><div class="delta up">▲ 9% vs 어제</div></div>
+            <div class="kpi" style="cursor:pointer" onclick="openMetric('shares','공유 수')"><div class="lab"><span class="ic" style="background:#EAF1F6">🔗</span>오늘 공유</div><div class="num">14</div><div class="delta up">▲ 4% vs 어제</div></div>
+            <div class="kpi" style="cursor:pointer" onclick="go('comments')"><div class="lab"><span class="ic" style="background:#EFF0F2">💬</span>오늘 댓글</div><div class="num">9</div><div class="delta down">▼ 2% vs 어제</div></div>
+            <div class="kpi" style="cursor:pointer" onclick="openMetric('affiliate','제휴 클릭 수')"><div class="lab"><span class="ic" style="background:#F3ECEA">🛒</span>제휴 클릭</div><div class="num">41</div><div class="delta up">▲ 12% vs 어제</div></div>
+            <div class="kpi" style="cursor:pointer" onclick="go('members')"><div class="lab"><span class="ic" style="background:#EAF3EC">👤</span>오늘 가입</div><div class="num">3</div><div class="delta">총 200명</div></div>
+          </div>
+
+          <!-- 미처리 신고 (상시 큐) -->
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-h"><h2>미처리 신고</h2><span class="sub">검수 게이트 없음 → 신고가 유일한 상시 품질 큐</span><div class="right"><button class="btn sm" onclick="go('reports')">신고함 →</button></div></div>
+            <table class="tbl">
+              <thead><tr><th>레시피</th><th>사유</th><th>신고수</th><th>최초신고</th></tr></thead>
+              <tbody>
+                <tr><td class="cell-main"><b class="t-title">마늘쫑 비빔밥</b></td><td data-label="사유"><span class="tag gray">AI 요약 오류</span></td><td data-label="신고수" class="num-cell">3</td><td data-label="최초신고" class="t-sub">2시간 전</td></tr>
+                <tr><td class="cell-main"><b class="t-title">감자목살덮밥</b></td><td data-label="사유"><span class="tag gray">부정확한 정보</span></td><td data-label="신고수" class="num-cell">1</td><td data-label="최초신고" class="t-sub">5시간 전</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 기간 선택 (추이 전체 적용) -->
+          <div class="period-bar">
+            <b style="font-size:15px">추이 분석</b>
+            <div class="seg" style="margin-left:6px"><button class="on" onclick="setPeriod(this,'7일')">7일</button><button onclick="setPeriod(this,'30일')">30일</button><button onclick="setPeriod(this,'90일')">90일</button></div>
+            <span class="t-sub">또는</span>
+            <input type="date" value="2026-05-25"> <span class="t-sub">~</span> <input type="date" value="2026-06-24">
+            <button class="btn sm" onclick="toast('선택 기간을 적용했어요')">적용</button>
+          </div>
+
+          <!-- 추이 카드 그리드 -->
+          <div class="trend-grid">
+            <div class="card"><div class="card-h"><h2>활성 사용자(DAU)</h2><div class="right"><button class="btn sm" onclick="openMetric('dau','활성 사용자(DAU)')">상세</button><button class="btn sm" onclick="downloadCSV('활성 사용자(DAU)')">CSV</button></div></div>
+              <div style="padding:14px 18px"><div class="mini-stat"><span class="v">64</span><span class="d up">▲ 6%</span></div><div class="t-sub" style="margin-bottom:6px">주간 평균 58 · 최고 71</div><div class="chart"><div class="col"><div class="b" style="height:55%;background:var(--sage)"></div><small>월</small></div><div class="col"><div class="b" style="height:62%;background:var(--sage)"></div><small>화</small></div><div class="col"><div class="b" style="height:58%;background:var(--sage)"></div><small>수</small></div><div class="col"><div class="b" style="height:70%;background:var(--sage)"></div><small>목</small></div><div class="col"><div class="b" style="height:66%;background:var(--sage)"></div><small>금</small></div><div class="col"><div class="b" style="height:92%;background:var(--sage)"></div><small>토</small></div><div class="col"><div class="b" style="height:100%;background:var(--sage)"></div><small>일</small></div></div></div></div>
+            <div class="card"><div class="card-h"><h2>회원가입 수</h2><div class="right"><button class="btn sm" onclick="openMetric('signup','회원가입 수')">상세</button><button class="btn sm" onclick="downloadCSV('회원가입 수')">CSV</button></div></div>
+              <div style="padding:14px 18px"><div class="mini-stat"><span class="v">28</span><span class="d up">▲ 9%</span></div><div class="t-sub" style="margin-bottom:6px">기간 합계 · 총 회원 200</div><div class="chart"><div class="col"><div class="b" style="height:35%"></div><small>월</small></div><div class="col"><div class="b" style="height:50%"></div><small>화</small></div><div class="col"><div class="b" style="height:48%"></div><small>수</small></div><div class="col"><div class="b" style="height:66%"></div><small>목</small></div><div class="col"><div class="b" style="height:60%"></div><small>금</small></div><div class="col"><div class="b" style="height:88%"></div><small>토</small></div><div class="col"><div class="b" style="height:80%"></div><small>일</small></div></div></div></div>
+            <div class="card"><div class="card-h"><h2>발행 레시피 수</h2><div class="right"><button class="btn sm" onclick="openMetric('publish','발행 레시피 수')">상세</button><button class="btn sm" onclick="downloadCSV('발행 레시피 수')">CSV</button></div></div>
+              <div style="padding:14px 18px"><div class="mini-stat"><span class="v">54</span><span class="d up">▲ 11%</span></div><div class="t-sub" style="margin-bottom:6px">수집 61 · 실패율 11%</div><div class="chart"><div class="col"><div class="b" style="height:40%"></div><small>월</small></div><div class="col"><div class="b" style="height:62%"></div><small>화</small></div><div class="col"><div class="b" style="height:55%"></div><small>수</small></div><div class="col"><div class="b" style="height:80%"></div><small>목</small></div><div class="col"><div class="b" style="height:70%"></div><small>금</small></div><div class="col"><div class="b" style="height:90%"></div><small>토</small></div><div class="col"><div class="b" style="height:100%"></div><small>일</small></div></div></div></div>
+            <div class="card"><div class="card-h"><h2>저장(스크랩) 수</h2><div class="right"><button class="btn sm" onclick="openMetric('saves','저장 수')">상세</button><button class="btn sm" onclick="downloadCSV('저장 수')">CSV</button></div></div>
+              <div style="padding:14px 18px"><div class="mini-stat"><span class="v">512</span><span class="d up">▲ 12%</span></div><div class="t-sub" style="margin-bottom:6px">콘텐츠 매력도 핵심 지표</div><div class="chart"><div class="col"><div class="b" style="height:50%;background:var(--brand)"></div><small>월</small></div><div class="col"><div class="b" style="height:58%;background:var(--brand)"></div><small>화</small></div><div class="col"><div class="b" style="height:66%;background:var(--brand)"></div><small>수</small></div><div class="col"><div class="b" style="height:72%;background:var(--brand)"></div><small>목</small></div><div class="col"><div class="b" style="height:84%;background:var(--brand)"></div><small>금</small></div><div class="col"><div class="b" style="height:96%;background:var(--brand)"></div><small>토</small></div><div class="col"><div class="b" style="height:100%;background:var(--brand)"></div><small>일</small></div></div></div></div>
+            <div class="card"><div class="card-h"><h2>공유 수</h2><div class="right"><button class="btn sm" onclick="openMetric('shares','공유 수')">상세</button><button class="btn sm" onclick="downloadCSV('공유 수')">CSV</button></div></div>
+              <div style="padding:14px 18px"><div class="mini-stat"><span class="v">96</span><span class="d up">▲ 5%</span></div><div class="t-sub" style="margin-bottom:6px">바이럴·신규 유입 신호</div><div class="chart"><div class="col"><div class="b" style="height:45%;background:var(--info)"></div><small>월</small></div><div class="col"><div class="b" style="height:52%;background:var(--info)"></div><small>화</small></div><div class="col"><div class="b" style="height:48%;background:var(--info)"></div><small>수</small></div><div class="col"><div class="b" style="height:64%;background:var(--info)"></div><small>목</small></div><div class="col"><div class="b" style="height:70%;background:var(--info)"></div><small>금</small></div><div class="col"><div class="b" style="height:88%;background:var(--info)"></div><small>토</small></div><div class="col"><div class="b" style="height:92%;background:var(--info)"></div><small>일</small></div></div></div></div>
+            <div class="card"><div class="card-h"><h2>댓글 수</h2><div class="right"><button class="btn sm" onclick="openMetric('comments','댓글 수')">상세</button><button class="btn sm" onclick="downloadCSV('댓글 수')">CSV</button></div></div>
+              <div style="padding:14px 18px"><div class="mini-stat"><span class="v">51</span><span class="d down">▼ 3%</span></div><div class="t-sub" style="margin-bottom:6px">레시피별 대화·질의 활동</div><div class="chart"><div class="col"><div class="b" style="height:60%"></div><small>월</small></div><div class="col"><div class="b" style="height:55%"></div><small>화</small></div><div class="col"><div class="b" style="height:70%"></div><small>수</small></div><div class="col"><div class="b" style="height:50%"></div><small>목</small></div><div class="col"><div class="b" style="height:65%"></div><small>금</small></div><div class="col"><div class="b" style="height:72%"></div><small>토</small></div><div class="col"><div class="b" style="height:58%"></div><small>일</small></div></div></div></div>
+            <div class="card"><div class="card-h"><h2>요리후기 수</h2><div class="right"><button class="btn sm" onclick="openMetric('reviews','요리후기 수')">상세</button><button class="btn sm" onclick="downloadCSV('요리후기 수')">CSV</button></div></div>
+              <div style="padding:14px 18px"><div class="mini-stat"><span class="v">12</span><span class="d up">▲ 7%</span></div><div class="t-sub" style="margin-bottom:6px">실행 증언(UGC) · 사진 포함 9</div><div class="chart"><div class="col"><div class="b" style="height:30%;background:var(--primary)"></div><small>월</small></div><div class="col"><div class="b" style="height:45%;background:var(--primary)"></div><small>화</small></div><div class="col"><div class="b" style="height:38%;background:var(--primary)"></div><small>수</small></div><div class="col"><div class="b" style="height:55%;background:var(--primary)"></div><small>목</small></div><div class="col"><div class="b" style="height:48%;background:var(--primary)"></div><small>금</small></div><div class="col"><div class="b" style="height:70%;background:var(--primary)"></div><small>토</small></div><div class="col"><div class="b" style="height:62%;background:var(--primary)"></div><small>일</small></div></div></div></div>
+            <div class="card"><div class="card-h"><h2>제휴(쿠팡) 클릭 · 예상 수익</h2><div class="right"><button class="btn sm" onclick="openMetric('affiliate','제휴 클릭 수')">상세</button><button class="btn sm" onclick="downloadCSV('제휴 클릭·수익')">CSV</button></div></div>
+              <div style="padding:14px 18px"><div class="mini-stat"><span class="v">412</span><span class="d up">▲ 18%</span></div><div class="t-sub" style="margin-bottom:6px">전환 31건(7.5%) · 예상 수익 ₩48,200</div><div class="chart"><div class="col"><div class="b" style="height:40%;background:var(--primary)"></div><small>월</small></div><div class="col"><div class="b" style="height:55%;background:var(--primary)"></div><small>화</small></div><div class="col"><div class="b" style="height:60%;background:var(--primary)"></div><small>수</small></div><div class="col"><div class="b" style="height:70%;background:var(--primary)"></div><small>목</small></div><div class="col"><div class="b" style="height:78%;background:var(--primary)"></div><small>금</small></div><div class="col"><div class="b" style="height:92%;background:var(--primary)"></div><small>토</small></div><div class="col"><div class="b" style="height:100%;background:var(--primary)"></div><small>일</small></div></div></div></div>
+          </div>
+
+          <!-- 인기 레시피 TOP -->
+          <div class="dash-2col">
+            <div class="card"><div class="card-h"><h2>인기 레시피 TOP · 저장</h2><span class="sub">큐레이션 핀 후보</span><div class="right"><button class="btn sm" onclick="downloadCSV('인기 레시피(저장)')">CSV</button></div></div>
+              <div style="padding:12px 18px">
+                <div class="toprow"><span class="rank">1</span><img src="https://picsum.photos/100/80?random=24" alt="썸네일"><div class="tn">소금빵 만들기</div><div class="tv">312</div></div>
+                <div class="toprow"><span class="rank">2</span><img src="https://picsum.photos/100/80?random=11" alt="썸네일"><div class="tn">마늘쫑 비빔밥</div><div class="tv">204</div></div>
+                <div class="toprow"><span class="rank">3</span><img src="https://picsum.photos/100/80?random=12" alt="썸네일"><div class="tn">감자목살덮밥</div><div class="tv">182</div></div>
+                <div class="toprow"><span class="rank">4</span><img src="https://picsum.photos/100/80?random=13" alt="썸네일"><div class="tn">까망베르 샤브샤브</div><div class="tv">140</div></div>
+              </div>
+            </div>
+            <div class="card"><div class="card-h"><h2>인기 레시피 TOP · 공유</h2><span class="sub">바이럴 후보</span><div class="right"><button class="btn sm" onclick="downloadCSV('인기 레시피(공유)')">CSV</button></div></div>
+              <div style="padding:12px 18px">
+                <div class="toprow"><span class="rank">1</span><img src="https://picsum.photos/100/80?random=11" alt="썸네일"><div class="tn">마늘쫑 비빔밥</div><div class="tv">88</div></div>
+                <div class="toprow"><span class="rank">2</span><img src="https://picsum.photos/100/80?random=21" alt="썸네일"><div class="tn">에어프라이어 닭다리살</div><div class="tv">61</div></div>
+                <div class="toprow"><span class="rank">3</span><img src="https://picsum.photos/100/80?random=24" alt="썸네일"><div class="tn">소금빵 만들기</div><div class="tv">47</div></div>
+                <div class="toprow"><span class="rank">4</span><img src="https://picsum.photos/100/80?random=14" alt="썸네일"><div class="tn">아이 손두부 버섯빵</div><div class="tv">29</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 추이 상세 화면 (날짜 선택 + 표 + CSV) -->
+        <div id="dashDetail" style="display:none">
+          <div class="edit-head">
+            <button class="btn sm" onclick="closeMetric()">← 대시보드</button>
+            <h2 style="font-size:16px;font-weight:700">추이 상세 — <span id="mdName">저장 수</span></h2>
+            <div style="margin-left:auto;display:flex;gap:8px"><button class="btn" onclick="downloadCSV(document.getElementById('mdName').textContent)">⬇ CSV 다운로드</button></div>
+          </div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="period-bar" style="margin:0;padding:14px 18px;border-bottom:1px solid var(--a-line-2)">
+              <div class="seg"><button class="on" onclick="setPeriod(this,'7일')">7일</button><button onclick="setPeriod(this,'30일')">30일</button><button onclick="setPeriod(this,'90일')">90일</button></div>
+              <span class="t-sub">날짜 범위</span>
+              <input type="date" value="2026-05-25"> <span class="t-sub">~</span> <input type="date" value="2026-06-24">
+              <button class="btn sm" onclick="toast('선택 기간을 적용했어요')">적용</button>
+            </div>
+            <div style="padding:20px 18px">
+              <div class="chart" style="height:200px"><div class="col"><div class="b" style="height:30%"></div><small>1주</small></div><div class="col"><div class="b" style="height:48%"></div><small>2주</small></div><div class="col"><div class="b" style="height:55%"></div><small>3주</small></div><div class="col"><div class="b" style="height:70%"></div><small>4주</small></div></div>
+              <div class="hint" style="margin-top:14px">선택 기간 합계 <b id="mdSum">512</b> · 전 기간 대비 <span class="up">▲ 12%</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h2>일자별 데이터</h2><div class="right"><button class="btn sm" onclick="downloadCSV(document.getElementById('mdName').textContent)">CSV</button></div></div>
+            <table class="tbl" id="mdTable">
+              <thead><tr><th>날짜</th><th>값</th><th>전일 대비</th></tr></thead>
+              <tbody>
+                <tr><td class="cell-main">2026-06-24</td><td data-label="값" class="num-cell">73</td><td data-label="전일대비"><span class="up">▲ 9%</span></td></tr>
+                <tr><td class="cell-main">2026-06-23</td><td data-label="값" class="num-cell">67</td><td data-label="전일대비"><span class="up">▲ 2%</span></td></tr>
+                <tr><td class="cell-main">2026-06-22</td><td data-label="값" class="num-cell">66</td><td data-label="전일대비"><span class="down">▼ 4%</span></td></tr>
+                <tr><td class="cell-main">2026-06-21</td><td data-label="값" class="num-cell">69</td><td data-label="전일대비"><span class="up">▲ 7%</span></td></tr>
+                <tr><td class="cell-main">2026-06-20</td><td data-label="값" class="num-cell">64</td><td data-label="전일대비"><span class="up">▲ 1%</span></td></tr>
+              </tbody>
+            </table>
+            <div class="proto-note">— 선택 기간 전체가 CSV에 포함됩니다 —</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 큐레이션 (홈 편성) ============ -->
+      <section class="screen" id="curation">
+        <div class="card" style="margin-bottom:16px;padding:14px 18px">
+          <div class="hint" style="margin:0">홈 피드 본문은 기본 <b>룰베이스(최신·인기 자동)</b>로 채워집니다. 여기서 <b>홈 섹션의 노출·순서·핀(고정 노출)</b>을 직접 편성합니다.</div>
+        </div>
+        <div id="curationMain">
+        <div class="edit-grid">
+          <div class="card">
+            <div class="card-h"><h2>홈 섹션 편성</h2><span class="sub">위 → 아래 순서로 노출 · 드래그 정렬</span><div class="right"><button class="btn sm primary" onclick="openSectionModal()">+ 섹션 추가</button></div></div>
+            <div style="padding:14px 18px" id="homeSections">
+              <div class="cur-row"><span class="handle">⠿</span><span class="nm">메인 배너 (히어로)</span><span class="grow metas"><span class="tag yellow">배너 슬라이드</span><span class="t-sub">상단 데크 · 2개</span></span><button class="toggle" onclick="this.classList.toggle('off');toast('노출 상태를 변경했어요')"></button><button class="btn sm" onclick="openSectionEditor(this)">편집</button></div>
+              <div class="cur-row"><span class="handle">⠿</span><span class="nm">오늘의 추천 레시피</span><span class="grow metas"><span class="tag gray">레시피 그리드</span><span class="t-sub">수동 핀 6개</span></span><button class="toggle" onclick="this.classList.toggle('off');toast('노출 상태를 변경했어요')"></button><button class="btn sm" onclick="openSectionEditor(this)">편집</button></div>
+              <div class="cur-row"><span class="handle">⠿</span><span class="nm">인기 급상승</span><span class="grow metas"><span class="tag sage">자동(저장순)</span><span class="t-sub">실시간</span></span><button class="toggle" onclick="this.classList.toggle('off');toast('노출 상태를 변경했어요')"></button><button class="btn sm" onclick="openSectionEditor(this)">편집</button></div>
+              <div class="cur-row"><span class="handle">⠿</span><span class="nm">테마 컬렉션 — 아이와 함께</span><span class="grow metas"><span class="tag gray">테마 그리드</span><span class="t-sub">태그 기반</span></span><button class="toggle" onclick="this.classList.toggle('off');toast('노출 상태를 변경했어요')"></button><button class="btn sm" onclick="openSectionEditor(this)">편집</button></div>
+            </div>
+          </div>
+          <div class="preview-wrap">
+            <div class="preview-bar"><span class="lab">📱 홈 미리보기</span>
+              <button class="btn sm" style="margin-left:auto" onclick="refreshHome()">🔄 새로고침</button>
+              <button class="btn sm" onclick="toast('실제 홈 화면(jollypot-v2-home) 연동 예정 — 현재는 목업 미리보기')">실제 홈 열기</button>
+            </div>
+            <div class="phone" id="homePhone">
+              <div style="padding:14px 16px">
+                <img src="https://picsum.photos/360/150?random=41" style="width:100%;height:120px;object-fit:cover;border-radius:14px" alt="메인 배너">
+                <div class="pv-h2" style="margin:18px 0 12px">오늘의 추천 레시피</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <div><img src="https://picsum.photos/200/150?random=42" style="width:100%;height:96px;object-fit:cover;border-radius:11px" alt="레시피"><div class="t-title" style="font-size:13px;margin-top:6px">마늘쫑 비빔밥</div></div>
+                  <div><img src="https://picsum.photos/200/150?random=43" style="width:100%;height:96px;object-fit:cover;border-radius:11px" alt="레시피"><div class="t-title" style="font-size:13px;margin-top:6px">감자목살덮밥</div></div>
+                </div>
+                <div class="pv-h2" style="margin:18px 0 12px">인기 급상승</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <div><img src="https://picsum.photos/200/150?random=44" style="width:100%;height:96px;object-fit:cover;border-radius:11px" alt="레시피"><div class="t-title" style="font-size:13px;margin-top:6px">까망베르 샤브샤브</div></div>
+                  <div><img src="https://picsum.photos/200/150?random=45" style="width:100%;height:96px;object-fit:cover;border-radius:11px" alt="레시피"><div class="t-title" style="font-size:13px;margin-top:6px">손두부 버섯빵</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="proto-note">↑ 편성 결과가 홈에 반영되는 모습</div>
+          </div>
+        </div>
+        </div><!-- /curationMain -->
+
+        <!-- 섹션 에디터 (레시피 셀렉 / 자동 규칙 / 하이브리드) -->
+        <div id="curationEditor" style="display:none">
+          <div class="edit-head">
+            <button class="btn sm" onclick="closeSectionEditor()">← 섹션 목록</button>
+            <h2 style="font-size:16px;font-weight:700">섹션 편집 — <span id="secName">오늘의 추천 레시피</span></h2>
+            <div style="margin-left:auto;display:flex;gap:8px"><button class="btn" onclick="closeSectionEditor()">취소</button><button class="btn primary" onclick="closeSectionEditor();toast('섹션을 저장했어요')">저장</button></div>
+          </div>
+
+          <div class="card" style="padding:16px 18px;margin-bottom:16px">
+            <div class="section-title">콘텐츠 채우기 방식</div>
+            <div class="fill-modes">
+              <label class="fm" id="fm-manual" onclick="setFill('manual')"><input type="radio" name="fill"><div class="fmx"><b>수동 핀</b><span>운영자가 고른 레시피만 고정 노출</span></div></label>
+              <label class="fm" id="fm-auto" onclick="setFill('auto')"><input type="radio" name="fill"><div class="fmx"><b>자동</b><span>규칙으로 자동 채움(실시간)</span></div></label>
+              <label class="fm sel" id="fm-hybrid" onclick="setFill('hybrid')"><input type="radio" name="fill" checked><div class="fmx"><b>하이브리드 ★추천</b><span>상단 고정 핀 + 나머지 자동</span></div></label>
+            </div>
+            <div class="hint">하이브리드가 가장 효율적입니다 — 손이 가는 ‘오늘의 추천’ 몇 개만 고정하고 나머지는 규칙으로 자동 채워, 매일 손볼 필요가 줄어듭니다.</div>
+          </div>
+
+          <div class="edit-grid">
+            <div>
+              <div class="card" id="pinCard" style="margin-bottom:16px">
+                <div class="card-h"><h2>고정 핀</h2><span class="sub">위→아래 순서로 노출 · 드래그 정렬</span><span class="right t-sub" id="pinCount">2개 고정</span></div>
+                <div class="hint" style="margin:0 0 8px;padding:0 0 0 2px">⠿ 손잡이를 잡고 위아래로 <b>드래그</b>해 순서를 바꾸세요</div>
+                <div style="padding:4px 18px 10px" id="pinList">
+                  <div class="pin-row"><span class="drag" onpointerdown="pinDragStart(event)" title="드래그로 정렬">⠿</span><span class="t-sub" style="width:14px">1</span><img src="https://picsum.photos/100/80?random=11" width="44" height="34" alt="썸네일"><div class="pn">마늘쫑 비빔밥<small>저장 1,204 · 한식</small></div><button class="btn sm danger" onclick="delPin(this)">제외</button></div>
+                  <div class="pin-row"><span class="drag" onpointerdown="pinDragStart(event)" title="드래그로 정렬">⠿</span><span class="t-sub" style="width:14px">2</span><img src="https://picsum.photos/100/80?random=12" width="44" height="34" alt="썸네일"><div class="pn">감자목살덮밥<small>저장 982 · 한식</small></div><button class="btn sm danger" onclick="delPin(this)">제외</button></div>
+                </div>
+              </div>
+              <div class="card" id="ruleCard">
+                <div class="card-h"><h2>자동 채움 규칙</h2><span class="sub">고정 핀 뒤를 채우는 기준</span></div>
+                <div style="padding:16px 18px">
+                  <div class="field-row">
+                    <div class="field"><label>기준</label><select><option>저장 많은 순</option><option>최근 7일 급상승(저장 증가율)</option><option>최신 발행순</option><option>댓글 많은 순</option></select></div>
+                    <div class="field"><label>기간</label><select><option>최근 7일</option><option>최근 30일</option><option>전체 기간</option></select></div>
+                  </div>
+                  <div class="field-row">
+                    <div class="field"><label>카테고리/태그 필터</label><select><option>전체</option><option>한식</option><option>아이 반찬</option><option>밀프렙</option><option>#초간단</option></select></div>
+                    <div class="field"><label>표시 개수</label><input value="12"></div>
+                  </div>
+                  <div class="hint">예) ‘인기 급상승’ = 기준 <b>최근 7일 급상승</b>. ‘아이와 함께’ 테마 = 필터 <b>아이 반찬</b> + 기준 <b>저장순</b>. 발행/비공개·신고多 레시피는 자동 제외.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><h2>레시피 풀</h2><span class="sub">+ 핀으로 상단 고정 추가</span></div>
+              <div class="filterbar">
+                <div class="inline-search" style="margin-left:0">🔍<input placeholder="레시피 검색"></div>
+                <select class="sel"><option>카테고리: 전체</option><option>한식</option><option>아이 반찬</option><option>밀프렙</option></select>
+                <select class="sel"><option>저장 많은 순</option><option>최신순</option><option>급상승</option></select>
+              </div>
+              <div style="padding:8px 18px 14px" id="poolList">
+                <div class="pool-row"><img src="https://picsum.photos/100/80?random=13" width="44" height="34" alt="썸네일"><div class="pn">까망베르 샤브샤브<small>저장 640 · 밀프렙</small></div><button class="btn sm" onclick="addPin(this)">+ 핀</button></div>
+                <div class="pool-row"><img src="https://picsum.photos/100/80?random=14" width="44" height="34" alt="썸네일"><div class="pn">아이 손두부 버섯빵<small>저장 210 · 아이 반찬</small></div><button class="btn sm" onclick="addPin(this)">+ 핀</button></div>
+                <div class="pool-row"><img src="https://picsum.photos/100/80?random=21" width="44" height="34" alt="썸네일"><div class="pn">에어프라이어 닭다리살<small>저장 530 · 한식</small></div><button class="btn sm" onclick="addPin(this)">+ 핀</button></div>
+                <div class="pool-row"><img src="https://picsum.photos/100/80?random=24" width="44" height="34" alt="썸네일"><div class="pn">소금빵 만들기<small>저장 1,890 · 베이킹</small></div><button class="btn sm" onclick="addPin(this)">+ 핀</button></div>
+                <div class="pool-row"><img src="https://picsum.photos/100/80?random=25" width="44" height="34" alt="썸네일"><div class="pn">초간단 김치찜<small>저장 410 · 한식</small></div><button class="btn sm" onclick="addPin(this)">+ 핀</button></div>
+              </div>
+              <div class="proto-note">— 풀에서 고른 항목이 좌측 ‘고정 핀’에 추가됩니다 —</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 레시피 ============ -->
+      <section class="screen" id="recipes">
+        <!-- 목록/수집/카테고리 -->
+        <div id="recipeList">
+          <div class="list-head">
+            <div class="subtabs">
+              <button class="subtab active" data-rtab="list" onclick="rtab('list')">레시피 목록</button>
+              <button class="subtab" data-rtab="ingest" onclick="rtab('ingest')">소스 수집</button>
+              <button class="subtab" data-rtab="cats" onclick="rtab('cats')">카테고리·태그</button>
+            </div>
+            <button class="btn primary" style="margin-left:auto" onclick="openEdit(true)" title="URL 수집이 아닌, 운영자가 직접 작성·업로드하는 오리지널 레시피">+ 직접 등록</button>
+          </div>
+
+          <div class="rtab-pane" id="rtab-list">
+            <div class="card">
+              <div class="filterbar">
+                <select class="sel"><option>상태: 전체</option><option>발행</option><option>예약</option><option>비공개</option></select>
+                <select class="sel"><option>출처: 전체</option><option>인스타그램</option><option>외부 링크</option><option>직접 업로드</option></select>
+                <select class="sel"><option>카테고리: 전체</option><option>한식</option><option>아이 반찬</option><option>밀프렙</option></select>
+                <label class="chip"><input type="checkbox" class="check" style="margin-right:4px">신고 있는 것만</label>
+                <div class="inline-search">🔍<input placeholder="레시피명 검색"></div>
+              </div>
+              <div class="bulkbar" id="recipeBulk"><b>선택됨</b><button class="btn sm" onclick="toast('선택 항목 카테고리 지정')">카테고리 지정</button><button class="btn sm" onclick="toast('선택 항목 비공개 처리')">비공개</button><button class="btn sm danger" onclick="toast('선택 항목 삭제')">삭제</button></div>
+              <table class="tbl">
+                <thead><tr><th style="width:36px"><input type="checkbox" class="check" onchange="toggleBulk(this,'recipeBulk')"></th><th class="col-no">No.</th><th>레시피</th><th>출처</th><th>타입</th><th>상태</th><th>카테고리</th><th>저장</th><th>신고</th><th>발행일</th><th></th></tr></thead>
+                <tbody id="recipeTbody"></tbody>
+              </table>
+              <div class="pager" id="recipePager"></div>
+            </div>
+          </div>
+
+          <div class="rtab-pane" id="rtab-ingest" style="display:none">
+            <div class="card" style="margin-bottom:16px;padding:13px 16px">
+              <div class="hint" style="margin:0;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <span>📋 <b>대량 콘텐츠 일괄 등록</b>(추출·채점·격리·재시도·처리 예산)은 <b>시트 파이프라인</b>이 담당합니다. 여기 소스 수집은 <b>소량 직접 추가</b>가 생성 API로 발행되는 보조 동선입니다.</span>
+                <button class="btn sm" style="margin-left:auto" onclick="toast('일괄 등록 시트 파이프라인 열기')">🔗 일괄 등록 시트 열기</button>
+              </div>
+              <div style="margin-top:10px;display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+                <span class="t-sub">투입 우선 — 부족 카테고리:</span>
+                <span class="tag red">면 1</span><span class="tag red">밥 3</span><span class="tag red">국·찌개 4</span><span class="tag gray">음료 2</span>
+                <span class="t-sub">(카테고리 목표 10 미만)</span>
+              </div>
+            </div>
+            <div class="ingest-grid">
+              <div class="card">
+                <div class="card-h"><h2>URL로 수집</h2><span class="sub">인스타·외부 링크를 줄바꿈으로 여러 개</span></div>
+                <div style="padding:18px">
+                  <textarea class="urls" placeholder="https://instagram.com/reel/...&#10;https://blog.example.com/recipe/...&#10;https://instagram.com/reel/..."></textarea>
+                  <div class="hint"><b>① 존재확인(pre-check)</b> → <b>② AI 요약</b> → 수집 큐에 <b>대기중</b>으로 추가됩니다. 큐에서 항목별로 <b>예약(시간 지정)</b> 또는 <b>지금 발행</b>을 고르세요. (발행은 생성 API 경유 · SSOT)</div>
+                  <div class="curator-pick" style="margin-top:14px;border-top:1px solid var(--a-line-2);padding-top:12px">
+                    <label class="rvc-lab" style="display:block;font-weight:600;margin-bottom:6px">발행 계정(curator) 지정 <span class="t-sub" style="font-weight:400">· 이 배치로 수집되는 레시피가 귀속될 계정</span></label>
+                    <div class="acct-row">
+                      <select id="curSel" class="acct-input" onchange="onCuratorSel()">
+                        <option value="jollypot_official">졸리팟 공식 (@jollypot_official)</option>
+                        <option value="op_cho">관리자: 조영훈</option>
+                        <option value="ch_jiyou">채널: 지우네식탁</option>
+                        <option value="__custom">+ 다른 졸리팟 계정 직접 지정…</option>
+                      </select>
+                      <button class="btn" onclick="confirmCurator()">계정 확인</button>
+                    </div>
+                    <div id="curCustomRow" class="acct-row" style="display:none;margin-top:8px">
+                      <input id="curCustomId" class="acct-input" placeholder="졸리팟 ID 또는 닉네임 입력" onkeydown="if(event.key==='Enter')confirmCurator()">
+                      <button class="btn" onclick="confirmCurator()">조회</button>
+                    </div>
+                    <div id="curResult" class="acct-result" style="display:none"></div>
+                    <div class="acct-note">발행 계정은 생성 API의 <b>curator 파라미터(첫 큐레이터 귀속)</b>로 전달됩니다(원 크리에이터 creator는 출처용으로 별도 저장). 졸리팟은 <b>카카오·네이버 소셜 로그인</b> 기반이라, 직접 지정 시 <b>조회로 제공자·프로필을 확인</b>하세요(동명이인·오지정 방지). 위탁 발행분은 <b>활동 로그</b>에 기록됩니다.</div>
+                  </div>
+                  <div style="margin-top:12px"><button class="btn primary" onclick="ingestBatch()">가져오기</button></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-h"><h2>수집 큐</h2><span class="sub">대기중 → 예약(시간 지정) 또는 지금 발행</span></div>
+                <div style="padding:14px 18px">
+                  <div class="queue-item"><img class="thumb" src="https://picsum.photos/100/80?random=21" width="52" height="40" alt="썸네일"><div class="qt"><b>지금이 아니면 1년 기다림 마늘쫑비빔밥</b><small>AI 요약 완료 · 발행 대기</small></div><div class="qright"><button class="btn sm" onclick="scheduleItem(this)">예약</button><button class="btn sm primary" onclick="publishItemNow(this)">지금 발행</button></div></div>
+                  <div class="queue-item"><img class="thumb" src="https://picsum.photos/100/80?random=26" width="52" height="40" alt="썸네일"><div class="qt"><b>두부 김치찌개</b><small>AI 요약 완료 · 발행 대기</small></div><div class="qright"><button class="btn sm" onclick="scheduleItem(this)">예약</button><button class="btn sm primary" onclick="publishItemNow(this)">지금 발행</button></div></div>
+                  <div class="queue-item"><img class="thumb" src="https://picsum.photos/100/80?random=27" width="52" height="40" alt="썸네일"><div class="qt"><b>미역국</b><small>예약 발행 대기</small></div><div class="qright"><span class="status sched">예약 06-23 10:00</span><button class="btn sm" onclick="scheduleItem(this)">변경</button></div></div>
+                  <div class="queue-item"><img class="thumb" src="https://picsum.photos/100/80?random=22" width="52" height="40" alt="썸네일"><div class="qt"><b>에어프라이어 닭다리살</b><small>AI 요약 생성중…</small><div class="bar"><i style="width:60%"></i></div></div><div class="qright"><span class="status ai">처리중</span></div></div>
+                  <div class="queue-item" style="border-style:dashed"><img class="thumb" src="https://picsum.photos/100/80?random=24" width="52" height="40" alt="썸네일"><div class="qt"><b>소금빵 만들기</b><small>409 DUPLICATE · existing_recipe_id=R-1021</small></div><div class="qright"><span class="status hide">409 중복</span></div></div>
+                  <div class="queue-item"><img class="thumb" src="https://picsum.photos/100/80?random=23" width="52" height="40" alt="썸네일"><div class="qt"><b>외부 블로그 — 김치찜</b><small>422 VALIDATION · 누락: title, steps[]</small></div><div class="qright"><button class="btn sm" onclick="go('recipes');openEdit(true)">필드 보완</button></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rtab-pane" id="rtab-cats" style="display:none">
+            <div class="card" style="max-width:620px">
+              <div class="card-h"><h2>카테고리·태그</h2><span class="sub">이름을 누르면 소속 레시피를 봅니다</span><div class="right"><button class="btn sm primary" onclick="openCategoryModal()">+ 추가</button></div></div>
+              <table class="tbl">
+                <thead><tr><th>이름</th><th>유형</th><th>레시피 수</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td class="cell-main"><button class="linklike" onclick="openCategory('한식','612')">한식</button></td><td data-label="유형"><span class="tag gray">카테고리</span></td><td data-label="레시피 수" class="num-cell">612</td><td class="cell-act"><div class="row-act"><button class="btn sm" onclick="editCategoryModal('한식','카테고리')">수정</button></div></td></tr>
+                  <tr><td class="cell-main"><button class="linklike" onclick="openCategory('아이 반찬','183')">아이 반찬</button></td><td data-label="유형"><span class="tag gray">카테고리</span></td><td data-label="레시피 수" class="num-cell">183</td><td class="cell-act"><div class="row-act"><button class="btn sm" onclick="editCategoryModal('아이 반찬','카테고리')">수정</button></div></td></tr>
+                  <tr><td class="cell-main"><button class="linklike" onclick="openCategory('밀프렙','97')">밀프렙</button></td><td data-label="유형"><span class="tag gray">카테고리</span></td><td data-label="레시피 수" class="num-cell">97</td><td class="cell-act"><div class="row-act"><button class="btn sm" onclick="editCategoryModal('밀프렙','카테고리')">수정</button></div></td></tr>
+                  <tr><td class="cell-main"><button class="linklike" onclick="openCategory('#초간단','240')">#초간단</button></td><td data-label="유형"><span class="tag sage">태그</span></td><td data-label="레시피 수" class="num-cell">240</td><td class="cell-act"><div class="row-act"><button class="btn sm" onclick="editCategoryModal('#초간단','태그')">수정</button></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 카테고리 상세 -->
+        <div id="recipeCatDetail" style="display:none">
+          <div class="edit-head">
+            <button class="btn sm" onclick="closeCategory()">← 카테고리</button>
+            <h2 style="font-size:16px;font-weight:700">카테고리: <span id="catName">한식</span></h2>
+            <span class="tag gray" id="catCount">612개</span>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <button class="btn" onclick="editCategoryModal(document.getElementById('catName').textContent,'카테고리')">카테고리 수정</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="filterbar"><div class="inline-search" style="margin-left:0">🔍<input placeholder="이 카테고리 내 검색"></div></div>
+            <table class="tbl">
+              <thead><tr><th>레시피</th><th>상태</th><th>저장</th><th></th></tr></thead>
+              <tbody>
+                <tr><td class="cell-main"><div style="display:flex;gap:11px;align-items:center"><img class="thumb" src="https://picsum.photos/100/80?random=11" width="52" height="40" alt="썸네일"><div class="t-title">마늘쫑 비빔밥</div></div></td><td data-label="상태"><span class="status pub">발행</span></td><td data-label="저장" class="num-cell">1,204</td><td class="cell-act"><div class="row-act"><button class="btn sm" onclick="go('recipes');openEdit()">편집</button><button class="btn sm" onclick="toast('카테고리에서 제외했어요')">제외</button></div></td></tr>
+                <tr><td class="cell-main"><div style="display:flex;gap:11px;align-items:center"><img class="thumb" src="https://picsum.photos/100/80?random=12" width="52" height="40" alt="썸네일"><div class="t-title">감자목살덮밥</div></div></td><td data-label="상태"><span class="status pub">발행</span></td><td data-label="저장" class="num-cell">982</td><td class="cell-act"><div class="row-act"><button class="btn sm" onclick="go('recipes');openEdit()">편집</button><button class="btn sm" onclick="toast('카테고리에서 제외했어요')">제외</button></div></td></tr>
+              </tbody>
+            </table>
+            <div class="proto-note">— 이 카테고리의 레시피 목록 —</div>
+          </div>
+        </div>
+
+        <!-- 레시피 편집 -->
+        <div id="recipeEdit" style="display:none">
+          <div class="edit-head">
+            <button class="btn sm" onclick="closeEdit()">← 목록</button>
+            <h2 style="font-size:16px;font-weight:700" id="editTitle">레시피 편집 — 마늘쫑 비빔밥</h2>
+            <span class="status pub">발행중</span>
+            <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn ai" onclick="toast('AI 재요약을 요청했어요 — 잠시 후 반영됩니다')">⚡ AI 재요약</button>
+              <button class="btn" onclick="toast('비공개로 전환했어요')">비공개</button>
+              <button class="btn primary" onclick="toast('저장했어요')">저장</button>
+            </div>
+          </div>
+          <div class="edit-grid">
+            <div class="card" style="padding:18px">
+              <div class="edit-tabs">
+                <button class="edit-tab active" data-etab="basic" onclick="etab('basic')">기본정보</button>
+                <button class="edit-tab" data-etab="media" onclick="etab('media')">미디어</button>
+                <button class="edit-tab" data-etab="meta" onclick="etab('meta')">메타</button>
+                <button class="edit-tab" data-etab="ing" onclick="etab('ing')">재료</button>
+                <button class="edit-tab" data-etab="step" onclick="etab('step')">조리 스텝</button>
+                <button class="edit-tab" data-etab="shop" onclick="etab('shop')">장보기</button>
+                <button class="edit-tab" data-etab="notes" onclick="etab('notes')">📝 에디터 노트<span class="tab-count">3</span></button>
+                <button class="edit-tab" data-etab="reviews" onclick="etab('reviews')">🍳 요리후기<span class="tab-count">23</span></button>
+              </div>
+              <div class="etab-pane" id="etab-basic">
+                <div class="field"><label>제목</label><input value="마늘쫑 비빔밥"></div>
+                <div class="field"><label>소스 링크 (출처)</label><input value="https://instagram.com/reel/Cx..."></div>
+                <div class="field-row"><div class="field"><label>타입</label><select><option>AI 요약</option><option>오리지널(직접)</option></select></div><div class="field"><label>출처 채널명</label><input value="초간단 레시피 밀프렙 살림팁"></div></div>
+                <div class="field"><label>발행 계정 (curator)</label><select><option>졸리팟 공식 (@jollypot_official)</option><option>관리자: 조영훈</option><option>채널: 지우네식탁</option></select></div>
+                <div class="hint">생성 API의 <b>curator 파라미터(첫 큐레이터 귀속)</b>로 전달됩니다. 원 크리에이터명(creator)은 출처 표시용으로 별도 저장·노출됩니다.</div>
+              </div>
+              <div class="etab-pane" id="etab-media" style="display:none">
+                <div class="field"><label>히어로 / 커버</label><img src="https://picsum.photos/390/390?random=31" style="width:160px;border-radius:12px;display:block;margin-bottom:8px" alt="커버"><div class="hint" style="margin:0 0 8px">썸네일은 <b>생성 API가 영상에서 서버 자동추출</b>합니다(입력 아님). 직접 업로드(오리지널)만 수동 교체.</div><button class="btn sm" onclick="toast('직접 업로드 커버 교체 — 파일 선택')">직접 교체</button> <button class="btn sm" onclick="toast('영상에서 썸네일 재추출 요청')">재추출</button></div>
+                <div class="field"><label>표시 상태</label><select><option>발행(공개)</option><option>비공개</option></select></div>
+              </div>
+              <div class="etab-pane" id="etab-meta" style="display:none">
+                <div class="field-row"><div class="field"><label>조리시간(분)</label><input value="15"></div><div class="field"><label>기준 인분</label><input value="1"></div></div>
+                <div class="field"><label>카테고리</label><select><option>한식</option><option>아이 반찬</option><option>밀프렙</option></select></div>
+                <div class="hint" style="margin-bottom:14px">기준 인분을 바꾸면 프론트에서 재료 용량이 자동 환산됩니다.</div>
+                <div class="field"><label>발행 시점</label>
+                  <select id="recPubMode" onchange="document.getElementById('recSchedAt').style.display=this.selectedIndex===1?'block':'none'"><option>예약 발행</option><option>즉시 발행</option></select>
+                </div>
+                <div class="field" id="recSchedAt"><label>예약 일시</label><input type="datetime-local" value="2026-06-23T10:00"></div>
+                <div class="sched-box">⏱ <b>SEO 권장:</b> 한꺼번에 올리지 않고 예약·분산 발행하면 ① 꾸준한 신선도 신호 ② 크롤 예산 효율 ③ ‘대량 생성’ 스팸 리스크 완화에 유리합니다.</div>
+              </div>
+              <div class="etab-pane" id="etab-ing" style="display:none">
+                <div class="ing-row"><span class="h">#</span><span class="h">재료명</span><span class="h">용량</span><span></span></div>
+                <div id="ingList">
+                  <div class="ing-row"><span>1</span><input value="밥"><input value="1공기"><button class="btn sm danger" onclick="delRow(this,'ing-row')">×</button></div>
+                  <div class="ing-row"><span>2</span><input value="마늘쫑"><input value="100g"><button class="btn sm danger" onclick="delRow(this,'ing-row')">×</button></div>
+                  <div class="ing-row"><span>3</span><input value="고추장"><input value="1큰술"><button class="btn sm danger" onclick="delRow(this,'ing-row')">×</button></div>
+                  <div class="ing-row"><span>4</span><input value="계란"><input value="1개"><button class="btn sm danger" onclick="delRow(this,'ing-row')">×</button></div>
+                </div>
+                <button class="btn sm" onclick="addIngRow()">+ 재료 추가</button>
+              </div>
+              <div class="etab-pane" id="etab-step" style="display:none">
+                <div id="stepList">
+                  <div class="step-row"><div class="step-no">1</div><div style="flex:1"><div class="field" style="margin-bottom:8px"><input value="마늘쫑 손질"></div><div class="field" style="margin-bottom:8px"><textarea rows="2">마늘쫑을 3cm 길이로 자릅니다.</textarea></div><div class="field-row"><div class="field" style="margin:0"><label>타임스탬프</label><input value="00:05"></div><div style="display:flex;align-items:flex-end"><button class="btn sm danger" onclick="delRow(this,'step-row')">스텝 삭제</button></div></div></div></div>
+                  <div class="step-row"><div class="step-no">2</div><div style="flex:1"><div class="field" style="margin-bottom:8px"><input value="볶고 비비기"></div><div class="field" style="margin-bottom:8px"><textarea rows="2">고추장과 함께 볶은 뒤 밥에 비빕니다.</textarea></div><div class="field-row"><div class="field" style="margin:0"><label>타임스탬프</label><input value="00:40"></div><div style="display:flex;align-items:flex-end"><button class="btn sm danger" onclick="delRow(this,'step-row')">스텝 삭제</button></div></div></div></div>
+                </div>
+                <button class="btn sm" onclick="addStepRow()">+ 스텝 추가</button>
+              </div>
+              <div class="etab-pane" id="etab-shop" style="display:none">
+                <div class="hint" style="margin-bottom:14px">재료별 쿠팡/제휴 링크 (선택). 상품 카탈로그·주문은 샵바이 어드민 소관.</div>
+                <div class="field"><label>고추장</label><input placeholder="쿠팡 파트너스 링크 붙여넣기" value="https://link.coupang.com/a/..."></div>
+                <div class="field"><label>마늘쫑</label><input placeholder="쿠팡 파트너스 링크 붙여넣기"></div>
+                <button class="chip sel" onclick="this.classList.toggle('sel');toast('장보기 섹션 노출을 변경했어요')">장보기 섹션 노출 ON</button>
+              </div>
+              <div class="etab-pane" id="etab-notes" style="display:none">
+                <div class="hint" style="margin:0 0 12px;background:var(--c-surface-alt);padding:11px 12px;border-radius:9px;color:var(--a-text-2)">
+                  AI 후보 생성은 <b>백엔드</b>, 검수·발행은 어드민 <b>[에디터 노트] 검수 큐</b>에서 처리합니다(통합 결정). 이 탭은 <b>발행된 노트의 노출·순서·숨김</b> 관리용입니다.
+                  <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm primary" onclick="go('editornotes');setTimeout(function(){var i=document.getElementById('genUrlInline');if(i)i.focus();},60)">+ 이 영상에서 후보 생성</button><button class="btn sm" onclick="go('editornotes')">검수 큐 열기 →</button></div>
+                </div>
+                <div class="note-card">
+                  <div class="nh"><span class="tag sage">대체재</span><span class="t-sub">영상 3:32 참고</span><button class="toggle" onclick="this.classList.toggle('off');toast('노트 노출을 변경했어요')"></button></div>
+                  <div class="nb">베이컨 대신 스팸으로 대체 가능합니다.</div>
+                  <div class="na"><button class="btn sm" onclick="toast('노트 수정')">수정</button><button class="btn sm danger" onclick="delNote(this)">삭제</button></div>
+                </div>
+                <div class="note-card">
+                  <div class="nh"><span class="tag gray">실패 방지</span><span class="t-sub">영상 4:05 참고</span><button class="toggle" onclick="this.classList.toggle('off');toast('노트 노출을 변경했어요')"></button></div>
+                  <div class="nb">간장이 탈 수 있으니 불을 줄인 상태에서 넣어주세요.</div>
+                  <div class="na"><button class="btn sm" onclick="toast('노트 수정')">수정</button><button class="btn sm danger" onclick="delNote(this)">삭제</button></div>
+                </div>
+                <div class="note-card" style="border-color:#F0D9D0">
+                  <div class="nh"><span class="tag red">🔴 재가열·해동</span><span class="tag sage" style="background:rgba(91,138,107,.14);color:#3F7355">사람 검증 완료</span><button class="toggle" onclick="this.classList.toggle('off');toast('노트 노출을 변경했어요')"></button></div>
+                  <div class="nb">냉동밥 사용 시 전자레인지 2분 해동 후 사용하세요.</div>
+                  <div class="na"><button class="btn sm" onclick="toast('노트 수정')">수정</button><button class="btn sm danger" onclick="delNote(this)">삭제</button></div>
+                </div>
+                <div class="hint">레시피당 권장 3~6개 · 🔴 식품안전 항목(보관·재가열·냉동·생재료·알레르겐)은 <b>사람 검증 완료분만 노출</b>됩니다.</div>
+              </div>
+
+              <div class="etab-pane" id="etab-reviews" style="display:none">
+                <div class="hint" style="margin:0 0 12px;background:var(--c-surface-alt);padding:11px 12px;border-radius:9px;color:var(--a-text-2)">
+                  이 레시피의 사용자 요리후기를 확인·관리하고, <b>대행사 위탁 후기</b>를 지정 계정(졸리팟 ID)으로 등록할 수 있습니다. 전체 후기·신고 처리는 <b>[요리후기]</b> 메뉴에서.
+                  <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="rv-stars" style="font-size:15px">★★★★<span class="off">★</span></span> <b style="font-size:14px">4.7</b> <span class="t-sub">· 후기 23개 (사진 19)</span><button class="btn sm" style="margin-left:auto" onclick="go('reviews')">전체 보기 →</button></div>
+                </div>
+
+                <!-- 후기 작성 (대행 위탁) -->
+                <div class="rv-composer">
+                  <div class="rvc-head"><span class="creator-tag" style="margin:0">대행 위탁</span><b>후기 작성</b><span class="t-sub">— 대행사가 지정 계정으로 결과 사진·팁 후기 등록</span></div>
+
+                  <label class="rvc-lab">작성 계정 (졸리팟 ID) <span class="t-sub" style="font-weight:400">· 이 후기가 노출될 계정</span></label>
+                  <div class="acct-row">
+                    <input id="offAcctId" class="acct-input" placeholder="졸리팟 ID 또는 닉네임 입력" onkeydown="if(event.key==='Enter')resolveAcct()">
+                    <button class="btn" onclick="resolveAcct()">계정 조회</button>
+                  </div>
+                  <div id="offAcctResult" class="acct-result" style="display:none"></div>
+                  <div class="acct-note">⚠️ 졸리팟은 <b>카카오·네이버 소셜 로그인</b> 기반입니다. 로그인 비밀번호가 아니라 <b>졸리팟 계정 ID(닉네임)</b>로 지정하며, 조회 결과의 <b>로그인 제공자</b>와 프로필을 반드시 확인하세요(동명이인·오지정 주의). 대행 위탁 작성분은 <b>활동 로그</b>에 기록됩니다.</div>
+
+                  <label class="rvc-lab">결과 사진</label>
+                  <div class="rvc-photos" id="rvcPhotos">
+                    <div class="rvc-thumb"><img src="https://picsum.photos/200/200?random=140" alt="결과 사진"><button class="rvc-del" onclick="this.parentElement.remove()">×</button></div>
+                    <button class="rvc-add" onclick="addOfficialPhoto()">＋<span>사진 추가</span></button>
+                  </div>
+
+                  <label class="rvc-lab">별점</label>
+                  <div class="rvc-stars" id="rvcStars">
+                    <span onclick="setOfficialStars(1)">★</span><span onclick="setOfficialStars(2)">★</span><span onclick="setOfficialStars(3)">★</span><span onclick="setOfficialStars(4)">★</span><span onclick="setOfficialStars(5)">★</span>
+                  </div>
+
+                  <label class="rvc-lab">신뢰 칩 <span class="t-sub" style="font-weight:400">(원탭 선택)</span></label>
+                  <div class="rvc-chips" id="rvcChips">
+                    <button class="chip-pick on" onclick="this.classList.toggle('on')">레시피대로 됐어요</button>
+                    <button class="chip-pick" onclick="this.classList.toggle('on')">생각보다 쉬웠어요</button>
+                    <button class="chip-pick" onclick="this.classList.toggle('on')">까다로웠어요</button>
+                    <button class="chip-pick" onclick="this.classList.toggle('on')">간 조절 필요</button>
+                    <button class="chip-pick" onclick="this.classList.toggle('on')">또 만들래요</button>
+                  </div>
+
+                  <label class="rvc-lab">본문 <span class="t-sub" style="font-weight:400">(변형·팁 자유 기술)</span></label>
+                  <textarea class="rvc-body" id="rvcBody" rows="3" placeholder="예) 레시피 그대로 따라하면 실패 없어요. 매운맛을 원하면 청양고추 1개를 마지막에 추가하세요."></textarea>
+
+                  <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end"><button class="btn" onclick="toast('임시 저장했어요')">임시 저장</button><button class="btn primary" onclick="submitOfficialReview()">후기 등록</button></div>
+                </div>
+
+                <!-- 이 레시피의 후기 (간이 관리: 고정/숨김/삭제) -->
+                <div class="section-title" style="margin:20px 0 8px">이 레시피의 후기 <span class="t-sub" style="font-weight:400">· 고정(상단 노출) / 숨김 / 삭제</span></div>
+                <div class="rv-mini" id="rvMini"></div>
+                <div class="hint">대표 사진·모범 후기는 <b>고정</b>하면 레시피 상세 상단에 노출됩니다. 신고·금칙어 자동 블라인드는 [요리후기]·댓글 설정을 따릅니다.</div>
+              </div>
+            </div>
+
+            <div class="preview-wrap">
+              <div class="preview-bar"><span class="lab">📱 실시간 프리뷰 (390px)</span>
+                <div class="mini-toggle"><button class="on" onclick="pvCase('ai')">Case1 AI요약</button><button onclick="pvCase('org')">Case2 오리지널</button></div>
+              </div>
+              <div class="phone">
+                <div class="pv-hero"><img src="https://picsum.photos/390/390?random=31" alt="커버"><div class="pv-ailabel" id="pvAiLabel">⚡ AI 요약</div><div class="pv-play"><span>▶</span></div></div>
+                <div class="pv-body">
+                  <div class="pv-title">마늘쫑 비빔밥</div>
+                  <a class="pv-source" id="pvSource">🔗 instagram.com/reel/Cx...</a>
+                  <div class="pv-meta"><span>⏱ 15분</span><span>👤 1인분</span></div>
+                  <div class="pv-creator"><img src="https://picsum.photos/80/80?random=32" alt="아바타"><b>졸리팟 공식</b><span class="fl">팔로우</span></div>
+                  <div class="pv-div"></div>
+                  <div class="pv-h2">재료</div>
+                  <div class="pv-ing"><span>밥</span><span class="q">1공기</span></div>
+                  <div class="pv-ing"><span>마늘쫑</span><span class="q">100g</span></div>
+                  <div class="pv-ing"><span>고추장</span><span class="q">1큰술</span></div>
+                  <div class="pv-ing"><span>계란</span><span class="q">1개</span></div>
+                  <div class="pv-div"></div>
+                  <div class="pv-h2">만드는 법</div>
+                  <div class="pv-step"><div class="n">1</div><div><div class="st">마늘쫑 손질</div><div class="sd">마늘쫑을 3cm 길이로 자릅니다.</div><div class="ts">⏱ 00:05</div></div></div>
+                  <div class="pv-step"><div class="n">2</div><div><div class="st">볶고 비비기</div><div class="sd">고추장과 함께 볶은 뒤 밥에 비빕니다.</div><div class="ts">⏱ 00:40</div></div></div>
+                  <div class="pv-div"></div>
+                  <div class="pv-h2">💬 운영자 TIP</div>
+                  <div class="pv-note"><div class="h">🍳 졸리팟 키친 · 대체재</div><div class="b">베이컨 대신 스팸으로 대체 가능합니다.</div><div class="s">영상 3:32 참고</div></div>
+                  <div class="pv-note"><div class="h">🍳 졸리팟 키친 · 재가열</div><div class="b">냉동밥 사용 시 전자레인지 2분 해동 후 사용하세요.</div><div class="s">영상 1:10 참고</div></div>
+                  <div class="pv-div"></div>
+                  <div class="pv-disc" id="pvAiDisc">⚡ 이 레시피는 AI가 영상을 요약해 생성했어요. 일부 정보가 실제와 다를 수 있어요.</div>
+                  <div class="pv-disc">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 일정액의 수수료를 제공받습니다.</div>
+                </div>
+                <div class="pv-bar"><div class="e">♡<span>1.2천</span></div><div class="e">🔖<span>저장</span></div><div class="buy">이 레시피로 장보기</div></div>
+              </div>
+              <div class="proto-note">↑ 발행 전·후 실제 모바일 화면 (Case 전환 가능)</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 에디터 노트 검수 큐 ============ -->
+      <section class="screen" id="editornotes">
+        <div class="card gen-hero">
+          <div class="gh-top"><b>레시피 + 영상 분석으로 TIP 후보 생성</b><span class="gh-flow"><span class="on">① 후보 생성</span> › ② 검수 › ③ 발행</span></div>
+          <div class="gh-row">
+            <input id="genUrlInline" placeholder="졸리팟 레시피 상세페이지 URL 붙여넣기 (예: jollypot.../recipe/123)" onkeydown="if(event.key==='Enter')submitGenInline()">
+            <button class="btn primary" onclick="submitGenInline()">후보 생성</button>
+          </div>
+          <div class="gh-src"><span class="lab">분석 소스</span><span class="gh-chip on">레시피 요약</span><span class="gh-chip on">영상 자막(STT)</span><span class="gh-chip on">화면 텍스트(OCR)</span><span class="gh-chip on">영상 설명</span></div>
+          <div class="gh-hint">레시피의 <b>요약</b>과 연결된 <b>원본 영상 분석</b>을 함께 활용해 TIP 후보를 뽑습니다(수집 때 분석한 결과 재사용 → 빠르고 안정적). 각 후보엔 <b>출처(영상 타임스탬프 등)</b>가 붙고, 출처 없는 주장은 자동 탈락 · 🔴 식품안전 항목은 자동 플래그됩니다.</div>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="filterbar">
+            <select class="sel"><option>상태: 검수 대기</option><option>보류</option><option>발행</option><option>반려</option></select>
+            <select class="sel"><option>카테고리: 전체</option><option>실패 방지</option><option>대체재</option><option>아이 반찬 버전</option><option>다이어트 버전</option><option>보관법</option><option>재가열·해동</option><option>에어프라이어</option><option>냉동 가능</option><option>타이밍·신호</option><option>도구 대체</option><option>자주 나온 질문</option></select>
+            <label class="chip"><input type="checkbox" class="check" style="margin-right:4px">🔴 식품안전만</label>
+            <span class="statseg" style="margin-left:auto"><button class="on" id="noteWaitCount">검수 대기 50</button><button>발행 128</button></span>
+          </div>
+          <div class="bulkbar" id="noteBulk" style="display:flex"><b>🟢 비식품안전 고신뢰 일괄</b><button class="btn sm" onclick="toast('선택 후보를 일괄 채택·발행했어요')">선택 채택·발행</button><span class="t-sub">· 🔴 항목은 일괄 대상에서 자동 제외</span></div>
+        </div>
+        <div class="report-grid">
+          <div><div id="noteList"></div><div class="pager" id="notePager"></div></div>
+          <div class="rep-detail">
+            <div class="card" style="padding:18px">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><img id="nqImg" src="https://picsum.photos/100/80?random=11" width="48" height="38" style="border-radius:7px;object-fit:cover" alt="레시피"><div><div class="t-title" id="nqRecipe">마늘쫑 비빔밥</div><a class="pv-source" style="cursor:pointer" onclick="go('recipes');openEdit()">레시피 편집 보기 →</a></div><span class="tag yellow" style="margin-left:auto">AI 생성</span></div>
+              <div class="field"><label>카테고리</label><select id="nqCat"><option>대체재</option><option>실패 방지</option><option>아이 반찬 버전</option><option>다이어트 버전</option><option>보관법</option><option>재가열·해동</option><option>에어프라이어</option><option>냉동 가능</option><option>타이밍·신호</option><option>도구 대체</option><option>자주 나온 질문</option></select></div>
+              <div class="field"><label>본문 (1~3문장, 지식 프레임)</label><textarea id="nqBody" rows="3">베이컨 대신 스팸으로 대체 가능합니다.</textarea></div>
+              <div class="field" style="margin-bottom:8px"><label>출처</label><input id="nqSrc" value="영상 3:32 (하이퍼링크)"></div>
+              <div class="fs-gate" id="fsGate" style="display:none"><input type="checkbox" id="fsChk" onchange="refreshPublish()"><span>🔴 <b>식품안전 항목</b> — 보관·재가열·냉동·생재료·알레르겐. <b>사람 검증 완료</b>를 체크해야 발행됩니다(서버 재검증).</span></div>
+              <div class="section-title" style="margin:14px 0 6px">프론트 노출 미리보기</div>
+              <div class="note-prev"><div class="pv-note" style="margin:0"><div class="h">🍳 졸리팟 키친 · <span id="nqCatPrev">대체재</span></div><div class="b" id="nqBodyPrev">베이컨 대신 스팸으로 대체 가능합니다.</div><div class="s" id="nqSrcPrev">영상 3:32 참고</div></div></div>
+              <div style="display:grid;gap:8px;margin-top:14px">
+                <button class="btn primary" id="notePublishBtn" onclick="publishNote()">채택 · 발행</button>
+                <div style="display:flex;gap:8px"><button class="btn" style="flex:1" onclick="toast('보류했어요')">보류</button><button class="btn danger" style="flex:1" onclick="confirmAction('이 후보를 반려할까요?',()=>toast('반려했어요'))">반려</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 댓글 ============ -->
+      <section class="screen" id="comments">
+        <div class="list-head"><div class="subtabs">
+          <button class="subtab active" data-ctab="recent" onclick="ctab('recent')">댓글 목록</button>
+          <button class="subtab" data-ctab="reported" onclick="ctab('reported')">신고된 댓글 <span style="color:var(--error)">1</span></button>
+          <button class="subtab" data-ctab="words" onclick="ctab('words')">금칙어</button>
+        </div></div>
+        <div class="ctab-pane" id="ctab-recent">
+          <div class="card"><div class="filterbar" style="border-bottom:1px solid var(--a-line-2)"><span class="t-sub">전체 댓글 · <span class="badge-new">NEW</span> = 최근 24시간 내 작성</span><div class="inline-search">🔍<input placeholder="댓글·작성자 검색"></div></div><table class="tbl">
+            <thead><tr><th class="col-no">No.</th><th>댓글</th><th>레시피</th><th>작성</th><th></th></tr></thead>
+            <tbody id="cmtTbody"></tbody>
+          </table><div class="pager" id="cmtPager"></div></div>
+        </div>
+        <div class="ctab-pane" id="ctab-reported" style="display:none">
+          <div class="card"><table class="tbl">
+            <thead><tr><th style="width:36px"></th><th>댓글</th><th>레시피</th><th>신고</th><th></th></tr></thead>
+            <tbody>
+              <tr><td class="cell-check"><input type="checkbox" class="check"></td><td class="cell-main"><div class="cmt-body">광고성 링크 도배 (http://spam...)</div><div class="cmt-meta">user_8821 · 1시간 전</div></td><td data-label="레시피" class="t-sub">마늘쫑 비빔밥</td><td data-label="신고"><span class="rep-count">2</span></td><td class="cell-act row-act"><button class="btn sm" onclick="toast('댓글을 숨겼어요')">블라인드</button><button class="btn sm danger" onclick="delComment(this)">삭제</button><button class="btn sm" onclick="confirmAction('user_8821 작성자를 차단할까요? 이후 댓글 작성이 제한됩니다.',()=>toast('작성자를 차단했어요'))">작성자 차단</button></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="ctab-pane" id="ctab-words" style="display:none">
+          <div class="card" style="max-width:520px;padding:18px">
+            <div class="section-title">금칙어 사전 — 포함 시 자동 블라인드</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px" id="wordList">
+              <span class="chip">스팸 <button onclick="delChip(this)">×</button></span><span class="chip">http <button onclick="delChip(this)">×</button></span><span class="chip">광고 <button onclick="delChip(this)">×</button></span><span class="chip">카톡 <button onclick="delChip(this)">×</button></span>
+            </div>
+            <div style="display:flex;gap:8px"><input class="sel" style="flex:1;height:38px" id="wordInput" placeholder="금칙어 추가" onkeydown="if(event.key==='Enter')addWord()"><button class="btn primary" onclick="addWord()">추가</button></div>
+            <div class="field" style="margin-top:18px"><label>자동 숨김 임계값 (신고 N건 이상)</label><input value="3" style="width:120px;border:1px solid var(--a-line);border-radius:9px;padding:9px 12px"></div>
+            <div class="hint" style="margin-top:8px">금칙어 포함 또는 신고 N건 이상이면 자동 블라인드. 임계값은 운영 상황에 맞게 조정하세요.</div>
+            <button class="btn sm" style="margin-top:14px" onclick="toast('금칙어 설정을 저장했어요')">설정 저장</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 요리후기 ============ -->
+      <section class="screen" id="reviews">
+        <div class="list-head"><div class="subtabs">
+          <button class="subtab active" data-vtab="all" onclick="vtab('all')">후기 목록</button>
+          <button class="subtab" data-vtab="reported" onclick="vtab('reported')">신고된 후기 <span style="color:var(--error)">1</span></button>
+        </div></div>
+        <div class="vtab-pane" id="vtab-all">
+          <div class="card">
+            <div class="hint" style="padding:11px 18px;margin:0;border-bottom:1px solid var(--a-line-2);background:#FBF7EE">후기는 자유 게시 → <b>신고 사후 안전망</b>. 대행 위탁 작성(작성 계정 지정)도 지원. 목록은 <b>50건 단위 페이지 분할</b>.</div>
+            <div class="filterbar" style="border-bottom:1px solid var(--a-line-2)">
+              <select class="sel"><option>레시피: 전체</option><option>마늘쫑 비빔밥</option><option>감자목살덮밥</option><option>소금빵 만들기</option></select>
+              <select class="sel"><option>별점: 전체</option><option>5점</option><option>4점</option><option>3점 이하</option></select>
+              <label class="chip"><input type="checkbox" class="check" style="margin-right:4px">사진 있는 후기만</label>
+              <div class="inline-search">🔍<input placeholder="후기·작성자 검색"></div>
+            </div>
+            <table class="tbl">
+              <thead><tr><th class="col-no">No.</th><th>후기</th><th>레시피</th><th>지표</th><th>작성</th><th></th></tr></thead>
+              <tbody id="rvwTbody"></tbody>
+            </table>
+            <div class="pager" id="rvwPager"></div>
+          </div>
+        </div>
+        <div class="vtab-pane" id="vtab-reported" style="display:none">
+          <div class="card">
+            <div class="filterbar" style="border-bottom:1px solid var(--a-line-2)"><span class="t-sub">신고 접수된 후기 — 사후 안전망(검수 게이트 없음). <b>사진(UGC) 우선 확인</b>.</span></div>
+            <table class="tbl">
+              <thead><tr><th>후기</th><th>레시피</th><th>신고</th><th></th></tr></thead>
+              <tbody>
+                <tr><td class="cell-main"><div style="display:flex;gap:12px"><div class="rv-photo"><img src="https://picsum.photos/120/120?random=91" width="60" height="60" alt="후기 사진"></div><div style="min-width:0"><div class="rv-stars">★★★★★</div><div class="cmt-body">홍보 링크 포함 후기 (http://promo...)</div><div class="cmt-meta">user_7781 · 2시간 전</div></div></div></td><td data-label="레시피" class="t-sub">마늘쫑 비빔밥</td><td data-label="신고"><span class="rep-count">3</span> <span class="tag gray">광고/스팸</span></td><td class="cell-act"><div class="row-act"><button class="btn sm" onclick="toast('후기를 숨겼어요')">블라인드</button><button class="btn sm danger" onclick="delReview(this)">삭제</button><button class="btn sm" onclick="confirmAction('user_7781 작성자를 차단할까요? 이후 후기·댓글 작성이 제한됩니다.',()=>toast('작성자를 차단했어요'))">작성자 차단</button><button class="btn sm ghost" onclick="toast('정상으로 판단해 반려했어요')">정상</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 신고 ============ -->
+      <section class="screen" id="reports">
+        <div class="card" style="margin-bottom:16px">
+          <div class="filterbar">
+            <select class="sel"><option>사유: 전체</option><option>AI 요약 오류</option><option>부정확한 정보</option><option>저작권</option><option>부적절</option></select>
+            <span class="chip sel" style="margin-left:auto">미처리 2</span><span class="chip">처리됨 18</span>
+            <button class="btn sm" onclick="creatorAggModal()">크리에이터별 집계</button>
+          </div>
+          <div class="hint" style="padding:0 18px 14px"><b>회원 100명 기준:</b> 신고는 주 0~2건 수준 — ‘상주 큐’가 아니라 가끔 뜨는 리스트입니다. 키보드 큐·정렬 고도화는 보류(주 20건+ 시 승격). 처리 = <code>PATCH /recipes/&#123;id&#125; {status:"hidden"}</code> (운영진 수동 내림 · 자동 임계 없음).</div>
+        </div>
+        <div class="report-grid">
+          <div>
+            <div class="rep-item sel" onclick="selRep(this,0)"><img src="https://picsum.photos/100/100?random=11" width="56" height="56" alt="썸네일"><div class="rt"><b>마늘쫑 비빔밥</b><div class="t-sub" style="margin:3px 0"><span class="tag gray">AI 요약 오류</span> · 인스타그램</div><div class="t-sub">최초 신고 2시간 전</div></div><span class="rep-count">3</span></div>
+            <div class="rep-item" onclick="selRep(this,1)"><img src="https://picsum.photos/100/100?random=12" width="56" height="56" alt="썸네일"><div class="rt"><b>감자목살덮밥</b><div class="t-sub" style="margin:3px 0"><span class="tag gray">부정확한 정보</span> · 인스타그램</div><div class="t-sub">최초 신고 5시간 전</div></div><span class="rep-count">1</span></div>
+          </div>
+          <div class="rep-detail">
+            <div class="card" style="padding:18px">
+              <img id="repImg" src="https://picsum.photos/390/200?random=11" style="width:100%;height:130px;object-fit:cover;border-radius:10px;margin-bottom:12px" alt="신고 레시피">
+              <h2 id="repTitle" style="font-size:16px;font-weight:700;margin-bottom:10px">마늘쫑 비빔밥</h2>
+              <div class="section-title">신고 사유 (3건)</div>
+              <div class="rd-reason">재료에 ‘식초 1큰술’이 빠졌어요 <small>익명 · 2시간 전</small></div>
+              <div class="rd-reason">조리 순서가 영상과 달라요 <small>익명 · 3시간 전</small></div>
+              <div style="margin:14px 0 8px"><span class="section-title" style="display:inline">사유 태깅 →</span> <span class="tag yellow">AI 요약 오류</span></div>
+              <div class="hint" style="margin-bottom:14px">이 태그는 AI 품질 개선 데이터로 누적됩니다.</div>
+              <div style="display:grid;gap:8px">
+                <button class="btn ai" onclick="go('recipes');openEdit()">⚡ AI 재요약 (영상 기반 재생성)</button>
+                <button class="btn primary" onclick="go('recipes');openEdit()">레시피 편집으로 이동</button>
+                <div style="display:flex;gap:8px"><button class="btn" style="flex:1" onclick="toast('레시피를 숨겼어요')">숨김(비공개)</button><button class="btn danger" style="flex:1" onclick="confirmAction('이 레시피를 삭제할까요?',()=>toast('삭제했어요'))">삭제</button></div>
+                <button class="btn ghost" onclick="toast('정상으로 판단해 반려했어요')">정상 — 반려 처리</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 회원 ============ -->
+      <section class="screen" id="members">
+        <div id="memberList">
+        <div class="kpi-row" style="margin-bottom:16px">
+          <div class="kpi"><div class="lab"><span class="ic" style="background:#EFF0F2">👤</span>총 회원</div><div class="num">200</div><div class="delta">이번 주 +11</div></div>
+          <div class="kpi"><div class="lab"><span class="ic" style="background:#E9F3EC">✓</span>활성(7일)</div><div class="num">83</div><div class="delta">저장·댓글 활동</div></div>
+          <div class="kpi"><div class="lab"><span class="ic" style="background:#EAF1F6">＋</span>오늘 가입</div><div class="num">3</div><div class="delta">카카오 2 · 네이버 1</div></div>
+          <div class="kpi alert"><div class="lab"><span class="ic" style="background:#FBEAEA">⛔</span>정지/차단</div><div class="num">2</div><div class="delta">신고 누적 제재</div></div>
+        </div>
+        <div class="card" style="margin-bottom:16px;padding:11px 18px;border-left:3px solid var(--info)">
+          <div class="hint" style="margin:0"><b>회원 200명 · 50명 단위 페이지 분할.</b> 검색·상태 필터로 좁힌 뒤 페이지 이동. 상세는 <b>3섹션(프로필·신고/제재·PIPA)</b> — PIPA 삭제·강제탈퇴 유지.</div>
+        </div>
+        <div class="card">
+          <div class="filterbar">
+            <select class="sel"><option>상태: 전체</option><option>정상</option><option>정지</option><option>차단</option><option>탈퇴</option></select>
+            <select class="sel"><option>가입경로: 전체</option><option>카카오</option><option>네이버</option><option>이메일</option></select>
+            <select class="sel"><option>정렬: 최근 가입</option><option>최근 접속</option></select>
+            <div class="inline-search">🔍<input placeholder="닉네임·이메일·ID 검색"></div>
+          </div>
+          <table class="tbl">
+            <thead><tr><th class="col-no">No.</th><th>회원</th><th>가입경로</th><th>가입일</th><th>최근접속</th><th>저장</th><th>댓글</th><th>받은신고</th><th>상태</th><th></th></tr></thead>
+            <tbody id="memTbody"></tbody>
+          </table>
+          <div class="pager" id="memPager"></div>
+        </div>
+        </div>
+        <div id="memberDetailView" style="display:none"></div>
+      </section>
+
+      <!-- ============ 딥링크 생성기 ============ -->
+      <style>
+        .nav-div{height:1px;background:var(--a-line);margin:9px 14px}
+        .dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        .dl-step{font-size:13px;color:var(--a-text-2);font-weight:700;margin:0 2px 10px;display:flex;align-items:center;gap:8px}
+        .dl-step .no{width:20px;height:20px;border-radius:6px;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+        .dl-seg{display:flex;gap:8px;flex-wrap:wrap}
+        .dl-seg .chip{cursor:pointer}
+        .dl-list{border:1px solid var(--a-line);border-radius:10px;margin-top:10px;overflow:hidden}
+        .dl-list button{display:flex;width:100%;justify-content:space-between;align-items:center;padding:11px 13px;border:none;border-bottom:1px solid var(--a-line-2);background:#fff;text-align:left;font-size:13px;color:var(--a-text);cursor:pointer}
+        .dl-list button:last-child{border-bottom:none}
+        .dl-list button:hover{background:var(--a-bg)}
+        .dl-list button.sel{background:#FBF1EC;color:var(--primary);font-weight:600}
+        .dl-list .t-sub{font-size:12px;color:var(--a-text-3);font-family:monospace}
+        .url-out{display:flex;gap:8px;align-items:center;margin-top:2px}
+        .url-out input{flex:1;min-width:0;border:1px solid var(--a-line);border-radius:9px;padding:11px 12px;font-family:'SF Mono',Consolas,monospace;font-size:12px;color:var(--primary);background:var(--a-bg)}
+        .dl-qr-row{display:flex;gap:14px;align-items:center;margin-top:14px}
+        .dl-qr{width:92px;height:92px;border-radius:10px;border:1px solid var(--a-line);flex-shrink:0;background:#fff}
+        .dl-qr-cap{font-size:12px;color:var(--a-text-2);line-height:1.6}
+        .dl-case{padding:11px 13px;border:1px solid var(--a-line);border-radius:9px;margin-top:9px;font-size:13px;color:var(--a-text-2)}
+        .dl-case.ok{border-color:#CFE3D5;background:#F2F8F4;color:#3C6B4C}
+        .dl-case b{color:var(--a-text)}
+        .dl-case.ok b{color:#2E5A3C}
+        .dl-opt{display:flex;align-items:center;gap:9px;font-size:13px;margin-top:10px;color:var(--a-text)}
+        .dl-opt input{width:16px;height:16px;accent-color:var(--primary)}
+        .dl-radio{display:flex;gap:16px;margin-top:9px;font-size:13px;color:var(--a-text-2)}
+        .dl-radio label{display:flex;align-items:center;gap:6px;cursor:pointer}
+        .dl-field label{display:block;font-size:12px;color:var(--a-text-2);margin:12px 0 5px;font-weight:600}
+        .dl-field input{width:100%;border:1px solid var(--a-line);border-radius:9px;padding:10px 12px;font-size:13px;color:var(--a-text)}
+        .dl-paste{width:100%;min-height:64px;border:1px solid var(--a-line);border-radius:10px;padding:11px 12px;font-size:13px;font-family:'SF Mono',Consolas,monospace;color:var(--a-text);resize:vertical;box-sizing:border-box}
+        .dl-ex{margin-top:10px;font-size:12px;color:var(--a-text-3);display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+        .dl-ex .chip{cursor:pointer;height:24px}
+        .dl-detect{margin-top:11px;padding:11px 13px;border-radius:9px;font-size:13px;background:var(--a-bg);color:var(--a-text-3);border:1px dashed var(--a-line)}
+        .dl-detect.ok{background:#F2F8F4;border:1px solid #CFE3D5;border-style:solid;color:#3C6B4C}
+        .dl-detect.err{background:#FCF4F4;border:1px solid #F0CFCF;border-style:solid;color:#B4453C}
+        .dl-detect .t-sub{font-family:monospace;opacity:.7}
+        .dl-lab{font-size:12px;color:var(--a-text-2);margin:0 2px 6px}
+        .dl-set{border:1px solid var(--a-line);border-radius:10px;padding:13px;margin-top:12px;background:var(--a-bg)}
+        .dl-addrow{display:flex;gap:8px;margin-top:8px}
+        .dl-addrow input{flex:1;border:1px solid var(--a-line);border-radius:8px;padding:8px 10px;font-size:13px}
+        .chip .del{margin-left:4px;cursor:pointer;opacity:.55;font-weight:700}
+        .chip .del:hover{opacity:1;color:var(--error)}
+        @media(max-width:900px){.dl-grid{grid-template-columns:1fr}}
+      </style>
+      <section class="screen" id="deeplink">
+        <div class="card" style="margin-bottom:16px;padding:12px 18px;border-left:3px solid var(--info)">
+          <div class="hint" style="margin:0"><b>링크에 캠페인 태그(UTM)를 붙여 "추적 가능한 링크"로 만듭니다.</b> 모든 표준 링크는 앱에서 자동으로 딥링크로 열리므로(URL 규칙표), 여기서는 <b>어느 매체·자사채널로 내보내는지 태그만</b> 남기면 됩니다. 태그 종류는 ⚙ 태그 관리에서 늘리고 줄일 수 있어요.</div>
+        </div>
+
+        <div style="max-width:820px">
+          <!-- LEFT: 만들기 -->
+          <div class="card" style="padding:18px">
+            <div class="dl-step"><span class="no">1</span>링크 붙여넣기 <span class="tag gray" style="font-weight:600">샵바이·졸리팟 URL</span></div>
+            <textarea id="dlPaste" class="dl-paste" placeholder="예: https://jollypot.com/products/1024  ·  샵바이 상품/기획전 링크를 그대로 붙여넣으세요" oninput="parseLink(this.value)"></textarea>
+            <div class="dl-ex">예시로 넣어보기:
+              <span class="chip" onclick="dlEx('https://jollypot.com/products/1024')">상품</span>
+              <span class="chip" onclick="dlEx('https://jollypot.com/recipe/812')">레시피</span>
+              <span class="chip" onclick="dlEx('https://jollypot.com/event/44')">기획전</span>
+              <span class="chip" onclick="dlEx('https://jollypot.com/category/7')">카테고리</span>
+            </div>
+            <div class="dl-detect" id="dlDetect">링크를 붙여넣으면 대상을 자동으로 인식합니다</div>
+
+            <div class="dl-step" style="margin-top:20px"><span class="no">2</span>캠페인 태그 <span class="tag gray" style="font-weight:600">선택 · 성과 추적</span>
+              <button class="btn sm" style="margin-left:auto" onclick="dlToggleSettings()">⚙ 태그 관리</button></div>
+            <div class="dl-lab">마케팅 매체 <span style="font-family:monospace;opacity:.6">utm_source</span></div>
+            <div class="dl-seg" id="dlMedia"></div>
+            <div class="dl-lab" style="margin-top:12px">자사 채널 <span style="font-family:monospace;opacity:.6">utm_medium</span></div>
+            <div class="dl-seg" id="dlOwn"></div>
+
+            <div id="dlSettings" class="dl-set" style="display:none">
+              <div class="dl-lab" style="margin-top:0"><b>태그 관리</b> — 매체·채널이 생기면 추가, 안 쓰면 ×로 제거</div>
+              <div class="dl-lab">마케팅 매체</div>
+              <div class="dl-seg" id="dlMediaEdit"></div>
+              <div class="dl-addrow"><input id="dlMediaNew" placeholder="예: 틱톡"><button class="btn sm" onclick="dlAddTag('media')">추가</button></div>
+              <div class="dl-lab" style="margin-top:12px">자사 채널</div>
+              <div class="dl-seg" id="dlOwnEdit"></div>
+              <div class="dl-addrow"><input id="dlOwnNew" placeholder="예: 새 계정명"><button class="btn sm" onclick="dlAddTag('own')">추가</button></div>
+            </div>
+
+            <div class="dl-field"><label>캠페인명 (utm_campaign)</label><input id="dlCampaign" placeholder="예: 7월_여름레시피" oninput="dlSetCampaign(this.value)"></div>
+
+            <div class="dl-step" style="margin-top:20px"><span class="no">3</span>생성된 링크</div>
+            <div class="url-out"><input id="dlUrl" readonly placeholder="위에 링크를 붙여넣으면 생성됩니다"><button class="btn primary sm" onclick="copyDl()">복사</button></div>
+            <div class="dl-detect" style="margin-top:12px">미설치 유저 처리(전역 1회 설정): <b>캠페인 유입 = 앱 설치 시트 / 검색 유입 = 스마트배너</b> + 설치 후 이어가기(디퍼드) — 링크마다 고르지 않습니다</div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============ 운영 설정 ============ -->
+      <section class="screen" id="settings">
+        <div class="list-head"><h2 style="font-size:15px;font-weight:700">운영 설정</h2><button class="btn primary" style="margin-left:auto" onclick="toast('설정을 저장했어요')">변경사항 저장</button></div>
+        <div class="set-grid">
+          <div class="card" style="padding:18px">
+            <div class="section-title">사이트 정보 (프론트 푸터)</div>
+            <div class="field"><label>상호</label><input value="(주)레몬트리커뮤니케이션"></div>
+            <div class="field-row"><div class="field"><label>대표이사</label><input value="조영훈"></div><div class="field"><label>사업자등록번호</label><input value="585-81-00058"></div></div>
+            <div class="field"><label>통신판매업신고</label><input value="제2018-서울마포-1198호"></div>
+            <div class="field"><label>주소</label><input value="서울특별시 마포구 양화로 120(서교동), 2층"></div>
+          </div>
+          <div class="card" style="padding:18px">
+            <div class="section-title">고객센터</div>
+            <div class="field"><label>전화</label><input value="1668-3995"></div>
+            <div class="field"><label>이메일</label><input value="lemontree@lemontreec.com"></div>
+            <div class="field"><label>운영시간</label><input value="평일 10:00~17:00 (주말·공휴일 휴무)"></div>
+            <div class="field"><label>점심시간</label><input value="12:00~13:00"></div>
+          </div>
+          <div class="card full" style="padding:18px">
+            <div class="section-title">고지문 (Disclaimer)</div>
+            <div class="field"><label>AI 생성 고지문</label><textarea rows="2">이 레시피는 AI가 영상을 요약해 생성했어요. 일부 정보가 실제와 다를 수 있어요.</textarea></div>
+            <div class="field"><label>쿠팡 파트너스 고지문 (DEC-024)</label><textarea rows="2">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</textarea></div>
+          </div>
+          <div class="card full" style="padding:18px">
+            <div class="section-title">API 연동 (레시피 생성 파이프라인 · SSOT)</div>
+            <div class="hint" style="margin:0 0 12px">모든 발행은 <b>레시피 생성 API</b> 경유(DB 직접입력 금지). 서버가 dedup·썸네일·색인·귀속을 강제합니다.</div>
+            <div class="field-row">
+              <div class="field"><label>환경</label><select><option>스테이징</option><option>프로덕션</option></select></div>
+              <div class="field"><label>서비스 토큰 (create-recipe 스코프)</label><input value="svc_create_recipe_••••••••3a9f" readonly></div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" onclick="toast('토큰을 재발급했어요(기존 즉시 폐기)')">토큰 재발급</button><button class="btn sm danger" onclick="confirmAction('서비스 토큰을 폐기할까요?',()=>toast('토큰을 폐기했어요'))">폐기</button><span class="tag gray" style="align-self:center">단건 + 배열(벌크) POST</span></div>
+          </div>
+          <div class="card" style="padding:18px">
+            <div class="section-title">관리자 계정 <span class="tag gray" style="margin-left:6px">1인 관리자</span></div>
+            <div class="hint" style="margin:0 0 12px">단일 관리자 1인이 모든 운영을 수행합니다. 권한 분리(RBAC)·다중 운영자·초대는 두지 않습니다 — 팀 확장(운영 3인 초과 또는 대행사 직접 접속) 시 재검토.</div>
+            <div class="kv"><span>관리자</span><b>조영훈 (jollypot_official)</b></div>
+            <div class="kv"><span>로그인</span><b>이메일 · 2단계 인증 사용</b></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+              <button class="btn sm" onclick="changePwModal()">비밀번호 변경</button>
+              <button class="btn sm" onclick="toast('2단계 인증 설정을 열었어요')">2단계 인증</button>
+            </div>
+          </div>
+          <div class="card" style="padding:18px">
+            <div class="section-title">활동 로그</div>
+            <div class="log-row"><time>06.21 14:02</time><span class="who">조영훈</span><span>‘마늘쫑 비빔밥’ 신고 처리(숨김)</span></div>
+            <div class="log-row"><time>06.21 13:40</time><span class="who">시스템</span><span>34건 자동 수집·발행</span></div>
+            <div class="log-row"><time>06.21 11:18</time><span class="who">조영훈</span><span>댓글 2건 삭제</span></div>
+            <div class="log-row"><time>06.20 18:05</time><span class="who">조영훈</span><span>카테고리 ‘밀프렙’ 추가</span></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- 토스트 / 모달 -->
+<div id="toast"></div>
+<div class="modal" id="modal">
+  <div class="modal-back" onclick="closeModal()"></div>
+  <div class="modal-box">
+    <header><h3 id="mTitle">제목</h3><button class="x" onclick="closeModal()">×</button></header>
+    <div class="modal-body" id="mBody"></div>
+    <div class="modal-foot" id="mFoot"></div>
+  </div>
+</div>
+
+<script>
+const HELP={
+ dashboard:{t:'대시보드',h:`<div class="help">
+   <div class="lead">운영 현황을 한눈에 보고, <b>처리할 곳으로 바로 이동</b>하는 허브입니다.</div>
+   <h4>핵심</h4><ul>
+     <li><b>상단 KPI</b>(신고 미처리·발행·저장·공유·댓글·가입) — <b>클릭하면</b> 해당 화면/추이로 이동.</li>
+     <li><b>추이 카드</b> — 기간(7·30·90일 또는 날짜 지정) 선택, <b>[상세]</b>로 드릴다운, <b>[CSV]</b>로 원본 다운로드.</li>
+     <li><b>인기 레시피 TOP</b>(저장·공유) — 큐레이션·콘텐츠 운영의 소재.</li>
+   </ul>
+   <h4>해야 할 일</h4><ul><li><b>신고 미처리</b>를 0으로 — 유일한 상시 처리 큐입니다.</li></ul></div>`},
+ curation:{t:'큐레이션',h:`<div class="help">
+   <div class="lead">홈 화면에 노출되는 <b>섹션·배너를 편성</b>합니다. 본문은 기본 자동, 상단만 손봅니다.</div>
+   <h4>핵심</h4><ul>
+     <li>섹션 리스트에서 <b>노출 토글 · 순서(드래그) · 편집</b>.</li>
+     <li>편집 → <b>채우기 방식</b>: 수동 핀 / 자동 / <b>하이브리드(추천)</b>.</li>
+     <li>하이브리드 = 상단 몇 개 <b>고정 핀</b>(⠿ 드래그 정렬) + 나머지 <b>자동 규칙</b>(저장순·급상승·기간·카테고리·개수).</li>
+     <li>레시피 풀에서 <b>[+ 핀]</b>으로 고정 추가.</li>
+   </ul>
+   <h4>요령</h4><ul><li>매일 전부 손대지 말고 <b>핵심만 고정</b>, 나머지는 규칙에 맡기세요.</li></ul></div>`},
+ recipes:{t:'레시피',h:`<div class="help">
+   <div class="lead">레시피를 <b>수집·발행·편집</b>하고 분류합니다. 모든 발행은 <b>생성 API</b>를 거칩니다(SSOT).</div>
+   <h4>핵심</h4><ul>
+     <li><b>목록</b> — 상태·출처·신고·<b>NEW</b>(24h 내). 행에서 편집/삭제.</li>
+     <li><b>소스 수집</b> — URL 투입 → pre-check(중복) → AI 요약 → 발행. 응답 <b>201 발행 / 409 중복 / 422 누락필드</b>. 대량 콘텐츠 일괄 등록은 시트 파이프라인.</li>
+     <li><b>+ 직접 등록</b> — 수기 오리지널 레시피.</li>
+     <li><b>편집 탭</b> — 기본·미디어(<b>썸네일 서버 자동추출</b>)·메타·재료·스텝·장보기·에디터 노트. <b>발행 계정=curator(귀속)</b>.</li>
+     <li><b>카테고리·태그</b> — 이름 클릭 시 상세, 추가/수정.</li>
+   </ul></div>`},
+ editornotes:{t:'에디터 노트',h:`<div class="help">
+   <div class="flow">
+     <div class="fstep"><b>①</b> 졸리팟 레시피 URL 투입<small>또는 레시피 ▸ 에디터 노트에서 ‘후보 생성’</small></div>
+     <div class="farrow">→</div>
+     <div class="fstep"><b>②</b> AI가 레시피 요약 + 원본 영상 분석(자막·화면 텍스트·설명)으로 TIP 후보 제안<small>출처(타임스탬프) 없으면 자동 탈락</small></div>
+     <div class="farrow">→</div>
+     <div class="fstep"><b>③</b> 검수·수정·채택·발행<small>🔴 식품안전은 사람 검증 게이트</small></div>
+   </div>
+   <div class="lead" style="margin-top:10px"><b>운영자가 글을 쓰는 게 아니라</b>, AI가 영상 근거로 제안한 후보를 <b>팩트체크·큐레이션</b>합니다. (지식 프레임만 · 경험/감상 후기 금지)</div>
+   <h4>핵심 동선</h4><ul>
+     <li><b>후보 생성</b> — 졸리팟 레시피 URL 투입(또는 레시피 ▸ 에디터 노트 탭에서 생성) → 레시피 요약 + 연결된 원본 영상 분석으로 후보가 큐 상단에 쌓임.</li>
+     <li>좌측 큐에서 후보 선택 → 우측에서 <b>카테고리·본문·출처 수정</b> → <b>채택·발행</b>(프리뷰로 노출 모습 확인).</li>
+     <li>🟢 일반은 <b>일괄 채택</b> 가능 · 애매하면 보류/반려.</li>
+   </ul>
+   <h4>🔴 식품안전(협상 불가)</h4><ul>
+     <li>보관·재가열·냉동·생재료·알레르겐 후보는 <b>‘사람 검증 완료’ 체크 전 발행 차단</b>(어드민 + 서버 재검증 이중 게이트).</li>
+   </ul></div>`},
+ reviews:{t:'요리후기',h:`<div class="help">
+   <div class="lead">요리후기 = <b>실행 증언</b>(레시피를 실제로 만든 사용자 UGC). 사진·별점·신뢰칩·본문으로 재현 신뢰를 만듭니다.</div>
+   <h4>운영 원칙</h4><ul>
+     <li><b>자유 게시 · 사후 안전망</b> — AI 레시피와 동일하게 검수 게이트 없음. 문제는 <b>신고</b>로 관리(금칙어·신고 임계 자동 블라인드는 댓글 설정 공유).</li>
+     <li><b>사진(UGC) 우선 확인</b> — 가장 큰 리스크. ‘신고된 후기’와 ‘사진 있는 후기만’ 필터로 빠르게 스캔.</li>
+     <li><b>조치</b> — 블라인드(숨김) / 삭제 / 작성자 차단. 별점은 레시피 평균에 반영.</li>
+   </ul>
+   <h4>탭</h4><ul>
+     <li><b>후기 목록</b> — 전체 후기(검색 · 레시피/별점/사진 필터 · 정렬 · 페이지네이션).</li>
+     <li><b>신고된 후기</b> — 접수된 신고 처리(블라인드/삭제/작성자 차단/정상).</li>
+   </ul></div>`},
+ comments:{t:'댓글',h:`<div class="help">
+   <div class="lead">사용자 댓글을 보고 관리하며, <b>운영자 답글</b>을 답니다.</div>
+   <h4>핵심</h4><ul>
+     <li><b>댓글 목록</b> — 최근 24시간은 <b>NEW</b>, 사진 첨부 댓글 표시.</li>
+     <li><b>답글</b> — 스레드에서 운영자 답글(사진 첨부 가능).</li>
+     <li>블라인드 / 삭제 / <b>작성자 차단</b>.</li>
+     <li><b>신고된 댓글</b> 탭, <b>금칙어</b> 사전(포함 시 자동 블라인드 · 임계값).</li>
+   </ul></div>`},
+ reports:{t:'신고',h:`<div class="help">
+   <div class="lead">발행 후 들어온 신고를 <b>사후 처리</b>합니다(발행 전 검수 게이트 없음).</div>
+   <h4>핵심</h4><ul>
+     <li>좌측 신고 목록 → 우측에서 처리: <b>숨김</b>(status:hidden) / 편집 이동 / AI 재요약 / 삭제 / 반려. <b>자동 임계 내림 없음</b>.</li>
+     <li><b>사유 태깅</b>(예: AI 요약 오류) → AI 품질 개선 데이터로 누적.</li>
+     <li><b>크리에이터별 집계</b>로 반복 신고원을 파악.</li>
+   </ul></div>`},
+ members:{t:'회원',h:`<div class="help">
+   <div class="lead">회원 <b>정보·활동·제재</b>를 관리합니다.</div>
+   <h4>핵심</h4><ul>
+     <li>KPI(총원·활성·오늘 가입·정지) + 목록(가입경로·저장·댓글·상태).</li>
+     <li><b>상세</b> — 활동 이력·저장 컬렉션·제재 내역.</li>
+     <li>정지 / 차단 / 해제.</li>
+   </ul></div>`},
+ settings:{t:'운영 설정',h:`<div class="help">
+   <div class="lead">사이트·고지문·계정·연동을 설정합니다.</div>
+   <h4>핵심</h4><ul>
+     <li><b>사이트 정보</b>(프론트 푸터)·고객센터.</li>
+     <li><b>고지문</b> — AI 생성 / 쿠팡 파트너스(DEC-024).</li>
+     <li><b>관리자 계정</b> — 1인 관리자(비밀번호·2단계 인증). 권한 분리(RBAC)·다중 운영자 없음.</li>
+     <li><b>API 연동</b> — create-recipe 서비스 토큰(재발급·폐기)·환경(스테이징/프로덕션).</li>
+     <li><b>활동 로그</b> — 발행·삭제·신고 처리 이력(관리자·시스템). ※ 개인정보(PIPA) 처리 기록은 별도 ‘감사’ 의무.</li>
+   </ul></div>`}
+};
+function showHelp(){
+  const cur=(document.querySelector('.screen.active')||{}).id||'dashboard';
+  const h=HELP[cur]||HELP.dashboard;
+  openModal('📖 사용방법 — '+h.t, h.h, '<button class="btn primary" onclick="closeModal()">확인</button>');
+}
+const titles={
+  dashboard:["대시보드","오늘의 운영 현황"],
+  curation:["큐레이션","홈 피드 섹션·배너 편성"],
+  recipes:["레시피","수집 → AI 자동 요약 → 자동 발행"],
+  editornotes:["에디터 노트","AI 후보 검수 · 발행 (식품안전 게이트)"],
+  reviews:["요리후기","사용자 실행 증언(UGC) · 사후 안전망"],
+  comments:["댓글","댓글 목록 · 신고 · 금칙어"],
+  reports:["신고","사후 품질 안전망 (검수 게이트 대체)"],
+  members:["회원","회원 정보 · 제재 · 개인정보(PIPA)"],
+  deeplink:["딥링크 생성기","캠페인 링크 생성 — 어느 매체로 내보냈는지 태그로 기록 (앱 딥링크는 자동)"],
+  settings:["운영 설정","사이트 정보 · 고지문 · 계정"]
+};
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.screen===id));
+  document.getElementById('pageTitle').textContent=titles[id][0];
+  document.getElementById('pageCrumb').textContent=titles[id][1];
+  if(id==='recipes') closeEdit();
+  if(id==='dashboard') closeMetric();
+  if(id==='members') closeMember();
+  if(window.innerWidth<=900) toggleNav(false);
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.nav-item').forEach(n=>n.onclick=()=>go(n.dataset.screen));
+function toggleNav(force){
+  const sb=document.getElementById('sidebar'),ov=document.getElementById('ov');
+  const open=(force===undefined)?!sb.classList.contains('open'):force;
+  sb.classList.toggle('open',open);ov.classList.toggle('show',open);
+}
+function rtab(id){document.querySelectorAll('[data-rtab]').forEach(t=>t.classList.toggle('active',t.dataset.rtab===id));document.querySelectorAll('.rtab-pane').forEach(p=>p.style.display=p.id==='rtab-'+id?'block':'none');}
+function etab(id){document.querySelectorAll('[data-etab]').forEach(t=>t.classList.toggle('active',t.dataset.etab===id));document.querySelectorAll('.etab-pane').forEach(p=>p.style.display=p.id==='etab-'+id?'block':'none');}
+function ctab(id){document.querySelectorAll('[data-ctab]').forEach(t=>t.classList.toggle('active',t.dataset.ctab===id));document.querySelectorAll('.ctab-pane').forEach(p=>p.style.display=p.id==='ctab-'+id?'block':'none');}
+function vtab(id){document.querySelectorAll('[data-vtab]').forEach(t=>t.classList.toggle('active',t.dataset.vtab===id));document.querySelectorAll('.vtab-pane').forEach(p=>p.style.display=p.id==='vtab-'+id?'block':'none');}
+
+/* 레시피 편집 / 카테고리 */
+function openEdit(isNew){
+  document.getElementById('recipeList').style.display='none';
+  document.getElementById('recipeCatDetail').style.display='none';
+  document.getElementById('recipeEdit').style.display='block';
+  document.getElementById('editTitle').textContent=isNew===true?'레시피 직접 등록 (수기 작성)':'레시피 편집 — 마늘쫑 비빔밥';
+  window.scrollTo(0,0);
+}
+function closeEdit(){document.getElementById('recipeEdit').style.display='none';document.getElementById('recipeCatDetail').style.display='none';document.getElementById('recipeList').style.display='block';}
+function openCategory(name,count){
+  document.getElementById('recipeList').style.display='none';
+  document.getElementById('recipeEdit').style.display='none';
+  document.getElementById('recipeCatDetail').style.display='block';
+  document.getElementById('catName').textContent=name;
+  document.getElementById('catCount').textContent=count+'개';
+  window.scrollTo(0,0);
+}
+function closeCategory(){document.getElementById('recipeCatDetail').style.display='none';document.getElementById('recipeList').style.display='block';rtab('cats');}
+function toggleBulk(cb,id){document.getElementById(id).classList.toggle('show',cb.checked);}
+function pvCase(c){const ai=c==='ai';document.querySelectorAll('.mini-toggle button').forEach((b,i)=>b.classList.toggle('on',i===(ai?0:1)));document.getElementById('pvAiLabel').style.display=ai?'block':'none';document.getElementById('pvAiDisc').style.display=ai?'block':'none';document.getElementById('pvSource').style.display=ai?'inline-block':'none';}
+const repData=[{t:"마늘쫑 비빔밥",img:11},{t:"감자목살덮밥",img:12},{t:"까망베르 샤브샤브",img:13}];
+function selRep(el,i){document.querySelectorAll('.rep-item').forEach(r=>r.classList.remove('sel'));el.classList.add('sel');document.getElementById('repTitle').textContent=repData[i].t;document.getElementById('repImg').src="https://picsum.photos/390/200?random="+repData[i].img;}
+
+/* 신고 — 크리에이터별 집계 */
+function creatorAggModal(){
+  openModal('크리에이터별 신고 집계',
+    '<div class="kv"><span>지우네식탁</span><b>신고 8건 · 레시피 2</b></div>'+
+    '<div class="kv"><span>mukeelife</span><b>신고 5건 · 레시피 1</b></div>'+
+    '<div class="kv"><span>초간단 레시피 밀프렙</span><b>신고 5건 · 레시피 1</b></div>'+
+    '<div class="hint" style="margin-top:10px">반복 신고 크리에이터는 일괄 검토 대상. 집계는 <code>GET</code> 신고 집계 엔드포인트로 발주사가 조회합니다.</div>',
+    '<button class="btn" onclick="closeModal()">닫기</button>');
+}
+
+/* 에디터 노트 검수 큐 — dataset 기반(동적 후보 추가 안전) */
+function selNote(el){
+  document.querySelectorAll('#noteList .rep-item').forEach(r=>r.classList.remove('sel'));el.classList.add('sel');
+  const d=el.dataset;window.curFS=(d.fs==='1');
+  document.getElementById('nqRecipe').textContent=d.recipe;
+  document.getElementById('nqImg').src='https://picsum.photos/100/80?random='+d.img;
+  document.getElementById('nqCat').value=d.cat;
+  document.getElementById('nqBody').value=d.body;
+  document.getElementById('nqSrc').value=d.src+' (하이퍼링크)';
+  document.getElementById('nqCatPrev').textContent=d.cat;
+  document.getElementById('nqBodyPrev').textContent=d.body;
+  document.getElementById('nqSrcPrev').textContent=d.src+' 참고';
+  document.getElementById('fsGate').style.display=window.curFS?'flex':'none';
+  document.getElementById('fsChk').checked=false;
+  refreshPublish();
+}
+function refreshPublish(){
+  const blocked=window.curFS && !document.getElementById('fsChk').checked;
+  const btn=document.getElementById('notePublishBtn');
+  btn.classList.toggle('disabled',blocked);
+  btn.textContent=blocked?'🔴 검증 확인 필요':'채택 · 발행';
+}
+function updateNoteCount(){const n=document.querySelectorAll('#noteList .rep-item').length;const c=document.getElementById('noteWaitCount');if(c)c.textContent='검수 대기 '+n;}
+function publishNote(){
+  if(window.curFS && !document.getElementById('fsChk').checked){toast('🔴 식품안전 — 사람 검증 완료를 먼저 체크하세요');return;}
+  const sel=document.querySelector('#noteList .rep-item.sel');if(sel)sel.remove();
+  updateNoteCount();toast('노트를 채택·발행했어요');
+}
+const CAND_POOL=[
+ {cat:'실패 방지',body:'센 불에서 오래 두면 질겨지니 중불로 줄이세요.',src:'영상 2:18',fs:0,img:25},
+ {cat:'대체재',body:'액젓 대신 소금으로 간을 맞춰도 됩니다.',src:'영상 3:05',fs:0,img:25},
+ {cat:'보관법',body:'완성 후 한 김 식혀 밀폐 냉장 2일 내 드세요.',src:'영상 6:12',fs:1,img:25}
+];
+function addCandidates(){
+  const recipe='소금빵 만들기';const list=document.getElementById('noteList');
+  CAND_POOL.forEach(c=>{
+    const flag=c.fs?'<span class="nq-flag red">🔴</span>':'<span class="nq-flag green">🟢</span>';
+    const tagcls=c.fs?'red':(c.cat==='대체재'?'sage':'gray');
+    const d=document.createElement('div');d.className='rep-item';
+    d.dataset.recipe=recipe;d.dataset.img=c.img;d.dataset.cat=c.cat;d.dataset.body=c.body;d.dataset.src=c.src;d.dataset.fs=c.fs;
+    d.setAttribute('onclick','selNote(this)');
+    d.innerHTML='<img src="https://picsum.photos/100/100?random='+c.img+'" width="56" height="56" alt="레시피"><div class="rt"><b>'+recipe+'</b><div class="t-sub" style="margin:3px 0"><span class="tag '+tagcls+'">'+c.cat+'</span> · '+c.src+'</div><div class="t-sub">'+c.body+'</div></div>'+flag;
+    list.insertBefore(d,list.firstChild);
+  });
+  updateNoteCount();
+}
+function submitGenInline(){
+  const inp=document.getElementById('genUrlInline');
+  const v=inp?inp.value.trim():'';
+  if(!v){toast('졸리팟 레시피 상세페이지 URL을 입력해 주세요');if(inp)inp.focus();return;}
+  addCandidates();
+  if(inp)inp.value='';
+  toast('AI가 후보 '+CAND_POOL.length+'개를 제안 — 검수 대기 상단에 추가했어요');
+}
+/* 본문/카테고리 편집 시 프리뷰 동기화 */
+document.addEventListener('input',function(e){
+  if(e.target.id==='nqBody')document.getElementById('nqBodyPrev').textContent=e.target.value;
+  if(e.target.id==='nqSrc')document.getElementById('nqSrcPrev').textContent=e.target.value.replace(' (하이퍼링크)','')+' 참고';
+});
+document.addEventListener('change',function(e){if(e.target.id==='nqCat')document.getElementById('nqCatPrev').textContent=e.target.value;});
+
+/* 재료/스텝 추가·삭제 */
+function delRow(btn,cls){btn.closest('.'+cls).remove();toast('삭제했어요');}
+function addIngRow(){const list=document.getElementById('ingList');const n=list.children.length+1;const d=document.createElement('div');d.className='ing-row';d.innerHTML='<span>'+n+'</span><input placeholder="재료명"><input placeholder="용량"><button class="btn sm danger" onclick="delRow(this,\'ing-row\')">×</button>';list.appendChild(d);}
+function addStepRow(){const list=document.getElementById('stepList');const n=list.children.length+1;const d=document.createElement('div');d.className='step-row';d.innerHTML='<div class="step-no">'+n+'</div><div style="flex:1"><div class="field" style="margin-bottom:8px"><input placeholder="스텝 소제목"></div><div class="field" style="margin-bottom:8px"><textarea rows="2" placeholder="설명"></textarea></div><div class="field-row"><div class="field" style="margin:0"><label>타임스탬프</label><input placeholder="00:00"></div><div style="display:flex;align-items:flex-end"><button class="btn sm danger" onclick="delRow(this,\'step-row\')">스텝 삭제</button></div></div></div>';list.appendChild(d);}
+
+/* 댓글 / 금칙어 */
+function delComment(btn){confirmAction('이 댓글을 삭제할까요?',()=>{btn.closest('tr').remove();toast('댓글을 삭제했어요');});}
+function delChip(btn){btn.closest('.chip').remove();}
+function addWord(){const inp=document.getElementById('wordInput');const v=inp.value.trim();if(!v)return;const s=document.createElement('span');s.className='chip';s.innerHTML=v+' <button onclick="delChip(this)">×</button>';document.getElementById('wordList').appendChild(s);inp.value='';toast('금칙어를 추가했어요');}
+
+/* 레시피 삭제 */
+function delRecipe(btn,name){confirmAction("'"+name+"'을(를) 삭제할까요? 되돌릴 수 없습니다.",()=>{btn.closest('tr').remove();toast('레시피를 삭제했어요');});}
+
+/* 큐레이션 */
+let homeSeed=41;
+function refreshHome(){homeSeed+=10;document.querySelectorAll('#homePhone img').forEach((im,i)=>{const sz=(i===0)?'360/150':'200/150';im.src='https://picsum.photos/'+sz+'?random='+(homeSeed+i);});toast('홈 미리보기를 새로고침했어요');}
+function openSectionModal(){
+  openModal('홈 섹션 추가',
+    '<div class="field"><label>섹션명</label><input id="ms-name" placeholder="예: 제철 레시피"></div>'+
+    '<div class="field"><label>타입</label><select id="ms-type"><option>레시피 그리드</option><option>배너 슬라이드</option><option>테마 그리드</option></select></div>'+
+    '<div class="field"><label>콘텐츠 채우기</label><select id="ms-sort"><option>자동(저장순)</option><option>자동(최신순)</option><option>수동 핀</option></select></div>',
+    '<button class="btn" onclick="closeModal()">취소</button><button class="btn primary" onclick="addSectionSubmit()">추가</button>');
+}
+function addSectionSubmit(){
+  const name=(document.getElementById('ms-name').value||'새 섹션').trim();
+  const type=document.getElementById('ms-type').value;
+  const sort=document.getElementById('ms-sort').value;
+  const d=document.createElement('div');d.className='cur-row';
+  d.innerHTML='<span class="handle">⠿</span><span class="nm">'+name+'</span><span class="grow metas"><span class="tag gray">'+type+'</span><span class="t-sub">'+sort+'</span></span><button class="toggle" onclick="this.classList.toggle(\'off\');toast(\'노출 상태를 변경했어요\')"></button><button class="btn sm" onclick="openSectionEditor(this)">편집</button>';
+  document.getElementById('homeSections').appendChild(d);
+  closeModal();toast('섹션을 추가했어요');
+}
+/* 대시보드 분석 — 추이 상세 / CSV / 기간 */
+const mdSums={'활성 사용자(DAU)':'58(평균)','발행 레시피 수':'54','저장 수':'512','공유 수':'96','댓글 수':'51','요리후기 수':'12','회원가입 수':'28','제휴 클릭 수':'412'};
+function openMetric(key,label){
+  document.getElementById('mdName').textContent=label;
+  document.getElementById('mdSum').textContent=mdSums[label]||'—';
+  document.getElementById('dashMain').style.display='none';
+  document.getElementById('dashDetail').style.display='block';
+  window.scrollTo(0,0);
+}
+function closeMetric(){var d=document.getElementById('dashDetail');if(d)d.style.display='none';var m=document.getElementById('dashMain');if(m)m.style.display='block';}
+function setPeriod(btn,label){btn.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');toast('기간: 최근 '+label+' 적용');}
+function downloadCSV(label){
+  const rows=[['날짜',label]];const today=new Date(2026,5,21);
+  for(let i=29;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);const v=Math.floor(200+Math.random()*900);rows.push([d.toISOString().slice(0,10),v]);}
+  const csv='\ufeff'+rows.map(r=>r.join(',')).join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='jollypot_'+label.replace(/[ ()]/g,'_')+'_20260621.csv';
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+  toast(label+' CSV를 내려받았어요');
+}
+
+/* 섹션 에디터 — 레시피 셀렉(핀) / 자동 규칙 / 하이브리드 */
+function openSectionEditor(btn){
+  const nm=btn.closest('.cur-row').querySelector('.nm').textContent;
+  document.getElementById('secName').textContent=nm;
+  document.getElementById('curationMain').style.display='none';
+  document.getElementById('curationEditor').style.display='block';
+  setFill('hybrid');
+  window.scrollTo(0,0);
+}
+function closeSectionEditor(){document.getElementById('curationEditor').style.display='none';document.getElementById('curationMain').style.display='block';}
+function setFill(mode){
+  ['manual','auto','hybrid'].forEach(m=>document.getElementById('fm-'+m).classList.toggle('sel',m===mode));
+  document.querySelector('#fm-'+mode+' input').checked=true;
+  document.getElementById('pinCard').style.display=(mode==='auto')?'none':'block';
+  document.getElementById('ruleCard').style.display=(mode==='manual')?'none':'block';
+}
+function renumberPins(){document.querySelectorAll('#pinList .pin-row').forEach((r,i)=>{r.querySelector('.t-sub').textContent=(i+1);});document.getElementById('pinCount').textContent=document.querySelectorAll('#pinList .pin-row').length+'개 고정';}
+function addPin(btn){
+  const row=btn.closest('.pool-row');const name=row.querySelector('.pn').childNodes[0].textContent;
+  const meta=row.querySelector('.pn small').textContent;const img=row.querySelector('img').src;
+  const d=document.createElement('div');d.className='pin-row';
+  d.innerHTML='<span class="drag" onpointerdown="pinDragStart(event)" title="드래그로 정렬">⠿</span><span class="t-sub" style="width:14px"></span><img src="'+img+'" width="44" height="34" alt="썸네일"><div class="pn">'+name+'<small>'+meta+'</small></div><button class="btn sm danger" onclick="delPin(this)">제외</button>';
+  document.getElementById('pinList').appendChild(d);renumberPins();toast("'"+name+"' 고정했어요");
+}
+function delPin(btn){btn.closest('.pin-row').remove();renumberPins();}
+/* 포인터 기반 드래그 정렬 (마우스·터치 모두) */
+function pinDragStart(e){
+  const row=e.target.closest('.pin-row');const list=row.parentNode;if(!row||!list)return;
+  e.preventDefault();row.classList.add('dragging');
+  const move=(ev)=>{
+    const y=ev.clientY;
+    const others=[...list.querySelectorAll('.pin-row:not(.dragging)')];
+    let next=others.find(r=>{const b=r.getBoundingClientRect();return y<b.top+b.height/2;});
+    list.insertBefore(row,next||null);
+  };
+  const up=()=>{row.classList.remove('dragging');renumberPins();document.removeEventListener('pointermove',move);document.removeEventListener('pointerup',up);};
+  document.addEventListener('pointermove',move);document.addEventListener('pointerup',up);
+}
+
+/* 카테고리 모달 */
+function openCategoryModal(){
+  openModal('카테고리·태그 추가',
+    '<div class="field"><label>이름</label><input id="cat-name" placeholder="예: 자취 요리"></div>'+
+    '<div class="field"><label>유형</label><select id="cat-type"><option>카테고리</option><option>태그</option></select></div>',
+    '<button class="btn" onclick="closeModal()">취소</button><button class="btn primary" onclick="addCategorySubmit()">추가</button>');
+}
+function addCategorySubmit(){
+  const name=(document.getElementById('cat-name').value||'새 카테고리').trim();
+  const type=document.getElementById('cat-type').value;
+  const tbody=document.querySelector('#rtab-cats tbody');
+  const tag=type==='태그'?'<span class="tag sage">태그</span>':'<span class="tag gray">카테고리</span>';
+  const tr=document.createElement('tr');
+  tr.innerHTML='<td class="cell-main"><button class="linklike" onclick="openCategory(\''+name+'\',\'0\')">'+name+'</button></td><td data-label="유형">'+tag+'</td><td data-label="레시피 수" class="num-cell">0</td><td class="cell-act"><div class="row-act"><button class="btn sm" onclick="editCategoryModal(\''+name+'\',\''+type+'\')">수정</button></div></td>';
+  tbody.appendChild(tr);closeModal();toast('추가했어요');
+}
+function editCategoryModal(name,type){
+  openModal('카테고리 수정 — '+name,
+    '<div class="field"><label>이름</label><input value="'+name+'"></div>'+
+    '<div class="field"><label>유형</label><select><option'+(type==='카테고리'?' selected':'')+'>카테고리</option><option'+(type==='태그'?' selected':'')+'>태그</option></select></div>',
+    '<button class="btn danger" style="margin-right:auto" onclick="confirmAction(\''+name+' 을(를) 삭제할까요?\',()=>toast(\'삭제했어요\'))">삭제</button><button class="btn" onclick="closeModal()">취소</button><button class="btn primary" onclick="closeModal();toast(\'수정했어요\')">저장</button>');
+}
+
+/* 회원 상세 (서브 화면) + 제재 */
+const MEMBERS={
+ 'jiyou_22':{img:51,email:'jiyou@example.com',id:'U-0031',via:'카카오',join:'2025.11.02',last:'2시간 전',status:'정상',marketing:true,reports:0},
+ 'mom_kitchen':{img:52,email:'mom@example.com',id:'U-0058',via:'카카오',join:'2026.01.15',last:'10분 전',status:'정상',marketing:true,reports:0},
+ 'user_8821':{img:53,email:'user8821@example.com',id:'U-0091',via:'이메일',join:'2026.05.30',last:'1시간 전',status:'정지',marketing:false,reports:4},
+ 'naver_cook':{img:54,email:'navercook@example.com',id:'U-0084',via:'네이버',join:'2026.04.10',last:'3시간 전',status:'정상',marketing:false,reports:0},
+ 'bye_user':{img:55,email:'(파기 예정)',id:'U-0072',via:'카카오',join:'2025.08.21',last:'—',status:'탈퇴',marketing:false,reports:0}
+};
+function statusTag(s){const c={정상:'pub',정지:'fail',차단:'fail',휴면:'hide',탈퇴:'hide'}[s]||'hide';return '<span class="status '+c+'">'+s+'</span>';}
+function openMember(name){
+  const m=MEMBERS[name]||MEMBERS['jiyou_22'];
+  document.getElementById('memberList').style.display='none';
+  const v=document.getElementById('memberDetailView');v.style.display='block';
+  const repRows=m.reports>0
+    ?'<div class="kv"><span>댓글 신고 (광고성 도배)</span><b class="rep" style="color:var(--error)">3건</b></div><div class="kv"><span>레시피 신고</span><b class="rep" style="color:var(--error)">1건</b></div>'
+    :'<div class="kv"><span>받은 신고</span><b>없음</b></div>';
+  const sanc=(m.status==='정지'||m.status==='차단')
+    ?'<div class="kv"><span>현재 제재</span><b style="color:var(--error)">'+m.status+' · 광고성 댓글 반복 · 2026.06.19 ~ 06.26</b></div><div class="kv"><span>처리자</span><b>조영훈(관리자)</b></div>'
+    :'<div class="kv"><span>제재 이력</span><b>없음</b></div>';
+  const withdrawn=m.status==='탈퇴';
+  const sanctioned=(m.status==='정지'||m.status==='차단');
+  let actionBtn;
+  if(withdrawn) actionBtn='<span class="t-sub">탈퇴 회원 · 조치 불가</span>';
+  else if(sanctioned) actionBtn='<button class="btn" onclick="toast(\'제재를 해제했어요\')">제재 해제</button>';
+  else actionBtn='<button class="btn danger" onclick="sanctionModal(\''+name+'\')">제재</button>';
+  const repLinks=m.reports>0?'<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" onclick="go(\'comments\')">신고된 댓글 보기</button><button class="btn sm" onclick="go(\'reports\')">신고 관리 열기</button></div>':'';
+  const pipaLast=withdrawn?'<span class="tag gray" style="align-self:center">탈퇴 후 보관 만료 시 자동 파기(예: 30일)</span>':'<button class="btn sm" onclick="confirmAction(\''+name+' 강제 탈퇴를 진행할까요?\',()=>toast(\'탈퇴 처리 — 보관기간 후 파기 예약\'))">강제 탈퇴</button>';
+  v.innerHTML=`
+    <div class="edit-head">
+      <button class="btn sm" onclick="closeMember()">← 목록</button>
+      <img src="https://picsum.photos/80/80?random=${m.img}" width="34" height="34" style="border-radius:50%" alt="아바타">
+      <h2 style="font-size:16px;font-weight:700">${name}</h2> ${statusTag(m.status)}
+      <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">${actionBtn}</div>
+    </div>
+    <div class="set-grid">
+      <div class="card" style="padding:18px">
+        <div class="section-title">프로필</div>
+        <div class="kv"><span>회원 ID</span><b>${m.id}</b></div>
+        <div class="kv"><span>이메일</span><b>${m.email}</b></div>
+        <div class="kv"><span>가입경로 / 가입일</span><b>${m.via} · ${m.join}</b></div>
+        <div class="kv"><span>최근 접속</span><b>${m.last}</b></div>
+        <div class="kv"><span>마케팅 수신 동의</span><b>${m.marketing?'동의':'미동의'}</b></div>
+        <div class="hint" style="margin:10px 0 0">활동 상세(저장·댓글·스크랩북)는 회원 100명 기준 보류 — 운영 판단에 불필요. 규모 신호 시 복원.</div>
+      </div>
+      <div class="card full" style="padding:18px">
+        <div class="section-title">신고 · 제재</div>
+        ${repRows}
+        ${sanc}
+        ${repLinks}
+      </div>
+      <div class="card full" style="padding:18px">
+        <div class="section-title">개인정보 처리(PIPA)</div>
+        <div class="hint" style="margin:0 0 10px">정보주체 권리 요청은 본인확인 후 처리하고 감사 로그에 남깁니다.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn sm" onclick="toast('개인정보 열람 내역을 제공했어요')">열람 제공</button>
+          <button class="btn sm" onclick="toast('정정 처리했어요')">정정</button>
+          <button class="btn sm danger" onclick="confirmAction('${name} 개인정보 삭제를 처리할까요?',()=>toast('삭제 처리했어요'))">삭제 요청 처리</button>
+          ${pipaLast}
+        </div>
+      </div>
+    </div>`;
+  window.scrollTo(0,0);
+}
+function closeMember(){const v=document.getElementById('memberDetailView');if(v)v.style.display='none';const l=document.getElementById('memberList');if(l)l.style.display='block';}
+function sanctionModal(name){
+  openModal('회원 제재 — '+name,
+    '<div class="field"><label>제재 유형</label><select id="sanc-type"><option>정지(기간)</option><option>영구 차단</option></select></div>'+
+    '<div class="field"><label>정지 기간</label><select><option>3일</option><option>7일</option><option>30일</option></select></div>'+
+    '<div class="field"><label>사유 (회원에게 통지)</label><textarea rows="2" placeholder="예: 광고성 댓글 반복 게시"></textarea></div>'+
+    '<div class="hint">제재·사유·기간은 활동 로그에 기록됩니다. (자동 임계 제재 없음 — 운영진 판단)</div>',
+    '<button class="btn" onclick="closeModal()">취소</button><button class="btn danger" onclick="closeModal();toast(\''+name+' 제재를 적용했어요\')">제재 적용</button>');
+}
+
+
+/* 관리자 계정 (1인 관리자) */
+function changePwModal(){
+  openModal('비밀번호 변경 — 조영훈',
+    '<div class="field"><label>현재 비밀번호</label><input type="password" placeholder="현재 비밀번호"></div>'+
+    '<div class="field"><label>새 비밀번호</label><input type="password" placeholder="새 비밀번호"></div>'+
+    '<div class="field"><label>새 비밀번호 확인</label><input type="password" placeholder="다시 입력"></div>',
+    '<button class="btn" onclick="closeModal()">취소</button><button class="btn primary" onclick="closeModal();toast(\'비밀번호를 변경했어요\')">변경</button>');
+}
+
+/* 에디터 노트 */
+function delNote(btn){confirmAction('이 에디터 노트를 삭제할까요?',()=>{btn.closest('.note-card').remove();toast('노트를 삭제했어요');});}
+
+/* 댓글 스레드 / 대댓글(사진 첨부) */
+function openThread(user,hasReply){
+  let body='<div class="th-item"><b>'+user+'</b> <span class="t-sub">· 10분 전 · 마늘쫑 비빔밥</span>'+
+    '<div class="cmt-body" style="margin-top:5px">이거 진짜 맛있어요! 식초 추가하니 더 좋네요 👍</div>'+
+    (user==='jiyou_22'?'<div class="cmt-photo"><img src="https://picsum.photos/120/120?random=61" width="54" height="54" alt="첨부"><img src="https://picsum.photos/120/120?random=62" width="54" height="54" alt="첨부"></div>':'')+'</div>';
+  if(hasReply){body+='<div class="th-item reply"><b>🍳 졸리팟 운영자</b><div class="cmt-body" style="margin-top:5px">소중한 후기 감사합니다! 식초는 1작은술이 적당해요 😊</div></div>';}
+  body+='<div class="reply-box"><div class="section-title" style="margin:14px 0 6px">운영자 답글 작성</div>'+
+    '<textarea placeholder="답글을 입력하세요... (대댓글)"></textarea>'+
+    '<div class="rb-actions"><label class="btn sm">📷 사진 첨부<input type="file" accept="image/*" hidden onchange="attachPhoto(this)"></label><span id="attachName" class="t-sub">사진 첨부 가능</span></div></div>';
+  openModal('댓글 답글 — '+user, body,
+    '<button class="btn" onclick="closeModal()">취소</button><button class="btn primary" onclick="closeModal();toast(\'운영자 답글을 등록했어요\')">답글 등록</button>');
+}
+function attachPhoto(inp){const n=(inp.files&&inp.files[0])?inp.files[0].name:'';document.getElementById('attachName').textContent=n?('첨부: '+n):'사진 첨부 가능';if(n)toast('사진을 첨부했어요');}
+
+/* 인프라: 토스트 / 모달 / 확인 */
+let toastTimer;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200);}
+function openModal(title,body,foot){document.getElementById('mTitle').textContent=title;document.getElementById('mBody').innerHTML=body;document.getElementById('mFoot').innerHTML=foot||'<button class="btn primary" onclick="closeModal()">확인</button>';document.getElementById('modal').classList.add('show');}
+function closeModal(){document.getElementById('modal').classList.remove('show');}
+let _confirmCb=null;
+function confirmAction(msg,onOk){_confirmCb=onOk;openModal('확인','<p>'+msg+'</p>','<button class="btn" onclick="closeModal()">취소</button><button class="btn danger" onclick="runConfirm()">확인</button>');}
+function runConfirm(){closeModal();if(_confirmCb){const cb=_confirmCb;_confirmCb=null;cb();}}
+
+/* ===================== 목록 데이터 + 페이지네이션 (50건 가정) ===================== */
+function pagerHTML(total,page,per,fn){
+  const pages=Math.max(1,Math.ceil(total/per));
+  if(page>pages)page=pages; if(page<1)page=1;
+  let nums='';
+  let s=Math.max(1,page-2), e=Math.min(pages,page+2);
+  if(s>1){nums+='<button class="pg" onclick="'+fn+'(1)">1</button>'+(s>2?'<span class="ell">…</span>':'');}
+  for(let i=s;i<=e;i++)nums+='<button class="pg '+(i===page?'on':'')+'" onclick="'+fn+'('+i+')">'+i+'</button>';
+  if(e<pages){nums+=(e<pages-1?'<span class="ell">…</span>':'')+'<button class="pg" onclick="'+fn+'('+pages+')">'+pages+'</button>';}
+  return '<span class="tot">총 '+total.toLocaleString()+'건 · '+page+'/'+pages+'p</span>'+
+    '<button class="pg '+(page<=1?'disabled':'')+'" onclick="'+fn+'('+(page-1)+')">‹ 이전</button>'+nums+
+    '<button class="pg '+(page>=pages?'disabled':'')+'" onclick="'+fn+'('+(page+1)+')">다음 ›</button>';
+}
+
+/* 레시피 50건 */
+function genRecipes(){
+  const titles=['마늘쫑 비빔밥','감자목살덮밥','까망베르 샤브샤브','아이 손두부 버섯빵','에어프라이어 닭다리살','소금빵 만들기','초간단 김치찜','두부 김치찌개','간장 비빔국수','시금치 나물','토마토 달걀볶음','미역국','오이무침','된장찌개','제육볶음','닭볶음탕','계란말이','콩나물국','어묵볶음','떡볶이','김치볶음밥','잡채','순두부찌개','고등어조림','감자조림'];
+  const srcs=['인스타그램','외부 링크','직접 업로드'];
+  const cats=['한식','아이 반찬','밀프렙','베이킹','면','국·찌개'];
+  const chans=['초간단 레시피','지우네식탁','mukeelife','집밥리나','쿡탁','반찬요정'];
+  const mins=[10,12,15,18,20,25,28];
+  const arr=[];
+  for(let i=0;i<250;i++){
+    const title=titles[i%titles.length]+(i>=titles.length?' '+(Math.floor(i/titles.length)+1):'');
+    const src=srcs[i%3];
+    let status,when;
+    if(i<3){status='예약'; when=['06-23 10:00','06-23 18:00','06-24 10:00'][i];}
+    else if(i%13===7){status='비공개'; when='06.'+String(Math.max(1,19-(i%10))).padStart(2,'0');}
+    else {status='발행'; when='06.'+String(Math.max(1,21-(i%20))).padStart(2,'0');}
+    arr.push({
+      title, img:11+(i%40), src,
+      type:(src==='직접 업로드')?'직접':'AI',
+      status, when, cat:cats[i%cats.length],
+      sub:chans[i%chans.length]+' · '+mins[i%7]+'분 · '+((i%2)+1)+'인분',
+      saves:Math.round(120+(50-i)*38+(i%7)*29),
+      reports:(i%9===0&&status==='발행')?(1+i%5):0,
+      isNew:(status==='발행'&&i<6),
+      notes:(i%6===0)?(2+i%4):0
+    });
+  }
+  return arr;
+}
+let recPage=1; const REC_PER=50;
+function renderRecipes(p){
+  recPage=p; const per=REC_PER,total=RECIPES.length,pages=Math.max(1,Math.ceil(total/per));
+  if(recPage>pages)recPage=pages; if(recPage<1)recPage=1;
+  const start=(recPage-1)*per, slice=RECIPES.slice(start,start+per);
+  document.getElementById('recipeTbody').innerHTML=slice.map((r,k)=>{
+    const no=total-(start+k);
+    const stcls={발행:'pub',예약:'sched',비공개:'hide'}[r.status];
+    const dateCell=(r.status==='예약')?'<span class="status sched" style="font-size:11px">'+r.when+'</span>':'<span class="t-sub">'+r.when+'</span>';
+    const newB=r.isNew?' <span class="badge-new">NEW</span>':'';
+    const notes=r.notes?' · <span style="color:var(--info)">📝 에디터 노트 '+r.notes+'</span>':'';
+    const rep=r.reports?'<span class="rep-count">'+r.reports+'</span>':'<span class="t-sub">—</span>';
+    const typetag=(r.type==='직접')?'<span class="tag sage">직접</span>':'<span class="tag yellow">AI</span>';
+    return '<tr><td class="cell-check"><input type="checkbox" class="check"></td><td class="cell-no" data-label="No.">'+no+'</td>'+
+      '<td class="cell-main"><div style="display:flex;gap:11px;align-items:center"><img class="thumb" src="https://picsum.photos/100/80?random='+r.img+'" width="52" height="40" alt="썸네일"><div><div class="t-title">'+r.title+newB+'</div><div class="t-sub">'+r.sub+notes+'</div></div></div></td>'+
+      '<td data-label="출처"><span class="tag gray">'+r.src+'</span></td>'+
+      '<td data-label="타입">'+typetag+'</td>'+
+      '<td data-label="상태"><span class="status '+stcls+'">'+r.status+'</span></td>'+
+      '<td data-label="카테고리">'+r.cat+'</td>'+
+      '<td data-label="저장" class="num-cell">'+r.saves.toLocaleString()+'</td>'+
+      '<td data-label="신고">'+rep+'</td>'+
+      '<td data-label="'+(r.status==='예약'?'예약일시':'발행일')+'">'+dateCell+'</td>'+
+      '<td class="cell-act"><div class="row-act"><button class="btn sm" onclick="openEdit()">편집</button><button class="btn sm danger" onclick="delRecipe(this,\''+r.title+'\')">삭제</button></div></td></tr>';
+  }).join('');
+  document.getElementById('recipePager').innerHTML=pagerHTML(total,recPage,per,'renderRecipes');
+}
+
+/* 댓글 50건 */
+function genComments(){
+  const bodies=['이거 진짜 맛있어요! 식초 추가하니 더 좋네요 👍','아이가 너무 잘 먹어요','간단해서 자주 해먹어요','짜지 않게 간장 줄였어요','냉장고 털이로 딱이네요','다음엔 두부 넣어볼게요','레시피 감사합니다 잘 따라했어요','요리 초보도 성공했어요','매운 거 좋아하면 청양고추 추천','남은 재료로 만들기 좋아요'];
+  const users=['jiyou_22','mom_kitchen','cook_dad','minji_eats','baek_home','foodie_k','daily_meal','seoul_kitchen'];
+  const recipes=['마늘쫑 비빔밥','감자목살덮밥','손두부 버섯빵','까망베르 샤브샤브','소금빵 만들기'];
+  const times=['10분 전','22분 전','1시간 전','3시간 전','5시간 전','어제','2일 전','3일 전'];
+  const arr=[];
+  for(let i=0;i<280;i++)arr.push({body:bodies[i%bodies.length],user:users[i%users.length],recipe:recipes[i%recipes.length],time:times[Math.min(times.length-1,Math.floor(i/4))],isNew:i<6,hasPhoto:(i%7===0),reply:(i%5===0)});
+  return arr;
+}
+let cmtPage=1; const CMT_PER=50;
+function renderComments(p){
+  cmtPage=p; const per=CMT_PER,total=COMMENTS.length,pages=Math.max(1,Math.ceil(total/per));
+  if(cmtPage>pages)cmtPage=pages; if(cmtPage<1)cmtPage=1;
+  const start=(cmtPage-1)*per, slice=COMMENTS.slice(start,start+per);
+  document.getElementById('cmtTbody').innerHTML=slice.map((c,k)=>{
+    const no=total-(start+k);
+    const seed=61+start+k;
+    const photo=c.hasPhoto?'<div class="cmt-photo"><img src="https://picsum.photos/120/120?random='+seed+'" width="54" height="54" alt="첨부 사진"></div>':'';
+    const replyB=c.reply?'<span class="reply-badge">└ 운영자 답글 1</span>':'';
+    const newB=c.isNew?' <span class="badge-new">NEW</span>':'';
+    return '<tr><td class="cell-no" data-label="No.">'+no+'</td><td class="cell-main"><div class="cmt-body">'+c.body+'</div>'+photo+'<div class="cmt-meta">'+c.user+'</div>'+replyB+'</td>'+
+      '<td data-label="레시피" class="t-sub">'+c.recipe+'</td>'+
+      '<td data-label="작성" class="t-sub">'+c.time+newB+'</td>'+
+      '<td class="cell-act"><div class="row-act"><button class="btn sm" onclick="openThread(\''+c.user+'\','+c.reply+')">답글</button><button class="btn sm" onclick="toast(\'댓글을 숨겼어요\')">블라인드</button><button class="btn sm danger" onclick="delComment(this)">삭제</button></div></td></tr>';
+  }).join('');
+  document.getElementById('cmtPager').innerHTML=pagerHTML(total,cmtPage,per,'renderComments');
+}
+
+/* 요리후기 50건 */
+function genReviews(){
+  const bodies=['레시피대로 했더니 진짜 맛있게 됐어요! 식초는 살짝 줄였습니다.','아이가 한 그릇 뚝딱했어요 👏 다음엔 두 배로 만들래요','생각보다 쉬워서 놀랐어요. 자취 요리로 강추!','간장을 조금 줄이니 딱 좋네요. 또 만들 각이에요','촬영하느라 늦었지만 비주얼 만족 😋','남은 채소 털어서 만들었는데 성공했어요','요리 초보인데도 따라하니 됐어요 감사합니다','매운맛 좋아서 청양고추 추가했어요 🔥'];
+  const users=['jiyou_22','mom_kitchen','cook_dad','minji_eats','baek_home','foodie_k','daily_meal','seoul_kitchen'];
+  const recipes=['마늘쫑 비빔밥','감자목살덮밥','손두부 버섯빵','까망베르 샤브샤브','소금빵 만들기','계란볶음밥','떡볶이'];
+  const times=['8분 전','20분 전','1시간 전','4시간 전','어제','2일 전','3일 전','5일 전'];
+  const chipsets=[['레시피대로 됐어요','생각보다 쉬웠어요'],['레시피대로 됐어요'],['생각보다 쉬웠어요','간 조절 필요'],['까다로웠어요'],['레시피대로 됐어요','또 만들래요']];
+  const arr=[];
+  for(let i=0;i<130;i++){
+    arr.push({
+      body:bodies[i%bodies.length],user:users[i%users.length],recipe:recipes[i%recipes.length],
+      time:times[Math.min(times.length-1,Math.floor(i/2))],
+      rating:5-(i%3===0?1:0)-(i%7===0?1:0),
+      photos:1+(i%3),chips:chipsets[i%chipsets.length],
+      likes:Math.round(6+(8-i)*2+(i%6)),comments:(i%3),nth:1+(i%5),
+      creator:(i%9===0),isNew:i<3,reports:(i%11===0?2:0)
+    });
+  }
+  return arr;
+}
+let rvwPage=1; const RVW_PER=50;
+function renderReviews(p){
+  rvwPage=p; const per=RVW_PER,total=REVIEWS.length,pages=Math.max(1,Math.ceil(total/per));
+  if(rvwPage>pages)rvwPage=pages; if(rvwPage<1)rvwPage=1;
+  const start=(rvwPage-1)*per, slice=REVIEWS.slice(start,start+per);
+  document.getElementById('rvwTbody').innerHTML=slice.map((r,k)=>{
+    const gi=start+k, seed=70+gi, no=total-gi;
+    const stars='<span class="rv-stars">'+'★'.repeat(r.rating)+(r.rating<5?'<span class="off">'+'★'.repeat(5-r.rating)+'</span>':'')+'</span>';
+    const pcount=r.photos>1?'<span class="pcount">'+r.photos+'</span>':'';
+    const photo='<div class="rv-photo"><img src="https://picsum.photos/120/120?random='+seed+'" width="60" height="60" alt="후기 사진">'+pcount+'</div>';
+    const chips='<div class="rv-chips">'+r.chips.map(c=>'<span class="rv-chip">'+c+'</span>').join('')+'</div>';
+    const creator=r.creator?'<span class="creator-tag">크리에이터</span>':'';
+    const newB=r.isNew?' <span class="badge-new">NEW</span>':'';
+    const rep=r.reports?' <span class="rep-count">🚩'+r.reports+'</span>':'';
+    return '<tr><td class="cell-no" data-label="No.">'+no+'</td><td class="cell-main"><div style="display:flex;gap:12px">'+photo+
+      '<div style="min-width:0">'+stars+'<div class="cmt-body">'+r.body+'</div>'+chips+
+      '<div class="cmt-meta">'+r.user+creator+' · '+r.nth+'번째 만듦</div></div></div></td>'+
+      '<td data-label="레시피" class="t-sub">'+r.recipe+'</td>'+
+      '<td data-label="지표" class="rv-metric">♡ '+r.likes+' · 💬 '+r.comments+'</td>'+
+      '<td data-label="작성" class="t-sub">'+r.time+newB+rep+'</td>'+
+      '<td class="cell-act"><div class="row-act"><button class="btn sm" onclick="viewReview('+gi+')">보기</button><button class="btn sm" onclick="toast(\'후기를 숨겼어요\')">블라인드</button><button class="btn sm danger" onclick="delReview(this)">삭제</button></div></td></tr>';
+  }).join('');
+  document.getElementById('rvwPager').innerHTML=pagerHTML(total,rvwPage,per,'renderReviews');
+}
+function delReview(btn){confirmAction('이 요리후기를 삭제할까요? 되돌릴 수 없습니다.',()=>{btn.closest('tr').remove();toast('후기를 삭제했어요');});}
+/* 요리후기 상세(보기) 모달 */
+function viewReview(i){
+  const r=REVIEWS[i]; if(!r)return; const seed=70+i;
+  const photos=Array.from({length:r.photos},(_,j)=>'<img src="https://picsum.photos/300/300?random='+(seed*10+j)+'" alt="후기 사진 '+(j+1)+'">').join('');
+  const stars='<span class="rv-stars" style="font-size:17px">'+'★'.repeat(r.rating)+(r.rating<5?'<span class="off">'+'★'.repeat(5-r.rating)+'</span>':'')+'</span>';
+  const chips='<div class="rv-chips" style="margin:0 0 12px">'+r.chips.map(c=>'<span class="rv-chip">'+c+'</span>').join('')+'</div>';
+  const creator=r.creator?'<span class="creator-tag">크리에이터</span>':'';
+  const body=
+    '<div class="rvd-photos">'+photos+'</div>'+
+    '<div class="rvd-row"><img class="avatar" src="https://picsum.photos/80/80?random='+(seed+3)+'" alt="아바타"><div><b>'+r.user+'</b>'+creator+'<div class="t-sub">'+r.time+'</div></div><div style="margin-left:auto">'+stars+'</div></div>'+
+    chips+
+    '<div class="rvd-body">'+r.body+'</div>'+
+    '<div class="rvd-link"><img src="https://picsum.photos/100/100?random='+(seed+5)+'" alt="레시피"><div><div class="t-sub">이 레시피로 '+r.nth+'번째 만든 요리</div><b style="font-size:14px">'+r.recipe+'</b></div><button class="btn sm" style="margin-left:auto" onclick="closeModal();go(\'recipes\');openEdit()">레시피 →</button></div>'+
+    '<div class="rvd-metric"><span>♡ 좋아요 '+r.likes+'</span><span>🔖 스크랩 '+Math.round(r.likes*0.4)+'</span><span>💬 댓글 '+r.comments+'</span></div>'+
+    '<div class="section-title">댓글 '+r.comments+'</div>'+
+    (r.comments>0
+      ? '<div class="rvd-cmt"><b>mom_kitchen</b> · 1시간 전<div style="margin-top:3px">우와 비주얼 좋아요! 저도 도전해볼게요 👍</div></div>'+(r.comments>1?'<div class="rvd-cmt"><b>cook_dad</b> · 3시간 전<div style="margin-top:3px">몇 인분으로 하셨어요?</div></div>':'')
+      : '<div class="t-sub" style="padding:8px 0">아직 댓글이 없어요.</div>');
+  const foot=
+    '<button class="btn" onclick="closeModal()">닫기</button>'+
+    '<button class="btn" onclick="toast(\'후기를 숨겼어요\');closeModal()">블라인드</button>'+
+    '<button class="btn" onclick="confirmAction(\''+r.user+' 작성자를 차단할까요? 이후 후기·댓글 작성이 제한됩니다.\',()=>{toast(\'작성자를 차단했어요\');})">작성자 차단</button>'+
+    '<button class="btn danger" onclick="confirmAction(\'이 요리후기를 삭제할까요? 되돌릴 수 없습니다.\',()=>{REVIEWS.splice('+i+',1);renderReviews(rvwPage);closeModal();toast(\'후기를 삭제했어요\');})">삭제</button>';
+  openModal('요리후기 상세', body, foot);
+}
+/* 레시피 편집 ▸ 요리후기 탭 — 대행 위탁 후기 작성(작성 계정 지정) + 간이 관리 */
+/* 졸리팟은 카카오/네이버 소셜 로그인 → 'ID'는 계정 ID(닉네임), 제공자는 조회로 확인 */
+const ACCT_DIR={
+  'jollypot_kitchen':{name:'졸리팟 키친',prov:'email',badge:'공식'},
+  'jiyou_22':{name:'jiyou_22',prov:'kakao'},
+  'mom_kitchen':{name:'mom_kitchen',prov:'naver'},
+  'cook_dad':{name:'cook_dad',prov:'kakao'}
+};
+const PROV_LABEL={kakao:'카카오',naver:'네이버',email:'이메일'};
+
+/* 소스 수집 — 발행 계정(curator) 지정·확인 */
+const CURATOR_DIR={
+  jollypot_official:{id:'jollypot_official',name:'졸리팟 공식',prov:'email',badge:'공식'},
+  op_cho:{id:'op_cho',name:'조영훈(관리자)',prov:'email',badge:'관리자'},
+  ch_jiyou:{id:'jiyou_22',name:'지우네식탁',prov:'kakao',badge:'채널'}
+};
+window._curator=CURATOR_DIR.jollypot_official;
+function onCuratorSel(){
+  const v=document.getElementById('curSel').value;
+  document.getElementById('curCustomRow').style.display=(v==='__custom')?'flex':'none';
+  document.getElementById('curResult').style.display='none';
+  window._curator=(v==='__custom')?null:(CURATOR_DIR[v]||null);
+}
+function confirmCurator(){
+  const sel=document.getElementById('curSel').value;
+  let a;
+  if(sel==='__custom'){
+    const raw=(document.getElementById('curCustomId').value||'').trim();
+    if(!raw){toast('졸리팟 ID를 입력해 주세요');document.getElementById('curCustomId').focus();return;}
+    const key=raw.replace(/^@/,'').toLowerCase();
+    a=ACCT_DIR[key]?Object.assign({id:key},ACCT_DIR[key]):{id:key,name:raw,prov:(key.length%2?'kakao':'naver')};
+  } else { a=CURATOR_DIR[sel]; }
+  window._curator=a;
+  const box=document.getElementById('curResult');
+  const badge=a.badge?'<span class="creator-tag" style="margin-left:5px">'+a.badge+'</span>':'';
+  box.innerHTML='<img src="https://picsum.photos/80/80?random=162" alt="프로필"><div><div class="an">'+a.name+badge+'<span class="prov '+a.prov+'">'+PROV_LABEL[a.prov]+' 로그인</span></div><div class="as">curator: '+a.id+' · 이 계정으로 발행됩니다</div></div><span class="ok">✓ 확인됨</span>';
+  box.style.display='flex';
+  toast('발행 계정 확인 — '+a.name+' ('+PROV_LABEL[a.prov]+')');
+}
+function ingestBatch(){
+  if(!window._curator){toast('발행 계정을 먼저 확인해 주세요');var s=document.getElementById('curSel');if(s)s.focus();return;}
+  toast('['+window._curator.name+'] 계정으로 pre-check → AI 요약 → 수집 큐에 추가했어요');
+}
+window._offAcct=null;
+function resolveAcct(){
+  const raw=(document.getElementById('offAcctId').value||'').trim();
+  const box=document.getElementById('offAcctResult');
+  if(!raw){box.style.display='none';window._offAcct=null;toast('졸리팟 ID를 입력해 주세요');return;}
+  const key=raw.replace(/^@/,'').toLowerCase();
+  const a=ACCT_DIR[key]||{name:raw,prov:(key.length%2?'kakao':'naver')}; // 데모: 미등록 ID도 조회된 것으로 시뮬레이션
+  window._offAcct=a;
+  const badge=a.badge?'<span class="creator-tag" style="margin-left:5px">'+a.badge+'</span>':'';
+  box.innerHTML='<img src="https://picsum.photos/80/80?random=160" alt="프로필"><div><div class="an">'+a.name+badge+'<span class="prov '+a.prov+'">'+PROV_LABEL[a.prov]+' 로그인</span></div><div class="as">졸리팟 ID: '+key+' · 이 계정으로 후기가 노출됩니다</div></div><span class="ok">✓ 확인됨</span>';
+  box.style.display='flex';
+  toast('계정을 확인했어요 — '+a.name+' ('+PROV_LABEL[a.prov]+')');
+}
+function setOfficialStars(n){document.querySelectorAll('#rvcStars span').forEach((s,idx)=>s.classList.toggle('on',idx<n));window._offStars=n;}
+function addOfficialPhoto(){
+  const box=document.getElementById('rvcPhotos');const add=box.querySelector('.rvc-add');
+  const n=box.querySelectorAll('.rvc-thumb').length;
+  const d=document.createElement('div');d.className='rvc-thumb';
+  d.innerHTML='<img src="https://picsum.photos/200/200?random='+(141+n)+'" alt="결과 사진"><button class="rvc-del" onclick="this.parentElement.remove()">×</button>';
+  box.insertBefore(d,add);toast('사진을 추가했어요 (프로토타입)');
+}
+function submitOfficialReview(){
+  if(!window._offAcct){toast('작성 계정(졸리팟 ID)을 먼저 조회·확인해 주세요');document.getElementById('offAcctId').focus();return;}
+  const txt=(document.getElementById('rvcBody').value||'').trim();
+  if(!txt){toast('후기 본문을 입력해 주세요');document.getElementById('rvcBody').focus();return;}
+  toast(window._offAcct.name+' 계정으로 후기를 등록했어요 (활동 로그 기록)');
+}
+function renderRvMini(){
+  const data=[
+    {pin:true,user:'졸리팟 키친',body:'레시피 그대로 따라하면 실패 없어요. 매운맛은 청양고추 1개 추가!',meta:'공식 · ★5',img:140,creator:true},
+    {pin:false,user:'jiyou_22',body:'식초 살짝 줄였더니 딱 좋았어요 👍',meta:'★5 · ♡ 86',img:71,creator:false},
+    {pin:false,user:'mom_kitchen',body:'아이가 한 그릇 뚝딱했어요',meta:'★4 · ♡ 54',img:73,creator:false}
+  ];
+  document.getElementById('rvMini').innerHTML=data.map(d=>{
+    const tag=d.creator?'<span class="creator-tag" style="margin-left:0">졸리팟 키친</span>':'';
+    const pin=d.pin?'<span class="pin">📌 고정</span>':'';
+    return '<div class="rv-mini-item'+(d.pin?' pinned':'')+'"><img src="https://picsum.photos/100/100?random='+d.img+'" alt="후기 사진"><div class="mm"><div class="b">'+(d.creator?tag+' ':'')+d.body+pin+'</div><div class="s">'+(d.creator?'':d.user+' · ')+d.meta+'</div></div>'+
+      '<button class="btn sm" onclick="this.closest(\'.rv-mini-item\').classList.toggle(\'pinned\');toast(\'고정 상태를 변경했어요\')">고정</button>'+
+      '<button class="btn sm" onclick="toast(\'후기를 숨겼어요\')">숨김</button>'+
+      '<button class="btn sm danger" onclick="delRvMini(this)">삭제</button></div>';
+  }).join('');
+}
+function delRvMini(btn){confirmAction('이 후기를 삭제할까요?',()=>{btn.closest('.rv-mini-item').remove();toast('삭제했어요');});}
+
+/* 에디터 노트 후보 50건 */
+function genNotes(){
+  const recipes=['마늘쫑 비빔밥','감자목살덮밥','까망베르 샤브샤브','계란볶음밥','두부 김치찌개','소금빵 만들기','에어프라이어 닭다리살','떡볶이'];
+  const imgs=[11,12,13,21,26,24,22,30];
+  const cats=['대체재','실패 방지','보관법','재가열·해동','아이 반찬 버전','다이어트 버전','에어프라이어','타이밍·신호','도구 대체','자주 나온 질문','냉동 가능'];
+  const fsCats=['보관법','재가열·해동','냉동 가능'];
+  const bodies=['베이컨 대신 스팸으로 대체 가능합니다.','간장이 탈 수 있으니 불을 줄인 상태에서 넣어주세요.','남은 음식은 냉장 2일 내 사용하세요.','냉동 재료는 전자레인지 2분 해동 후 사용하세요.','목살 대신 삼겹살도 잘 어울립니다.','센 불에서 오래 두면 질겨지니 중불로 줄이세요.','완성 후 한 김 식혀 밀폐 보관하세요.','반죽은 30분 휴지하면 식감이 좋아집니다.'];
+  const arr=[];
+  for(let i=0;i<50;i++){
+    const cat=cats[i%cats.length];
+    arr.push({recipe:recipes[i%recipes.length],img:imgs[i%imgs.length],cat,body:bodies[i%bodies.length],src:'영상 '+(1+i%9)+':'+String((i*7)%60).padStart(2,'0'),fs:(fsCats.indexOf(cat)>=0?1:0)});
+  }
+  return arr;
+}
+let notePage=1; const NOTE_PER=12;
+function renderNotes(p){
+  notePage=p; const per=NOTE_PER,total=NOTES.length,pages=Math.max(1,Math.ceil(total/per));
+  if(notePage>pages)notePage=pages; if(notePage<1)notePage=1;
+  const start=(notePage-1)*per, slice=NOTES.slice(start,start+per);
+  document.getElementById('noteList').innerHTML=slice.map((n,k)=>{
+    const idx=start+k;
+    const flag=n.fs?'<span class="nq-flag red">🔴</span>':'<span class="nq-flag green">🟢</span>';
+    const tagcls=n.fs?'red':(n.cat==='대체재'?'sage':'gray');
+    return '<div class="rep-item" data-idx="'+idx+'" data-recipe="'+n.recipe+'" data-img="'+n.img+'" data-cat="'+n.cat+'" data-body="'+n.body+'" data-src="'+n.src+'" data-fs="'+n.fs+'" onclick="selNote(this)"><img src="https://picsum.photos/100/100?random='+n.img+'" width="56" height="56" alt="레시피"><div class="rt"><b>'+n.recipe+'</b><div class="t-sub" style="margin:3px 0"><span class="tag '+tagcls+'">'+n.cat+'</span> · '+n.src+'</div><div class="t-sub">'+n.body+'</div></div>'+flag+'</div>';
+  }).join('');
+  document.getElementById('notePager').innerHTML=pagerHTML(total,notePage,per,'renderNotes');
+  const wc=document.getElementById('noteWaitCount'); if(wc)wc.textContent='검수 대기 '+total;
+  const first=document.querySelector('#noteList .rep-item'); if(first)selNote(first);
+}
+/* 데이터 기반 override */
+function publishNote(){
+  if(window.curFS && !document.getElementById('fsChk').checked){toast('🔴 식품안전 — 사람 검증 완료를 먼저 체크하세요');return;}
+  const sel=document.querySelector('#noteList .rep-item.sel');
+  if(sel){const idx=parseInt(sel.dataset.idx,10);if(!isNaN(idx))NOTES.splice(idx,1);}
+  renderNotes(notePage); toast('노트를 채택·발행했어요');
+}
+function addCandidates(){
+  CAND_POOL.forEach(c=>NOTES.unshift({recipe:'소금빵 만들기',img:c.img,cat:c.cat,body:c.body,src:c.src,fs:c.fs}));
+  renderNotes(1);
+}
+
+/* 소스 수집 — 수집 큐 항목별 예약 / 지금 발행 */
+let _schedRow=null;
+function scheduleItem(btn){
+  _schedRow=btn.closest('.queue-item');
+  openModal('발행 예약',
+    '<div class="field"><label>발행 일시</label><input type="datetime-local" id="schedAt" value="2026-06-23T10:00"></div>'+
+    '<div class="hint">지정 시각에 생성 API로 발행됩니다. (SEO: 한 번에 몰지 않고 분산 발행 권장)</div>',
+    '<button class="btn" onclick="closeModal()">취소</button><button class="btn primary" onclick="confirmSchedule()">예약</button>');
+}
+function confirmSchedule(){
+  const v=(document.getElementById('schedAt').value||'2026-06-23T10:00').replace('T',' ');
+  if(_schedRow){const r=_schedRow.querySelector('.qright');if(r)r.innerHTML='<span class="status sched">예약 '+v+'</span><button class="btn sm" onclick="scheduleItem(this)">변경</button>';}
+  closeModal();toast('발행을 예약했어요 — '+v);
+}
+function publishItemNow(btn){
+  const r=btn.closest('.queue-item').querySelector('.qright');
+  if(r)r.innerHTML='<span class="status pub">발행됨</span>';
+  toast('지금 발행했어요');
+}
+
+/* 회원 200명 데모 — 임의 주입(데이터 생성 + 목록 렌더). 100명 설계의 단일 리스트가 200에서 어떻게 보이는지 확인용. */
+function genMembers(){
+  const seedNames=['jiyou_22','mom_kitchen','user_8821','naver_cook','bye_user'];
+  const seedSave=[38,62,2,17,'—'], seedCmt=[12,19,41,5,'—'];
+  const stems=['daily_meal','seoul_kitchen','cook_dad','minji_eats','baek_home','foodie_k','rina_cook','cooktak','banchan_yo','soup_lover','saltbread','kimchi_kim','tofu_house','egg_roll','noodle_day','rice_bowl','homecook','mealprep','airfry_k','sidedish'];
+  const vias=['카카오','네이버','이메일'];
+  const lasts=['7분 전','40분 전','2시간 전','5시간 전','어제','2일 전','5일 전','3주 전'];
+  const arr=[];
+  for(let i=0;i<200;i++){
+    if(i<5){const n=seedNames[i];arr.push(Object.assign({name:n,save:seedSave[i],cmt:seedCmt[i],grayed:(n==='bye_user'?';filter:grayscale(1)':'')},MEMBERS[n]));continue;}
+    const name=stems[i%stems.length]+'_'+(100+i);
+    const via=vias[i%3];
+    let status='정상',reports=0,grayed='';
+    if(i%53===0){status='정지';reports=2+i%3;}
+    else if(i%89===0){status='차단';reports=3;}
+    else if(i%71===0){status='탈퇴';grayed=';filter:grayscale(1)';}
+    else if(i%9===0){reports=1;}
+    const last=(status==='탈퇴')?'—':lasts[i%lasts.length];
+    const save=(status==='탈퇴')?'—':(3+(i*13%140));
+    const cmt=(status==='탈퇴')?'—':(i*5%48);
+    const join=(25+(i%2))+'.'+String(1+(i%12)).padStart(2,'0')+'.'+String(1+(i%27)).padStart(2,'0');
+    const img=51+(i%8);
+    const email=(status==='탈퇴')?'(파기 예정)':name+'@example.com';
+    MEMBERS[name]={img,email,id:'U-'+String(i+1).padStart(4,'0'),via,join,last,status,marketing:(i%2===0),reports};
+    arr.push({name,img,email,via,join,last,status,reports,save,cmt,grayed});
+  }
+  return arr;
+}
+function memRow(m,no){
+  const viaTag={'카카오':'yellow','네이버':'sage','이메일':'gray'}[m.via]||'gray';
+  const stcls={정상:'pub',정지:'fail',차단:'fail',탈퇴:'hide'}[m.status]||'hide';
+  const rep=(m.reports>0)?'<span class="rep-count">'+m.reports+'</span>':'<span class="t-sub">—</span>';
+  let act;
+  if(m.status==='탈퇴')act='<button class="btn sm" onclick="openMember(\''+m.name+'\')">상세</button>';
+  else if(m.status==='정지'||m.status==='차단')act='<button class="btn sm" onclick="openMember(\''+m.name+'\')">상세</button><button class="btn sm" onclick="toast(\'제재를 해제했어요\')">해제</button>';
+  else act='<button class="btn sm" onclick="openMember(\''+m.name+'\')">상세</button><button class="btn sm danger" onclick="sanctionModal(\''+m.name+'\')">제재</button>';
+  const sub=(m.status==='탈퇴')?'탈퇴 회원(파기 예정)':m.email;
+  return '<tr><td class="cell-no" data-label="No.">'+no+'</td><td class="cell-main"><div style="display:flex;gap:11px;align-items:center"><img class="thumb" style="width:38px;height:38px;border-radius:50%'+(m.grayed||'')+'" src="https://picsum.photos/80/80?random='+m.img+'" width="38" height="38" alt="아바타"><div><div class="t-title">'+m.name+'</div><div class="t-sub">'+sub+'</div></div></div></td>'+
+    '<td data-label="가입경로"><span class="tag '+viaTag+'">'+m.via+'</span></td>'+
+    '<td data-label="가입일" class="t-sub">'+m.join+'</td>'+
+    '<td data-label="최근접속" class="t-sub">'+m.last+'</td>'+
+    '<td data-label="저장" class="num-cell">'+m.save+'</td>'+
+    '<td data-label="댓글" class="num-cell">'+m.cmt+'</td>'+
+    '<td data-label="받은신고">'+rep+'</td>'+
+    '<td data-label="상태"><span class="status '+stcls+'">'+m.status+'</span></td>'+
+    '<td class="cell-act"><div class="row-act">'+act+'</div></td></tr>';
+}
+let memPage=1; const MEM_PER=50;
+function renderMembers(p){
+  memPage=p||1; const per=MEM_PER,total=MEMBERS_ALL.length,pages=Math.max(1,Math.ceil(total/per));
+  if(memPage>pages)memPage=pages; if(memPage<1)memPage=1;
+  const start=(memPage-1)*per, slice=MEMBERS_ALL.slice(start,start+per);
+  document.getElementById('memTbody').innerHTML=slice.map((m,k)=>memRow(m,total-(start+k))).join('');
+  document.getElementById('memPager').innerHTML=pagerHTML(total,memPage,per,'renderMembers');
+}
+
+/* 초기화 */
+const RECIPES=genRecipes(), COMMENTS=genComments(), NOTES=genNotes(), REVIEWS=genReviews(), MEMBERS_ALL=genMembers();
+renderRecipes(1); renderComments(1); renderNotes(1); renderReviews(1); renderRvMini(); renderMembers(1);
+
+/* ===== 딥링크 생성기 ===== */
+const DLROUTES={product:'/product/',recipe:'/recipe/',event:'/event/',category:'/category/'};
+const DLLABEL={product:'상품',recipe:'레시피',event:'기획전',category:'카테고리'};
+const DLNAMES={product:{'1024':'무염버터 200g','2087':'유기농 엑스트라버진 올리브유','3310':'국산 참들기름'},recipe:{'812':'마늘쫑 비빔밥','915':'감자목살덮밥','1130':'소금빵 만들기'},event:{'44':'여름 반찬 기획전','51':'에어프라이어 특집'},category:{'7':'반찬','12':'베이킹'}};
+let DLMEDIA=[['인스타','insta'],['카톡','kakao'],['메타광고','meta_ads'],['네이버광고','naver_ads'],['푸시','push']];
+let DLOWN=[['하봄','habom'],['프롬졸리','fromjolly']];
+let dlState={ok:false,type:null,id:null,name:null,source:'',medium:'',campaign:''};
+function dlSlug(label){var t=label.trim().toLowerCase().replace(/\s+/g,'_').replace(/[^\w\uAC00-\uD7A3_]/g,'');return t||'tag';}
+function renderTags(){
+  var m=document.getElementById('dlMedia'); if(!m) return;
+  function mk(arr,cur,fn){
+    var h=arr.map(function(t){return '<span class="chip '+((t[1]===cur&&cur!=='')?'sel':'')+'" onclick="'+fn+'(\''+t[1]+'\')">'+t[0]+'</span>';}).join('');
+    return h+'<span class="chip '+(cur===''?'sel':'')+'" onclick="'+fn+'(\'\')">없음</span>';
+  }
+  m.innerHTML=mk(DLMEDIA,dlState.source,'dlSelMedia');
+  document.getElementById('dlOwn').innerHTML=mk(DLOWN,dlState.medium,'dlSelOwn');
+  function ed(arr,grp){
+    if(!arr.length) return '<span class="t-sub" style="font-size:12px">없음 — 아래에서 추가</span>';
+    return arr.map(function(t,i){return '<span class="chip">'+t[0]+'<span class="del" onclick="dlDelTag(\''+grp+'\','+i+')">×</span></span>';}).join('');
+  }
+  document.getElementById('dlMediaEdit').innerHTML=ed(DLMEDIA,'media');
+  document.getElementById('dlOwnEdit').innerHTML=ed(DLOWN,'own');
+}
+function dlSelMedia(slug){dlState.source=slug;renderTags();buildDl();}
+function dlSelOwn(slug){dlState.medium=slug;renderTags();buildDl();}
+function dlToggleSettings(){var p=document.getElementById('dlSettings');p.style.display=(p.style.display==='none')?'block':'none';}
+function dlAddTag(grp){
+  var inp=document.getElementById(grp==='media'?'dlMediaNew':'dlOwnNew'); var v=inp.value.trim();
+  if(!v){toast('태그 이름을 입력해 주세요');return;}
+  (grp==='media'?DLMEDIA:DLOWN).push([v,dlSlug(v)]); inp.value='';
+  renderTags(); toast('태그를 추가했어요');
+}
+function dlDelTag(grp,i){
+  var arr=(grp==='media')?DLMEDIA:DLOWN; var removed=arr.splice(i,1)[0];
+  if(grp==='media'&&dlState.source===removed[1])dlState.source='';
+  if(grp==='own'&&dlState.medium===removed[1])dlState.medium='';
+  renderTags(); buildDl2();
+}
+function parseLink(raw){
+  var v=(raw||'').trim(); var det=document.getElementById('dlDetect');
+  if(!v){dlState.ok=false;det.className='dl-detect';det.innerHTML='링크를 붙여넣으면 대상을 자동으로 인식합니다';buildDl2();return;}
+  var pats=[[/\/products?\/(\d+)/,'product'],[/\/recipe\/(\d+)/,'recipe'],[/\/event\/(\d+)/,'event'],[/\/category\/(\d+)/,'category']];
+  var m=null;
+  for(var k=0;k<pats.length;k++){var g=v.match(pats[k][0]); if(g){m={type:pats[k][1],id:g[1]};break;}}
+  if(!m){dlState.ok=false;det.className='dl-detect err';det.innerHTML='⚠ 인식 실패 — 상품·레시피·기획전·카테고리 링크인지 확인하세요';buildDl2();return;}
+  dlState.ok=true;dlState.type=m.type;dlState.id=m.id;
+  dlState.name=(DLNAMES[m.type]&&DLNAMES[m.type][m.id])||(DLLABEL[m.type]+' #'+m.id);
+  det.className='dl-detect ok';det.innerHTML='✓ <b>'+DLLABEL[m.type]+'</b>(으)로 인식 · '+dlState.name+' <span class="t-sub">#'+m.id+'</span>';
+  buildDl2();
+}
+function dlEx(url){var t=document.getElementById('dlPaste');t.value=url;parseLink(url);}
+function dlSetCampaign(v){dlState.campaign=v.trim();buildDl2();}
+function buildDl2(){
+  var out=document.getElementById('dlUrl'); if(!out)return;
+  if(!dlState.ok){out.value='';return;}
+  var base='https://jollypot.com'+DLROUTES[dlState.type]+dlState.id;
+  var p=[];
+  if(dlState.source)p.push('utm_source='+dlState.source);
+  if(dlState.medium)p.push('utm_medium='+dlState.medium);
+  if(dlState.campaign)p.push('utm_campaign='+encodeURIComponent(dlState.campaign));
+  out.value=base+(p.length?('?'+p.join('&')):'');
+}
+function buildDl(){buildDl2();}
+function copyDl(){var i=document.getElementById('dlUrl');if(!i||!i.value){toast('먼저 링크를 붙여넣어 주세요');return;}i.select();try{document.execCommand('copy');}catch(e){}toast('링크를 복사했어요');}
+renderTags(); buildDl2();
+
+</script>
+</body>
+</html>
