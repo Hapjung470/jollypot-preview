@@ -531,6 +531,18 @@
     margin-left: 4px; vertical-align: middle;
     white-space: nowrap;
   }
+  /* 스텝 TIP — 단계별 꿀팁 */
+  .step-tip {
+    display: flex; gap: 7px; align-items: flex-start;
+    margin-top: 9px; padding: 9px 12px;
+    background: rgba(143,166,142,0.12);
+    border-radius: 10px;
+    font-size: 13px; line-height: 1.55; color: var(--color-text-secondary);
+  }
+  .step-tip .tip-badge {
+    flex-shrink: 0; font-size: 11.5px; font-weight: 700; color: var(--sage-dark);
+  }
+  .step-tip b { color: var(--color-text-primary); font-weight: 600; }
 
   /* ===== 만든 요리 포토 갤러리 ===== */
   .cook-gallery { padding-bottom: 4px; }
@@ -1248,6 +1260,7 @@
         <div class="step-image hidden" style="background:linear-gradient(135deg,#F5E6D0,#E0C8A0);">🔪🍰</div>
         <p class="step-title">스폰지케이크 썰기</p>
         <p class="step-text">카스테라를 적당한 두께로 썰어 준비합니다. <span class="step-time">00"05</span></p>
+        <div class="step-tip"><span class="tip-badge">💡 TIP</span><span>1cm 두께로 썰면 층이 도톰하게 살아요. 시판 카스테라를 그대로 써도 충분합니다.</span></div>
       </div>
     </li>
     <li class="step-item">
@@ -1264,6 +1277,7 @@
         <div class="step-image hidden" style="background:linear-gradient(135deg,#E8E0D0,#D0C0A8);">🥝📐</div>
         <p class="step-title">케이크 틀 준비 및 키위 배열</p>
         <p class="step-text">틀에 랩을 깔고 슬라이스한 키위를 바닥과 옆면에 골고루 배열합니다. <span class="step-time">00"14</span></p>
+        <div class="step-tip"><span class="tip-badge">💡 TIP</span><span>랩은 틀에 딱 안 맞아도 되니 무심하게 깔아주세요. 다 굳은 뒤 이 랩을 잡고 통째로 들어내면 모양이 안 망가져요.</span></div>
       </div>
     </li>
     <li class="step-item">
@@ -1272,6 +1286,7 @@
         <div class="step-image hidden" style="background:linear-gradient(135deg,#FFF5E8,#F0DCC0);">🍰🥝🧁</div>
         <p class="step-title">생크림, 스폰지케이크, 다진 키위 층층이 쌓기</p>
         <p class="step-text">키위 위에 생크림, 스폰지케이크, 다진 키위를 번갈아 가며 층층이 쌓습니다. <span class="step-time">00"21</span></p>
+        <div class="step-tip"><span class="tip-badge">💡 TIP</span><span>생크림을 살짝 되직하게 휘핑하면 층이 덜 무너져요. 한 층씩 살살 눌러 빈틈을 채워주세요.</span></div>
       </div>
     </li>
     <li class="step-item">
@@ -1288,6 +1303,7 @@
         <div class="step-image hidden" style="background:linear-gradient(135deg,#F5E0D0,#E8C4A0);">🍽️✨</div>
         <p class="step-title">케이크 완성 및 서빙</p>
         <p class="step-text">굳힌 케이크를 뒤집어 접시에 담고 자른 후 시식합니다. <span class="step-time">00"32</span></p>
+        <div class="step-tip"><span class="tip-badge">💡 TIP</span><span>칼을 뜨거운 물에 데워 물기를 닦고 자르면 단면이 뭉개지지 않고 깔끔해요.</span></div>
       </div>
     </li>
   </ul>
