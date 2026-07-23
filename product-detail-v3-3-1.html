@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>졸리팟 V2.0 — 상품상세 v3-3</title>
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{font-size:16px;-webkit-text-size-adjust:100%;}
+  body{font-family:-apple-system,'Apple SD Gothic Neo',Pretendard,sans-serif;background:#E8E2D8;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 0 40px;}
+  :root{
+    --primary:#C75D3E;--secondary:#8FA68E;--secondary-dark:#5B7A5C;
+    --bg:#FFF;--surface:#F5F0E8;--surface-alt:#F7F2EA;
+    --txt1:#2A2A2A;--txt2:#6B6B6B;--txt3:#A8A8A8;
+    --ok:#5B8A6B;--info:#3D6B8C;--warn:#E8A33D;
+    --border:#EDE8E0;--line:#F0EDE7;
+  }
+
+  /* === CONTROL BAR === */
+  .ctrl{max-width:420px;width:100%;padding:0 12px;margin-bottom:16px;}
+  .ctrl-row{display:flex;gap:8px;justify-content:center;margin-bottom:8px;}
+  .ctrl-row button{font-family:inherit;font-size:13px;font-weight:600;padding:9px 16px;border-radius:20px;border:2px solid var(--border);background:var(--bg);color:var(--txt2);cursor:pointer;transition:all .2s;flex:1;max-width:180px;}
+  .ctrl-row button.on{background:var(--primary);color:#fff;border-color:var(--primary);}
+  .ctrl-row2{display:flex;flex-direction:column;gap:8px;align-items:center;}
+  .ctrl-line{display:flex;align-items:center;gap:6px;}
+  .ctrl-label{font-size:12px;color:var(--txt3);width:64px;text-align:right;}
+  .ctrl-row2 button{font-family:inherit;font-size:12px;font-weight:600;padding:6px 14px;border-radius:16px;border:1.5px solid var(--border);background:var(--bg);color:var(--txt3);cursor:pointer;transition:all .15s;}
+  .ctrl-row2 button.on{background:var(--txt1);color:#fff;border-color:var(--txt1);}
+
+  /* === PHONE === */
+  .phone{width:375px;min-height:812px;background:var(--bg);border-radius:40px;box-shadow:0 20px 60px rgba(0,0,0,.18);overflow:hidden;border:8px solid #1a1a1a;position:relative;}
+  .notch{width:120px;height:28px;background:#1a1a1a;border-radius:0 0 16px 16px;margin:0 auto;z-index:10;position:relative;}
+  .scr{height:780px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;position:relative;}
+  .scr::-webkit-scrollbar{display:none;}
+  .pnl{display:none;}.pnl.on{display:block;}
+
+  /* CONDITIONAL SHOW/HIDE */
+  .ts{display:none !important;}
+  .show-ts .ts{display:flex !important;}
+  .ts-block{display:none !important;}
+  .show-ts .ts-block{display:block !important;}
+  .ts-inline{display:none !important;}
+  .show-ts .ts-inline{display:inline-flex !important;}
+  .rv-has{display:none !important;}
+  .show-rv .rv-has{display:block !important;}
+  .show-rv .rv-has-flex{display:flex !important;}
+  .rv-has-flex{display:none !important;}
+  .rv-empty{display:block !important;}
+  .show-rv .rv-empty{display:none !important;}
+  .ship-free{display:none !important;}
+  .free-ship .ship-free{display:inline !important;}
+  .ship-paid{display:inline !important;}
+  .free-ship .ship-paid{display:none !important;}
+  .ed-toggle{display:none !important;}
+  .show-ed .ed-toggle{display:block !important;}
+
+  /* NAV */
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);}
+  .nav svg{width:22px;height:22px;color:var(--txt1);cursor:pointer;}.nav-r{display:flex;gap:14px;}
+
+  /* HERO */
+  .hero{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+  .hero-food{background:linear-gradient(145deg,#f5ebe0,#e8d5b8 50%,#d4b896);}
+  .hero-life{background:linear-gradient(145deg,#e0e8f0,#c8d8e8 50%,#b0c8d8);}
+  .hero-emoji{font-size:64px;opacity:.55;}
+  .hero-badge{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.55);backdrop-filter:blur(6px);color:#fff;font-size:12px;font-weight:600;padding:6px 14px;border-radius:16px;white-space:nowrap;}
+  .dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:5px;}
+  .dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);display:block;font-style:normal;}.dots i.on{background:#fff;width:18px;border-radius:3px;}
+
+  /* TIMER BAR */
+  .timer-bar{align-items:center;justify-content:center;gap:6px;padding:10px 16px;background:#2A2A2A;color:#fff;font-size:13px;font-weight:600;}
+  .timer-bar .clock{color:var(--primary);font-variant-numeric:tabular-nums;}
+
+  /* BRAND */
+  .brand-row{display:flex;align-items:center;gap:4px;padding:16px 16px 0;cursor:pointer;}
+  .brand-row span{font-size:13px;color:var(--txt2);}.brand-row svg{width:14px;height:14px;color:var(--txt3);}
+
+  /* NAME + SHARE */
+  .name-row{display:flex;align-items:flex-start;justify-content:space-between;padding:6px 16px 0;gap:12px;}
+  .pd-name{font-size:20px;font-weight:700;color:var(--txt1);line-height:1.35;flex:1;}
+  .share-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;margin-top:2px;}
+  .share-btn svg{width:20px;height:20px;color:var(--txt2);}
+
+  /* RATING */
+  .rating-row{display:flex;align-items:center;gap:4px;padding:6px 16px 0;}
+  .rating-stars{font-size:13px;color:var(--warn);}
+  .rating-link{font-size:13px;color:var(--txt3);cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+
+  /* PRICE */
+  .price-block{padding:12px 16px 0;}
+  .price-orig-row{display:flex;align-items:center;gap:4px;margin-bottom:2px;}
+  .price-pct{font-size:14px;font-weight:700;color:var(--primary);}
+  .price-orig{font-size:14px;color:var(--txt3);text-decoration:line-through;}
+  .price-sale-row{display:flex;align-items:center;gap:8px;}
+  .price-sale{font-size:24px;font-weight:700;color:var(--txt1);}
+  /* 쿠폰 row — 쿠폰적용가+가격 왼쪽, 버튼 오른쪽 */
+  .price-coupon-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+  .coupon-left{display:flex;align-items:baseline;gap:4px;}
+  .coupon-price-label{font-size:14px;font-weight:500;color:var(--primary);}
+  .coupon-price{font-size:24px;font-weight:700;color:var(--primary);}
+  .coupon-btn{font-size:13px;font-weight:600;color:var(--primary);border:1.5px solid var(--primary);padding:8px 16px;border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;white-space:nowrap;}
+  /* 긴급성 — 팔도감 수준 인라인 */
+  .price-urgency{margin-top:8px;display:inline-flex;align-items:center;gap:3px;padding:6px 10px;border-radius:6px;background:rgba(214,69,69,.06);border:1px solid rgba(214,69,69,.12);font-size:12px;color:#D64545;font-weight:600;}.price-urgency b{font-weight:700;}
+  .point-earn{display:none !important;margin-top:8px;font-size:12px;color:var(--secondary-dark);font-weight:500;align-items:center;gap:4px;}
+  .show-point .point-earn{display:flex !important;}
+  .ship-soon{display:block;margin-top:3px;color:var(--primary);font-weight:600;}
+
+  /* SHIPPING */
+  .shipping{display:flex;align-items:flex-start;gap:10px;padding:16px;margin-top:8px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .ship-badge{font-size:11px;font-weight:600;color:var(--ok);background:rgba(91,138,107,.08);padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;}
+  .ship-badge-paid{font-size:11px;font-weight:600;color:var(--txt2);background:var(--surface);padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;}
+  .ship-text{font-size:13px;color:var(--txt2);line-height:1.6;}.ship-text b{color:var(--txt1);font-weight:500;}
+
+  .td{height:8px;background:var(--surface-alt);}
+  .sh{display:flex;align-items:baseline;justify-content:space-between;padding:20px 16px 12px;}
+  .sh-t{font-size:18px;font-weight:700;color:var(--txt1);}
+  .sh-l{font-size:13px;color:var(--txt2);cursor:pointer;display:flex;align-items:center;gap:2px;}.sh-l svg{width:14px;height:14px;}
+
+  /* STYLING SCROLL 3:4 */
+  .sg{display:flex;gap:8px;padding:0 16px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;scroll-padding-left:16px;}
+  .sg::-webkit-scrollbar{display:none;}
+  .sg-item{flex-shrink:0;width:72%;aspect-ratio:3/4;border-radius:10px;overflow:hidden;position:relative;cursor:pointer;scroll-snap-align:start;transition:opacity .1s;}
+  .sg-item:active{opacity:.85;}
+  .sg-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;opacity:.5;}
+  .sp1{background:linear-gradient(135deg,#e8c9a5,#d4a580);}.sp2{background:linear-gradient(135deg,#c9d4a5,#a5c9a5);}.sp3{background:linear-gradient(135deg,#d4b8a5,#c9a890);}.sp4{background:linear-gradient(135deg,#a5b8c9,#8ea5b8);}.sp5{background:linear-gradient(135deg,#d4c9b8,#c9b8a5);}.sp6{background:linear-gradient(135deg,#c9a5b8,#b895a8);}
+  .sg-ov{position:absolute;bottom:0;left:0;right:0;padding:10px 12px;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff;line-height:1.3;}
+  .sg-ov-title{font-size:14px;font-weight:600;}
+  .sg-ov-sub{font-size:11px;opacity:.85;margin-top:2px;}
+
+  /* EDITOR */
+  .ed-wrap{padding:0 16px 16px;}
+  .ed-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;}
+  .ed-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .ed-av{width:32px;height:32px;border-radius:50%;background:var(--secondary);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;}
+  .ed-nm{font-size:13px;font-weight:600;color:var(--txt1);}.ed-rl{font-size:11px;color:var(--txt3);}
+  .ed-txt{font-size:14px;color:var(--txt2);line-height:1.65;}.ed-txt strong{color:var(--txt1);font-weight:500;}
+  .ed-tip{font-size:12px;color:var(--txt3);margin-top:10px;padding-top:10px;border-top:1px solid var(--line);line-height:1.5;}
+
+  /* STICKY TABS */
+  .stabs{display:flex;position:sticky;top:46px;z-index:15;background:var(--bg);border-bottom:1px solid var(--border);}
+  .stabs button{flex:1;padding:13px 0;font-size:14px;font-weight:500;color:var(--txt3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;}.stabs button.on{color:var(--txt1);font-weight:600;border-bottom-color:var(--txt1);}
+  .stabs .badge{font-size:11px;color:var(--txt3);font-weight:400;margin-left:2px;}
+  .sec-anchor{scroll-margin-top:95px;}
+
+  /* ACCORDION */
+  .acc{border-bottom:1px solid var(--line);}
+  .acc-btn{width:100%;display:flex;justify-content:space-between;align-items:center;padding:16px;font-size:15px;font-weight:500;color:var(--txt1);background:none;border:none;cursor:pointer;font-family:inherit;}
+  .acc-chev{width:16px;height:16px;color:var(--txt3);transition:transform .2s;flex-shrink:0;}
+  .acc-body{display:none;padding:0 16px 16px;font-size:13px;color:var(--txt2);line-height:1.6;}
+  .acc.open .acc-body{display:block;}.acc.open .acc-chev{transform:rotate(180deg);}
+
+  .det-fold{padding:0 16px;}
+  .det-preview{font-size:13px;color:var(--txt2);line-height:1.6;max-height:720px;overflow:hidden;position:relative;}
+  .det-preview::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(transparent,var(--bg));}
+  .det-img{width:100%;aspect-ratio:4/3;border-radius:10px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:48px;opacity:.4;}
+  .det-img.food-bg{background:linear-gradient(145deg,#f5ebe0,#e8d5b8);}
+  .det-img.life-bg{background:linear-gradient(145deg,#e0e8f0,#c8d8e8);}
+  .det-spec{width:100%;border-collapse:collapse;margin-top:10px;}
+  .det-spec td{padding:8px 0;font-size:12px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4;}
+  .det-spec td:first-child{color:var(--txt3);width:70px;}
+  .det-spec td:last-child{color:var(--txt1);}
+  .det-expand{display:flex;align-items:center;justify-content:center;gap:4px;padding:14px;margin:0 16px;font-size:14px;font-weight:600;color:#fff;cursor:pointer;border:none;border-radius:8px;background:var(--secondary);width:calc(100% - 32px);font-family:inherit;}
+  .det-expand svg{width:14px;height:14px;color:#fff;}
+
+  /* REVIEW */
+  .rv-sum{display:flex;align-items:center;gap:16px;padding:0 16px 16px;}
+  .rv-avg{text-align:center;min-width:64px;}.rv-avg-n{font-size:32px;font-weight:700;color:var(--txt1);}.rv-avg-s{font-size:14px;color:var(--warn);margin-top:2px;}.rv-avg-c{font-size:12px;color:var(--txt3);margin-top:2px;}
+  .rv-bars{flex:1;}.rv-br{display:flex;align-items:center;gap:6px;margin-bottom:3px;}.rv-bl{font-size:11px;color:var(--txt3);width:14px;text-align:right;}.rv-bt{flex:1;height:4px;background:var(--line);border-radius:2px;overflow:hidden;}.rv-bf{height:100%;background:var(--warn);border-radius:2px;}.rv-bc{font-size:10px;color:var(--txt3);width:16px;}
+  .rv-card{padding:14px 16px;border-bottom:1px solid var(--line);}
+  .rv-ct{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}.rv-cu{display:flex;align-items:center;gap:6px;}.rv-ca{width:24px;height:24px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--txt3);flex-shrink:0;}.rv-cn{font-size:13px;font-weight:500;color:var(--txt1);}.rv-cs{font-size:11px;color:var(--warn);}.rv-cd{font-size:11px;color:var(--txt3);}
+  .rv-cx{font-size:14px;color:var(--txt2);line-height:1.55;}
+  .rv-cp{display:flex;gap:6px;margin-top:8px;}.rv-ci{width:64px;height:64px;border-radius:8px;}.rp1{background:linear-gradient(135deg,#e8d5c0,#d4c0a5);}.rp2{background:linear-gradient(135deg,#c0d8e8,#a5c0d4);}
+  .rv-more{display:flex;align-items:center;justify-content:center;gap:4px;padding:14px 16px;font-size:14px;font-weight:500;color:var(--txt2);cursor:pointer;border:none;background:none;width:100%;font-family:inherit;}.rv-more svg{width:14px;height:14px;}
+  .rv-satisfaction{padding:0 16px 4px;font-size:13px;color:var(--ok);font-weight:600;}
+  .rv-filter{display:flex;gap:6px;padding:0 16px 14px;}
+  .rv-chip{padding:7px 14px;border-radius:18px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg);color:var(--txt2);font-family:inherit;}
+  .rv-chip.on{background:var(--txt1);color:#fff;border-color:var(--txt1);}
+  .rv-verified{font-size:10px;color:var(--ok);font-weight:500;background:rgba(91,138,107,.08);padding:2px 6px;border-radius:3px;margin-left:4px;}
+  .rv-helpful{display:flex;align-items:center;gap:4px;margin-top:8px;font-size:12px;color:var(--txt3);cursor:pointer;}.rv-helpful:active{color:var(--txt2);}
+
+  .inq-empty{padding:32px 16px;text-align:center;}.inq-empty p{font-size:14px;color:var(--txt3);margin-bottom:14px;}.inq-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;border-radius:10px;font-size:13px;font-weight:600;color:var(--txt1);border:1px solid var(--border);background:var(--bg);cursor:pointer;font-family:inherit;}
+
+  .rg{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px;}
+  .rg-full{grid-column:1/-1;}
+  .rg-full .rg-th{aspect-ratio:2/1;}
+  .rg-item{background:var(--bg);border-radius:12px;overflow:hidden;border:1px solid var(--border);}.rg-th{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;}
+  .rc1{background:linear-gradient(135deg,#f0e0d5,#e0d0c5);}.rc2{background:linear-gradient(135deg,#d5e0f0,#c5d0e0);}.rc3{background:linear-gradient(135deg,#e0f0d5,#d0e0c5);}.rc4{background:linear-gradient(135deg,#f0e8d5,#e0d8c5);}
+  .rg-em{font-size:32px;opacity:.45;}.rg-info{padding:10px 12px;}.rg-name{font-size:13px;font-weight:500;color:var(--txt1);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}.rg-price{font-size:14px;font-weight:700;color:var(--txt1);margin-top:4px;}.rg-price .rd{color:var(--primary);margin-right:3px;}
+  .rg-more{padding:20px 16px;text-align:center;}.rg-dots{font-size:24px;color:var(--txt3);letter-spacing:4px;}
+
+  .footer-acc{background:var(--surface-alt);}.footer-acc .acc-btn{font-size:13px;color:var(--txt3);font-weight:400;padding:14px 16px;}.footer-acc .acc-body{font-size:11px;color:var(--txt3);line-height:1.7;padding:0 16px 14px;}
+
+  /* CTA BAR */
+  .cta{display:flex;align-items:center;gap:10px;padding:10px 16px 12px;background:var(--bg);border-top:1px solid var(--border);position:sticky;bottom:0;z-index:20;}
+  .cta-ic{width:46px;height:46px;border-radius:12px;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;}.cta-ic svg{width:20px;height:20px;color:var(--txt2);}
+  .cta-m{flex:1;height:52px;border-radius:12px;background:var(--primary);color:#fff;font-size:16px;font-weight:600;border:none;cursor:pointer;font-family:inherit;}
+  .spacer{height:68px;}
+
+  /* ★ OPTION BOTTOM SHEET */
+  .bs-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:30;display:none;align-items:flex-end;}
+  .bs-overlay.on{display:flex;}
+  .bs-sheet{width:100%;background:var(--bg);border-radius:16px 16px 0 0;padding:0;max-height:60%;animation:slideUp .25s ease-out;}
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .bs-header{display:flex;align-items:center;justify-content:space-between;padding:18px 16px 14px;border-bottom:1px solid var(--line);}
+  .bs-title{font-size:17px;font-weight:700;color:var(--txt1);}
+  .bs-close{width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;background:none;}
+  .bs-close svg{width:20px;height:20px;color:var(--txt2);}
+  .bs-body{padding:16px;}
+  .bs-label{font-size:13px;font-weight:500;color:var(--txt1);margin-bottom:8px;}
+  .bs-label .req{color:var(--primary);}
+  .bs-select{width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--txt2);background:var(--bg);appearance:none;-webkit-appearance:none;cursor:pointer;font-family:inherit;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23A8A8A8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+  .bs-total{display:flex;align-items:center;justify-content:space-between;padding:16px;border-top:1px solid var(--line);margin-top:12px;}
+  .bs-total-label{font-size:14px;color:var(--txt2);}
+  .bs-total-price{font-size:20px;font-weight:700;color:var(--primary);}
+  .bs-actions{display:flex;gap:10px;padding:0 16px 16px;}
+  .bs-cart{flex:1;height:50px;border-radius:12px;background:var(--bg);color:var(--primary);font-size:15px;font-weight:600;border:1.5px solid var(--primary);cursor:pointer;font-family:inherit;}
+  .bs-buy{flex:1.3;height:50px;border-radius:12px;background:var(--primary);color:#fff;font-size:16px;font-weight:600;border:none;cursor:pointer;font-family:inherit;}
+  .bs-qty{display:flex;align-items:center;gap:0;margin-top:14px;border:1px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content;}
+  .bs-qty button{width:36px;height:36px;border:none;background:var(--surface);font-size:18px;color:var(--txt2);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;}
+  .bs-qty button:active{background:var(--border);}
+  .bs-qty span{width:40px;text-align:center;font-size:14px;font-weight:600;color:var(--txt1);}
+</style>
+</head>
+<body>
+
+<!-- CONTROL BAR -->
+<div class="ctrl">
+  <div class="ctrl-row">
+    <button class="on" onclick="setTier('t1')">Tier 1 · 참기름</button>
+    <button onclick="setTier('t2')">Tier 2 · 모기밴드</button>
+  </div>
+  <div class="ctrl-row2">
+    <div class="ctrl-line"><span class="ctrl-label">타임세일</span><button class="on" onclick="setTS(true)">ON</button><button onclick="setTS(false)">OFF</button></div>
+    <div class="ctrl-line"><span class="ctrl-label">에디터</span><button onclick="setED(true)">ON</button><button class="on" onclick="setED(false)">OFF</button></div>
+    <div class="ctrl-line"><span class="ctrl-label">후기</span><button class="on" onclick="setRV(true)">ON</button><button onclick="setRV(false)">OFF</button></div>
+    <div class="ctrl-line"><span class="ctrl-label">무료배송</span><button class="on" onclick="setShip(true)">ON</button><button onclick="setShip(false)">OFF</button></div>
+    <div class="ctrl-line"><span class="ctrl-label">적립</span><button class="on" onclick="setPoint(true)">ON</button><button onclick="setPoint(false)">OFF</button></div>
+  </div>
+</div>
+
+<!-- PHONE -->
+<div class="phone show-ts show-rv free-ship show-point" id="phoneFrame">
+  <div class="notch"></div>
+
+  <!-- ======================== TIER 1 ======================== -->
+  <div class="pnl on" id="t1">
+    <div class="scr" id="scr1">
+
+      <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg><div class="nav-r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg></div></div>
+
+      <div class="hero hero-food"><span class="hero-emoji">🫒</span><div class="hero-badge">🍳 47개 레시피에 쓰이는 재료</div><div class="dots"><i class="on"></i><i></i><i></i></div></div>
+
+      <div class="timer-bar ts"><span>⏱</span><span>타임특가</span><span class="clock" id="ck1">05:32:17</span><span>남음</span></div>
+
+      <div class="brand-row"><span>CJ제일제당</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+      <div class="name-row"><div class="pd-name">백설 참기름 고소한맛 320ml</div><div class="share-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div></div>
+      <div class="rating-row rv-has-flex"><span class="rating-stars">★★★★★</span><span class="rating-link" onclick="scrollToSec('t1','sec-rv1')">128개 후기 보기</span></div>
+      <div class="rating-row rv-empty" style="display:none !important;"><span class="rating-stars" style="color:var(--txt3);">☆☆☆☆☆</span><span style="font-size:13px;color:var(--txt3);">후기 0개</span></div>
+
+      <div class="price-block">
+        <div class="price-orig-row"><span class="price-pct">23%</span><span class="price-orig">12,900원</span></div>
+        <div class="price-sale-row"><span class="price-sale">9,900원</span></div>
+        <div class="price-coupon-row ts">
+          <div class="coupon-left"><span class="coupon-price">8,900원</span><span class="coupon-price-label">쿠폰적용가</span></div>
+          <button class="coupon-btn">쿠폰 받기 ↓</button>
+        </div>
+        <div class="price-urgency ts-inline">🔥 내일 <b>1,000원</b> 비싸져요</div>
+        <div class="point-earn">💰 구매 시 <b>99P</b> 적립</div>
+      </div>
+
+
+      <div class="shipping"><span class="ship-badge ship-free">무료배송</span><span class="ship-badge-paid ship-paid">배송비 3,000원</span><span class="ship-text"><b>내일(목) 도착</b> · 오후 2시 전 주문 시<br><span class="ship-free">교환/반품 무료 · 안전포장 배송</span><span class="ship-paid">3만원 이상 구매 시 무료배송<span class="ship-soon">2,100원 더 담으면 무료배송 🚚</span></span></span></div>
+      <div class="td"></div>
+
+      <div class="sh"><span class="sh-t">이 재료로 완성한 요리 <span style="color:var(--primary);">47</span></span><span class="sh-l">전체보기 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></span></div>
+      <div class="sg">
+        <div class="sg-item"><div class="sg-ph sp1">🍲</div><div class="sg-ov"><div class="sg-ov-title">김치찌개</div><div class="sg-ov-sub">백종원</div></div></div>
+        <div class="sg-item"><div class="sg-ph sp2">🥗</div><div class="sg-ov"><div class="sg-ov-title">시금치나물</div><div class="sg-ov-sub">매일맛나</div></div></div>
+        <div class="sg-item"><div class="sg-ph sp3">🍳</div><div class="sg-ov"><div class="sg-ov-title">계란말이</div><div class="sg-ov-sub">슈퍼레시피</div></div></div>
+        <div class="sg-item"><div class="sg-ph sp4">🥘</div><div class="sg-ov"><div class="sg-ov-title">된장찌개</div><div class="sg-ov-sub">하봄</div></div></div>
+        <div class="sg-item"><div class="sg-ph sp5">🥜</div><div class="sg-ov"><div class="sg-ov-title">잡채</div><div class="sg-ov-sub">요리하는남자</div></div></div>
+      </div>
+      <div style="padding:4px 16px 16px;"><span class="sh-l" style="font-size:13px;">전체 47개 레시피 보기 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></span></div>
+      <div class="td"></div>
+
+      <div class="ed-toggle">
+      <div style="padding-top:16px;"></div>
+      <div class="ed-wrap"><div class="ed-box"><div class="ed-top"><div class="ed-av">J</div><div><div class="ed-nm">졸리팟 에디터</div><div class="ed-rl">직접 사용 후 추천</div></div></div><div class="ed-txt">볶음 요리 마무리에 한 바퀴 둘러주면 <strong>고소한 풍미가 확 올라와요</strong>. 320ml가 2~3개월 쓰기 적당한 사이즈.</div><div class="ed-tip">💡 개봉 후 냉암소 보관하면 풍미가 오래가요</div></div></div>
+      </div>
+
+      <div class="stabs" id="stab1"><button class="on" onclick="scrollToSec('t1','sec-info1')">상품 정보</button><button onclick="scrollToSec('t1','sec-rv1')">후기 <span class="badge">128</span></button><button onclick="scrollToSec('t1','sec-inq1')">문의</button></div>
+
+      <div id="sec-info1" class="sec-anchor"></div>
+      <div style="padding:16px 0 0;"></div>
+      <div class="det-fold"><div class="det-preview">
+        <p style="font-size:12px;color:var(--txt3);margin-bottom:12px;line-height:1.6;">졸리팟이 직접 사용해보고 추천하는 상품입니다. 국내산 원재료를 사용하고, 품질 관리가 검증된 제품만 선별합니다.</p>
+        <p style="font-size:18px;font-weight:700;color:var(--txt1);text-align:center;margin:20px 0 16px;line-height:1.4;">백설 참기름 고소한맛<br>국내산 참깨 100%</p>
+        <div class="det-img food-bg" style="aspect-ratio:1/1;">🫒</div>
+        <p style="font-size:15px;font-weight:700;color:var(--txt1);margin:20px 0 10px;">매일 달라지는 식탁의 풍미</p>
+        <p>국내산 참깨만을 엄선하여 전통 방식으로 볶아낸 참기름입니다. CJ제일제당의 25년 노하우로 깊고 진한 고소함을 담았어요. 볶음, 나물, 국, 찌개 등 다양한 요리의 마무리에 한 바퀴 둘러주면 풍미가 한층 올라갑니다.</p>
+        <p style="margin-top:8px;">특히 비빔밥, 나물 무침, 계란말이에 활용하면 그 차이를 확실히 느낄 수 있어요. 참기름 한 방울로 평범한 요리가 특별해지는 경험을 해보세요.</p>
+        <div class="det-img food-bg" style="margin-top:16px;aspect-ratio:16/9;">🍳</div>
+        <p style="font-size:15px;font-weight:700;color:var(--txt1);margin:20px 0 10px;">신선함을 지키는 품질 관리</p>
+        <p>원료 선별부터 포장까지 엄격한 품질 관리 공정을 거칩니다. 참깨 볶음 온도와 시간을 정밀하게 제어하여 고소한 향을 극대화했어요. 개봉 후에는 냉암소에 보관하면 고소한 풍미를 오래 유지할 수 있습니다.</p>
+        <div class="det-img food-bg" style="margin-top:16px;aspect-ratio:4/3;">🥜</div>
+        <p style="font-size:15px;font-weight:700;color:var(--txt1);margin:20px 0 10px;">이렇게 활용해보세요</p>
+        <p>• 비빔밥 — 밥 위에 한 바퀴 둘러 고소함 UP<br>• 나물 무침 — 시금치, 콩나물에 한 스푼<br>• 계란말이 — 계란물에 섞어 풍미 추가<br>• 볶음밥 — 마무리에 살짝 둘러 감칠맛</p>
+        <table class="det-spec" style="margin-top:20px;">
+          <tr><td>용량</td><td>320ml</td></tr>
+          <tr><td>원재료</td><td>참깨 100% (국내산)</td></tr>
+          <tr><td>유통기한</td><td>제조일로부터 24개월</td></tr>
+          <tr><td>보관</td><td>직사광선을 피해 서늘한 곳</td></tr>
+          <tr><td>제조사</td><td>CJ제일제당 (주)</td></tr>
+        </table>
+      </div></div>
+      <div style="padding:12px 0;"><button class="det-expand">상품정보 더보기 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button></div>
+      <div class="acc" onclick="toggleAcc(this)"><button class="acc-btn">배송 / 교환 / 반품 안내<svg class="acc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button><div class="acc-body">배송비: 무료 · 택배 (CJ대한통운) 1~2영업일<br>교환/반품: 수령 후 7일 이내 · 반품비 3,000원</div></div>
+      <div class="acc" onclick="toggleAcc(this)"><button class="acc-btn">상품정보 제공고시 (원재료 등)<svg class="acc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button><div class="acc-body">참깨 100% (국내산) · 320ml · 유통 24개월<br>직사광선 피해 서늘한 곳 · CJ제일제당 (주)</div></div>
+      <div class="td"></div>
+
+      <div id="sec-rv1" class="sec-anchor"></div>
+      <div class="rv-has">
+      <div class="sh"><span class="sh-t">후기 128</span></div>
+      <div class="rv-satisfaction">구매자 128명 중 95%가 만족했어요</div>
+      <div class="rv-sum"><div class="rv-avg"><div class="rv-avg-n">4.7</div><div class="rv-avg-s">★★★★★</div><div class="rv-avg-c">128개</div></div><div class="rv-bars"><div class="rv-br"><span class="rv-bl">5</span><div class="rv-bt"><div class="rv-bf" style="width:72%"></div></div><span class="rv-bc">92</span></div><div class="rv-br"><span class="rv-bl">4</span><div class="rv-bt"><div class="rv-bf" style="width:18%"></div></div><span class="rv-bc">23</span></div><div class="rv-br"><span class="rv-bl">3</span><div class="rv-bt"><div class="rv-bf" style="width:6%"></div></div><span class="rv-bc">8</span></div><div class="rv-br"><span class="rv-bl">2</span><div class="rv-bt"><div class="rv-bf" style="width:2%"></div></div><span class="rv-bc">3</span></div><div class="rv-br"><span class="rv-bl">1</span><div class="rv-bt"><div class="rv-bf" style="width:1.5%"></div></div><span class="rv-bc">2</span></div></div></div>
+      <div class="rv-filter"><button class="rv-chip on">전체</button><button class="rv-chip">사진 후기</button></div>
+      <div class="rv-card"><div class="rv-ct"><div class="rv-cu"><div class="rv-ca">😊</div><span class="rv-cn">요리초보맘</span><span class="rv-verified">구매 인증</span><span class="rv-cs">★★★★★</span></div><span class="rv-cd">3일 전</span></div><div class="rv-cx">고소한 향이 진짜 좋아요. 나물 무칠 때 한 스푼이면 맛이 달라져요.</div><div class="rv-cp"><div class="rv-ci rp1"></div></div><div class="rv-helpful">👍 도움이 됐어요 12</div></div>
+      <div class="rv-card"><div class="rv-ct"><div class="rv-cu"><div class="rv-ca">🍳</div><span class="rv-cn">매일한끼</span><span class="rv-verified">구매 인증</span><span class="rv-cs">★★★★★</span></div><span class="rv-cd">1주 전</span></div><div class="rv-cx">가격 대비 용량 좋고, 뚜껑이 한 손으로 열기 편해졌어요.</div><div class="rv-helpful">👍 도움이 됐어요 8</div></div>
+      <div class="rv-card"><div class="rv-ct"><div class="rv-cu"><div class="rv-ca">🌿</div><span class="rv-cn">건강집밥</span><span class="rv-verified">구매 인증</span><span class="rv-cs">★★★★☆</span></div><span class="rv-cd">2주 전</span></div><div class="rv-cx">항상 이 제품만 써요. 유통기한만 좀 더 넉넉하면 좋겠어요.</div><div class="rv-helpful">👍 도움이 됐어요 5</div></div>
+      <button class="rv-more">리뷰 더보기 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+      </div>
+      <div class="rv-empty">
+      <div class="sh"><span class="sh-t">후기</span></div>
+      <div class="inq-empty"><div style="font-size:32px;margin-bottom:8px;opacity:.4;">✍️</div><p>아직 후기가 없어요<br>첫 구매 후기 작성 시 <strong style="color:var(--primary);">포인트 2배</strong></p><button class="inq-btn">첫 후기 작성하기</button></div>
+      </div>
+      <div class="td"></div>
+
+      <div id="sec-inq1" class="sec-anchor"></div>
+      <div class="sh"><span class="sh-t">상품 문의</span></div>
+      <div class="inq-empty"><p>궁금하신 내용을 문의해주세요</p><button class="inq-btn">문의하기</button></div>
+      <div class="td"></div>
+
+      <div class="sh"><span class="sh-t">이것도 장바구니에 넣어볼까요?</span></div>
+      <div class="rg">
+        <div class="rg-item rg-full"><div class="rg-th rc1"><span class="rg-em">🫘</span></div><div class="rg-info"><div class="rg-name">해찬들 된장 500g</div><div class="rg-price"><span class="rd">18%</span>3,200원</div></div></div>
+        <div class="rg-item"><div class="rg-th rc2"><span class="rg-em">🌶️</span></div><div class="rg-info"><div class="rg-name">고추가루 1kg</div><div class="rg-price"><span class="rd">15%</span>8,500원</div></div></div>
+        <div class="rg-item"><div class="rg-th rc3"><span class="rg-em">🧄</span></div><div class="rg-info"><div class="rg-name">다진마늘 200g</div><div class="rg-price"><span class="rd">10%</span>2,700원</div></div></div>
+        <div class="rg-item"><div class="rg-th rc4"><span class="rg-em">🧅</span></div><div class="rg-info"><div class="rg-name">양파 1.5kg</div><div class="rg-price">3,800원</div></div></div>
+      </div>
+      <div class="rg-more"><span class="rg-dots">···</span></div>
+
+      <div class="footer-acc"><div class="acc" onclick="toggleAcc(this)"><button class="acc-btn">(주)레몬트리커뮤니케이션 사업자정보<svg class="acc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button><div class="acc-body">대표: 조영훈 · 사업자: 505-01-00008<br>통신판매: 제2024-대전유성-00000호<br>대전광역시 유성구 · 1668-3996</div></div>
+      <div style="padding:12px 16px;font-size:11px;color:var(--txt3);line-height:1.6;">(주)레몬트리커뮤니케이션은 통신판매중개자이며, 통신판매의 당사자가 아닙니다. 상품, 상품정보, 거래에 관한 의무와 책임은 판매자에게 있습니다.</div></div>
+      <div class="spacer"></div>
+
+      <div class="cta">
+        <div class="cta-ic" onclick="toggleWish(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div><div class="cta-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13"/><path d="M3 12h18"/><path d="M12 8c-1.5-2-4-3-4-3s1.5-2 4-2 4 2 4 2-2.5 1-4 3z"/></svg></div>
+        <button class="cta-m" onclick="openBS('bs1')">구매하기</button>
+      </div>
+    </div>
+
+    <!-- OPTION BOTTOM SHEET -->
+    <div class="bs-overlay" id="bs1" onclick="if(event.target===this)closeBS('bs1')">
+      <div class="bs-sheet">
+        <div class="bs-header"><span class="bs-title">옵션 선택</span><button class="bs-close" onclick="closeBS('bs1')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="bs-body">
+          <div class="bs-label">옵션 <span class="req">*</span></div>
+          <select class="bs-select" onchange="updateTotal(this,'total1','qty1')">
+            <option value="">옵션을 선택하세요</option>
+            <option value="9900">백설 참기름 320ml</option>
+            <option value="6900">백설 참기름 160ml</option>
+          </select>
+          <div class="bs-label" style="margin-top:14px;">수량</div>
+          <div class="bs-qty">
+            <button onclick="changeQty('qty1','total1',-1)">−</button>
+            <span id="qty1">1</span>
+            <button onclick="changeQty('qty1','total1',1)">+</button>
+          </div>
+        </div>
+        <div class="bs-total"><span class="bs-total-label">총 상품금액</span><span class="bs-total-price" id="total1">0원</span></div>
+        <div class="bs-actions">
+          <button class="bs-cart">장바구니 담기</button>
+          <button class="bs-buy">바로 구매</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== TIER 2 ======================== -->
+  <div class="pnl" id="t2">
+    <div class="scr" id="scr2">
+
+      <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg><div class="nav-r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg></div></div>
+
+      <div class="hero hero-life"><span class="hero-emoji">🦟</span><div class="hero-badge">졸리팟이 직접 고른 상품</div><div class="dots"><i class="on"></i><i></i><i></i></div></div>
+
+      <div class="timer-bar ts"><span>⏱</span><span>타임특가</span><span class="clock" id="ck2">02:15:43</span><span>남음</span></div>
+
+      <div class="brand-row"><span>자연주의</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+      <div class="name-row"><div class="pd-name">시트로넬라 모기밴드 4개입</div><div class="share-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div></div>
+      <div class="rating-row rv-has-flex"><span class="rating-stars">★★★★☆</span><span class="rating-link" onclick="scrollToSec('t2','sec-rv2')">42개 후기 보기</span></div>
+      <div class="rating-row rv-empty" style="display:none !important;"><span class="rating-stars" style="color:var(--txt3);">☆☆☆☆☆</span><span style="font-size:13px;color:var(--txt3);">후기 0개</span></div>
+
+      <div class="price-block">
+        <div class="price-orig-row"><span class="price-pct">33%</span><span class="price-orig">8,900원</span></div>
+        <div class="price-sale-row"><span class="price-sale">5,900원</span></div>
+        <div class="price-coupon-row ts">
+          <div class="coupon-left"><span class="coupon-price">4,900원</span><span class="coupon-price-label">쿠폰적용가</span></div>
+          <button class="coupon-btn">쿠폰 받기 ↓</button>
+        </div>
+        <div class="price-urgency ts-inline">🔥 내일 <b>1,000원</b> 비싸져요</div>
+        <div class="point-earn">💰 구매 시 <b>59P</b> 적립</div>
+      </div>
+
+
+      <div class="shipping"><span class="ship-badge ship-free">무료배송</span><span class="ship-badge-paid ship-paid">배송비 3,000원</span><span class="ship-text"><b>내일(목) 도착</b> · 오후 2시 전 주문 시<br><span class="ship-free">교환/반품 무료 · 안전포장 배송</span><span class="ship-paid">3만원 이상 구매 시 무료배송<span class="ship-soon">2,100원 더 담으면 무료배송 🚚</span></span></span></div>
+      <div class="td"></div>
+
+      <div class="ed-toggle">
+      <div style="padding-top:16px;"></div>
+      <div class="ed-wrap"><div class="ed-box"><div class="ed-top"><div class="ed-av">H</div><div><div class="ed-nm">하봄 에디터</div><div class="ed-rl">직접 사용 후 추천</div></div></div><div class="ed-txt">시트로넬라 오일 기반이라 <strong>아이 피부에도 부담 없어요</strong>. 야외 활동 30분 전 착용 권장.</div><div class="ed-tip">⚠️ 36개월 미만 영유아는 발목 착용 권장</div></div></div>
+      </div>
+
+      <div class="stabs" id="stab2"><button class="on" onclick="scrollToSec('t2','sec-info2')">상품 정보</button><button onclick="scrollToSec('t2','sec-rv2')">후기 <span class="badge">42</span></button><button onclick="scrollToSec('t2','sec-inq2')">문의</button></div>
+
+      <div id="sec-info2" class="sec-anchor"></div>
+      <div style="padding:16px 0 0;"></div>
+      <div class="det-fold"><div class="det-preview">
+        <p style="font-size:12px;color:var(--txt3);margin-bottom:12px;line-height:1.6;">졸리팟이 직접 사용해보고 추천하는 상품입니다. 안전성이 검증된 제품만 선별합니다.</p>
+        <p style="font-size:18px;font-weight:700;color:var(--txt1);text-align:center;margin:20px 0 16px;line-height:1.4;">자연주의 시트로넬라<br>모기밴드 4개입</p>
+        <div class="det-img life-bg" style="aspect-ratio:1/1;">🦟</div>
+        <p style="font-size:15px;font-weight:700;color:var(--txt1);margin:20px 0 10px;">식물 유래 성분으로 안심</p>
+        <p>시트로넬라·유칼립투스 오일을 함유한 천연 기피 밴드입니다. 화학 성분 없이 식물 유래 오일만으로 모기를 효과적으로 차단해요. DEET 프리로 민감한 아이 피부에도 부담이 없습니다.</p>
+        <div class="det-img life-bg" style="margin-top:16px;aspect-ratio:16/9;">🌿</div>
+        <p style="font-size:15px;font-weight:700;color:var(--txt1);margin:20px 0 10px;">간편한 착용, 확실한 효과</p>
+        <p>손목이나 발목에 간편하게 착용할 수 있습니다. 야외 활동 30분 전 착용을 권장하며, 개봉 후 약 72시간 지속돼요. 캠핑, 산책, 텃밭 작업, 공원 놀이 등 다양한 야외 활동에 활용하기 좋습니다.</p>
+        <div class="det-img life-bg" style="margin-top:16px;aspect-ratio:4/3;">👶</div>
+        <p style="font-size:15px;font-weight:700;color:var(--txt1);margin:20px 0 10px;">온 가족이 함께 쓸 수 있어요</p>
+        <p>6개월 이상 영유아부터 성인까지 사용 가능합니다. 단, 36개월 미만 영유아는 손목 대신 발목 착용을 권장합니다. 개별 포장되어 있어 위생적이고, 필요할 때 하나씩 꺼내 쓰기 편해요.</p>
+        <table class="det-spec" style="margin-top:20px;">
+          <tr><td>구성</td><td>4개입 (개별포장)</td></tr>
+          <tr><td>주성분</td><td>시트로넬라 오일, 유칼립투스 오일</td></tr>
+          <tr><td>지속시간</td><td>개봉 후 약 72시간</td></tr>
+          <tr><td>사용연령</td><td>6개월 이상</td></tr>
+          <tr><td>제조국</td><td>대한민국</td></tr>
+        </table>
+      </div></div>
+      <div style="padding:12px 0;"><button class="det-expand">상품정보 더보기 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button></div>
+      <div class="acc" onclick="toggleAcc(this)"><button class="acc-btn">배송 / 교환 / 반품 안내<svg class="acc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button><div class="acc-body">무료배송 · 택배 1~2영업일<br>교환/반품 수령 후 7일 · 반품비 3,000원</div></div>
+      <div class="acc" onclick="toggleAcc(this)"><button class="acc-btn">상품정보 제공고시<svg class="acc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button><div class="acc-body">시트로넬라 모기밴드 · 4개입<br>시트로넬라+유칼립투스 오일 · 6개월+ · 대한민국</div></div>
+      <div class="td"></div>
+
+      <div id="sec-rv2" class="sec-anchor"></div>
+      <div class="rv-has">
+      <div class="sh"><span class="sh-t">후기 42</span></div>
+      <div class="rv-satisfaction">구매자 42명 중 93%가 만족했어요</div>
+      <div class="rv-sum"><div class="rv-avg"><div class="rv-avg-n">4.3</div><div class="rv-avg-s">★★★★☆</div><div class="rv-avg-c">42개</div></div><div class="rv-bars"><div class="rv-br"><span class="rv-bl">5</span><div class="rv-bt"><div class="rv-bf" style="width:55%"></div></div><span class="rv-bc">23</span></div><div class="rv-br"><span class="rv-bl">4</span><div class="rv-bt"><div class="rv-bf" style="width:24%"></div></div><span class="rv-bc">10</span></div><div class="rv-br"><span class="rv-bl">3</span><div class="rv-bt"><div class="rv-bf" style="width:12%"></div></div><span class="rv-bc">5</span></div><div class="rv-br"><span class="rv-bl">2</span><div class="rv-bt"><div class="rv-bf" style="width:5%"></div></div><span class="rv-bc">2</span></div><div class="rv-br"><span class="rv-bl">1</span><div class="rv-bt"><div class="rv-bf" style="width:5%"></div></div><span class="rv-bc">2</span></div></div></div>
+      <div class="rv-filter"><button class="rv-chip on">전체</button><button class="rv-chip">사진 후기</button></div>
+      <div class="rv-card"><div class="rv-ct"><div class="rv-cu"><div class="rv-ca">👶</div><span class="rv-cn">육아맘서연</span><span class="rv-verified">구매 인증</span><span class="rv-cs">★★★★★</span></div><span class="rv-cd">5일 전</span></div><div class="rv-cx">아이 팔에 채워줬는데 모기가 확실히 덜 물어요.</div><div class="rv-helpful">👍 도움이 됐어요 9</div></div>
+      <div class="rv-card"><div class="rv-ct"><div class="rv-cu"><div class="rv-ca">🏕️</div><span class="rv-cn">캠핑러버</span><span class="rv-verified">구매 인증</span><span class="rv-cs">★★★★☆</span></div><span class="rv-cd">1주 전</span></div><div class="rv-cx">효과 좋은데 3일 지나면 약해져요.</div><div class="rv-helpful">👍 도움이 됐어요 6</div></div>
+      <div class="rv-card"><div class="rv-ct"><div class="rv-cu"><div class="rv-ca">🌻</div><span class="rv-cn">정원사하나</span><span class="rv-verified">구매 인증</span><span class="rv-cs">★★★★★</span></div><span class="rv-cd">2주 전</span></div><div class="rv-cx">텃밭 작업 필수. 화학성분 아니라서 맘 편해요.</div><div class="rv-cp"><div class="rv-ci rp1"></div></div><div class="rv-helpful">👍 도움이 됐어요 14</div></div>
+      <button class="rv-more">리뷰 더보기 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+      </div>
+      <div class="rv-empty">
+      <div class="sh"><span class="sh-t">후기</span></div>
+      <div class="inq-empty"><div style="font-size:32px;margin-bottom:8px;opacity:.4;">✍️</div><p>아직 후기가 없어요<br>첫 구매 후기 작성 시 <strong style="color:var(--primary);">포인트 2배</strong></p><button class="inq-btn">첫 후기 작성하기</button></div>
+      </div>
+      <div class="td"></div>
+
+      <div id="sec-inq2" class="sec-anchor"></div>
+      <div class="sh"><span class="sh-t">상품 문의</span></div>
+      <div class="inq-empty"><p>궁금하신 내용을 문의해주세요</p><button class="inq-btn">문의하기</button></div>
+      <div class="td"></div>
+
+      <div class="sh"><span class="sh-t">이것도 장바구니에 넣어볼까요?</span></div>
+      <div class="rg">
+        <div class="rg-item rg-full"><div class="rg-th rc1"><span class="rg-em">🧴</span></div><div class="rg-info"><div class="rg-name">모기 기피 스프레이</div><div class="rg-price"><span class="rd">20%</span>7,200원</div></div></div>
+        <div class="rg-item"><div class="rg-th rc2"><span class="rg-em">🪟</span></div><div class="rg-info"><div class="rg-name">방충망 패치 6매</div><div class="rg-price"><span class="rd">15%</span>3,500원</div></div></div>
+        <div class="rg-item"><div class="rg-th rc3"><span class="rg-em">💊</span></div><div class="rg-info"><div class="rg-name">모기물린 후 패치</div><div class="rg-price">4,900원</div></div></div>
+        <div class="rg-item"><div class="rg-th rc4"><span class="rg-em">🕯️</span></div><div class="rg-info"><div class="rg-name">시트로넬라 캔들</div><div class="rg-price"><span class="rd">25%</span>6,800원</div></div></div>
+      </div>
+      <div class="rg-more"><span class="rg-dots">···</span></div>
+      <div class="footer-acc"><div class="acc" onclick="toggleAcc(this)"><button class="acc-btn">(주)레몬트리커뮤니케이션 사업자정보<svg class="acc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button><div class="acc-body">대표: 조영훈 · 사업자: 505-01-00008<br>통신판매: 제2024-대전유성-00000호<br>대전광역시 유성구 · 1668-3996</div></div>
+      <div style="padding:12px 16px;font-size:11px;color:var(--txt3);line-height:1.6;">(주)레몬트리커뮤니케이션은 통신판매중개자이며, 통신판매의 당사자가 아닙니다. 상품, 상품정보, 거래에 관한 의무와 책임은 판매자에게 있습니다.</div></div>
+      <div class="spacer"></div>
+
+      <div class="cta">
+        <div class="cta-ic" onclick="toggleWish(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div><div class="cta-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13"/><path d="M3 12h18"/><path d="M12 8c-1.5-2-4-3-4-3s1.5-2 4-2 4 2 4 2-2.5 1-4 3z"/></svg></div>
+        <button class="cta-m" onclick="openBS('bs2')">구매하기</button>
+      </div>
+    </div>
+
+    <div class="bs-overlay" id="bs2" onclick="if(event.target===this)closeBS('bs2')">
+      <div class="bs-sheet">
+        <div class="bs-header"><span class="bs-title">옵션 선택</span><button class="bs-close" onclick="closeBS('bs2')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="bs-body">
+          <div class="bs-label">옵션 <span class="req">*</span></div>
+          <select class="bs-select" onchange="updateTotal(this,'total2','qty2')">
+            <option value="">옵션을 선택하세요</option>
+            <option value="5900">모기밴드 4개입</option>
+            <option value="10800">모기밴드 8개입 (세트)</option>
+          </select>
+          <div class="bs-label" style="margin-top:14px;">수량</div>
+          <div class="bs-qty">
+            <button onclick="changeQty('qty2','total2',-1)">−</button>
+            <span id="qty2">1</span>
+            <button onclick="changeQty('qty2','total2',1)">+</button>
+          </div>
+        </div>
+        <div class="bs-total"><span class="bs-total-label">총 상품금액</span><span class="bs-total-price" id="total2">0원</span></div>
+        <div class="bs-actions"><button class="bs-cart">장바구니 담기</button><button class="bs-buy">바로 구매</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- 개발 지침 (Development Notes)                                 -->
+<!-- ============================================================ -->
+<div style="max-width:680px;width:100%;margin:40px auto 0;padding:0 16px;">
+  <div style="background:#fff;border-radius:16px;padding:32px 24px;box-shadow:0 4px 20px rgba(0,0,0,.08);">
+
+    <h2 style="font-size:20px;font-weight:700;color:#2A2A2A;margin-bottom:4px;">📋 개발 지침</h2>
+    <p style="font-size:13px;color:#A8A8A8;margin-bottom:24px;">상품상세페이지(PDP) v3-3 · DEC-027 · 2026.05</p>
+
+    <!-- 핵심 원칙 박스 -->
+    <div style="background:#F7F2EA;border-radius:12px;padding:20px;margin-bottom:28px;border-left:3px solid #C75D3E;">
+      <h3 style="font-size:15px;font-weight:700;color:#2A2A2A;margin-bottom:12px;">⭐ 핵심 원칙 (먼저 읽기)</h3>
+      <div style="font-size:13px;color:#6B6B6B;line-height:1.75;">
+        <strong style="color:#2A2A2A;">1. 얼굴과 뒤편의 분리</strong><br>
+        졸리팟의 "얼굴"(홈·레시피·장보기)에는 레시피 연결 상품만 노출 → 신규 유저에게 "레시피 플랫폼" 정체성 유지. "뒤편"(쇼핑·검색)에서는 전 상품 접근 가능 → 기존 고객 매출 유지. PDP는 이 두 갈래를 모두 받으므로 Tier 분기가 필수.<br><br>
+
+        <strong style="color:#2A2A2A;">2. Tier 1의 킥은 스타일링샷</strong><br>
+        "이 재료로 완성한 요리"가 쿠팡·네이버에 없는 졸리팟만의 가치. PDP 전환의 핵심 가설이므로 우선순위 최상. 다른 요소가 이걸 가리지 않도록 함.<br><br>
+
+        <strong style="color:#2A2A2A;">3. 가격 영역 인지부하 경계</strong><br>
+        할인율·쿠폰·긴급성·적립까지가 적정 한계. 재고 임박은 "요소 과다"로 기각됨. 신규 요소 추가 시 이 영역의 밀도를 반드시 재검토.<br><br>
+
+        <strong style="color:#2A2A2A;">4. 데이터로 검증할 것 (P1 출시 후)</strong><br>
+        스타일링샷의 전환 기여 · 쿠폰적용가 강조 효과 · 에디터 코멘트 가치(현재 OFF). PDP를 더 만지지 말고 데이터로 판단.<br><br>
+
+        <strong style="color:#2A2A2A;">5. 기각된 안 (재논의 금지)</strong><br>
+        5버전 단일안 → Tier 분기로 수렴 / "~에서 오셨네요" 컨텍스트 배너 / 신뢰 시그널 스트립(당일발송·정품보장) / 첫뷰포트 구매수 배지(데이터 부족) / 재고 임박 / 함께둘러보면 별도 섹션. 모두 검토 후 제거 결정됨.
+      </div>
+    </div>
+
+    <!-- 1 -->
+    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">1. PDP 분기 로직</h3>
+    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
+      상품 DB에 <code style="background:#F5F0E8;padding:2px 6px;border-radius:4px;font-size:13px;">linked_recipe_count</code> 필드 기준으로 자동 분기.<br><br>
+      <strong style="color:#2A2A2A;">Tier 1</strong> (<code>linked_recipe_count >= 1</code>): 레시피 연결 상품. "이 재료로 완성한 요리" 스타일링샷 섹션 노출.<br>
+      <strong style="color:#2A2A2A;">Tier 2</strong> (<code>linked_recipe_count == 0</code>): 일반 상품. 스타일링샷 섹션 미노출, 배송 → 스티키 탭 직행.
+    </div>
+
+    <!-- 2 -->
+    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">2. 조건부 요소</h3>
+    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <tr style="border-bottom:1px solid #F0EDE7;">
+          <td style="padding:10px 0;color:#2A2A2A;font-weight:600;width:130px;">타임세일 바</td>
+          <td style="padding:10px 0;">상품의 <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">timesale_end_at</code> 존재 시 노출. 카운트다운 실시간 감소. 종료 시 자동 숨김.</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F0EDE7;">
+          <td style="padding:10px 0;color:#2A2A2A;font-weight:600;">쿠폰적용가</td>
+          <td style="padding:10px 0;">활성 쿠폰 존재 시에만 노출. 쿠폰 만료 후 자동 숨김. 타임세일과 독립적으로 동작 가능.</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F0EDE7;">
+          <td style="padding:10px 0;color:#2A2A2A;font-weight:600;">"내일 비싸져요"</td>
+          <td style="padding:10px 0;">타임세일 종료까지 24시간 이내일 때 노출. 금액은 <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">original_price - sale_price</code>.</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F0EDE7;">
+          <td style="padding:10px 0;color:#2A2A2A;font-weight:600;">에디터 코멘트</td>
+          <td style="padding:10px 0;">상품 DB에 <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">editor_comment</code> 필드 존재 시 노출. 현재 우선순위 낮음 (기본 OFF).</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F0EDE7;">
+          <td style="padding:10px 0;color:#2A2A2A;font-weight:600;">후기 Empty State</td>
+          <td style="padding:10px 0;"><code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">review_count == 0</code>일 때 별점 분포 대신 "첫 후기 작성하기" empty state 노출. 별점 행도 빈 별(☆)로 전환.</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F0EDE7;">
+          <td style="padding:10px 0;color:#2A2A2A;font-weight:600;">무료배송 여부</td>
+          <td style="padding:10px 0;">상품의 <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">is_free_shipping</code> 기준. 무료 시 세이지 "무료배송" 뱃지, 유료 시 그레이 "배송비 N원" 뱃지 + "N원 더 담으면 무료배송" 임박 안내.</td>
+        </tr>
+        <tr>
+          <td style="padding:10px 0;color:#2A2A2A;font-weight:600;">적립 포인트</td>
+          <td style="padding:10px 0;"><code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">point_rate</code> 설정 시 노출. "구매 시 NP 적립". 포인트 제도 운영 여부에 따라 전역 ON/OFF.</td>
+        </tr>
+      </table>
+      <p style="font-size:12px;color:#A8A8A8;margin-top:12px;line-height:1.6;">※ 상단 토글(타임세일 · 에디터 · 후기 · 무료배송 · 적립)은 프로토타입 검토용. 실제 노출 여부는 위 표의 데이터 조건에 따라 자동 결정됨.</p>
+    </div>
+
+    <!-- 3 -->
+    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">3. 샵바이 Enterprise 연동</h3>
+    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
+      샵바이 Enterprise 헤드리스 모드 기반. PDP 프론트는 자체 구축, 샵바이 API로 데이터 호출.<br><br>
+      <strong style="color:#2A2A2A;">필수 API</strong><br>
+      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">GET /products/{productNo}</code> — 상품 기본 정보 (이름, 가격, 옵션, 이미지)<br>
+      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">GET /products/{productNo}/options</code> — 옵션 목록<br>
+      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">GET /products/{productNo}/reviews</code> — 후기 목록<br>
+      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">POST /cart</code> — 장바구니 담기<br>
+      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">POST /orders</code> — 바로 구매<br><br>
+      <strong style="color:#2A2A2A;">자체 API (졸리팟 백엔드)</strong><br>
+      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">GET /recipes?ingredient_id={id}</code> — 연결 레시피 목록 (스타일링샷 데이터)<br>
+      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">GET /products/{id}/editor-comment</code> — 에디터 코멘트<br>
+      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">GET /products/{id}/recommendations</code> — 추천 상품
+    </div>
+
+    <!-- 4 -->
+    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">4. 스타일링샷 데이터 소스</h3>
+    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
+      <strong style="color:#2A2A2A;">P1 (현재)</strong>: 상품-레시피 매핑 테이블에서 연결된 레시피의 썸네일을 가져옴. 썸네일 = 유튜브 영상 썸네일 (완성 요리 컷이 대부분).<br><br>
+      <strong style="color:#2A2A2A;">P2 이후</strong>: Gemini Flash로 영상 마지막 프레임(완성 컷) 자동 추출 → 썸네일 대체. 더 감성적인 완성 사진으로 교체 가능.<br><br>
+      <strong style="color:#2A2A2A;">카드 구조</strong>: 3:4 비율, 72% 폭, 횡스크롤 snap. 최소 2장 이상일 때만 섹션 노출. 1장이면 숨김.
+    </div>
+
+    <!-- 5 -->
+    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">5. 가격 표시 규칙</h3>
+    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <tr style="border-bottom:1px solid #F0EDE7;">
+          <td style="padding:8px 0;color:#2A2A2A;font-weight:600;width:130px;">정가</td>
+          <td style="padding:8px 0;">14px / 400 / #A8A8A8 / 취소선</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F0EDE7;">
+          <td style="padding:8px 0;color:#2A2A2A;font-weight:600;">할인율</td>
+          <td style="padding:8px 0;">14px / 700 / #C75D3E (테라코타)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F0EDE7;">
+          <td style="padding:8px 0;color:#2A2A2A;font-weight:600;">판매가</td>
+          <td style="padding:8px 0;">24px / 700 / #2A2A2A (차콜)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F0EDE7;">
+          <td style="padding:8px 0;color:#2A2A2A;font-weight:600;">쿠폰적용가</td>
+          <td style="padding:8px 0;">24px / 700 / #C75D3E (테라코타). 활성 쿠폰 있을 때만.</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;color:#2A2A2A;font-weight:600;">긴급성 뱃지</td>
+          <td style="padding:8px 0;">인라인 뱃지. 배경 rgba(214,69,69,.06) / 보더 rgba(214,69,69,.12) / 텍스트 #D64545</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 6 -->
+    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">6. 스크롤 연동</h3>
+    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
+      <strong style="color:#2A2A2A;">스티키 탭</strong>: 네비바(46px) 아래에 고정 (<code>top:46px</code>). 3탭(상품정보 / 후기 / 문의) 스크롤 위치에 따라 활성 탭 자동 전환 (IntersectionObserver 또는 scroll event).<br><br>
+      <strong style="color:#2A2A2A;">탭 클릭</strong>: 해당 섹션의 <code>sec-anchor</code>로 smooth scroll. <code>scroll-margin-top:95px</code> (네비+스티키 높이).<br><br>
+      <strong style="color:#2A2A2A;">CTA 바</strong>: <code>position:sticky; bottom:0</code>. 항상 하단 고정.
+    </div>
+
+    <!-- 7 -->
+    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">7. 바텀시트 동작</h3>
+    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
+      "구매하기" 탭 → 오버레이 + 바텀시트 slide up.<br>
+      오버레이 탭 또는 X 버튼 → 닫힘.<br>
+      옵션 미선택 시 "장바구니 담기" / "바로 구매" 비활성 처리 필요 (프로토타입 미구현).<br>
+      수량 최소 1, 최대는 재고 수량.<br>
+      총 상품금액 = 옵션가 × 수량 (실시간 업데이트).
+    </div>
+
+    <!-- 8 -->
+    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">8. 디자인 토큰</h3>
+    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
+      <code style="background:#F5F0E8;padding:2px 6px;border-radius:4px;font-size:12px;">Jollypot_Design_Guide.md</code> 참조. 핵심 토큰:<br><br>
+      · CTA: <span style="display:inline-block;width:12px;height:12px;background:#C75D3E;border-radius:2px;vertical-align:middle;"></span> #C75D3E (테라코타)<br>
+      · 서브: <span style="display:inline-block;width:12px;height:12px;background:#8FA68E;border-radius:2px;vertical-align:middle;"></span> #8FA68E (세이지) — 상품정보 더보기 버튼<br>
+      · 텍스트: #2A2A2A / #6B6B6B / #A8A8A8 (3단계)<br>
+      · 카드: #F5F0E8 배경 + 1px #EDE8E0 보더 + 16px radius<br>
+      · 순검정(#000) 사용 금지. 차콜(#2A2A2A) 통일.<br>
+      · font-weight 700은 섹션 헤더(L1·L2)와 가격에만 사용.
+    </div>
+
+    <!-- 9 -->
+    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">9. 주의사항</h3>
+    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;">
+      · 쿠팡 파트너스 연동 상품은 쿠팡 링크 사용. 졸리팟 자체 상품(샵바이)과 쿠팡 파트너스 상품의 CTA 동작이 다름 — 쿠팡 상품은 "구매하기" 클릭 시 쿠팡 앱/웹으로 이동, 바텀시트 미사용.<br>
+      · 스타일링샷의 레시피 카드 탭 → 해당 레시피 상세 페이지로 이동 (앱 내 화면 전환).<br>
+      · 찜 토글 상태는 로컬 + 서버 동기화. 비로그인 시 로그인 유도.<br>
+      · 선물하기는 샵바이 선물하기 API 연동. 미지원 상품은 아이콘 숨김 처리.<br>
+      · 상품정보 더보기: 접힌 상태에서 max-height 720px → 펼치면 max-height 제거 + 버튼 "접기"로 전환.<br>
+      · 후기 "리뷰 더보기" → 후기 전체 목록 페이지로 이동 (별도 화면).<br>
+      · 포토리뷰 필터: API에서 <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">has_image=true</code> 파라미터로 필터링.
+    </div>
+
+  </div>
+</div>
+
+<script>
+function setTier(t){
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tier-tabs button, .ctrl-row button').forEach(b=>b.classList.remove('on'));
+  document.getElementById(t).classList.add('on');
+  event.target.classList.add('on');
+  document.querySelector('#'+t+' .scr').scrollTop=0;
+}
+// Timesale toggle
+function setTS(on){
+  const ph=document.getElementById('phoneFrame');
+  ph.classList.toggle('show-ts',on);
+  const btns=document.querySelectorAll('.ctrl-row2 button');
+  btns[0].classList.toggle('on',on);btns[1].classList.toggle('on',!on);
+}
+// Editor toggle
+function setED(on){
+  const ph=document.getElementById('phoneFrame');
+  ph.classList.toggle('show-ed',on);
+  const btns=document.querySelectorAll('.ctrl-row2 button');
+  btns[2].classList.toggle('on',on);btns[3].classList.toggle('on',!on);
+}
+// Review toggle
+function setRV(on){
+  const ph=document.getElementById('phoneFrame');
+  ph.classList.toggle('show-rv',on);
+  const btns=document.querySelectorAll('.ctrl-row2 button');
+  btns[4].classList.toggle('on',on);btns[5].classList.toggle('on',!on);
+}
+// Shipping toggle
+function setShip(free){
+  const ph=document.getElementById('phoneFrame');
+  ph.classList.toggle('free-ship',free);
+  const btns=document.querySelectorAll('.ctrl-row2 button');
+  btns[6].classList.toggle('on',free);btns[7].classList.toggle('on',!free);
+}
+// Point toggle
+function setPoint(on){
+  const ph=document.getElementById('phoneFrame');
+  ph.classList.toggle('show-point',on);
+  const btns=document.querySelectorAll('.ctrl-row2 button');
+  btns[8].classList.toggle('on',on);btns[9].classList.toggle('on',!on);
+}
+// Wish toggle
+function toggleWish(el){
+  const svg=el.querySelector('svg');
+  const on=svg.getAttribute('fill')==='none';
+  svg.setAttribute('fill',on?'var(--primary)':'none');
+  svg.setAttribute('stroke',on?'var(--primary)':'currentColor');
+}
+// Accordion
+function toggleAcc(el){el.classList.toggle('open');}
+// Scroll to section
+function scrollToSec(tier,secId){
+  const scr=document.querySelector('#'+tier+' .scr');
+  const sec=document.getElementById(secId);
+  if(sec&&scr)scr.scrollTo({top:sec.offsetTop-95,behavior:'smooth'});
+}
+// Scroll spy
+function initSpy(scrId,tabId,secs){
+  const scr=document.getElementById(scrId),tb=document.getElementById(tabId);
+  if(!scr||!tb)return;const btns=tb.querySelectorAll('button');
+  scr.addEventListener('scroll',()=>{
+    const st=scr.scrollTop+100;let idx=0;
+    secs.forEach((id,i)=>{const s=document.getElementById(id);if(s&&s.offsetTop<=st)idx=i;});
+    btns.forEach((b,i)=>b.classList.toggle('on',i===idx));
+  });
+}
+initSpy('scr1','stab1',['sec-info1','sec-rv1','sec-inq1']);
+initSpy('scr2','stab2',['sec-info2','sec-rv2','sec-inq2']);
+
+// Bottom sheet
+function openBS(id){document.getElementById(id).classList.add('on');}
+function closeBS(id){document.getElementById(id).classList.remove('on');}
+// Update total
+function updateTotal(sel,totalId,qtyId){
+  const v=sel.value;
+  const q=parseInt(document.getElementById(qtyId).textContent)||1;
+  document.getElementById(totalId).textContent=v?(Number(v)*q).toLocaleString()+'원':'0원';
+}
+// Change quantity
+function changeQty(qtyId,totalId,delta){
+  const el=document.getElementById(qtyId);
+  let q=parseInt(el.textContent)||1;
+  q=Math.max(1,q+delta);
+  el.textContent=q;
+  // find the select in same bottom sheet
+  const bs=el.closest('.bs-sheet');
+  const sel=bs.querySelector('.bs-select');
+  if(sel&&sel.value){
+    document.getElementById(totalId).textContent=(Number(sel.value)*q).toLocaleString()+'원';
+  }
+}
+
+// Clocks
+function runClock(id,sec){
+  const el=document.getElementById(id);if(!el)return;let s=sec;
+  setInterval(()=>{s=Math.max(0,s-1);const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;el.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0');},1000);
+}
+runClock('ck1',19937);runClock('ck2',8143);
+</script>
+
+<script src="proto-link.js"></script>
+</body>
+</html>

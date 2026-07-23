@@ -1,0 +1,2496 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>졸리팟 — 요리 모드 v4</title>
+<style>
+:root {
+  --color-brand: #FDB813;
+  --color-primary: #C75D3E;
+  --color-primary-dark: #B14E32;
+  --color-secondary: #8FA68E;
+  --color-secondary-dark: #758A75;
+  --color-bg: #FFFFFF;
+  --color-surface: #F5F0E8;
+  --color-surface-alt: #F7F2EA;
+  --color-text-primary: #2A2A2A;
+  --color-text-secondary: #6B6B6B;
+  --color-text-tertiary: #A8A8A8;
+  --color-border: #EDE8E0;
+  --color-line: #F0EDE7;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+               "Pretendard Variable", "Pretendard", "Noto Sans KR", sans-serif;
+  background: #eceae6;
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+body { display: flex; flex-direction: column; align-items: center; padding: 28px 16px 60px; gap: 20px; }
+
+/* Intro */
+.intro { max-width: 390px; text-align: center; }
+.intro-eyebrow { font-size: 12px; font-weight: 500; color: var(--color-text-tertiary); letter-spacing: 0.04em; margin-bottom: 6px; }
+.intro h1 { font-size: 20px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.01em; }
+.intro p { font-size: 13px; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Phone */
+.phone {
+  width: 390px; height: 844px;
+  background: var(--color-bg);
+  border-radius: 52px;
+  overflow: hidden;
+  box-shadow: 0 30px 90px rgba(0,0,0,0.18), 0 0 0 6px #1a1a1a, 0 0 0 7px #333;
+  position: relative;
+}
+.notch {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 32px; background: #000; border-radius: 20px; z-index: 200;
+}
+
+.cook-mode {
+  width: 100%; height: 100%;
+  background: var(--color-bg);
+  display: flex; flex-direction: column;
+  position: relative; overflow: hidden;
+}
+
+/* Status Bar */
+.status-bar {
+  height: 54px;
+  display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 0 32px 6px;
+  font-size: 15px; font-weight: 600;
+  flex-shrink: 0;
+}
+.status-right { display: flex; gap: 6px; align-items: center; }
+
+/* Top Bar */
+.top-bar {
+  display: flex; align-items: center;
+  padding: 8px 20px 16px;
+  gap: 16px; flex-shrink: 0;
+}
+.icon-btn {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  transition: background 0.15s;
+}
+.icon-btn:active { background: var(--color-surface-alt); }
+.icon-btn svg {
+  width: 20px; height: 20px;
+  stroke: var(--color-text-primary); fill: none;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+
+.progress-container { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.progress-text { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); }
+.progress-bar {
+  width: 100%; height: 4px;
+  background: var(--color-border);
+  border-radius: 2px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 2px;
+  transition: width 0.4s cubic-bezier(.4,0,.2,1);
+}
+
+/* Step Area */
+.step-area {
+  flex: 1;
+  padding: 8px 24px 16px;
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.step-area::-webkit-scrollbar { display: none; }
+
+.step-number-row {
+  display: flex; align-items: center;
+  gap: 12px; margin-bottom: 18px;
+}
+.step-number-badge {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700;
+  flex-shrink: 0;
+}
+.step-title {
+  font-size: 17px; font-weight: 500;
+  color: var(--color-text-secondary);
+  line-height: 1.3;
+}
+
+.step-text {
+  font-size: 26px; font-weight: 500;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  word-break: keep-all;
+}
+
+/* === v4: 재료양 인라인 chip (cream-alt) === */
+.amount {
+  display: inline-block;
+  background: var(--color-surface-alt);
+  color: var(--color-text-primary);
+  padding: 1px 11px;
+  border-radius: 9px;
+  font-size: 0.82em;
+  font-weight: 600;
+  vertical-align: baseline;
+  margin: 0 2px;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+/* 인라인 타이머 칩 */
+.inline-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--color-secondary);
+  color: white;
+  padding: 4px 14px;
+  border-radius: 100px;
+  font-size: 22px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  vertical-align: middle;
+  line-height: 1.1;
+  font-family: inherit;
+  letter-spacing: -0.01em;
+  transition: transform 0.15s, background 0.15s;
+}
+.inline-timer:active { transform: scale(0.96); background: var(--color-secondary-dark); }
+.inline-timer.active {
+  background: var(--color-border);
+  color: var(--color-text-tertiary);
+  cursor: default;
+}
+.inline-timer svg {
+  width: 15px; height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Video Slot */
+.video-slot {
+  margin-bottom: 20px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: #000;
+  position: relative;
+  aspect-ratio: 16/9;
+  cursor: pointer;
+}
+.video-thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+.play-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 100%);
+  transition: background 0.2s;
+}
+.video-slot:active .play-overlay { background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%); }
+.play-button {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: white;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+  transition: transform 0.15s;
+}
+.video-slot:active .play-button { transform: scale(0.95); }
+.play-button svg { width: 22px; height: 22px; fill: var(--color-text-primary); margin-left: 4px; }
+.video-meta {
+  position: absolute; bottom: 10px; left: 12px;
+  background: rgba(0,0,0,0.55);
+  color: white;
+  font-size: 12px; font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 10px;
+  display: flex; align-items: center; gap: 6px;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.video-meta svg { width: 11px; height: 11px; fill: currentColor; }
+.video-source {
+  position: absolute; top: 10px; right: 12px;
+  background: rgba(0,0,0,0.55);
+  color: white;
+  font-size: 11px; font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 10px;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.video-slot iframe { width: 100%; height: 100%; border: none; display: block; }
+
+/* === v4.1: 스텝 팁 (조건부) === */
+.tip {
+  margin-bottom: 20px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.tip-icon {
+  width: 18px; height: 18px;
+  color: var(--color-secondary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.tip-icon svg {
+  width: 100%; height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tip-text {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+  word-break: keep-all;
+  flex: 1;
+}
+
+/* === v4: 하단 sticky Timer Bar — 크게 === */
+.timer-bar {
+  display: flex; gap: 10px;
+  padding: 10px 16px;
+  overflow-x: auto;
+  flex-shrink: 0;
+  scrollbar-width: none;
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-line);
+}
+.timer-bar::-webkit-scrollbar { display: none; }
+.timer-bar:empty { display: none; }
+
+.timer-bar-card {
+  flex-shrink: 0;
+  min-width: 184px;
+  height: 64px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 10px 16px;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.timer-bar-card:active { transform: scale(0.98); }
+.timer-bar-card .row {
+  display: flex; align-items: center; gap: 10px;
+}
+.timer-bar-card .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  flex-shrink: 0;
+}
+.timer-bar-card .label {
+  flex: 1;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.timer-bar-card .time {
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+.timer-bar-card .mini-progress {
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.timer-bar-card .mini-progress-fill {
+  height: 100%;
+  background: var(--color-secondary);
+  border-radius: 2px;
+  transition: width 1s linear;
+}
+.timer-bar-card.alert {
+  border-color: var(--color-primary);
+  background: rgba(199, 93, 62, 0.08);
+  animation: pulse 0.8s ease-in-out infinite;
+}
+.timer-bar-card.alert .dot { background: var(--color-primary); }
+.timer-bar-card.alert .label,
+.timer-bar-card.alert .time { color: var(--color-primary); }
+.timer-bar-card.alert .mini-progress-fill { background: var(--color-primary); }
+
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+/* === v4: 하단 네비 — prev mini + next === */
+.bottom-nav {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px 28px;
+  background: var(--color-bg);
+  flex-shrink: 0;
+}
+.nav-prev-mini {
+  width: 48px;
+  height: 60px;
+  border-radius: 30px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.nav-prev-mini:active:not(:disabled) { background: var(--color-surface-alt); }
+.nav-prev-mini:disabled {
+  opacity: 0.3; cursor: not-allowed;
+}
+.nav-prev-mini svg {
+  width: 20px; height: 20px;
+  fill: none; stroke: currentColor;
+  stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+}
+.nav-next {
+  flex: 1; height: 60px;
+  border-radius: 30px; border: none;
+  background: var(--color-primary);
+  color: white;
+  font-size: 16px; font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+  transition: all 0.15s;
+}
+.nav-next:active {
+  transform: scale(0.985);
+  background: var(--color-primary-dark);
+}
+.nav-next svg {
+  width: 20px; height: 20px;
+  fill: none; stroke: currentColor;
+  stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* === Timer Full-Screen Sheet === */
+.timer-sheet-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: flex-end; justify-content: center;
+  z-index: 120;
+}
+.timer-sheet-overlay.visible { display: flex; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.timer-sheet {
+  width: 100%;
+  background: var(--color-bg);
+  border-radius: 24px 24px 0 0;
+  padding: 20px 28px 36px;
+  animation: slideUp 0.3s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.popup-handle {
+  width: 36px; height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+.timer-sheet-label {
+  font-size: 13px; font-weight: 500;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-bottom: 4px;
+}
+.timer-sheet-name {
+  font-size: 18px; font-weight: 700;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin-bottom: 24px;
+}
+.timer-circle {
+  width: 200px; height: 200px;
+  margin: 0 auto 28px;
+  position: relative;
+}
+.timer-circle svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.timer-circle circle { fill: none; stroke-width: 8; stroke-linecap: round; }
+.timer-circle .bg { stroke: var(--color-border); }
+.timer-circle .progress {
+  stroke: var(--color-primary);
+  transition: stroke-dashoffset 1s linear;
+}
+.timer-circle .display {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+.timer-sheet-controls {
+  display: flex; gap: 10px;
+  margin-bottom: 14px;
+  align-items: center;
+}
+.sheet-adjust {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: white;
+  font-size: 12px; font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.sheet-adjust:active { background: var(--color-surface-alt); }
+.sheet-pause {
+  flex: 1;
+  height: 56px;
+  border-radius: 28px;
+  background: var(--color-secondary);
+  color: white; border: none;
+  font-size: 15px; font-weight: 500;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.sheet-pause:active { transform: scale(0.98); }
+.sheet-stop {
+  width: 100%;
+  height: 48px;
+  border-radius: 24px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  border: none;
+  font-size: 14px; font-weight: 500;
+  cursor: pointer;
+}
+.sheet-stop:active { background: var(--color-surface-alt); }
+
+/* Confirm */
+.confirm-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 150; padding: 32px;
+}
+.confirm-overlay.visible { display: flex; animation: fadeIn 0.2s ease; }
+.confirm-box {
+  background: white;
+  border-radius: 20px; padding: 24px;
+  width: 100%; max-width: 280px;
+  text-align: center;
+}
+.confirm-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.confirm-text { font-size: 13px; color: var(--color-text-secondary); line-height: 1.55; margin-bottom: 20px; }
+.confirm-actions { display: flex; gap: 8px; }
+.confirm-actions button {
+  flex: 1; height: 44px;
+  border-radius: 22px;
+  font-size: 14px; font-weight: 500;
+  cursor: pointer; border: none;
+}
+.confirm-cancel { background: var(--color-surface); color: var(--color-text-primary); }
+.confirm-exit { background: var(--color-primary); color: white; }
+
+/* Complete */
+.complete-screen {
+  position: absolute; inset: 0;
+  background: var(--color-surface);
+  display: none;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 60px 32px 40px;
+  z-index: 50;
+}
+.complete-screen.visible { display: flex; animation: fadeIn 0.4s ease; }
+.complete-emoji { font-size: 72px; margin-bottom: 20px; }
+.complete-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; text-align: center; letter-spacing: -0.01em; }
+.complete-subtitle { font-size: 15px; color: var(--color-text-secondary); text-align: center; margin-bottom: 28px; line-height: 1.55; }
+.rating { display: flex; gap: 6px; margin-bottom: 32px; }
+.star {
+  font-size: 36px; cursor: pointer;
+  color: var(--color-border);
+  user-select: none;
+  transition: color 0.15s, transform 0.15s;
+}
+.star:active { transform: scale(1.15); }
+.star.active { color: var(--color-brand); }
+.complete-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.btn-primary {
+  height: 56px; border-radius: 28px; border: none;
+  background: var(--color-primary); color: white;
+  font-size: 16px; font-weight: 600; cursor: pointer;
+}
+.btn-secondary {
+  height: 56px; border-radius: 28px;
+  background: transparent;
+  border: 1.5px solid var(--color-secondary);
+  color: var(--color-secondary);
+  font-size: 15px; font-weight: 500; cursor: pointer;
+}
+
+/* === Phase Tabs (v5) === */
+.phase-tabs {
+  display: flex;
+  gap: 0;
+  background: white;
+  border-radius: 12px;
+  padding: 4px;
+  border: 1px solid #d8d4cd;
+  max-width: 360px;
+  width: 100%;
+}
+.phase-tab {
+  flex: 1;
+  height: 38px;
+  background: transparent;
+  border: none;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.18s;
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px;
+}
+.phase-tab:active { transform: scale(0.97); }
+.phase-tab.active {
+  background: var(--color-primary);
+  color: white;
+  font-weight: 600;
+}
+.phase-tab .tab-num {
+  font-size: 11px;
+  opacity: 0.7;
+}
+.phase-tab.active .tab-num { opacity: 0.85; }
+
+/* === Color additions for close phase === */
+:root {
+  --color-brand-soft: #FFE9A8;
+  --color-brand-tint: #FFF5D6;
+  --color-close-bg: #FBF8F2;
+  --color-confetti-1: #FDB813;
+  --color-confetti-2: #C75D3E;
+  --color-confetti-3: #8FA68E;
+  --color-confetti-4: #FFD340;
+}
+
+/* === Close Page === */
+.close-page {
+  width: 100%; height: 100%;
+  background: var(--color-close-bg);
+  display: none;
+  flex-direction: column;
+  position: relative; overflow: hidden;
+}
+.close-page.active { display: flex; }
+.cook-mode { display: none; }
+.cook-mode.active { display: flex; }
+
+/* close-page의 status-bar는 hero 배경 위에 떠야 함 */
+.close-page .status-bar {
+  background: transparent;
+  position: relative; z-index: 10;
+}
+
+/* Close top nav — X만 (오른쪽) */
+.close-top-nav {
+  position: absolute;
+  top: 54px; right: 8px;
+  z-index: 10;
+}
+.close-x {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.close-x svg {
+  width: 22px; height: 22px;
+  stroke: var(--color-text-primary); fill: none;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* Close scroll area */
+.close-scroll {
+  flex: 1;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+.close-scroll::-webkit-scrollbar { display: none; }
+
+/* === Hero — Celebration (v6 재설계) === */
+.close-hero {
+  padding: 36px 24px 44px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 25%, var(--color-brand) 0%, var(--color-brand-soft) 35%, var(--color-brand-tint) 65%, var(--color-close-bg) 95%);
+  position: relative;
+  overflow: hidden;
+}
+.hero-mascot {
+  width: 96px; height: 96px;
+  margin: 8px auto 22px;
+  position: relative;
+  z-index: 2;
+  animation: bounce 1.4s cubic-bezier(.36,.07,.19,.97) both;
+  filter: drop-shadow(0 8px 20px rgba(253, 184, 19, 0.45));
+}
+.hero-mascot svg { width: 100%; height: 100%; }
+@keyframes bounce {
+  0% { transform: scale(0) rotate(-12deg); }
+  50% { transform: scale(1.15) rotate(6deg); }
+  70% { transform: scale(0.95) rotate(-3deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+/* Confetti */
+.confetti-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+.confetti {
+  position: absolute;
+  width: 8px; height: 12px;
+  top: -20px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: confettiFall 3.5s cubic-bezier(.25,.46,.45,.94) forwards;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
+}
+
+.hero-title {
+  font-size: 36px; font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+  position: relative; z-index: 2;
+  animation: closeFadeUp 0.5s ease-out 0.3s both;
+}
+.hero-recipe {
+  font-size: 17px; font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 14px;
+  position: relative; z-index: 2;
+  animation: closeFadeUp 0.5s ease-out 0.45s both;
+}
+.hero-meta {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  background: rgba(255,255,255,0.85);
+  padding: 6px 14px;
+  border-radius: 100px;
+  position: relative; z-index: 2;
+  animation: closeFadeUp 0.5s ease-out 0.6s both;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.hero-meta svg {
+  width: 12px; height: 12px;
+  stroke: currentColor; fill: none;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.hero-meta .meta-dot {
+  width: 3px; height: 3px;
+  background: var(--color-text-tertiary);
+  border-radius: 50%;
+}
+@keyframes closeFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Close Sections */
+.close-section { padding: 24px 20px; }
+.close-section-title {
+  font-size: 18px; font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+}
+
+/* Photo capture */
+.photo-area {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--color-bg);
+  border: 1.5px dashed #d8d2c5;
+  border-radius: 16px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  overflow: hidden;
+  position: relative;
+}
+.photo-area:active { transform: scale(0.98); }
+.photo-icon-wrap {
+  width: 48px; height: 48px;
+  background: var(--color-surface);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.photo-icon-wrap svg {
+  width: 22px; height: 22px;
+  stroke: var(--color-text-secondary); fill: none;
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.photo-label {
+  font-size: 14px; font-weight: 500;
+  color: var(--color-text-primary);
+}
+.photo-sublabel {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+.photo-area.has-photo {
+  border: 1px solid var(--color-border);
+  background: linear-gradient(135deg, #f5deb3 0%, #d4a574 50%, #a87545 100%);
+}
+.photo-area.has-photo > * { display: none; }
+.photo-area.has-photo::after {
+  content: '✓ 사진 추가됨';
+  position: absolute;
+  bottom: 12px; left: 12px;
+  background: rgba(0,0,0,0.55);
+  color: white;
+  font-size: 12px; font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 100px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+
+/* Rating — 별점 (v10: review-card 안으로) */
+.star-row {
+  display: flex; justify-content: center; gap: 4px;
+  padding: 2px 0 4px;
+}
+.star-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.star-btn:active { transform: scale(0.88); }
+.star-btn svg {
+  width: 38px; height: 38px;
+  fill: none;
+  stroke: #888;
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: all 0.15s ease-out;
+}
+.star-btn.filled svg {
+  fill: var(--color-brand);
+  stroke: var(--color-brand);
+  filter: drop-shadow(0 2px 4px rgba(253, 184, 19, 0.3));
+}
+.rating-feedback {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  min-height: 18px;
+  padding-bottom: 16px;
+  transition: opacity 0.3s;
+  opacity: 0;
+}
+.rating-feedback.visible { opacity: 1; }
+
+/* === Review 작성 영역 (v9) === */
+.review-label {
+  font-size: 14px; font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.review-label .optional {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  font-weight: 400;
+}
+
+/* v10: 별점 + 후기 + 사진 통합 카드 */
+.review-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.review-card:focus-within {
+  border-color: var(--color-primary);
+}
+.review-card-title {
+  font-size: 17px; font-weight: 700;
+  color: var(--color-text-primary);
+  text-align: center;
+  padding: 20px 16px 12px;
+  letter-spacing: -0.01em;
+}
+.review-card-divider {
+  height: 1px;
+  background: var(--color-line);
+}
+.review-textarea {
+  width: 100%;
+  min-height: 96px;
+  padding: 16px;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--color-text-primary);
+  resize: none;
+  outline: none;
+}
+.review-textarea::placeholder {
+  color: var(--color-text-tertiary);
+  line-height: 1.55;
+}
+.review-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--color-line);
+  min-height: 48px;
+}
+
+/* 사진 추가 버튼 (textarea 내부 옵션) */
+.review-photo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 13px; font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+.review-photo-btn:active { background: var(--color-surface); }
+.review-photo-btn svg {
+  width: 18px; height: 18px;
+  stroke: currentColor; fill: none;
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* 사진 추가 후 — 썸네일 */
+.review-thumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  padding: 0 4px;
+}
+.review-thumb-img {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f5deb3 0%, #d4a574 50%, #a87545 100%);
+  flex-shrink: 0;
+}
+.review-thumb-label {
+  font-size: 13px; font-weight: 500;
+  color: var(--color-text-primary);
+}
+.review-thumb-remove {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+}
+.review-thumb-remove:active { background: var(--color-surface); }
+.review-thumb-remove svg {
+  width: 16px; height: 16px;
+  stroke: currentColor; fill: none;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* Submit 버튼 */
+.review-submit {
+  width: 100%;
+  height: 56px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 16px; font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  margin-top: 18px;
+  transition: all 0.15s;
+  box-shadow: 0 4px 12px rgba(199, 93, 62, 0.2);
+}
+.review-submit:active {
+  transform: scale(0.99);
+  background: var(--color-primary-dark);
+}
+
+/* Skip 링크 */
+.review-skip {
+  display: block;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  padding: 14px;
+  margin-top: 4px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  font-family: inherit;
+}
+.review-skip:active { opacity: 0.5; }
+
+/* === Done Page (v11) — 후기 등록 후 === */
+.done-page {
+  width: 100%; height: 100%;
+  background: var(--color-close-bg);
+  display: none;
+  flex-direction: column;
+  position: relative; overflow: hidden;
+}
+.done-page.active { display: flex; }
+.done-page .status-bar {
+  background: transparent;
+  position: relative; z-index: 10;
+}
+.done-scroll {
+  flex: 1;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+.done-scroll::-webkit-scrollbar { display: none; }
+
+/* 확인 영역 (차분) */
+.done-confirm {
+  text-align: center;
+  padding: 24px 24px 28px;
+}
+.done-check {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  animation: doneCheckPop 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+.done-check svg {
+  width: 26px; height: 26px;
+  stroke: white; fill: none;
+  stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+}
+@keyframes doneCheckPop {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+.done-msg {
+  font-size: 20px; font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.done-submsg {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+/* Done 섹션 */
+.done-section {
+  padding: 20px 20px 8px;
+}
+.done-section-title {
+  font-size: 17px; font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+.done-section-sub {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  margin-bottom: 14px;
+}
+
+/* 상품 가로 스크롤 (커머스) */
+.done-product-scroll {
+  display: flex; gap: 10px;
+  overflow-x: auto;
+  padding: 4px 20px 20px;
+  scrollbar-width: none;
+}
+.done-product-scroll::-webkit-scrollbar { display: none; }
+.done-product-card {
+  flex-shrink: 0;
+  width: 108px;
+  cursor: pointer;
+}
+.done-product-img {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+.done-product-name {
+  font-size: 13px; font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+}
+.done-product-store {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  margin-bottom: 4px;
+}
+.done-product-price {
+  font-size: 14px; font-weight: 700;
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 비슷한 레시피 2열 그리드 (디스커버리) */
+.done-recipe-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 4px 20px 8px;
+}
+.done-recipe-card { cursor: pointer; }
+.done-recipe-img {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 44px;
+  margin-bottom: 8px;
+}
+.done-recipe-img.d1 { background: linear-gradient(135deg, #fceabb 0%, #f4c95d 100%); }
+.done-recipe-img.d2 { background: linear-gradient(135deg, #ffd9c0 0%, #f0a878 100%); }
+.done-recipe-img.d3 { background: linear-gradient(135deg, #e8efe2 0%, #c2d4b8 100%); }
+.done-recipe-img.d4 { background: linear-gradient(135deg, #f7e2c8 0%, #dcb285 100%); }
+.done-recipe-name {
+  font-size: 14px; font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+  margin-bottom: 4px;
+  word-break: keep-all;
+}
+.done-recipe-meta {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+}
+
+/* 홈으로 버튼 */
+.done-home {
+  margin: 16px 20px 8px;
+  width: calc(100% - 40px);
+  height: 52px;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 15px; font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.done-home:active { background: var(--color-surface); transform: scale(0.99); }
+.done-bottom-pad { height: 24px; }
+
+/* Close bottom link */
+.close-bottom {
+  text-align: center;
+  padding: 8px 20px 32px;
+}
+.close-link {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 12px 20px;
+}
+.close-link:active { opacity: 0.6; }
+
+/* Side Info */
+.side-info {
+  max-width: 390px; width: 100%;
+  background: white;
+  border-radius: 16px;
+  padding: 18px 20px;
+  border: 1px solid #d8d4cd;
+}
+.side-info h3 { font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+.side-info h4 {
+  font-size: 11px; font-weight: 600;
+  color: var(--color-text-secondary);
+  margin: 14px 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.side-info h4:first-of-type { margin-top: 0; }
+.side-info ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.side-info li {
+  font-size: 12.5px; color: var(--color-text-secondary);
+  line-height: 1.55; padding-left: 12px; position: relative;
+}
+.side-info li::before { content: "•"; position: absolute; left: 0; color: var(--color-text-tertiary); }
+.side-info strong { color: var(--color-primary); font-weight: 500; }
+.side-info code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11.5px;
+  background: var(--color-surface);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--color-text-primary);
+}
+.side-info pre {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11.5px;
+  background: var(--color-surface);
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  margin-top: 6px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <div class="intro-eyebrow">JOLLYPOT V2.0 · 요리 모드 v11-1</div>
+  <h1>후기 등록 후 — 디스커버리만</h1>
+  <p>3 phase: 진행 중 → 완성(후기) → 등록 후(비슷한 레시피)<br>v11-1: 완성 직후 커머스 제거. 감정 모먼트 안 깨고 디스커버리만.</p>
+</div>
+
+<!-- Phase 전환 탭 -->
+<div class="phase-tabs">
+  <button class="phase-tab active" data-view="cook-mode" onclick="switchPhase('cook-mode')">
+    <span class="tab-num">①</span>
+    <span>진행 중</span>
+  </button>
+  <button class="phase-tab" data-view="close" onclick="switchPhase('close')">
+    <span class="tab-num">②</span>
+    <span>완성</span>
+  </button>
+  <button class="phase-tab" data-view="done" onclick="switchPhase('done')">
+    <span class="tab-num">③</span>
+    <span>등록 후</span>
+  </button>
+</div>
+
+<div class="phone">
+  <div class="notch"></div>
+  <div class="cook-mode active" id="cookMode">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <span class="status-right">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M1 7.5h2v3H1zM5 5.5h2v5H5zM9 3h2v7.5H9zM13 .5h2v10h-2z"/></svg>
+        <svg width="22" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="2.5" stroke="currentColor"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="22" y="4" width="1.5" height="4" rx="0.5" fill="currentColor"/></svg>
+      </span>
+    </div>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <button class="icon-btn" onclick="confirmExit()" aria-label="종료">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <div class="progress-container">
+        <span class="progress-text" id="progressText">단계 1/7</span>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 14.28%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step Area -->
+    <div class="step-area" id="stepArea">
+      <div class="step-number-row">
+        <div class="step-number-badge" id="stepBadge">1</div>
+        <div class="step-title" id="stepTitle"></div>
+      </div>
+      <div class="step-text" id="stepText"></div>
+      <div id="videoSlot"></div>
+      <div id="tipSlot"></div>
+    </div>
+
+    <!-- Timer Bar (sticky) -->
+    <div class="timer-bar" id="timerBar"></div>
+
+    <!-- Bottom Nav: prev mini + next -->
+    <div class="bottom-nav">
+      <button class="nav-prev-mini" id="navPrev" onclick="prevStep()" disabled aria-label="이전">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <button class="nav-next" id="navNext" onclick="nextStep()"></button>
+    </div>
+
+    <!-- Timer Full-Screen Sheet -->
+    <div class="timer-sheet-overlay" id="timerSheet" onclick="closeTimerSheet(event)">
+      <div class="timer-sheet" onclick="event.stopPropagation()">
+        <div class="popup-handle"></div>
+        <div class="timer-sheet-label">타이머</div>
+        <div class="timer-sheet-name" id="sheetName">재우기</div>
+        <div class="timer-circle">
+          <svg viewBox="0 0 200 200">
+            <circle class="bg" cx="100" cy="100" r="92"/>
+            <circle class="progress" cx="100" cy="100" r="92"
+                    stroke-dasharray="578.05" stroke-dashoffset="0"/>
+          </svg>
+          <div class="display" id="sheetDisplay">15:00</div>
+        </div>
+        <div class="timer-sheet-controls">
+          <button class="sheet-adjust" onclick="adjustSheet(-30)">-30s</button>
+          <button class="sheet-pause" id="sheetPauseBtn" onclick="togglePauseSheet()"></button>
+          <button class="sheet-adjust" onclick="adjustSheet(30)">+30s</button>
+        </div>
+        <button class="sheet-stop" onclick="stopSheetTimer()">타이머 끄기</button>
+      </div>
+    </div>
+
+    <!-- Confirm -->
+    <div class="confirm-overlay" id="confirmOverlay">
+      <div class="confirm-box">
+        <div class="confirm-title">요리 모드를 종료할까요?</div>
+        <div class="confirm-text">진행 중인 타이머는 백그라운드에서 계속 알림이 와요.</div>
+        <div class="confirm-actions">
+          <button class="confirm-cancel" onclick="cancelExit()">계속하기</button>
+          <button class="confirm-exit" onclick="doExit()">종료</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- v8: 별도 complete-screen 제거. 마지막 step의 next → close view 자동 전환 -->
+
+  </div>
+
+  <!-- ★ Close Page (v5) — 완성 phase 별도 view -->
+  <div class="close-page" id="closeView">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <span class="status-right">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M1 7.5h2v3H1zM5 5.5h2v5H5zM9 3h2v7.5H9zM13 .5h2v10h-2z"/></svg>
+        <svg width="22" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="2.5" stroke="currentColor"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="22" y="4" width="1.5" height="4" rx="0.5" fill="currentColor"/></svg>
+      </span>
+    </div>
+
+    <!-- Close Top Nav (X only) -->
+    <div class="close-top-nav">
+      <div class="close-x" onclick="closeScreen()" aria-label="닫기">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="close-scroll">
+
+      <!-- Hero — 완성 모먼트 -->
+      <div class="close-hero">
+        <!-- Confetti layer -->
+        <div class="confetti-layer" id="confettiLayer"></div>
+
+        <!-- SVG 마스코트 — 노른자 캐릭터 -->
+        <div class="hero-mascot">
+          <svg viewBox="0 0 100 100">
+            <defs>
+              <radialGradient id="yolkGrad" cx="38%" cy="32%">
+                <stop offset="0%" stop-color="#FFE066"/>
+                <stop offset="60%" stop-color="#FDB813"/>
+                <stop offset="100%" stop-color="#E89A00"/>
+              </radialGradient>
+            </defs>
+            <!-- Body -->
+            <circle cx="50" cy="50" r="42" fill="url(#yolkGrad)"/>
+            <!-- Cheeks -->
+            <ellipse cx="28" cy="60" rx="6" ry="4" fill="#FF8C6B" opacity="0.5"/>
+            <ellipse cx="72" cy="60" rx="6" ry="4" fill="#FF8C6B" opacity="0.5"/>
+            <!-- Eyes -->
+            <ellipse cx="38" cy="46" rx="3.5" ry="4.5" fill="#2A2A2A"/>
+            <ellipse cx="62" cy="46" rx="3.5" ry="4.5" fill="#2A2A2A"/>
+            <!-- Eye highlight -->
+            <circle cx="39.5" cy="44" r="1.2" fill="white"/>
+            <circle cx="63.5" cy="44" r="1.2" fill="white"/>
+            <!-- Smile -->
+            <path d="M 38 62 Q 50 72 62 62" stroke="#2A2A2A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <h1 class="hero-title">완성!</h1>
+        <p class="hero-recipe">백종원 제육볶음</p>
+        <div class="hero-meta">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 22 12 19 17 22 15.79 13.88"/></svg>
+          <span>27번째 요리</span>
+        </div>
+      </div>
+
+      <!-- 별점 + 후기 + 사진 통합 카드 (v10) -->
+      <div class="close-section">
+        <div class="review-card">
+          <h2 class="review-card-title">만들어보니 어땠나요?</h2>
+          <div class="star-row">
+            <button class="star-btn" data-rating="1" onclick="selectRating(this)" aria-label="별 1">
+              <svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.6 7 .3-5.5 4.5 1.9 6.8L12 17l-6 3.7 1.9-6.8L2.4 9.4l7-.3z"/></svg>
+            </button>
+            <button class="star-btn" data-rating="2" onclick="selectRating(this)" aria-label="별 2">
+              <svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.6 7 .3-5.5 4.5 1.9 6.8L12 17l-6 3.7 1.9-6.8L2.4 9.4l7-.3z"/></svg>
+            </button>
+            <button class="star-btn" data-rating="3" onclick="selectRating(this)" aria-label="별 3">
+              <svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.6 7 .3-5.5 4.5 1.9 6.8L12 17l-6 3.7 1.9-6.8L2.4 9.4l7-.3z"/></svg>
+            </button>
+            <button class="star-btn" data-rating="4" onclick="selectRating(this)" aria-label="별 4">
+              <svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.6 7 .3-5.5 4.5 1.9 6.8L12 17l-6 3.7 1.9-6.8L2.4 9.4l7-.3z"/></svg>
+            </button>
+            <button class="star-btn" data-rating="5" onclick="selectRating(this)" aria-label="별 5">
+              <svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.6 7 .3-5.5 4.5 1.9 6.8L12 17l-6 3.7 1.9-6.8L2.4 9.4l7-.3z"/></svg>
+            </button>
+          </div>
+          <div class="rating-feedback" id="ratingFeedback">의견 고마워요</div>
+
+          <div class="review-card-divider"></div>
+
+          <textarea class="review-textarea" id="reviewText" placeholder="느낀 점을 자유롭게 남겨보세요. 같은 레시피로 요리하는 분들에게 도움이 돼요. (선택)"></textarea>
+          <div class="review-actions" id="reviewActions">
+            <button class="review-photo-btn" onclick="capturePhoto()">
+              <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              사진 추가
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit (카드 밖) -->
+        <button class="review-submit" onclick="submitReview()">후기 남기기</button>
+        <button class="review-skip" onclick="skipReview()">나중에 남길게요</button>
+
+      </div>
+
+      <div class="close-bottom">
+        <span class="close-link" onclick="closeScreen()">홈으로 돌아가기</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ★ Done Page (v11) — 후기 등록 후: 커머스 + 디스커버리 회수 -->
+  <div class="done-page" id="doneView">
+
+    <div class="status-bar">
+      <span>9:41</span>
+      <span class="status-right">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M1 7.5h2v3H1zM5 5.5h2v5H5zM9 3h2v7.5H9zM13 .5h2v10h-2z"/></svg>
+        <svg width="22" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="2.5" stroke="currentColor"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="22" y="4" width="1.5" height="4" rx="0.5" fill="currentColor"/></svg>
+      </span>
+    </div>
+
+    <div class="close-top-nav">
+      <div class="close-x" onclick="closeScreen()" aria-label="닫기">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    </div>
+
+    <div class="done-scroll">
+
+      <!-- 확인 (차분) -->
+      <div class="done-confirm">
+        <div class="done-check">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="done-msg" id="doneMsg">후기 고마워요!</div>
+        <div class="done-submsg" id="doneSubmsg">스크랩북에도 기록됐어요</div>
+      </div>
+
+      <!-- 비슷한 레시피 (디스커버리) -->
+      <div class="done-section">
+        <h2 class="done-section-title">이런 레시피는 어때요?</h2>
+      </div>
+      <div class="done-recipe-grid">
+        <div class="done-recipe-card">
+          <div class="done-recipe-img d1">🦑</div>
+          <div class="done-recipe-name">매콤 쭈꾸미 볶음</div>
+          <div class="done-recipe-meta">15분 · 조회 18만</div>
+        </div>
+        <div class="done-recipe-card">
+          <div class="done-recipe-img d2">🍲</div>
+          <div class="done-recipe-name">돼지고기 김치찌개</div>
+          <div class="done-recipe-meta">25분 · 조회 31만</div>
+        </div>
+        <div class="done-recipe-card">
+          <div class="done-recipe-img d3">🥬</div>
+          <div class="done-recipe-name">두루치기 백종원 레시피</div>
+          <div class="done-recipe-meta">20분 · 조회 24만</div>
+        </div>
+        <div class="done-recipe-card">
+          <div class="done-recipe-img d4">🍚</div>
+          <div class="done-recipe-name">제육 덮밥 간단하게</div>
+          <div class="done-recipe-meta">10분 · 조회 12만</div>
+        </div>
+      </div>
+
+      <button class="done-home" onclick="closeScreen()">홈으로 돌아가기</button>
+      <div class="done-bottom-pad"></div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="side-info">
+  <h3>v11-1 — 완성 직후 커머스 제거</h3>
+
+  <h4>변경</h4>
+  <ul>
+    <li>③ 등록 후 화면에서 <strong>"재료 다시 채우기"(커머스) 제거</strong></li>
+    <li>디스커버리("이런 레시피는 어때요?")만 유지</li>
+  </ul>
+
+  <h4>왜 제거</h4>
+  <ul>
+    <li><strong>문구 문제</strong>: 방금 요리 완성했는데 "재료 다시 채우기"는 타이밍 어색 (재구매는 다음에 또 만들 때)</li>
+    <li><strong>감정 문제</strong>: 완성 = 감정 정점인데 "상품 사세요"가 분위기 깸. "뿌듯하다" 상태에 판매 끼어듦</li>
+    <li>완성 직후 자연스러운 행동은 "다음엔 뭘 만들까"(디스커버리)이지 "상품 구매"가 아님</li>
+  </ul>
+
+  <h4>커머스 funnel은 잃지 않음</h4>
+  <ul>
+    <li>커머스의 올바른 자리 = <strong>구매 의도가 자연 발생하는 맥락</strong></li>
+    <li>레시피 상세의 "이 레시피로 장보기" (요리 시작 전, 재료 필요할 때)</li>
+    <li>③ 디스커버리 → 레시피 상세 → 장보기로 funnel은 살아있음</li>
+    <li>완성 직후에 억지로 끼우지 않을 뿐 — 제자리로 보낸 것</li>
+  </ul>
+
+  <h4>③ 최종 구성</h4>
+  <ul>
+    <li>확인 (세이지 체크 + "후기 고마워요")</li>
+    <li>이런 레시피는 어때요? (2열 그리드)</li>
+    <li>홈으로</li>
+  </ul>
+</div>
+
+<div class="side-info">
+  <h3>v11 — 후기 등록 후 화면 (funnel 회수)</h3>
+
+  <h4>왜 이 화면이 필요했나</h4>
+  <ul>
+    <li>v7~v10에서 후기 작성에 집중하면서 <strong>v6가 가졌던 커머스·디스커버리 funnel 상실</strong></li>
+    <li>완성 직후는 "재료 또 사고 싶은" 최적 타이밍 — 이걸 못 살리면 반쪽</li>
+    <li>해법: 후기 등록 <strong>후</strong> 화면에서 회수 (작성과 분리해 인지 부담 없이)</li>
+  </ul>
+
+  <h4>3-Phase 전체 흐름</h4>
+  <ul>
+    <li><strong>① 진행 중</strong>: 스텝 진행 (인라인 칩·타이머·팁)</li>
+    <li><strong>② 완성</strong>: 감정 정점 (confetti + 마스코트) + 후기 작성 통합 카드</li>
+    <li><strong>③ 등록 후</strong>: 차분한 확인 + 커머스 + 디스커버리</li>
+  </ul>
+
+  <h4>③ 화면 구성</h4>
+  <ul>
+    <li><strong>확인 (차분)</strong>: 세이지 체크 + "후기 고마워요" — ②에서 이미 큰 축하했으니 가볍게</li>
+    <li><strong>재료 다시 채우기</strong>: 가로 상품 스크롤 (커머스 회수) + 파트너스 고지</li>
+    <li><strong>이런 레시피는 어때요?</strong>: 2열 그리드 (디스커버리 회수)</li>
+    <li><strong>홈으로</strong>: secondary 버튼</li>
+  </ul>
+
+  <h4>감정 곡선 설계</h4>
+  <ul>
+    <li>① 집중 → ② 정점(축하·후기) → ③ 차분한 정리·다음 행동</li>
+    <li>②에서 큰 축하를 했으므로 ③는 톤 다운 — confetti·큰 hero 없음</li>
+    <li>③의 메시지는 등록 여부로 동적: 등록="후기 고마워요" / skip="스크랩북에 기록됐어요"</li>
+  </ul>
+
+  <h4>측정 포인트</h4>
+  <ul>
+    <li>③ 도달률 (후기 등록 + skip 모두 도달)</li>
+    <li>"재료 다시 채우기" 클릭률 (완성 직후 커머스 전환)</li>
+    <li>"비슷한 레시피" 클릭률 (다음 세션 트리거)</li>
+    <li>③에서 홈 이탈 vs 추가 액션 비율</li>
+  </ul>
+</div>
+
+<div class="side-info">
+  <h3>v10 — 별점+후기+사진 통합 카드</h3>
+
+  <h4>변경</h4>
+  <ul>
+    <li>별점 섹션 + 후기 섹션 → <strong>하나의 카드</strong>로 통합</li>
+    <li>카드 제목: "이번 요리, 어땠어요?" → <strong>"만들어보니 어땠나요?"</strong></li>
+    <li>제목 하나가 별점·후기·사진 전체를 포괄 (질문 중복 제거)</li>
+    <li>카드 구조: 제목 → 별점 → divider → textarea → 사진 옵션</li>
+    <li>등록·skip 버튼은 카드 밖</li>
+  </ul>
+
+  <h4>왜 한 카드로</h4>
+  <ul>
+    <li><strong>별점은 미끼, 후기가 본질</strong> — 별점 1탭이 "이미 시작했다"는 관성을 만들어 후기까지 이어짐</li>
+    <li>순차 분리 시 별점 주고 "끝났다" 인지 → 후기 안 씀. 한 덩어리여야 "아직 안 끝났네"</li>
+    <li>제목 1개 + 별점 + 후기 + 사진이 시각적으로 "하나의 행동 묶음"임을 전달</li>
+    <li>focus-within으로 카드 전체 border 강조 → 입력 중 통일감</li>
+  </ul>
+
+  <h4>문구 결정</h4>
+  <ul>
+    <li>"후기" (사무적/리뷰 느낌) → "만들어보니 어땠나요?" (대화체, 따뜻함)</li>
+    <li>졸리팟 톤(따뜻한 살림)에 맞는 질문형 — 평가 부담 ↓</li>
+    <li>placeholder: "느낀 점을 자유롭게 남겨보세요... (선택)" — 강요 X</li>
+  </ul>
+
+  <h4>최종 close phase 흐름</h4>
+  <ul>
+    <li>Hero (마스코트 + confetti + 완성! + 27번째 요리)</li>
+    <li>통합 카드: 만들어보니 어땠나요? + ★ + 후기 + 📷</li>
+    <li>후기 남기기 / 나중에 남길게요</li>
+  </ul>
+</div>
+
+<div class="side-info">
+  <h3>v9 — 사진을 textarea에 통합</h3>
+
+  <h4>변경</h4>
+  <ul>
+    <li>별도 큰 사진 영역 (가로 88px 박스) <strong>폐기</strong></li>
+    <li>textarea + 사진 옵션을 <strong>하나의 컨테이너</strong>로 통합</li>
+    <li>사진은 textarea 하단 inline 버튼 — "사진 추가" (작은 텍스트)</li>
+    <li>사진 추가 시 같은 위치에 작은 썸네일 + 제거 ✕ 버튼</li>
+    <li>focus-within으로 컨테이너 전체 border가 terracotta로 강조</li>
+  </ul>
+
+  <h4>왜 사진을 통합했나</h4>
+  <ul>
+    <li>사진은 비용 ↑ (카메라/갤러리 권한, 탐색, 선택 등 5-6탭) — 별점·후기보다 무거움</li>
+    <li>별도 큰 영역으로 두면 "사진까지 찍어야 하나?" 부담 → 후기 작성률 자체가 떨어짐</li>
+    <li>인스타·카톡·트위터 등 검증된 패턴: <strong>텍스트 입력 옆 작은 첨부 아이콘</strong></li>
+    <li>사진 = 후기의 부수 요소, 본문은 텍스트라는 위계 명확화</li>
+  </ul>
+
+  <h4>점진적 깊이 (Progressive Disclosure)</h4>
+  <ul>
+    <li>1단계: 별점만 — 1탭, 가장 쉬움</li>
+    <li>2단계: 후기 텍스트 — 보통, 메인 액션</li>
+    <li>3단계: 사진 — 선택, 부수 첨부</li>
+    <li>각 단계는 독립적으로 완료 가능 — 어떤 조합으로도 등록 가능</li>
+  </ul>
+
+  <h4>측정 포인트</h4>
+  <ul>
+    <li>별점 전환률 / 후기 전환률 / 사진 첨부률 (3단계 funnel)</li>
+    <li>후기 평균 글자 수 (engagement)</li>
+    <li>사진 포함 후기 비율 (UGC 품질)</li>
+    <li>v7-1(별도 사진 영역) vs v9(통합) A/B 가능</li>
+  </ul>
+</div>
+
+<div class="side-info">
+  <h3>v8 — Active 마지막 → Close 자동 전환</h3>
+
+  <h4>변경</h4>
+  <ul>
+    <li>cook-mode 내 별도 <strong>complete-screen 영역 제거</strong> (어색한 "완성 사진 올리기 / 처음으로" 버튼)</li>
+    <li>마지막 step의 "요리 완성" 버튼 → <code>switchPhase('close')</code>로 view 자동 전환</li>
+    <li>두 phase가 자연 연결되는 단일 흐름 형성</li>
+    <li>② 완성 탭은 그대로 유지 (편의용 데모 진입점)</li>
+  </ul>
+
+  <h4>왜</h4>
+  <ul>
+    <li>v4 시절 complete-screen은 별점 + 사진 업로드 + 처음으로 — 임시 디자인이었음</li>
+    <li>v7에서 새 close phase 디자인을 만들어 두고, v4 잔재가 active 안에 남아있는 게 모순</li>
+    <li>같은 "요리 완성" 액션이 두 곳에 중복 → 일관성 ↓</li>
+    <li>마지막 step → close 자동 전환으로 cook 전체 흐름이 하나로 통합</li>
+  </ul>
+
+  <h4>흐름 변화</h4>
+  <ul>
+    <li>이전: step 1 ~ 7 → "요리 완성" 버튼 → cook-mode 내부 complete-screen (별점·사진·재시작)</li>
+    <li>이후: step 1 ~ 7 → "요리 완성" 버튼 → <strong>close phase 자동 전환</strong> (마스코트·confetti·별점·사진·후기)</li>
+  </ul>
+
+  <h4>검증 흐름</h4>
+  <ul>
+    <li>① 진행 중 탭에서 "다음 단계" 6번 → 마지막 step (완성)</li>
+    <li>"요리 완성" 버튼 클릭 → close view로 자동 전환 + confetti 트리거</li>
+    <li>또는 ② 완성 탭 직접 클릭 → 같은 close view</li>
+  </ul>
+</div>
+
+<div class="side-info">
+  <h3>v7-1 — "26분 소요" 제거</h3>
+
+  <h4>왜 제거</h4>
+  <ul>
+    <li>Cook mode 진입~종료 wall clock time은 측정 가능</li>
+    <li>하지만 일시정지·백그라운드·중간 이탈 등으로 <strong>실제 요리 시간을 대표 못 함</strong></li>
+    <li>"26분 안 걸렸는데?" 같은 사용자 의심 → 신뢰도 ↓</li>
+    <li>부정확한 데이터 노출보다 안 보여주는 게 안전</li>
+  </ul>
+
+  <h4>대신 남긴 것</h4>
+  <ul>
+    <li><strong>27번째 요리</strong> — 단순 누적 카운터, 정확 측정 가능</li>
+    <li>사용자의 누적 성취감 표현 (가벼운 게이미피케이션)</li>
+    <li>아이콘 시계 → award 아이콘 (성취 메타포로 변경)</li>
+  </ul>
+
+  <h4>향후 (P2+)</h4>
+  <ul>
+    <li>"이 레시피 N번째 도전" (레시피별 카운터) — 재요리 패턴 측정</li>
+    <li>실제 요리 시간 측정 가능해지면 (백그라운드 제외 등 정교한 추적) 재추가 검토</li>
+  </ul>
+</div>
+
+<div class="side-info">
+  <h3>v7 — 후기 작성 단일 흐름</h3>
+
+  <h4>변경</h4>
+  <ul>
+    <li>액션 카드 5개 (댓글·사진·스크랩북·장보기·비슷한레시피) <strong>전부 폐기</strong></li>
+    <li>대신 한 화면에서 <strong>별점 → 사진 → 후기 텍스트 → 등록</strong> 단일 흐름</li>
+    <li>댓글은 별도 분기가 아니라 close phase의 default action으로 통합</li>
+    <li>"나중에 남길게요" skip 옵션은 유지 (강요 X 원칙)</li>
+  </ul>
+
+  <h4>왜 단일 흐름인가</h4>
+  <ul>
+    <li>완성 직후는 가장 긍정 감정 모먼트 — 액션 분기보다 한 곳에 집중시키는 게 conversion 강함</li>
+    <li>5개 카드 = 5개 선택 부담. 사용자는 "뭘 먼저 누를까" 고민 → 결국 아무것도 안 함</li>
+    <li>댓글 작성은 핵심 SNS funnel — 별도 화면 이동 없이 즉시 작성 가능하게 마찰 ↓</li>
+    <li>사진+텍스트가 한 화면에 같이 있어 "사진 있는 후기" 작성률 ↑ (UGC 품질 향상)</li>
+  </ul>
+
+  <h4>빠진 액션들은 어디로</h4>
+  <ul>
+    <li><strong>스크랩북 저장</strong>: 자동 저장이라 별도 알림 불필요 (P2에서 작은 토스트로 가능)</li>
+    <li><strong>재료 다시 채우기</strong>: 후기 등록 완료 후 "다음에 또" 화면(P2)에서 노출</li>
+    <li><strong>비슷한 레시피</strong>: 후기 등록 완료 후 같은 위치에서 노출</li>
+    <li>핵심: <strong>후기 작성 완료 = 새 디스커버리·커머스 진입점</strong> 트리거</li>
+  </ul>
+
+  <h4>입력 영역 설계</h4>
+  <ul>
+    <li><strong>별점</strong>: 그대로 5점 별 (compact)</li>
+    <li><strong>사진</strong>: 가로 88px 박스 + dashed border. "선택" 라벨로 강요 X</li>
+    <li><strong>후기 텍스트</strong>: textarea 110px, focus 시 terracotta border. placeholder가 안내 역할</li>
+    <li><strong>버튼</strong>: 풀폭 56px 테라코타 "후기 남기기" — 모든 입력 비어도 활성 (별점만 있어도 OK)</li>
+    <li><strong>Skip</strong>: 작은 링크 "나중에 남길게요"</li>
+  </ul>
+
+  <h4>측정 포인트</h4>
+  <ul>
+    <li>후기 등록률 (총 close 도달 / 후기 submit)</li>
+    <li>사진 포함 후기 비율 (UGC 품질)</li>
+    <li>후기 평균 글자 수 (engagement 깊이)</li>
+    <li>Skip 비율 (강요 톤 검증)</li>
+  </ul>
+</div>
+
+<div class="side-info">
+  <h3>v6 — Close phase 전면 재설계</h3>
+
+  <h4>몰입도 관점 5원칙 적용</h4>
+  <ul>
+    <li><strong>Emotional peak first</strong> — Hero 화면 55% + confetti 3.5초로 감정 정점 먼저</li>
+    <li><strong>Visual dominance</strong> — Hero 압도적 비주얼, 액션은 그 다음</li>
+    <li><strong>Brand moment</strong> — 노른자 캐릭터 SVG + 노른자 그라데이션 (완성은 브랜드 IP 모먼트)</li>
+    <li><strong>Real over abstract</strong> — CSS-drawn egg 폐기 → 정성스러운 SVG 마스코트 (eyes·cheeks·smile·highlight)</li>
+    <li><strong>Compress actions</strong> — 사진 캡처도 액션 카드로 통합 → 위계 정돈</li>
+  </ul>
+
+  <h4>핵심 변경</h4>
+  <ul>
+    <li><strong>배경</strong>: deep beige(#EAE0CD, 탁함) → <strong>very light cream(#FBF8F2)</strong></li>
+    <li><strong>Hero</strong>: 24px → 36px padding, 노른자 그라데이션 강화 (radial 9개 색 stop)</li>
+    <li><strong>마스코트</strong>: CSS pseudo-elements → SVG 일러스트 (yolk gradient, cheeks blush, eye highlight, round smile)</li>
+    <li><strong>Confetti</strong>: 22개 컨페티가 4컬러로 떨어짐 (노른자·테라코타·세이지·gold). 자동 3.5초 fade-out</li>
+    <li><strong>"완성!"</strong>: 28px → 36px (압도적 위계)</li>
+    <li><strong>사진 캡처</strong>: 독립 4:3 영역 → 액션 카드 1줄로 통합 (강요 X 톤 유지)</li>
+    <li><strong>액션 카드</strong>: 4개 → 5개 (사진 통합)</li>
+    <li><strong>Confetti 트리거</strong>: ② 완성 탭 클릭 시 자동 실행</li>
+  </ul>
+
+  <h4>왜 사진 캡처를 카드로 통합</h4>
+  <ul>
+    <li>독립 큰 영역은 사진 안 찍는 사람에게 dead zone</li>
+    <li>액션 카드 1줄로 통합 → 위계 평준화 (사진 안 찍어도 화면 잘 보임)</li>
+    <li>탭 시 카드 내부에서 "사진 추가됨 ✓"로 변경 → 인지 강화</li>
+    <li>사진은 댓글 작성과 연계되니까 댓글 카드 바로 아래 배치</li>
+  </ul>
+
+  <h4>측정 포인트</h4>
+  <ul>
+    <li>Hero 노출 → 액션 클릭 전환률 (긍정 감정 효과 측정)</li>
+    <li>각 액션별 클릭률 (사진·댓글·장보기·비슷한레시피)</li>
+    <li>별점 분포 (P2 추천 input)</li>
+    <li>Confetti 유무 A/B 테스트 가능 (CSS class 토글로)</li>
+  </ul>
+</div>
+
+<div class="side-info">
+  <h3>v5-1-2 — 배경 톤 + 별 진하기</h3>
+
+  <h4>변경</h4>
+  <ul>
+    <li>Close 페이지 배경: 크림(#F5F0E8) → <strong>deep beige</strong> (#EAE0CD)</li>
+    <li>Hero gradient 끝점도 같이 변경 — 페이지와 자연 합치</li>
+    <li>빈 별 stroke: text-tertiary(#A8A8A8) → <strong>#888</strong> — 가시성 확보, 채워진 별과의 위계는 유지</li>
+    <li>새 변수 추가: <code>--color-close-bg: #EAE0CD</code></li>
+  </ul>
+
+  <h4>왜 deep beige</h4>
+  <ul>
+    <li>크림은 너무 미묘 — 흰색 카드와의 대비가 약했음</li>
+    <li>좀 더 따뜻하고 깊은 톤 → 카드가 페이지 위에 명확히 떠 보임</li>
+    <li>완성 모먼트의 "집·부엌 분위기" 강화</li>
+    <li>Cook mode active(흰색)와의 시각 대비도 더 강해짐</li>
+  </ul>
+</div>
+
+<div class="side-info">
+  <h3>v5-1-1 — Close 배경 톤 반전</h3>
+
+  <h4>변경</h4>
+  <ul>
+    <li>Close 페이지 배경: 흰색 → <strong>크림</strong> (#F5F0E8)</li>
+    <li>위계 반전: 페이지 크림 → 카드 흰색 (디자인 가이드 3단계 위계 유지, 톤만 반대로)</li>
+    <li>Hero gradient 끝점도 크림으로 자연 페이드</li>
+    <li>Hero-meta 칩 흰색 opacity 0.6 → 0.75 (크림 위 가시성 보정)</li>
+    <li>Photo-area: 크림 → 흰색 카드 + dashed border</li>
+    <li>Action-card: 크림 → 흰색 카드</li>
+    <li>Action-icon: 흰색 → 크림 (카드 안에서 강조)</li>
+    <li>Primary action card tint: 0.04 → 0.06 (크림 배경 위 구분 강화)</li>
+  </ul>
+
+  <h4>왜 크림 배경</h4>
+  <ul>
+    <li>"집에 있는 듯한" 따뜻한 분위기 — 완성 모먼트와 결 일치</li>
+    <li>Hero의 노른자 그라데이션이 페이지 배경(크림)으로 자연스럽게 흘러나옴 — 흰색일 때보다 매끄러움</li>
+    <li>흰 카드가 페이지 위에 떠 보여서 액션 가독성 ↑</li>
+    <li>Cook mode active phase(흰색)와 시각적 대비 → "끝났다, 다른 단계다" 감각 전달</li>
+  </ul>
+</div>
+
+<div class="side-info">
+  <h3>v5-1 — 자평 별점 변경</h3>
+
+  <h4>변경</h4>
+  <ul>
+    <li>3-tier 이모지 (😊/😐/😅) → <strong>5점 별점</strong></li>
+    <li>별 색: 노른자 옐로우 (#FDB813) — close phase의 브랜드 모먼트 톤과 일관</li>
+    <li>별점 탭 시 1~N까지 자동 채움 + drop-shadow로 강조</li>
+  </ul>
+
+  <h4>왜 별점</h4>
+  <ul>
+    <li>표준 메타포 — 인지 비용 없음</li>
+    <li>정량 데이터 (1~5) — 평균 평점, 분포 등 활용도 ↑</li>
+    <li>이미 다른 화면(레시피 카드 등)에서도 별점 사용 가능 — 시스템 일관성</li>
+    <li>3-tier는 표본 부족 시 분포 한쪽 쏠림 — 5-tier가 더 분별력 있음</li>
+  </ul>
+
+  <h4>활용 시나리오</h4>
+  <ul>
+    <li>레시피 카드에 평균 평점 노출 (예: <code>★ 4.3 · 87명</code>)</li>
+    <li>P2 추천 알고리즘 input — 사용자가 4점 이상 준 레시피 패턴 학습</li>
+    <li>레시피 신뢰도 신호 — AI 요약본 vs 오리지널의 별점 분포 비교</li>
+  </ul>
+</div>
+
+<div class="side-info">
+  <h3>v5 — Active + Close 통합</h3>
+
+  <h4>구조</h4>
+  <ul>
+    <li>두 phase를 같은 phone frame에 두 view로 배치</li>
+    <li>상단 phase 탭으로 전환 — <strong>① 진행 중 / ② 완성</strong></li>
+    <li>실제 앱에서는 마지막 step 종료 → 자동으로 close phase 진입</li>
+  </ul>
+
+  <h4>Phase 1. Active (v4.1 그대로)</h4>
+  <ul>
+    <li>인라인 amount/timer 칩, 26px 본문, 64px 타이머바</li>
+    <li>스텝별 조건부 팁 영역 (cream-alt + 세이지 전구)</li>
+    <li>새 타이머 추가 시 우측 끝 auto-scroll</li>
+  </ul>
+
+  <h4>Phase 2. Close (신설)</h4>
+  <ul>
+    <li><strong>Hero</strong>: 노른자 마스코트 + bounce 애니메이션 — 브랜드 IP 모먼트</li>
+    <li><strong>사진 캡처</strong>: 강요 X, "건너뛸 수 있어요"</li>
+    <li><strong>자평 5점 별점</strong>: 노른자 별, 1탭으로 N까지 채움 (v5-1 변경)</li>
+    <li><strong>다음 액션 4종</strong>: 댓글(primary) → 스크랩북 확인 → 장보기(커머스) → 비슷한 레시피</li>
+    <li>가장 긍정적 감정 모먼트에서 SNS·커머스 funnel 시작</li>
+  </ul>
+
+  <h4>Close 액션 위계</h4>
+  <ul>
+    <li><strong>댓글이 primary</strong> (테라코타 보더) — SNS 핵심 funnel</li>
+    <li>스크랩북은 이미 자동 저장 — 인지만 강화 (세이지 체크)</li>
+    <li>장보기는 P1에서는 항상 노출 (커머스 임팩트 검증)</li>
+    <li>비슷한 레시피는 ambient — 다음 세션 트리거</li>
+  </ul>
+
+  <h4>왜 PREP phase는 없는가</h4>
+  <ul>
+    <li>레시피 상세 페이지(b3)가 사실상 PREP 역할</li>
+    <li>재료 확인 → 장보기 → "요리해보기" 탭 = commit 모먼트</li>
+    <li>별도 PREP 화면은 같은 정보 재노출 → 인지 부담 ↑</li>
+    <li>대신 active 진입 시 wake lock + 짧은 toast로 화면 유지 안내</li>
+  </ul>
+
+  <h4>측정 지표</h4>
+  <ul>
+    <li>Close phase 도달률 = active 완주율 (이탈 funnel)</li>
+    <li>각 액션 클릭률 (댓글·장보기·비슷한레시피)</li>
+    <li>자평 별점 분포 → 레시피별 평균 평점 (P2 추천 input)</li>
+    <li>완성→댓글 작성 전환률 (핵심 KPI)</li>
+  </ul>
+</div>
+
+<div class="side-info">
+  <h3>요리 모드 — 개발 핵심 지침</h3>
+
+  <h4>핵심 철학</h4>
+  <ul>
+    <li>Cook mode는 <strong>instruction</strong> — 그 순간의 다음 한 동작만 보여준다</li>
+    <li>한 화면 한 동작 원칙 — 진행·조정은 cook mode, 변형·회고·배경은 brief</li>
+    <li>Opportunistic UX 가정 — 사용자는 plan대로 안 간다. 그 순간 보고 즉흥 결정. 그래서 변형·대체·조정 정보는 cook mode에 있어야 작동함</li>
+    <li>부엌 거리 가독성 — 화면 ~50cm + 손 자유롭지 않음. 폰트·터치 영역을 일반 모바일 UI보다 한 단계씩 키운다</li>
+  </ul>
+
+  <h4>컴포넌트 위계 (상→하)</h4>
+  <ul>
+    <li><strong>스텝 본문</strong>: 26px / 500 / 차콜 — 페이지 최강 위계</li>
+    <li><strong>영상 임베드</strong>: 해당 스텝 구간만 (start~end)</li>
+    <li><strong>팁 (조건부)</strong>: 14px / 400 / 미드그레이 + cream-alt 배경 + 세이지 전구. 본문보다 한 단계 약하게</li>
+    <li><strong>인라인 amount 칩</strong>: 본문 내, 양은 <strong>항상 노출</strong> (탭/팝업 금지)</li>
+    <li><strong>인라인 타이머 칩</strong>: 22px / 600 + 세이지 배경 + 흰 글씨 — 시간을 액션으로</li>
+    <li><strong>Sticky 타이머바</strong>: 64px / 가로 스크롤 / 새 카드 추가 시 우측 끝 auto-scroll</li>
+  </ul>
+
+  <h4>데이터 모델</h4>
+  <pre>Step {
+  title: string,
+  html: string,        // amount/timer 인라인 마크업
+  tip?: string | null, // 옵셔널, 거의 모두 cook_mode
+  video: { start, end }
+}</pre>
+  <ul>
+    <li><code>tip</code>은 거의 모든 케이스에서 cook_mode placement</li>
+    <li>사후 회고용("다음번엔...")만 brief로 분리</li>
+    <li>Gemini Flash 추출 파이프라인에서 <code>steps[].tip</code> 필드 별도 추출 (v1.4 프롬프트 룰)</li>
+  </ul>
+
+  <h4>인터랙션 패턴</h4>
+  <ul>
+    <li><strong>다음</strong>: 풀폭 next 버튼 (테라코타) + 스와이프 좌</li>
+    <li><strong>이전</strong>: 다음 왼쪽 48×60 prev (cream surface) + 스와이프 우. 안내 문구 X</li>
+    <li><strong>타이머 시작</strong>: 인라인 칩 탭 → 풀스크린 시트 → sticky bar 압축</li>
+    <li><strong>타이머 추가 직후</strong>: <code>timer-bar.scrollTo(scrollWidth, smooth)</code> — requestAnimationFrame으로 DOM 반영 후 호출</li>
+  </ul>
+
+  <h4>금지 사항</h4>
+  <ul>
+    <li>노른자 옐로우 CTA — 브랜드 IP 전용 (디자인 가이드 §4.1)</li>
+    <li>정보용 팝업/배너 — instruction-only 원칙 위반</li>
+    <li>재료양 별도 탭/팝업 — 인라인 chip 원칙 위반</li>
+    <li>본문(L3 26px)보다 강한 보조 정보 — 위계 무너짐</li>
+    <li>사후 회고·배경·이론 — brief로 옮긴다</li>
+    <li>"좌우로 밀어 이전" 안내 문구 — UI 자체로 표현, 텍스트 안내 불필요</li>
+  </ul>
+
+  <h4>관련 문서</h4>
+  <ul>
+    <li><code>Jollypot_Design_Guide.md</code> — 컬러·타이포·컴포넌트 시스템</li>
+    <li><code>jollypot_recipe_extraction_v1.4.md</code> — Gemini Flash 프롬프트 룰 (tip 추출 포함)</li>
+    <li><code>jollypot-v2-decision-log.md</code> — DEC-022~026 의사결정 기록</li>
+  </ul>
+</div>
+
+<script>
+// === v5/v11: Phase 전환 (3 view) ===
+function switchPhase(view) {
+  document.querySelectorAll('.phase-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.view === view);
+  });
+  const views = {
+    'cook-mode': document.getElementById('cookMode'),
+    'close': document.getElementById('closeView'),
+    'done': document.getElementById('doneView')
+  };
+  Object.entries(views).forEach(([key, el]) => {
+    if (el) el.classList.toggle('active', key === view);
+  });
+  if (view === 'close') triggerConfetti();
+  if (view === 'done') {
+    const scroll = document.querySelector('.done-scroll');
+    if (scroll) scroll.scrollTop = 0;
+  }
+}
+
+// === v6: Confetti ===
+function triggerConfetti() {
+  const layer = document.getElementById('confettiLayer');
+  if (!layer) return;
+  // 기존 confetti 제거
+  layer.innerHTML = '';
+  const colors = [
+    'var(--color-confetti-1)',
+    'var(--color-confetti-2)',
+    'var(--color-confetti-3)',
+    'var(--color-confetti-4)'
+  ];
+  for (let i = 0; i < 22; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + '%';
+    c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDelay = (Math.random() * 0.6) + 's';
+    c.style.animationDuration = (3 + Math.random() * 1.2) + 's';
+    c.style.width = (6 + Math.random() * 4) + 'px';
+    c.style.height = (10 + Math.random() * 6) + 'px';
+    layer.appendChild(c);
+  }
+  // 4.5초 후 정리
+  setTimeout(() => { layer.innerHTML = ''; }, 5000);
+}
+
+// === v5: Close phase 액션 ===
+// v9: 사진은 review-actions 영역에서 토글 (textarea 컨테이너 내부)
+function capturePhoto() {
+  const actions = document.getElementById('reviewActions');
+  if (!actions) return;
+  actions.innerHTML = `
+    <div class="review-thumb">
+      <div class="review-thumb-img"></div>
+      <span class="review-thumb-label">사진 1개</span>
+    </div>
+    <button class="review-thumb-remove" onclick="removePhoto()" aria-label="사진 제거">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  `;
+}
+
+function removePhoto() {
+  const actions = document.getElementById('reviewActions');
+  if (!actions) return;
+  actions.innerHTML = `
+    <button class="review-photo-btn" onclick="capturePhoto()">
+      <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      사진 추가
+    </button>
+  `;
+}
+
+function selectRating(el) {
+  const rating = parseInt(el.dataset.rating, 10);
+  document.querySelectorAll('.star-btn').forEach((b, i) => {
+    b.classList.toggle('filled', i < rating);
+  });
+  const fb = document.getElementById('ratingFeedback');
+  fb.textContent = '의견 고마워요';
+  fb.classList.add('visible');
+}
+
+// v7: 후기 제출 / 건너뛰기
+function submitReview() {
+  const stars = document.querySelectorAll('.star-btn.filled').length;
+  const hasPhoto = document.querySelector('.review-thumb') !== null;
+  const text = document.getElementById('reviewText').value.trim();
+  let parts = [];
+  parts.push(stars > 0 ? `별점 ${stars}` : '별점 없음');
+  parts.push(hasPhoto ? '사진 있음' : '사진 없음');
+  parts.push(text.length > 0 ? `후기 ${text.length}자` : '후기 없음');
+  alert('후기 등록 완료 (데모)\n' + parts.join(' · '));
+}
+
+// v7/v11: 후기 제출 / 건너뛰기 → done view
+function submitReview() {
+  const msg = document.getElementById('doneMsg');
+  const sub = document.getElementById('doneSubmsg');
+  if (msg) msg.textContent = '후기 고마워요!';
+  if (sub) sub.textContent = '스크랩북에도 기록됐어요';
+  switchPhase('done');
+}
+
+function skipReview() {
+  const msg = document.getElementById('doneMsg');
+  const sub = document.getElementById('doneSubmsg');
+  if (msg) msg.textContent = '스크랩북에 기록됐어요';
+  if (sub) sub.textContent = '언제든 꺼내볼 수 있어요';
+  switchPhase('done');
+}
+
+function closeScreen() {
+  alert('홈으로 돌아갑니다 (데모)');
+}
+
+// === 기존 cook mode 로직 ===
+const recipe = {
+  title: '백종원 제육볶음',
+  videoId: 'thXIVUt9PBU',
+  steps: [
+    {
+      title: '양념장 만들기',
+      // v4: amount chip 인라인 직접 작성
+      html: '그릇에 고추장 <span class="amount">2큰술</span>, 고춧가루 <span class="amount">1큰술</span>, 간장 <span class="amount">1큰술</span>, 설탕 <span class="amount">1큰술</span>, 다진 마늘 <span class="amount">1큰술</span>을 넣고 잘 섞어요.',
+      tip: '고추장은 브랜드마다 짠 정도가 달라요. 맛보면서 양을 조절하고, 매운맛 좋아하면 고춧가루 1큰술 더 넣어도 좋아요.',
+      video: { start: 60, end: 130 }
+    },
+    {
+      title: '고기 재우기',
+      html: '돼지고기 <span class="amount">300g</span>을 양념장에 넣고 손으로 골고루 무친 뒤 냉장고에서 <span data-timer="900" data-label="재우기">15분</span> 재워요.',
+      tip: '시간 여유가 있으면 30분~1시간까지 재워도 좋아요. 더 부드럽고 깊은 맛이 나요.',
+      video: { start: 130, end: 175 }
+    },
+    {
+      title: '채소 손질',
+      html: '양파 <span class="amount">1/2개</span>는 채 썰고, 대파 <span class="amount">1대</span>는 어슷하게 썰어 둬요.',
+      video: { start: 175, end: 220 }
+    },
+    {
+      title: '고기 볶기',
+      html: '팬을 충분히 달군 뒤 식용유 <span class="amount">1큰술</span>을 두르고 재워둔 돼지고기를 센 불에서 <span data-timer="300" data-label="고기 볶기">5분</span> 볶아요.',
+      tip: '센 불 유지가 핵심. 약한 불에서 오래 볶으면 물이 생기고 고기가 질겨져요.',
+      video: { start: 220, end: 290 }
+    },
+    {
+      title: '양파 추가',
+      html: '고기가 거의 익으면 양파를 넣고 숨이 죽을 때까지 <span data-timer="180" data-label="양파">3분</span> 같이 볶아요.',
+      tip: '양파 대신 단호박, 양배추, 버섯으로 대체해도 잘 어울려요.',
+      video: { start: 290, end: 335 }
+    },
+    {
+      title: '대파 마무리',
+      html: '마지막으로 대파를 넣고 향이 올라올 때까지 <span data-timer="60" data-label="대파">1분</span> 더 볶아요.',
+      video: { start: 335, end: 370 }
+    },
+    {
+      title: '완성',
+      html: '접시에 옮겨 담고 통깨 <span class="amount">약간</span>을 솔솔 뿌려 마무리해요.',
+      video: { start: 370, end: 420 }
+    }
+  ]
+};
+
+let currentStep = 0;
+const activeTimers = new Map();
+let currentSheetId = null;
+
+function formatTime(s) {
+  s = Math.max(0, s);
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+}
+function formatVideoDuration(start, end) {
+  const dur = end - start;
+  return `${Math.floor(dur / 60)}분 ${dur % 60}초`;
+}
+function videoTimecode(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m}:${String(sec).padStart(2, '0')}`;
+}
+
+function renderStep() {
+  const step = recipe.steps[currentStep];
+  const idx = currentStep + 1;
+  const total = recipe.steps.length;
+
+  document.getElementById('stepBadge').textContent = idx;
+  document.getElementById('stepTitle').textContent = step.title;
+  document.getElementById('stepText').innerHTML = step.html;
+
+  document.getElementById('progressText').textContent = `단계 ${idx}/${total}`;
+  document.getElementById('progressFill').style.width = (idx / total * 100) + '%';
+
+  document.getElementById('navPrev').disabled = currentStep === 0;
+
+  const nextBtn = document.getElementById('navNext');
+  if (currentStep === total - 1) {
+    nextBtn.innerHTML = `요리 완성
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+  } else {
+    nextBtn.innerHTML = `다음 단계
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+  }
+
+  // 영상 슬롯
+  const videoSlot = document.getElementById('videoSlot');
+  videoSlot.innerHTML = '';
+  if (step.video && recipe.videoId) {
+    videoSlot.appendChild(createVideoSlot(recipe.videoId, step.video));
+  }
+
+  // 팁 슬롯 (조건부)
+  const tipSlot = document.getElementById('tipSlot');
+  tipSlot.innerHTML = '';
+  if (step.tip) {
+    tipSlot.innerHTML = `
+      <div class="tip">
+        <span class="tip-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.8.6 1.3 1.5 1.3 2.6V18h5.4v-.7c0-1.1.5-2 1.3-2.6A7 7 0 0 0 12 2z"/></svg>
+        </span>
+        <span class="tip-text">${step.tip}</span>
+      </div>
+    `;
+  }
+
+  // 인라인 타이머 버튼 변환
+  document.querySelectorAll('[data-timer]').forEach(el => {
+    const duration = parseInt(el.dataset.timer, 10);
+    const label = el.dataset.label;
+    const originalText = el.textContent;
+
+    const btn = document.createElement('button');
+    btn.className = 'inline-timer';
+    btn.dataset.label = label;
+    btn.dataset.duration = duration;
+    btn.dataset.originalText = originalText;
+    renderInlineButtonContent(btn, originalText);
+
+    const existing = Array.from(activeTimers.values()).find(t => t.label === label);
+    if (existing) {
+      btn.classList.add('active');
+      btn.textContent = '진행 중';
+      existing.originalBtn = btn;
+    } else {
+      btn.onclick = () => startTimer(duration, label, btn);
+    }
+
+    el.replaceWith(btn);
+  });
+
+  document.getElementById('stepArea').scrollTop = 0;
+}
+
+function renderInlineButtonContent(btn, text) {
+  btn.innerHTML = `
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="13" r="8"></circle>
+      <line x1="12" y1="13" x2="12" y2="9"></line>
+      <line x1="9" y1="2" x2="15" y2="2"></line>
+    </svg>
+    ${text}
+  `;
+}
+
+function createVideoSlot(videoId, video) {
+  const el = document.createElement('div');
+  el.className = 'video-slot';
+  const thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+
+  el.innerHTML = `
+    <img class="video-thumb" src="${thumbUrl}" alt="영상 미리보기" loading="lazy">
+    <div class="video-source">YouTube</div>
+    <div class="play-overlay">
+      <div class="play-button">
+        <svg viewBox="0 0 24 24"><polygon points="7 4 21 12 7 20 7 4"></polygon></svg>
+      </div>
+    </div>
+    <div class="video-meta">
+      <svg viewBox="0 0 24 24"><polygon points="7 4 21 12 7 20 7 4"></polygon></svg>
+      <span>${videoTimecode(video.start)} · ${formatVideoDuration(video.start, video.end)}</span>
+    </div>
+  `;
+
+  el.addEventListener('click', () => loadVideo(el, videoId, video.start, video.end), { once: true });
+  return el;
+}
+
+function loadVideo(slot, videoId, start, end) {
+  const src = `https://www.youtube.com/embed/${videoId}`
+            + `?autoplay=1&start=${start}&end=${end}`
+            + `&rel=0&modestbranding=1&playsinline=1&controls=1`;
+  slot.innerHTML = `<iframe src="${src}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+}
+
+function startTimer(duration, label, originalBtn) {
+  const id = Date.now() + Math.random();
+
+  originalBtn.classList.add('active');
+  originalBtn.textContent = '진행 중';
+  originalBtn.onclick = null;
+
+  const card = createTimerBarCard(id, label, duration);
+  const timerBar = document.getElementById('timerBar');
+  timerBar.appendChild(card);
+
+  // 새로 추가된 타이머 카드가 보이도록 우측 끝으로 스크롤
+  requestAnimationFrame(() => {
+    timerBar.scrollTo({ left: timerBar.scrollWidth, behavior: 'smooth' });
+  });
+
+  const timer = {
+    id, remaining: duration, total: duration,
+    intervalId: null, label, running: true,
+    originalBtn, card, finished: false
+  };
+
+  activeTimers.set(id, timer);
+  timer.intervalId = setInterval(() => tickTimer(id), 1000);
+}
+
+function tickTimer(id) {
+  const timer = activeTimers.get(id);
+  if (!timer || !timer.running) return;
+
+  timer.remaining--;
+  updateTimerCard(timer);
+  if (currentSheetId === id) updateSheetDisplay();
+
+  if (timer.remaining <= 0) {
+    clearInterval(timer.intervalId);
+    timer.running = false;
+    timer.finished = true;
+    timer.card.classList.add('alert');
+
+    if (currentSheetId === id) updateSheetDisplay();
+
+    setTimeout(() => {
+      if (activeTimers.has(id)) stopTimer(id);
+    }, 5000);
+  }
+}
+
+function createTimerBarCard(id, label, duration) {
+  const card = document.createElement('div');
+  card.className = 'timer-bar-card';
+  card.dataset.timerId = id;
+  card.innerHTML = `
+    <div class="row">
+      <span class="dot"></span>
+      <span class="label">${label}</span>
+      <span class="time">${formatTime(duration)}</span>
+    </div>
+    <div class="mini-progress">
+      <div class="mini-progress-fill" style="width: 100%"></div>
+    </div>
+  `;
+  card.addEventListener('click', () => openTimerSheet(id));
+  return card;
+}
+
+function updateTimerCard(timer) {
+  const card = timer.card;
+  if (!card) return;
+  card.querySelector('.time').textContent = formatTime(timer.remaining);
+  const pct = Math.max(0, (timer.remaining / timer.total) * 100);
+  card.querySelector('.mini-progress-fill').style.width = pct + '%';
+}
+
+function stopTimer(id) {
+  const timer = activeTimers.get(id);
+  if (!timer) return;
+
+  clearInterval(timer.intervalId);
+
+  if (timer.originalBtn && timer.originalBtn.dataset.originalText) {
+    timer.originalBtn.classList.remove('active');
+    renderInlineButtonContent(timer.originalBtn, timer.originalBtn.dataset.originalText);
+    const duration = parseInt(timer.originalBtn.dataset.duration, 10);
+    const label = timer.originalBtn.dataset.label;
+    timer.originalBtn.onclick = () => startTimer(duration, label, timer.originalBtn);
+  }
+
+  if (timer.card) timer.card.remove();
+  activeTimers.delete(id);
+
+  if (currentSheetId === id) closeTimerSheet();
+}
+
+function openTimerSheet(id) {
+  const timer = activeTimers.get(id);
+  if (!timer) return;
+  currentSheetId = id;
+  document.getElementById('sheetName').textContent = timer.label;
+  updateSheetDisplay();
+  document.getElementById('timerSheet').classList.add('visible');
+}
+
+function closeTimerSheet(e) {
+  if (!e || (e && e.target.id === 'timerSheet')) {
+    document.getElementById('timerSheet').classList.remove('visible');
+    currentSheetId = null;
+  }
+}
+
+function updateSheetDisplay() {
+  const timer = activeTimers.get(currentSheetId);
+  if (!timer) return;
+  document.getElementById('sheetDisplay').textContent = formatTime(timer.remaining);
+
+  const r = 92;
+  const circumference = 2 * Math.PI * r;
+  const pct = Math.max(0, timer.remaining / timer.total);
+  const offset = circumference * (1 - pct);
+  document.querySelector('.timer-circle .progress').style.strokeDasharray = circumference;
+  document.querySelector('.timer-circle .progress').style.strokeDashoffset = offset;
+
+  const pauseBtn = document.getElementById('sheetPauseBtn');
+  if (timer.finished) {
+    pauseBtn.innerHTML = '끝!';
+    pauseBtn.disabled = true;
+  } else if (timer.running) {
+    pauseBtn.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="6" y="4" width="4" height="16"></rect>
+        <rect x="14" y="4" width="4" height="16"></rect>
+      </svg> 일시정지`;
+    pauseBtn.disabled = false;
+  } else {
+    pauseBtn.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <polygon points="6 4 20 12 6 20 6 4"></polygon>
+      </svg> 재시작`;
+    pauseBtn.disabled = false;
+  }
+}
+
+function togglePauseSheet() {
+  const timer = activeTimers.get(currentSheetId);
+  if (!timer || timer.finished) return;
+  if (timer.running) {
+    clearInterval(timer.intervalId);
+    timer.running = false;
+  } else {
+    timer.running = true;
+    timer.intervalId = setInterval(() => tickTimer(currentSheetId), 1000);
+  }
+  updateSheetDisplay();
+}
+
+function adjustSheet(sec) {
+  const timer = activeTimers.get(currentSheetId);
+  if (!timer) return;
+  timer.remaining = Math.max(0, timer.remaining + sec);
+  timer.total = Math.max(timer.total, timer.remaining);
+  if (timer.finished && timer.remaining > 0) {
+    timer.finished = false;
+    timer.card.classList.remove('alert');
+    timer.running = true;
+    timer.intervalId = setInterval(() => tickTimer(currentSheetId), 1000);
+  }
+  updateTimerCard(timer);
+  updateSheetDisplay();
+}
+
+function stopSheetTimer() {
+  if (currentSheetId !== null) stopTimer(currentSheetId);
+}
+
+function nextStep() {
+  if (currentStep < recipe.steps.length - 1) {
+    currentStep++;
+    renderStep();
+  } else {
+    // v8: 마지막 step → close phase로 자동 전환
+    switchPhase('close');
+  }
+}
+
+function prevStep() {
+  if (currentStep > 0) {
+    currentStep--;
+    renderStep();
+  }
+}
+
+function confirmExit() { document.getElementById('confirmOverlay').classList.add('visible'); }
+function cancelExit() { document.getElementById('confirmOverlay').classList.remove('visible'); }
+function doExit() { cancelExit(); alert('레시피 페이지로 돌아갑니다'); }
+
+function restartCookMode() {
+  currentStep = 0;
+  Array.from(activeTimers.keys()).forEach(id => stopTimer(id));
+  document.getElementById('timerBar').innerHTML = '';
+  renderStep();
+  switchPhase('cook-mode');
+}
+
+let touchStartX = 0, touchStartY = 0;
+const cookEl = document.getElementById('cookMode');
+cookEl.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+cookEl.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) > 60 && Math.abs(dy) < 40) {
+    if (dx < 0) nextStep();
+    else prevStep();
+  }
+});
+
+renderStep();
+</script>
+
+<script src="proto-link.js"></script>
+</body>
+</html>

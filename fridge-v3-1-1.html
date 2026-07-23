@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>졸리팟 V2 — 냉장고 재료 관리 v3-1-1</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --color-brand:#FDB813;--color-primary:#C75D3E;--color-secondary:#8FA68E;
+    --color-bg:#FFFFFF;--color-surface:#F5F0E8;--color-surface-alt:#F7F2EA;
+    --color-text-primary:#2A2A2A;--color-text-secondary:#6B6B6B;--color-text-tertiary:#A8A8A8;
+    --color-border:#EDE8E0;--color-divider:#E8EDE6;--color-line:#F0EDE7;
+    --color-error:#D64545;--sage-dark:#5B7A5C;
+    --freezer-surface:#F2F4F3;--freezer-border:#E4E8E6;
+    --proto-bar-bg:#1E1E2E;--proto-toggle-active-bg:#5B6ABF;--proto-toggle-active-text:#FFFFFF;
+    --proto-toggle-inactive-bg:#2D2D3D;--proto-toggle-inactive-text:#8888A0;
+    --proto-label-text:#CCCCDD;--proto-divider:#3A3A4E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo',sans-serif;background:#33333F;color:var(--color-text-primary);display:flex;flex-direction:column;align-items:center;padding:24px 0 80px;}
+
+  .proto-bar{width:390px;background:var(--proto-bar-bg);border-radius:14px 14px 0 0;padding:16px 18px;}
+  .proto-group{margin-bottom:14px;}
+  .proto-label{font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--proto-label-text);text-transform:uppercase;margin-bottom:8px;}
+  .proto-toggles{display:flex;gap:8px;flex-wrap:wrap;}
+  .proto-btn{flex:1;min-width:100px;padding:10px 6px;border:none;border-radius:9px;background:var(--proto-toggle-inactive-bg);color:var(--proto-toggle-inactive-text);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;}
+  .proto-btn.active{background:var(--proto-toggle-active-bg);color:var(--proto-toggle-active-text);}
+  .proto-divider{height:1px;background:var(--proto-divider);margin:12px 0;}
+  .proto-version{font-size:12px;color:var(--proto-label-text);font-family:monospace;}
+
+  .phone-frame{width:390px;background:var(--color-bg);min-height:780px;border-radius:0 0 14px 14px;overflow:hidden;position:relative;}
+
+  .app-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--color-line);position:sticky;top:0;background:var(--color-bg);z-index:10;}
+  .app-header .back{font-size:22px;width:24px;}
+  .app-header .title{font-size:17px;font-weight:700;}
+  .app-header .menu{width:24px;text-align:right;font-size:20px;color:var(--color-text-secondary);background:none;border:none;cursor:pointer;}
+
+  .state{display:none;}.state.active{display:block;}
+
+  .cta{width:100%;height:56px;background:var(--color-primary);color:#fff;border:none;border-radius:12px;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .btn-sub{width:100%;height:48px;background:transparent;border:1px solid var(--color-secondary);color:var(--sage-dark);border-radius:12px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+
+  /* ===== 빈 냉장고 ===== */
+  .empty-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;padding:60px 32px 0;min-height:680px;}
+  .egg-mascot{width:120px;height:140px;margin-bottom:26px;}
+  .empty-title{font-size:20px;font-weight:700;margin-bottom:10px;}
+  .empty-desc{font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:34px;}
+  .empty-actions{width:100%;display:flex;flex-direction:column;gap:12px;margin-top:auto;padding-bottom:28px;}
+
+  /* ===== 촬영 (2샷 가이드) ===== */
+  .cam{position:relative;height:716px;overflow:hidden;background:#111;}
+  .cam img{width:100%;height:100%;object-fit:cover;display:block;}
+  .cam img.frz{filter:saturate(.5) brightness(1.02);}
+  .cam-scrim-top{position:absolute;top:0;left:0;right:0;padding:22px 24px 40px;background:linear-gradient(rgba(10,10,12,.72),transparent);color:#fff;}
+  .cam-close{position:absolute;top:16px;right:18px;font-size:20px;color:#fff;background:rgba(0,0,0,.3);border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;z-index:3;}
+  .cam-step{font-size:12px;font-weight:600;letter-spacing:.06em;opacity:.85;margin-bottom:8px;}
+  .cam-guide{font-size:20px;font-weight:700;line-height:1.35;}
+  .cam-scrim-bottom{position:absolute;bottom:0;left:0;right:0;padding:18px 24px 26px;background:linear-gradient(transparent,rgba(10,10,12,.78));display:flex;flex-direction:column;align-items:center;gap:16px;}
+  .cam-tips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+  .cam-tip{font-size:12px;font-weight:500;color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);padding:6px 11px;border-radius:16px;backdrop-filter:blur(2px);}
+  .shutter{width:66px;height:66px;border-radius:50%;background:#fff;border:5px solid rgba(255,255,255,.4);background-clip:padding-box;cursor:pointer;}
+  .shutter:active{transform:scale(.93);}
+  /* 인터스티셜 */
+  .cam-dim{position:absolute;inset:0;background:rgba(12,11,13,.55);display:flex;align-items:center;justify-content:center;padding:28px;}
+  .inter-card{width:100%;background:var(--color-bg);border-radius:18px;padding:26px 22px 20px;text-align:center;}
+  .inter-found{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--sage-dark);background:rgba(143,166,142,.14);padding:7px 13px;border-radius:18px;margin-bottom:14px;}
+  .inter-title{font-size:19px;font-weight:700;margin-bottom:8px;}
+  .inter-desc{font-size:13px;color:var(--color-text-secondary);line-height:1.55;margin-bottom:20px;}
+  .inter-skip{margin-top:12px;background:none;border:none;font-family:inherit;font-size:14px;font-weight:500;color:var(--color-text-tertiary);cursor:pointer;padding:8px;}
+
+  /* ===== 스캔 결과 ===== */
+  .scan-photo{width:100%;height:140px;object-fit:cover;display:block;}
+  .scan-body{padding:18px 20px 0;}
+  .scan-headline{font-size:18px;font-weight:700;margin-bottom:4px;}
+  .scan-sub{font-size:13px;color:var(--color-text-secondary);margin-bottom:4px;line-height:1.5;}
+  .scan-note{font-size:12px;color:var(--color-text-secondary);margin:14px 20px 0;line-height:1.55;display:flex;gap:7px;}
+  .scan-note .dot{display:inline-block;width:11px;height:11px;border-radius:3px;border:1.5px dashed var(--color-primary);background:#FBF1EC;flex-shrink:0;margin-top:2px;}
+  .s-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 9px;border-radius:10px;margin:5px 0;font-size:13px;font-weight:500;cursor:pointer;transition:.12s;}
+  .s-item:active{transform:scale(.97);}
+  .s-item .si-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .s-item.ok{background:var(--color-bg);border:1px solid var(--color-border);color:var(--color-text-primary);cursor:default;}
+  .s-item.ok .mark{color:var(--sage-dark);font-size:12px;flex-shrink:0;}
+  .s-item.uncertain{background:#FBF1EC;border:1px dashed var(--color-primary);color:var(--color-primary);}
+  .s-item.uncertain .mark{color:var(--color-primary);font-size:15px;flex-shrink:0;padding:0 2px;}
+  /* 냉동 건너뜀 */
+  .frz-skip{padding:18px 10px 16px;text-align:center;}
+  .frz-skip p{font-size:12px;color:var(--color-text-tertiary);line-height:1.5;margin-bottom:10px;}
+  .frz-skip button{font-family:inherit;font-size:13px;font-weight:600;color:var(--sage-dark);background:none;border:1px dashed var(--color-secondary);border-radius:10px;padding:9px 14px;cursor:pointer;}
+  /* 페이오프 미리보기 */
+  .scan-cta-wrap{padding:12px 20px 24px;background:var(--color-bg);position:sticky;bottom:0;border-top:1px solid var(--color-line);}
+  .payoff{background:var(--color-surface);border:1px solid var(--color-border);border-radius:14px;padding:12px 14px;margin-bottom:12px;}
+  .payoff-title{font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:10px;}
+  .payoff-row{display:flex;align-items:center;gap:10px;}
+  .payoff-item{flex:1;display:flex;align-items:center;gap:8px;min-width:0;}
+  .payoff-item img{width:42px;height:42px;border-radius:9px;object-fit:cover;flex-shrink:0;}
+  .payoff-item .pi-name{font-size:13px;font-weight:500;color:var(--color-text-primary);line-height:1.25;display:block;}
+  .payoff-item .pi-sub{font-size:11px;color:var(--sage-dark);font-weight:600;}
+  .payoff-item .pi-sub.need{color:var(--color-primary);}
+  .payoff-more{font-size:12px;color:var(--color-text-tertiary);flex-shrink:0;}
+
+  /* ===== 스캔 실패 ===== */
+  .fail-photo{width:100%;height:150px;object-fit:cover;display:block;filter:brightness(.32) blur(2.5px);}
+  .fail-body{padding:22px 24px;text-align:center;}
+  .fail-title{font-size:19px;font-weight:700;margin-bottom:8px;}
+  .fail-desc{font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:18px;}
+  .coach{display:flex;flex-direction:column;gap:9px;margin-bottom:22px;text-align:left;}
+  .coach-row{display:flex;align-items:center;gap:10px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:12px;padding:12px 14px;font-size:13px;font-weight:500;}
+  .coach-row .ci{font-size:16px;flex-shrink:0;}
+  .fail-actions{display:flex;flex-direction:column;gap:10px;}
+  .fail-saved{font-size:12px;color:var(--color-text-tertiary);margin-top:14px;}
+
+  /* ===== 양문형 (재료 있음) ===== */
+  .fridge-top{padding:16px 20px 0;}
+  .fridge-count{font-size:13px;color:var(--color-text-secondary);}
+  .fridge-count b{color:var(--color-text-primary);font-weight:600;}
+  .fridge-unit{margin:16px 20px 0;display:flex;gap:10px;align-items:flex-start;}
+  .compartment{flex:1;border:1px solid var(--color-border);border-radius:14px;overflow:hidden;min-width:0;}
+  .compartment.freezer{background:var(--freezer-surface);border-color:var(--freezer-border);}
+  .compartment.fridge{background:var(--color-surface);}
+  .comp-head{padding:11px 12px;border-bottom:1px solid var(--color-border);display:flex;align-items:center;justify-content:space-between;}
+  .compartment.freezer .comp-head{border-bottom-color:var(--freezer-border);}
+  .comp-name{font-size:14px;font-weight:500;display:flex;align-items:center;gap:5px;}
+  .comp-cnt{font-size:12px;color:var(--color-text-tertiary);}
+  .comp-body{padding:6px 10px 10px;}
+  .shelf{border-bottom:1px dashed var(--color-border);padding:6px 0;}
+  .compartment.freezer .shelf{border-bottom-color:var(--freezer-border);}
+  .shelf.add-shelf{border-bottom:none;}
+  .f-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 9px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px;margin:5px 0;cursor:pointer;transition:.12s;}
+  .f-item:active{transform:scale(.97);}
+  .f-item .fi-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .f-item .fi-meta{font-size:11px;color:var(--color-text-tertiary);flex-shrink:0;}
+  .f-item.aged .fi-meta{color:#C2913F;}
+  .f-item.quarantine{background:#FBF1EC;border:1px dashed var(--color-primary);}
+  .f-item.quarantine .fi-name{color:var(--color-primary);}
+  .f-item.quarantine .fi-meta{color:var(--color-primary);font-weight:600;}
+  .add-btn{width:100%;margin-top:8px;padding:9px 0;border:1px dashed var(--color-secondary);background:transparent;border-radius:10px;color:var(--sage-dark);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;}
+  .add-btn:active{background:rgba(143,166,142,.08);}
+  .unit-note{font-size:12px;color:var(--color-text-tertiary);text-align:center;margin:10px 20px 0;line-height:1.5;}
+  .thick-div{height:8px;background:var(--color-surface);margin:20px 0;}
+
+  .bridge{padding:0 20px;}
+  .bridge-title{font-size:20px;font-weight:700;}
+  .bridge-sub{font-size:13px;color:var(--color-text-secondary);margin:2px 0 16px;}
+  .bridge-scroll{display:flex;gap:12px;overflow-x:auto;padding:0 20px 4px;margin:0 -20px;scrollbar-width:none;}
+  .bridge-scroll::-webkit-scrollbar{display:none;}
+  .recipe-card{flex:0 0 152px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:16px;overflow:hidden;}
+  .recipe-card img{width:100%;height:104px;object-fit:cover;display:block;}
+  .recipe-card .rc-body{padding:11px 12px 13px;}
+  .recipe-card .rc-name{font-size:15px;font-weight:500;margin-bottom:8px;line-height:1.3;}
+  .badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:4px 8px;border-radius:7px;}
+  .badge.have{background:rgba(143,166,142,.15);color:var(--sage-dark);}
+  .badge.need{background:#FBF1EC;color:var(--color-primary);}
+
+  .soft-note{margin:0 20px 28px;padding:14px 16px;background:var(--color-surface-alt);border-radius:12px;font-size:12px;color:var(--color-text-secondary);line-height:1.6;display:flex;gap:8px;}
+  .soft-note .ico{flex-shrink:0;font-size:14px;}
+
+  /* ===== 시트 공통 ===== */
+  .backdrop{position:fixed;inset:0;background:rgba(20,18,18,.42);opacity:0;visibility:hidden;transition:.22s;z-index:50;}
+  .backdrop.show{opacity:1;visibility:visible;}
+  .sheet{position:fixed;left:50%;bottom:0;width:390px;max-width:100vw;transform:translate(-50%,100%);background:var(--color-bg);border-radius:22px 22px 0 0;z-index:60;transition:transform .26s cubic-bezier(.2,.8,.2,1);padding:8px 22px 28px;}
+  .sheet.show{transform:translate(-50%,0);}
+  .sheet-handle{width:38px;height:4px;background:var(--color-border);border-radius:2px;margin:6px auto 16px;}
+  .sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .sheet-title{font-size:18px;font-weight:700;}
+  .sheet-close{font-size:20px;color:var(--color-text-tertiary);background:none;border:none;cursor:pointer;padding:4px;}
+  .field-label{font-size:13px;font-weight:500;color:var(--color-text-secondary);margin:16px 0 8px;}
+  .field-label:first-of-type{margin-top:0;}
+  .text-input{width:100%;height:48px;border:1px solid var(--color-border);border-radius:12px;padding:0 14px;font-family:inherit;font-size:15px;color:var(--color-text-primary);background:var(--color-bg);}
+  .text-input:focus{outline:none;border-color:var(--color-secondary);}
+  .seg{display:flex;gap:8px;}
+  .seg button{flex:1;height:44px;border:1px solid var(--color-border);background:var(--color-bg);border-radius:11px;font-family:inherit;font-size:14px;font-weight:600;color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;}
+  .seg button.on{border-color:var(--color-secondary);background:rgba(143,166,142,.12);color:var(--sage-dark);}
+  .date-chips{display:flex;gap:8px;flex-wrap:wrap;}
+  .date-chips button{padding:9px 14px;border:1px solid var(--color-border);background:var(--color-bg);border-radius:20px;font-family:inherit;font-size:13px;font-weight:500;color:var(--color-text-secondary);cursor:pointer;}
+  .date-chips button.on{border-color:var(--color-secondary);background:rgba(143,166,142,.12);color:var(--sage-dark);}
+  .quick-chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .quick-chips button{padding:9px 13px;border:1px solid var(--color-border);background:var(--color-surface);border-radius:20px;font-family:inherit;font-size:14px;font-weight:500;color:var(--color-text-primary);cursor:pointer;}
+  .quick-chips button:active{background:rgba(143,166,142,.15);}
+  .sheet-cta{width:100%;height:52px;background:var(--color-primary);color:#fff;border:none;border-radius:12px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;margin-top:22px;}
+  .delete-btn{width:100%;height:46px;background:transparent;border:none;color:var(--color-error);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;}
+  .q-desc{font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:4px;}
+
+  .menu-row{width:100%;padding:15px 6px;background:none;border:none;border-bottom:1px solid var(--color-line);font-family:inherit;font-size:15px;font-weight:500;color:var(--color-text-primary);text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;}
+  .menu-row.danger{color:var(--color-error);}
+  .menu-row:last-of-type{border-bottom:none;}
+  .menu-confirm{display:none;padding:14px 0 4px;}
+  .menu-confirm.show{display:block;}
+  .menu-confirm p{font-size:14px;color:var(--color-text-secondary);margin-bottom:14px;line-height:1.5;}
+  .menu-confirm .row{display:flex;gap:8px;}
+  .menu-confirm .row button{flex:1;height:46px;border-radius:11px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;border:none;}
+  .mc-cancel{background:var(--color-surface);color:var(--color-text-secondary);}
+  .mc-ok{background:var(--color-error);color:#fff;}
+
+  .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(10px);background:#2A2A2A;color:#fff;font-size:13px;font-weight:500;padding:10px 18px;border-radius:22px;opacity:0;visibility:hidden;transition:.2s;z-index:70;}
+  .toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<div class="proto-bar">
+  <div class="proto-group">
+    <div class="proto-label">상태</div>
+    <div class="proto-toggles">
+      <button class="proto-btn" data-state="empty">빈 냉장고</button>
+      <button class="proto-btn" data-state="capture">촬영</button>
+      <button class="proto-btn" data-state="scan">스캔 결과</button>
+      <button class="proto-btn" data-state="scanfail">스캔 실패</button>
+      <button class="proto-btn active" data-state="full">재료 있음</button>
+    </div>
+  </div>
+  <div class="proto-divider"></div>
+  <div class="proto-version">jollypot-v2-fridge-v3-1-1</div>
+</div>
+
+<div class="phone-frame">
+
+  <!-- ===== STATE: 빈 냉장고 ===== -->
+  <div class="state" id="state-empty">
+    <div class="app-header"><span class="back">‹</span><span class="title">우리집 냉장고</span><span style="width:24px"></span></div>
+    <div class="empty-wrap">
+      <svg class="egg-mascot" viewBox="0 0 120 140" fill="none">
+        <ellipse cx="60" cy="78" rx="52" ry="60" fill="#FFF9EC"/>
+        <ellipse cx="60" cy="78" rx="52" ry="60" stroke="#EDE8E0" stroke-width="2"/>
+        <circle cx="60" cy="74" r="30" fill="#FDB813"/>
+        <circle cx="51" cy="70" r="3.4" fill="#2A2A2A"/><circle cx="69" cy="70" r="3.4" fill="#2A2A2A"/>
+        <path d="M53 82 Q60 88 67 82" stroke="#2A2A2A" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+        <ellipse cx="46" cy="79" rx="4.5" ry="3" fill="#F2A6A0" opacity=".55"/><ellipse cx="74" cy="79" rx="4.5" ry="3" fill="#F2A6A0" opacity=".55"/>
+      </svg>
+      <div class="empty-title">냉장고가 텅 비었어요</div>
+      <div class="empty-desc">냉장칸·냉동칸을 한 칸씩 찍으면<br>AI가 재료를 찾아 나눠 담아드려요.</div>
+      <div class="empty-actions">
+        <button class="cta" onclick="setState('capture')">📷&nbsp; 냉장고 찍기</button>
+        <button class="btn-sub" onclick="openAdd('fridge')">＋ 직접 추가하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STATE: 촬영 (2샷 가이드) ===== -->
+  <div class="state" id="state-capture">
+    <!-- STEP 1: 냉장칸 -->
+    <div class="cap-step" id="cap-step1">
+      <div class="cam">
+        <img src="https://images.pexels.com/photos/4061622/pexels-photo-4061622.jpeg?auto=compress&cs=tinysrgb&w=640" onerror="this.onerror=null;this.src='https://picsum.photos/640/900?random=91'" alt="냉장칸 뷰파인더">
+        <button class="cam-close" onclick="setState('empty')">✕</button>
+        <div class="cam-scrim-top">
+          <div class="cam-step">1 / 2</div>
+          <div class="cam-guide">🧊 냉장칸을 활짝 열고<br>찍어주세요</div>
+        </div>
+        <div class="cam-scrim-bottom">
+          <div class="cam-tips">
+            <span class="cam-tip">💡 주방 불 켜기</span>
+            <span class="cam-tip">📐 정면에서</span>
+            <span class="cam-tip">🤏 한 칸씩 가까이</span>
+          </div>
+          <button class="shutter" onclick="capStep(2)" aria-label="촬영"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: 인터스티셜 -->
+    <div class="cap-step" id="cap-step2" style="display:none">
+      <div class="cam">
+        <img src="https://images.pexels.com/photos/4061622/pexels-photo-4061622.jpeg?auto=compress&cs=tinysrgb&w=640" onerror="this.onerror=null;this.src='https://picsum.photos/640/900?random=91'" alt="촬영된 냉장칸">
+        <div class="cam-dim">
+          <div class="inter-card">
+            <div class="inter-found">✓ 냉장칸에서 7개 찾았어요</div>
+            <div class="inter-title">❄️ 냉동칸도 찍을까요?</div>
+            <div class="inter-desc">고기·만두 같은 냉동 재료가 있다면<br>레시피 추천이 더 정확해져요.</div>
+            <button class="cta" onclick="capStep(3)">❄️ 냉동칸 찍기</button>
+            <button class="inter-skip" onclick="skipFreezer()">건너뛰기 · 냉장만 담을게요</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: 냉동칸 -->
+    <div class="cap-step" id="cap-step3" style="display:none">
+      <div class="cam">
+        <img class="frz" src="https://images.pexels.com/photos/4061622/pexels-photo-4061622.jpeg?auto=compress&cs=tinysrgb&w=640" onerror="this.onerror=null;this.src='https://picsum.photos/640/900?random=92'" alt="냉동칸 뷰파인더">
+        <button class="cam-close" onclick="setState('empty')">✕</button>
+        <div class="cam-scrim-top">
+          <div class="cam-step">2 / 2</div>
+          <div class="cam-guide">❄️ 냉동칸을 활짝 열고<br>찍어주세요</div>
+        </div>
+        <div class="cam-scrim-bottom">
+          <div class="cam-tips">
+            <span class="cam-tip">💡 주방 불 켜기</span>
+            <span class="cam-tip">📐 정면에서</span>
+            <span class="cam-tip">🤏 한 칸씩 가까이</span>
+          </div>
+          <button class="shutter" onclick="shootFreezer()" aria-label="촬영"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STATE: 스캔 결과 ===== -->
+  <div class="state" id="state-scan">
+    <div class="app-header"><span class="back">‹</span><span class="title">재료 확인</span><span style="width:24px"></span></div>
+    <img class="scan-photo" src="https://images.pexels.com/photos/4061622/pexels-photo-4061622.jpeg?auto=compress&cs=tinysrgb&w=640" onerror="this.onerror=null;this.src='https://picsum.photos/640/400?random=91'" alt="촬영한 냉장고 사진">
+    <div class="scan-body">
+      <div class="scan-headline">재료 <span id="scan-total">10</span>개를 찾았어요</div>
+      <div class="scan-sub">찍은 칸 그대로 나눠 담았어요. 맞는지 확인해주세요.</div>
+    </div>
+
+    <div class="fridge-unit">
+      <!-- 냉동 -->
+      <div class="compartment freezer">
+        <div class="comp-head"><span class="comp-name">❄️ 냉동</span><span class="comp-cnt" id="scnt-f">3</span></div>
+        <div class="comp-body">
+          <div id="scan-frz-items">
+            <div class="s-item ok"><span class="si-name">삼겹살</span><span class="mark">✓</span></div>
+            <div class="s-item ok"><span class="si-name">다진 소고기</span><span class="mark">✓</span></div>
+            <div class="s-item uncertain" onclick="confirmScan(this)"><span class="si-name">냉동새우?</span><span class="mark" onclick="removeScan(event,this)">✕</span></div>
+          </div>
+          <div id="scan-frz-skip" class="frz-skip" style="display:none">
+            <p>냉동칸은 건너뛰었어요.<br>냉동 재료가 있다면 지금 찍을 수 있어요.</p>
+            <button onclick="shootLater()">📷 냉동칸 찍기</button>
+          </div>
+        </div>
+      </div>
+      <!-- 냉장 -->
+      <div class="compartment fridge">
+        <div class="comp-head"><span class="comp-name">🧊 냉장</span><span class="comp-cnt" id="scnt-r">7</span></div>
+        <div class="comp-body">
+          <div class="s-item ok"><span class="si-name">양파</span><span class="mark">✓</span></div>
+          <div class="s-item ok"><span class="si-name">대파</span><span class="mark">✓</span></div>
+          <div class="s-item ok"><span class="si-name">계란</span><span class="mark">✓</span></div>
+          <div class="s-item ok"><span class="si-name">애호박</span><span class="mark">✓</span></div>
+          <div class="s-item ok"><span class="si-name">우유</span><span class="mark">✓</span></div>
+          <div class="s-item uncertain" onclick="confirmScan(this)"><span class="si-name">깻잎?</span><span class="mark" onclick="removeScan(event,this)">✕</span></div>
+          <div class="s-item uncertain" onclick="confirmScan(this)"><span class="si-name">두부?</span><span class="mark" onclick="removeScan(event,this)">✕</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scan-note"><span class="dot"></span><span>주황 점선은 AI가 확신하지 못한 재료예요. 맞으면 <b>탭해서 확정</b>, 아니면 ✕로 빼주세요. 그대로 담으면 물음표로 보관돼요.</span></div>
+
+    <div class="scan-cta-wrap">
+      <!-- 페이오프 미리보기 -->
+      <div class="payoff">
+        <div class="payoff-title">담으면 바로 만들 수 있어요 🍳</div>
+        <div class="payoff-row">
+          <div class="payoff-item">
+            <img src="https://picsum.photos/120/120?random=31" alt="대파 계란말이 썸네일">
+            <span><span class="pi-name">대파 계란말이</span><span class="pi-sub">✓ 다 있어요</span></span>
+          </div>
+          <div class="payoff-item">
+            <img src="https://picsum.photos/120/120?random=34" alt="두부 된장찌개 썸네일">
+            <span><span class="pi-name">두부 된장찌개</span><span class="pi-sub need">🛒 된장만 더</span></span>
+          </div>
+          <span class="payoff-more">외 2개</span>
+        </div>
+      </div>
+      <button class="cta" onclick="setState('full')">냉장고에 담기 (<span id="scan-cta-cnt">10</span>)</button>
+    </div>
+  </div>
+
+  <!-- ===== STATE: 스캔 실패 ===== -->
+  <div class="state" id="state-scanfail">
+    <div class="app-header"><span class="back">‹</span><span class="title">재료 확인</span><span style="width:24px"></span></div>
+    <img class="fail-photo" src="https://images.pexels.com/photos/4061622/pexels-photo-4061622.jpeg?auto=compress&cs=tinysrgb&w=640" onerror="this.onerror=null;this.src='https://picsum.photos/640/400?random=91'" alt="어둡게 찍힌 냉장고 사진">
+    <div class="fail-body">
+      <div class="fail-title">잘 안 보였어요 🥲</div>
+      <div class="fail-desc">사진이 어두워서 재료 2개만 찾았어요.<br>이렇게 찍으면 훨씬 잘 나와요.</div>
+      <div class="coach">
+        <div class="coach-row"><span class="ci">💡</span>냉장고 불·주방 불을 켜주세요</div>
+        <div class="coach-row"><span class="ci">📐</span>비스듬히 말고 정면에서</div>
+        <div class="coach-row"><span class="ci">🤏</span>한 칸씩, 한 걸음 가까이</div>
+      </div>
+      <div class="fail-actions">
+        <button class="cta" onclick="setState('capture')">📷 다시 찍기</button>
+        <button class="btn-sub" onclick="manualFallback()">그냥 직접 담을게요</button>
+      </div>
+      <div class="fail-saved">찾은 2개(계란, 우유)는 담아둘게요.</div>
+    </div>
+  </div>
+
+  <!-- ===== STATE: 재료 있음 ===== -->
+  <div class="state active" id="state-full">
+    <div class="app-header"><span class="back">‹</span><span class="title">우리집 냉장고</span><button class="menu" onclick="openMenu()">⋮</button></div>
+
+    <div class="fridge-top">
+      <div class="fridge-count">재료 <b id="total-cnt">12개</b> · 마지막 업데이트 오늘</div>
+    </div>
+
+    <div class="fridge-unit">
+      <div class="compartment freezer" id="comp-freezer">
+        <div class="comp-head"><span class="comp-name">❄️ 냉동</span><span class="comp-cnt" id="cnt-freezer">4</span></div>
+        <div class="comp-body">
+          <div class="shelf">
+            <div class="f-item" onclick="openEdit(this)"><span class="fi-name">삼겹살</span><span class="fi-meta">오늘</span></div>
+            <div class="f-item" onclick="openEdit(this)"><span class="fi-name">다진 소고기</span><span class="fi-meta">3일</span></div>
+          </div>
+          <div class="shelf add-shelf" id="shelf-freezer">
+            <div class="f-item" onclick="openEdit(this)"><span class="fi-name">냉동새우</span><span class="fi-meta">오늘</span></div>
+            <div class="f-item aged" onclick="openEdit(this)"><span class="fi-name">냉동만두</span><span class="fi-meta">3주</span></div>
+          </div>
+          <button class="add-btn" onclick="openAdd('freezer')">＋ 냉동에 추가</button>
+        </div>
+      </div>
+
+      <div class="compartment fridge" id="comp-fridge">
+        <div class="comp-head"><span class="comp-name">🧊 냉장</span><span class="comp-cnt" id="cnt-fridge">8</span></div>
+        <div class="comp-body">
+          <div class="shelf">
+            <div class="f-item" onclick="openEdit(this)"><span class="fi-name">계란</span><span class="fi-meta">2일</span></div>
+            <div class="f-item" onclick="openEdit(this)"><span class="fi-name">우유</span><span class="fi-meta">4일</span></div>
+            <div class="f-item" onclick="openEdit(this)"><span class="fi-name">두부</span><span class="fi-meta">오늘</span></div>
+          </div>
+          <div class="shelf">
+            <div class="f-item" onclick="openEdit(this)"><span class="fi-name">양파</span><span class="fi-meta">2일</span></div>
+            <div class="f-item" onclick="openEdit(this)"><span class="fi-name">대파</span><span class="fi-meta">2일</span></div>
+            <div class="f-item" onclick="openEdit(this)"><span class="fi-name">애호박</span><span class="fi-meta">오늘</span></div>
+          </div>
+          <div class="shelf add-shelf" id="shelf-fridge">
+            <div class="f-item" onclick="openEdit(this)"><span class="fi-name">당근</span><span class="fi-meta">2일</span></div>
+            <div class="f-item quarantine" onclick="openQ(this)"><span class="fi-name">깻잎?</span><span class="fi-meta">확인 필요</span></div>
+          </div>
+          <button class="add-btn" onclick="openAdd('fridge')">＋ 냉장에 추가</button>
+        </div>
+      </div>
+    </div>
+    <div class="unit-note">재료를 탭하면 수정·정리할 수 있어요. 물음표 재료는 탭해서 확인해주세요.</div>
+
+    <div class="thick-div"></div>
+
+    <div class="bridge">
+      <div class="bridge-title">이 재료로 만들 수 있어요</div>
+      <div class="bridge-sub">냉장고 털어서 오늘 저녁 해결 🍳</div>
+    </div>
+    <div class="bridge-scroll">
+      <div class="recipe-card"><img src="https://picsum.photos/320/210?random=31" alt="계란말이 썸네일"><div class="rc-body"><div class="rc-name">대파 계란말이</div><span class="badge have">✓ 재료 다 있어요</span></div></div>
+      <div class="recipe-card"><img src="https://picsum.photos/320/210?random=32" alt="애호박볶음 썸네일"><div class="rc-body"><div class="rc-name">애호박 새우젓볶음</div><span class="badge have">✓ 재료 다 있어요</span></div></div>
+      <div class="recipe-card"><img src="https://picsum.photos/320/210?random=33" alt="제육볶음 썸네일"><div class="rc-body"><div class="rc-name">매콤 제육볶음</div><span class="badge need">🛒 양배추만 더</span></div></div>
+      <div class="recipe-card"><img src="https://picsum.photos/320/210?random=34" alt="된장찌개 썸네일"><div class="rc-body"><div class="rc-name">두부 된장찌개</div><span class="badge need">🛒 된장만 더</span></div></div>
+    </div>
+
+    <div class="thick-div"></div>
+    <div class="soft-note"><span class="ico">💡</span><span>넣은 날은 자동 기록돼요. 유통기한은 추적하지 않아요. 물음표 재료는 확인 전까지 레시피 추천에 포함하지 않아요.</span></div>
+  </div>
+
+</div>
+
+<div class="backdrop" id="backdrop" onclick="closeSheets()"></div>
+
+<!-- 추가 시트 -->
+<div class="sheet" id="add-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head"><span class="sheet-title">재료 추가</span><button class="sheet-close" onclick="closeSheets()">✕</button></div>
+  <div class="field-label">어디에 넣을까요?</div>
+  <div class="seg" id="add-loc">
+    <button data-loc="freezer" onclick="pickAddLoc(this)">❄️ 냉동</button>
+    <button data-loc="fridge" class="on" onclick="pickAddLoc(this)">🧊 냉장</button>
+  </div>
+  <div class="field-label">자주 넣는 재료 <span style="color:var(--color-text-tertiary);font-weight:400">· 탭하면 바로 추가</span></div>
+  <div class="quick-chips">
+    <button onclick="quickAdd('양파')">양파</button>
+    <button onclick="quickAdd('대파')">대파</button>
+    <button onclick="quickAdd('계란')">계란</button>
+    <button onclick="quickAdd('두부')">두부</button>
+    <button onclick="quickAdd('우유')">우유</button>
+    <button onclick="quickAdd('감자')">감자</button>
+    <button onclick="quickAdd('다진 마늘')">다진 마늘</button>
+    <button onclick="quickAdd('김치')">김치</button>
+    <button onclick="quickAdd('삼겹살')">삼겹살</button>
+  </div>
+  <div class="field-label">직접 입력</div>
+  <input class="text-input" id="add-name" placeholder="재료 이름 (예: 애호박)" onkeydown="if(event.key==='Enter')customAdd()">
+  <div class="field-label">넣은 날</div>
+  <div class="date-chips" id="add-date">
+    <button class="on" data-d="오늘" onclick="pickDate(this,'add')">오늘</button>
+    <button data-d="어제" onclick="pickDate(this,'add')">어제</button>
+    <button data-d="3일" onclick="pickDate(this,'add')">그저께</button>
+    <button data-d="직접" onclick="pickDate(this,'add')">직접 선택</button>
+  </div>
+  <button class="sheet-cta" onclick="customAdd()">추가하기</button>
+</div>
+
+<!-- 수정 시트 -->
+<div class="sheet" id="edit-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head"><span class="sheet-title">재료 수정</span><button class="sheet-close" onclick="closeSheets()">✕</button></div>
+  <div class="field-label">이름</div>
+  <input class="text-input" id="edit-name">
+  <div class="field-label">위치</div>
+  <div class="seg" id="edit-loc">
+    <button data-loc="freezer" onclick="pickEditLoc(this)">❄️ 냉동</button>
+    <button data-loc="fridge" onclick="pickEditLoc(this)">🧊 냉장</button>
+  </div>
+  <div class="field-label">넣은 날</div>
+  <div class="date-chips" id="edit-date">
+    <button data-d="오늘" onclick="pickDate(this,'edit')">오늘</button>
+    <button data-d="어제" onclick="pickDate(this,'edit')">어제</button>
+    <button data-d="3일" onclick="pickDate(this,'edit')">3일 전</button>
+    <button data-d="1주" onclick="pickDate(this,'edit')">1주 전</button>
+    <button data-d="직접" onclick="pickDate(this,'edit')">직접</button>
+  </div>
+  <button class="sheet-cta" onclick="saveEdit()">저장하기</button>
+  <button class="delete-btn" onclick="deleteItem()">🗑 다 썼어요 · 냉장고에서 빼기</button>
+</div>
+
+<!-- 물음표 확인 시트 -->
+<div class="sheet" id="q-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head"><span class="sheet-title" id="q-title">깻잎이 맞나요?</span><button class="sheet-close" onclick="closeSheets()">✕</button></div>
+  <p class="q-desc">사진에서 확실하지 않았던 재료예요.<br>확인 전에는 레시피 추천에 포함하지 않아요.</p>
+  <button class="sheet-cta" onclick="qConfirm()">네, 맞아요</button>
+  <button class="delete-btn" onclick="qRemove()">아니요, 빼주세요</button>
+</div>
+
+<!-- 더보기 메뉴 -->
+<div class="sheet" id="menu-sheet">
+  <div class="sheet-handle"></div>
+  <div id="menu-list">
+    <button class="menu-row" onclick="rescan()">📷 냉장고 다시 찍기</button>
+    <button class="menu-row danger" onclick="askClear()">🗑 전체 비우기</button>
+  </div>
+  <div class="menu-confirm" id="menu-confirm">
+    <p>냉장고의 모든 재료가 사라져요. 이 작업은 되돌릴 수 없어요.</p>
+    <div class="row">
+      <button class="mc-cancel" onclick="cancelClear()">취소</button>
+      <button class="mc-ok" onclick="clearAll()">네, 비우기</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ===== 상태 전환 ===== */
+  function setState(s){
+    document.querySelectorAll('.state').forEach(el=>el.classList.remove('active'));
+    document.getElementById('state-'+s).classList.add('active');
+    document.querySelectorAll('.proto-btn').forEach(b=>b.classList.toggle('active', b.dataset.state===s));
+    if(s==='capture') capStep(1);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  document.querySelectorAll('.proto-btn').forEach(b=>b.addEventListener('click',()=>setState(b.dataset.state)));
+
+  let toastT;
+  function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1500);}
+
+  /* ===== 촬영 플로우 ===== */
+  let freezerShot=true; /* 기본: 두 칸 다 찍은 시나리오 */
+  function capStep(n){
+    [1,2,3].forEach(i=>document.getElementById('cap-step'+i).style.display=(i===n?'block':'none'));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function shootFreezer(){freezerShot=true;renderScan();setState('scan');}
+  function skipFreezer(){freezerShot=false;renderScan();setState('scan');}
+  function shootLater(){setState('capture');capStep(3);}
+
+  function renderScan(){
+    document.getElementById('scan-frz-items').style.display=freezerShot?'block':'none';
+    document.getElementById('scan-frz-skip').style.display=freezerShot?'none':'block';
+    updateScanCounts();
+  }
+  function updateScanCounts(){
+    const f=freezerShot?document.querySelectorAll('#scan-frz-items .s-item').length:0;
+    const r=document.querySelectorAll('.compartment.fridge .s-item').length;
+    document.getElementById('scnt-f').textContent=f;
+    document.getElementById('scnt-r').textContent=r;
+    document.getElementById('scan-total').textContent=(f+r);
+    document.getElementById('scan-cta-cnt').textContent=(f+r);
+  }
+  function confirmScan(el){
+    el.classList.remove('uncertain');el.classList.add('ok');
+    const nm=el.querySelector('.si-name');nm.textContent=nm.textContent.replace(/\?$/,'');
+    const mk=el.querySelector('.mark');mk.textContent='✓';mk.removeAttribute('onclick');
+    el.removeAttribute('onclick');
+  }
+  function removeScan(ev,mk){ev.stopPropagation();mk.closest('.s-item').remove();updateScanCounts();}
+
+  /* ===== 스캔 실패 폴백 ===== */
+  function manualFallback(){setState('full');openAdd('fridge');}
+
+  /* ===== 재료 있음 ===== */
+  function updateCounts(){
+    const f=document.querySelectorAll('#comp-freezer .f-item').length;
+    const r=document.querySelectorAll('#comp-fridge .f-item').length;
+    document.getElementById('cnt-freezer').textContent=f;
+    document.getElementById('cnt-fridge').textContent=r;
+    document.getElementById('total-cnt').textContent=(f+r)+'개';
+  }
+
+  function pickDate(btn,scope){
+    document.getElementById(scope+'-date').querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    if(btn.dataset.d==='직접') toast('날짜 선택 화면으로 (프로토타입)');
+  }
+  function getDate(scope){const on=document.querySelector('#'+scope+'-date button.on');return on?on.dataset.d:'오늘';}
+
+  let addLoc='fridge';
+  function openAdd(loc){
+    addLoc=loc;
+    document.querySelectorAll('#add-loc button').forEach(b=>b.classList.toggle('on',b.dataset.loc===loc));
+    document.getElementById('add-name').value='';
+    document.querySelectorAll('#add-date button').forEach(b=>b.classList.remove('on'));
+    document.querySelector('#add-date button[data-d="오늘"]').classList.add('on');
+    openSheet('add-sheet');
+  }
+  function pickAddLoc(btn){addLoc=btn.dataset.loc;document.querySelectorAll('#add-loc button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+  function makeItem(name,date){const d=document.createElement('div');d.className='f-item';d.setAttribute('onclick','openEdit(this)');d.innerHTML='<span class="fi-name">'+name+'</span><span class="fi-meta">'+date+'</span>';return d;}
+  function quickAdd(name){const date=getDate('add');document.getElementById(addLoc==='freezer'?'shelf-freezer':'shelf-fridge').appendChild(makeItem(name,date));updateCounts();toast('✓ '+name+' 추가됨');}
+  function customAdd(){const inp=document.getElementById('add-name');const name=inp.value.trim();if(!name){toast('재료 이름을 입력해주세요');return;}quickAdd(name);inp.value='';}
+
+  let editEl=null,editLoc='fridge';
+  function openEdit(el){
+    editEl=el;
+    const name=el.querySelector('.fi-name').textContent;
+    const meta=el.querySelector('.fi-meta').textContent;
+    editLoc=el.closest('.compartment').classList.contains('freezer')?'freezer':'fridge';
+    document.getElementById('edit-name').value=name;
+    document.querySelectorAll('#edit-loc button').forEach(b=>b.classList.toggle('on',b.dataset.loc===editLoc));
+    document.querySelectorAll('#edit-date button').forEach(b=>b.classList.remove('on'));
+    (document.querySelector('#edit-date button[data-d="'+meta+'"]')||document.querySelector('#edit-date button[data-d="직접"]')).classList.add('on');
+    openSheet('edit-sheet');
+  }
+  function pickEditLoc(btn){editLoc=btn.dataset.loc;document.querySelectorAll('#edit-loc button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+  function saveEdit(){
+    if(!editEl)return;
+    const name=document.getElementById('edit-name').value.trim()||'재료';
+    const date=getDate('edit');
+    editEl.querySelector('.fi-name').textContent=name;
+    editEl.querySelector('.fi-meta').textContent=date;
+    const curLoc=editEl.closest('.compartment').classList.contains('freezer')?'freezer':'fridge';
+    if(curLoc!==editLoc){document.getElementById(editLoc==='freezer'?'shelf-freezer':'shelf-fridge').appendChild(editEl);updateCounts();}
+    closeSheets();toast('수정됐어요');
+  }
+  function deleteItem(){if(!editEl)return;editEl.remove();editEl=null;updateCounts();closeSheets();toast('냉장고에서 뺐어요');}
+
+  /* ===== 물음표(검역) 확인 ===== */
+  let qEl=null;
+  function openQ(el){
+    qEl=el;
+    const raw=el.querySelector('.fi-name').textContent.replace(/\?$/,'');
+    document.getElementById('q-title').textContent=raw+'이(가) 맞나요?';
+    openSheet('q-sheet');
+  }
+  function qConfirm(){
+    if(!qEl)return;
+    qEl.classList.remove('quarantine');
+    const nm=qEl.querySelector('.fi-name');nm.textContent=nm.textContent.replace(/\?$/,'');
+    qEl.querySelector('.fi-meta').textContent='오늘';
+    qEl.setAttribute('onclick','openEdit(this)');
+    qEl=null;closeSheets();toast('확인됐어요 — 레시피 추천에 반영돼요');
+  }
+  function qRemove(){if(!qEl)return;qEl.remove();qEl=null;updateCounts();closeSheets();toast('냉장고에서 뺐어요');}
+
+  /* ===== 메뉴 ===== */
+  function openMenu(){cancelClear();openSheet('menu-sheet');}
+  function rescan(){closeSheets();setState('capture');}
+  function askClear(){document.getElementById('menu-list').style.display='none';document.getElementById('menu-confirm').classList.add('show');}
+  function cancelClear(){document.getElementById('menu-list').style.display='block';document.getElementById('menu-confirm').classList.remove('show');}
+  function clearAll(){document.querySelectorAll('#comp-freezer .f-item, #comp-fridge .f-item').forEach(el=>el.remove());updateCounts();closeSheets();toast('냉장고를 비웠어요');}
+
+  function openSheet(id){document.getElementById('backdrop').classList.add('show');document.getElementById(id).classList.add('show');}
+  function closeSheets(){document.getElementById('backdrop').classList.remove('show');['add-sheet','edit-sheet','q-sheet','menu-sheet'].forEach(id=>document.getElementById(id).classList.remove('show'));}
+
+  updateCounts();renderScan();
+</script>
+<script src="proto-link.js"></script>
+</body>
+</html>

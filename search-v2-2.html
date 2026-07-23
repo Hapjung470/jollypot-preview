@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>졸리팟 V2 · 검색 개선 v1</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  :root{
+    --brand:#FDB813;
+    --primary:#C75D3E;
+    --secondary:#8FA68E;
+    --bg:#FFFFFF;
+    --surface:#F5F0E8;
+    --surface-alt:#F7F2EA;
+    --t1:#2A2A2A;
+    --t2:#6B6B6B;
+    --t3:#A8A8A8;
+    --error:#D64545;
+    --success:#5B8A6B;
+    --info:#3D6B8C;
+    --border:#EDE8E0;
+    --divider:#E8EDE6;
+    --line:#F0EDE7;
+    --sage-dark:#5B7A5C;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{
+    font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo',sans-serif;
+    background:#E5E3DE;
+    color:var(--t1);
+    padding:32px 16px 80px;
+    line-height:1.5;
+  }
+
+  /* ── 프로토타입 네비 (졸리팟 UI 아님) ── */
+  .proto-head{max-width:1200px;margin:0 auto 24px;text-align:center;}
+  .proto-head h1{font-size:18px;font-weight:700;color:var(--t1);margin-bottom:4px;}
+  .proto-head p{font-size:13px;color:var(--t2);}
+  .proto-tabs{
+    display:flex;gap:8px;justify-content:center;flex-wrap:wrap;
+    max-width:760px;margin:18px auto 0;
+  }
+  .proto-tab{
+    padding:9px 16px;border-radius:999px;border:1px solid #CFCBC3;
+    background:#fff;color:var(--t2);font-size:13px;font-weight:500;cursor:pointer;
+    transition:all .15s;
+  }
+  .proto-tab.active{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600;}
+
+  /* ── 폰 프레임 ── */
+  .stage{display:flex;justify-content:center;}
+  .phone{
+    width:390px;background:var(--bg);border-radius:36px;overflow:hidden;
+    box-shadow:0 16px 50px rgba(0,0,0,.18);position:relative;
+    border:8px solid #1A1A1A;
+    display:none;
+  }
+  .phone.show{display:block;}
+  .screen{height:780px;overflow-y:auto;overflow-x:hidden;}
+  .screen::-webkit-scrollbar{width:0;}
+
+  /* 상태바 */
+  .statusbar{display:flex;justify-content:space-between;align-items:center;
+    padding:10px 20px 6px;font-size:13px;font-weight:600;color:var(--t1);}
+  .statusbar .right{display:flex;gap:5px;align-items:center;font-size:11px;}
+
+  /* 검색바 */
+  .searchbar-wrap{padding:6px 16px 10px;display:flex;align-items:center;gap:12px;}
+  .back{font-size:22px;color:var(--t1);flex-shrink:0;line-height:1;}
+  .searchbar{
+    flex:1;display:flex;align-items:center;gap:8px;
+    background:var(--surface);border-radius:12px;padding:11px 14px;
+  }
+  .searchbar input{border:none;background:none;flex:1;font-size:15px;
+    color:var(--t1);font-family:inherit;outline:none;}
+  .searchbar input::placeholder{color:var(--t3);}
+  .searchbar .ico{color:var(--t2);font-size:17px;}
+
+  /* 결과 탭바 */
+  .resulttabs{display:flex;border-bottom:1px solid var(--line);padding:0 8px;}
+  .rtab{flex:1;text-align:center;padding:13px 0;font-size:15px;font-weight:500;
+    color:var(--t3);position:relative;cursor:pointer;}
+  .rtab.on{color:var(--t1);font-weight:600;}
+  .rtab.on::after{content:'';position:absolute;left:18%;right:18%;bottom:-1px;height:2.5px;
+    background:var(--secondary);border-radius:2px;}
+
+  /* 섹션 공통 */
+  .pad{padding:0 20px;}
+  .sec-title{font-size:20px;font-weight:700;color:var(--t1);}
+  .sec-sub{font-size:13px;color:var(--t2);margin-top:2px;}
+  .sec-head{display:flex;justify-content:space-between;align-items:baseline;}
+  .seeall{font-size:13px;font-weight:400;color:var(--t2);display:flex;align-items:center;gap:2px;}
+  .cnt{font-size:14px;font-weight:400;color:var(--t2);}
+
+  /* 칩 */
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:0 20px;scrollbar-width:none;}
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{
+    flex-shrink:0;display:flex;align-items:center;gap:6px;
+    padding:8px 14px;border-radius:999px;font-size:13px;font-weight:500;
+    background:var(--surface);color:var(--t2);border:1px solid var(--border);cursor:pointer;
+  }
+  .chip .x{color:var(--t3);font-size:13px;}
+  .chip-rec{background:rgba(143,166,142,.13);color:var(--sage-dark);border:1px solid rgba(143,166,142,.25);}
+  .label{font-size:13px;font-weight:500;color:var(--t2);padding:0 20px;display:flex;align-items:center;justify-content:space-between;}
+  .label .clr{font-size:12px;color:var(--t3);font-weight:400;}
+
+  /* 썸네일 플레이스홀더 */
+  .thumb{position:relative;border-radius:12px;overflow:hidden;background:var(--surface);}
+  .thumb .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:26px;}
+  .g-warm{background:linear-gradient(135deg,#F3D9A8,#E8B27A);}
+  .g-green{background:linear-gradient(135deg,#C9D6BE,#9CB892);}
+  .g-red{background:linear-gradient(135deg,#E8B59A,#D08B6A);}
+  .g-cream{background:linear-gradient(135deg,#F0E6D2,#E2D2B4);}
+  .bk{position:absolute;right:8px;bottom:8px;width:26px;height:26px;border-radius:7px;
+    background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--t2);}
+  .play{position:absolute;top:8px;left:8px;width:24px;height:24px;border-radius:50%;
+    background:rgba(0,0,0,.45);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;}
+
+  /* 비주얼 인기 카드 (시안A) */
+  .rank-cards{display:flex;gap:10px;overflow-x:auto;padding:14px 20px 4px;scrollbar-width:none;}
+  .rank-cards::-webkit-scrollbar{display:none;}
+  .rc{flex-shrink:0;width:118px;}
+  .rc .thumb{aspect-ratio:3/4;}
+  .rc .rnum{position:absolute;top:8px;left:8px;width:22px;height:22px;border-radius:6px;
+    background:var(--primary);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .rc .nm{font-size:13px;font-weight:500;color:var(--t1);margin-top:7px;line-height:1.35;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .rc .meta{font-size:12px;color:var(--t2);margin-top:3px;}
+
+  /* 텍스트 순위 (시안B / 보조) */
+  .rank-list{display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;padding:12px 20px 4px;}
+  .rl-item{display:flex;align-items:center;gap:12px;padding:7px 0;}
+  .rl-num{font-size:15px;font-weight:700;color:var(--secondary);width:14px;flex-shrink:0;}
+  .rl-txt{font-size:14px;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dots{display:flex;gap:5px;justify-content:center;padding:12px 0 4px;}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--border);}
+  .dot.on{background:var(--secondary);width:16px;border-radius:3px;}
+
+  /* 상품 가로 카드 */
+  .prod-row{display:flex;gap:12px;overflow-x:auto;padding:12px 20px 4px;scrollbar-width:none;}
+  .prod-row::-webkit-scrollbar{display:none;}
+  .pcard{flex-shrink:0;width:140px;}
+  .pcard .thumb{aspect-ratio:1;}
+  .pcard .nm{font-size:14px;color:var(--t1);margin-top:8px;line-height:1.35;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .price-row{display:flex;align-items:baseline;gap:6px;margin-top:6px;}
+  .sale{font-size:15px;font-weight:700;color:var(--primary);}
+  .pay{font-size:15px;font-weight:700;color:var(--t1);}
+  .orig{font-size:12px;color:var(--t2);text-decoration:line-through;}
+  .delivtag{font-size:11px;color:var(--t2);background:var(--surface);border-radius:5px;
+    padding:2px 7px;display:inline-block;margin-top:6px;}
+
+  /* 레시피 2열 그리드 */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px 12px;padding:14px 20px 4px;}
+  .gcard .thumb{aspect-ratio:3/4;}
+  .gcard .nm{font-size:14px;color:var(--t1);margin-top:8px;line-height:1.35;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:38px;}
+  .gcard .cr{font-size:13px;color:var(--t2);margin-top:4px;}
+  .gcard .gmeta{display:flex;gap:12px;font-size:12px;color:var(--t2);margin-top:6px;}
+
+  /* 필터칩 */
+  .filterbar{display:flex;gap:8px;overflow-x:auto;padding:12px 20px;scrollbar-width:none;}
+  .filterbar::-webkit-scrollbar{display:none;}
+  .fchip{flex-shrink:0;padding:7px 13px;border-radius:999px;font-size:13px;font-weight:500;
+    background:#fff;color:var(--t2);border:1px solid var(--border);cursor:pointer;}
+  .fchip.on{background:rgba(199,93,62,.08);color:var(--primary);border-color:var(--primary);}
+  .sortpill{flex-shrink:0;display:flex;align-items:center;gap:4px;padding:7px 13px;border-radius:999px;
+    background:var(--surface);color:var(--t2);font-size:13px;font-weight:500;}
+
+  /* 더보기 */
+  .more{margin:16px 20px 0;border:1px solid var(--border);border-radius:12px;
+    padding:13px;text-align:center;font-size:14px;color:var(--t2);
+    display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;}
+
+  /* 구분 */
+  .thick{height:8px;background:var(--surface);margin:22px 0;}
+  .gap{height:22px;}
+  .gap-s{height:14px;}
+
+  /* 빈 상태 */
+  .empty{text-align:center;padding:30px 20px 8px;}
+  .empty .emj{font-size:40px;}
+  .empty .et{font-size:15px;font-weight:500;color:var(--t1);margin-top:12px;}
+  .empty .es{font-size:13px;color:var(--t2);margin-top:6px;line-height:1.5;}
+
+  /* 컬렉션 카드 */
+  .col-card{margin:0 20px 14px;background:var(--surface);border:1px solid var(--border);
+    border-radius:16px;overflow:hidden;}
+  .col-cover{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;height:130px;background:var(--border);}
+  .col-cover .cc{overflow:hidden;}
+  .col-cover .ph{width:100%;height:100%;}
+  .col-body{padding:14px 16px;display:flex;justify-content:space-between;align-items:flex-start;}
+  .col-body .ct{font-size:15px;font-weight:500;color:var(--t1);}
+  .col-body .cm{font-size:13px;color:var(--t2);margin-top:5px;}
+
+  /* 하단 네비 */
+  .botnav{display:flex;justify-content:space-around;align-items:flex-end;
+    padding:9px 8px 12px;border-top:1px solid var(--line);background:#fff;
+    position:sticky;bottom:0;}
+  .nav-i{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--t3);flex:1;}
+  .nav-i.on{color:var(--primary);}
+  .nav-i .ni{font-size:20px;line-height:1;}
+  .nav-plus{width:46px;height:46px;border-radius:50%;background:var(--brand);
+    display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;
+    margin-bottom:2px;box-shadow:0 4px 10px rgba(253,184,19,.4);}
+
+  .note{max-width:390px;margin:14px auto 0;font-size:12px;color:#7A766E;
+    background:#fff;border:1px solid #D8D4CC;border-radius:10px;padding:12px 14px;line-height:1.55;}
+  .note b{color:var(--primary);font-weight:600;}
+  .note .none{display:none;}
+
+  /* 마이크 아이콘 (음성검색) */
+  .searchbar .mic{color:var(--secondary);font-size:17px;cursor:pointer;}
+  .searchbar .div{width:1px;height:16px;background:var(--border);}
+
+  /* 자동완성 내부 토글 */
+  .ac-toggle{display:flex;gap:6px;padding:8px 20px 4px;}
+  .ac-tg{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:500;
+    background:var(--surface);color:var(--t2);border:1px solid var(--border);cursor:pointer;}
+  .ac-tg.on{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+  /* 자동완성 결과 */
+  .ac-cat{font-size:12px;font-weight:500;color:var(--secondary);padding:14px 20px 6px;
+    text-transform:uppercase;letter-spacing:.3px;}
+  .ac-row{display:flex;align-items:center;gap:12px;padding:11px 20px;cursor:pointer;}
+  .ac-row:hover{background:var(--surface-alt);}
+  .ac-row .acth{width:36px;height:36px;border-radius:8px;overflow:hidden;flex-shrink:0;}
+  .ac-row .acth .ph{width:100%;height:100%;font-size:18px;}
+  .ac-row .ic{width:32px;height:32px;border-radius:50%;background:var(--surface);
+    display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:14px;flex-shrink:0;}
+  .ac-row .txt{flex:1;font-size:15px;color:var(--t1);line-height:1.3;}
+  .ac-row .txt em{font-style:normal;color:var(--primary);font-weight:600;}
+  .ac-row .sub{font-size:12px;color:var(--t2);margin-top:2px;}
+  .ac-row .tag{font-size:11px;color:var(--t3);background:var(--surface);padding:2px 7px;border-radius:5px;}
+  .ac-row .arr{color:var(--t3);font-size:14px;}
+  .ac-divider{height:1px;background:var(--line);margin:6px 20px;}
+
+  /* 본 카드 표시 */
+  .gcard.viewed .thumb{opacity:.78;}
+  .gcard.viewed::after{content:'';position:absolute;top:-3px;right:-3px;width:10px;height:10px;
+    border-radius:50%;background:var(--t3);border:2px solid #fff;}
+  .gcard{position:relative;}
+  .viewed-legend{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--t3);}
+  .viewed-legend::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--t3);display:inline-block;}
+
+  /* 스크랩북 자체 검색바 */
+  .scrap-head{padding:14px 20px 10px;}
+  .scrap-title{font-size:22px;font-weight:700;color:var(--t1);}
+  .scrap-sub{font-size:13px;color:var(--t2);margin-top:2px;}
+  .scrap-search{margin:12px 20px 0;display:flex;align-items:center;gap:8px;
+    background:var(--surface);border-radius:12px;padding:11px 14px;border:1px solid var(--border);}
+  .scrap-search input{border:none;background:none;flex:1;font-size:14px;
+    color:var(--t1);font-family:inherit;outline:none;}
+  .scrap-search input::placeholder{color:var(--t3);}
+  .scrap-tabs{display:flex;gap:18px;padding:14px 20px 0;border-bottom:1px solid var(--line);}
+  .stb{padding:8px 0;font-size:14px;font-weight:500;color:var(--t3);border-bottom:2px solid transparent;}
+  .stb.on{color:var(--t1);font-weight:600;border-color:var(--secondary);}
+
+  /* 쇼핑 단독 탭 — 그리드 안 pcard 너비 풀기 */
+  .grid2 .pcard{width:auto;}
+
+  /* 결과 좁히기 CTA (100+ 누적 시 그리드 중간 풀너비 카드) */
+  .narrow-cta{grid-column:1 / -1;background:var(--surface-alt);border:1px solid var(--border);
+    border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;}
+  .narrow-cta .nt{font-size:14px;color:var(--t1);font-weight:600;}
+  .narrow-cta .ns{font-size:12px;color:var(--t2);}
+  .narrow-cta .nchips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;}
+  .narrow-cta .nch{padding:6px 12px;font-size:12px;border-radius:999px;border:1px solid var(--primary);
+    color:var(--primary);background:#fff;cursor:pointer;font-weight:500;}
+
+  /* 무한 스크롤 로딩 */
+  .loading{text-align:center;padding:18px;color:var(--t3);font-size:13px;
+    display:flex;align-items:center;justify-content:center;gap:8px;}
+  .loading::before{content:'';width:14px;height:14px;border-radius:50%;
+    border:2px solid var(--border);border-top-color:var(--secondary);animation:spin 1s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ── 모바일 뷰포트 (≤440px) ── */
+  @media (max-width: 440px) {
+    body{padding:14px 0 32px;background:#fff;}
+    .proto-head{margin-bottom:14px;padding:0 16px;}
+    .proto-head h1{font-size:16px;}
+    .proto-head p{font-size:12px;}
+    .proto-tabs{
+      flex-wrap:nowrap;overflow-x:auto;
+      justify-content:flex-start;
+      padding:0 16px;margin:12px -16px 0;
+      scrollbar-width:none;
+    }
+    .proto-tabs::-webkit-scrollbar{display:none;}
+    .proto-tabs::after{content:'';flex:0 0 16px;}
+    .proto-tab{flex-shrink:0;padding:8px 13px;font-size:12px;}
+    .stage{display:block;}
+    .phone{
+      width:100%;
+      border:none;border-radius:0;
+      box-shadow:none;
+    }
+    .screen{height:auto;}
+    .botnav{position:sticky;bottom:0;}
+    .note{margin:14px 16px 0;max-width:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="proto-head">
+  <h1>졸리팟 V2 · 검색 개선 v2-2</h1>
+  <p>몰입 여정 전체 + 단독 탭 무한스크롤(DEC-030)</p>
+  <div class="proto-tabs">
+    <div class="proto-tab active" data-s="a">진입(검색)</div>
+    <div class="proto-tab" data-s="ac">자동완성</div>
+    <div class="proto-tab" data-s="prod">통합 · 상품의도</div>
+    <div class="proto-tab" data-s="recipe">통합 · 레시피의도</div>
+    <div class="proto-tab" data-s="recipe-only">레시피 단독</div>
+    <div class="proto-tab" data-s="shop-only">쇼핑 단독</div>
+    <div class="proto-tab" data-s="empty">빈 상태</div>
+    <div class="proto-tab" data-s="collection">컬렉션 탭</div>
+    <div class="proto-tab" data-s="scrap">스크랩북 검색</div>
+  </div>
+</div>
+
+<div class="stage">
+
+  <!-- ════════ 진입 A · 비주얼 ════════ -->
+  <div class="phone show" data-screen="a">
+    <div class="screen">
+      <div class="statusbar"><span>10:06</span><span class="right">📶 🔋88</span></div>
+      <div class="searchbar-wrap">
+        <span class="back">←</span>
+        <div class="searchbar"><input placeholder="레시피, 상품을 검색하세요"><span class="mic">🎤</span><span class="div"></span><span class="ico">🔍</span></div>
+      </div>
+
+      <!-- 최근 검색어 -->
+      <div class="label"><span>최근 검색어</span><span class="clr">전체삭제</span></div>
+      <div class="chips" style="margin-top:10px;">
+        <span class="chip">오징어볶음 <span class="x">✕</span></span>
+        <span class="chip">애호박전 <span class="x">✕</span></span>
+        <span class="chip">리베로 <span class="x">✕</span></span>
+        <span class="chip">남편 아침 <span class="x">✕</span></span>
+      </div>
+
+      <div class="gap"></div>
+
+      <!-- 추천 검색어 -->
+      <div class="label"><span>이런 건 어때요?</span></div>
+      <div class="chips" style="margin-top:10px;">
+        <span class="chip chip-rec">🥢 밑반찬</span>
+        <span class="chip chip-rec">⏱ 15분 요리</span>
+        <span class="chip chip-rec">🍳 아침 메뉴</span>
+        <span class="chip chip-rec">🥗 가벼운 한 끼</span>
+      </div>
+
+      <div class="gap"></div>
+
+      <!-- 지금 많이 찾는 레시피 (비주얼) -->
+      <div class="pad"><div class="sec-title">지금 많이 찾는 레시피</div></div>
+      <div class="rank-cards">
+        <div class="rc"><div class="thumb"><div class="ph g-green">🥬</div><span class="rnum">1</span></div>
+          <div class="nm">밥 대신 먹으면 살 빠지는 두부 요리</div><div class="meta">우후후라이프</div></div>
+        <div class="rc"><div class="thumb"><div class="ph g-warm">🥞</div><span class="rnum">2</span></div>
+          <div class="nm">바나나 계란 팬케이크</div><div class="meta">Luda Table</div></div>
+        <div class="rc"><div class="thumb"><div class="ph g-red">🍤</div><span class="rnum">3</span></div>
+          <div class="nm">애호박 새우전</div><div class="meta">추추의 한끼식사</div></div>
+        <div class="rc"><div class="thumb"><div class="ph g-cream">🧀</div><span class="rnum">4</span></div>
+          <div class="nm">노밀가루 치즈빵</div><div class="meta">하봄</div></div>
+      </div>
+
+      <div class="thick"></div>
+
+      <!-- 지금 많이 찾는 상품 (텍스트 순위 — 식별 목적) -->
+      <div class="pad"><div class="sec-title">지금 많이 찾는 상품</div></div>
+      <div class="rank-list">
+        <div class="rl-item"><span class="rl-num">1</span><span class="rl-txt">스트랩 트임 스커트</span></div>
+        <div class="rl-item"><span class="rl-num">3</span><span class="rl-txt">물티슈</span></div>
+        <div class="rl-item"><span class="rl-num">2</span><span class="rl-txt">리베로</span></div>
+        <div class="rl-item"><span class="rl-num">4</span><span class="rl-txt">데일리 니트</span></div>
+      </div>
+      <div class="dots"><span class="dot on"></span><span class="dot"></span></div>
+
+      <div class="gap"></div>
+      <div class="botnav">
+        <div class="nav-i"><span class="ni">⌂</span>홈</div>
+        <div class="nav-i on"><span class="ni">◗</span>쇼핑</div>
+        <div class="nav-plus">＋</div>
+        <div class="nav-i"><span class="ni">🔖</span>스크랩북</div>
+        <div class="nav-i"><span class="ni">👤</span>마이</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 자동완성 (1-2글자 / 3글자+) ════════ -->
+  <div class="phone" data-screen="ac">
+    <div class="screen">
+      <div class="statusbar"><span>10:06</span><span class="right">📶 🔋88</span></div>
+      <div class="searchbar-wrap">
+        <span class="back">←</span>
+        <div class="searchbar"><input id="acInput" value="오징" style="color:var(--t1);"><span class="mic">🎤</span><span class="div"></span><span class="ico">🔍</span></div>
+      </div>
+
+      <!-- 내부 상태 토글 (프로토타입용, 졸리팟 UI 아님) -->
+      <div class="ac-toggle">
+        <span class="ac-tg on" data-ac="short">1~2글자 상태</span>
+        <span class="ac-tg" data-ac="long">3글자+ 상태</span>
+      </div>
+
+      <!-- 1-2글자: 카테고리 분기 텍스트 후보 -->
+      <div id="ac-short">
+        <div class="ac-cat">레시피</div>
+        <div class="ac-row"><div class="ic">🔍</div><div class="txt"><em>오징</em>어볶음</div><span class="arr">↗</span></div>
+        <div class="ac-row"><div class="ic">🔍</div><div class="txt"><em>오징</em>어볶음 황금레시피</div><span class="arr">↗</span></div>
+        <div class="ac-row"><div class="ic">🔍</div><div class="txt"><em>오징</em>어 덮밥</div><span class="arr">↗</span></div>
+
+        <div class="ac-cat">상품</div>
+        <div class="ac-row"><div class="ic">🔍</div><div class="txt">손질 <em>오징</em>어 냉동</div><span class="arr">↗</span></div>
+        <div class="ac-row"><div class="ic">🔍</div><div class="txt"><em>오징</em>어채</div><span class="arr">↗</span></div>
+
+        <div class="ac-cat">컬렉션</div>
+        <div class="ac-row"><div class="ic">🔍</div><div class="txt">매콤하게 한 끼 <em>오징</em>어 모음</div><span class="arr">↗</span></div>
+      </div>
+
+      <!-- 3글자+: 완성형 + 썸네일 미리보기 -->
+      <div id="ac-long" style="display:none;">
+        <div class="ac-cat">레시피 · 추천</div>
+        <div class="ac-row"><div class="acth"><div class="ph g-red">🦑</div></div>
+          <div style="flex:1;"><div class="txt"><em>오징어볶음</em> 황금레시피</div>
+            <div class="sub">추추의 한끼식사 · 10분</div></div>
+          <span class="tag">인기</span></div>
+        <div class="ac-row"><div class="acth"><div class="ph g-warm">🦑</div></div>
+          <div style="flex:1;"><div class="txt">물기 없이 꾸덕한 <em>오징어볶음</em></div>
+            <div class="sub">추추의 한끼식사 · 10분</div></div>
+          <span class="tag">최근</span></div>
+        <div class="ac-row"><div class="acth"><div class="ph g-green">🌶</div></div>
+          <div style="flex:1;"><div class="txt"><em>오징어</em> 제육볶음</div>
+            <div class="sub">매일맛나 · 15분</div></div>
+          <span class="tag">인기</span></div>
+
+        <div class="ac-divider"></div>
+
+        <div class="ac-cat">상품 · 관련 재료</div>
+        <div class="ac-row"><div class="acth"><div class="ph g-cream">🦑</div></div>
+          <div style="flex:1;"><div class="txt">손질 <em>오징어</em> 냉동 1kg</div>
+            <div class="sub">12% · 13,900원</div></div>
+          <span class="arr">↗</span></div>
+
+        <div class="ac-divider"></div>
+
+        <div class="ac-cat">컬렉션</div>
+        <div class="ac-row"><div class="ic">📚</div>
+          <div style="flex:1;"><div class="txt">매콤하게 한 끼 (<em>오징어</em> 포함 8개)</div>
+            <div class="sub">By 매일맛나</div></div>
+          <span class="arr">↗</span></div>
+      </div>
+
+      <div class="gap"></div>
+      <div class="botnav">
+        <div class="nav-i"><span class="ni">⌂</span>홈</div>
+        <div class="nav-i on"><span class="ni">◗</span>쇼핑</div>
+        <div class="nav-plus">＋</div>
+        <div class="nav-i"><span class="ni">🔖</span>스크랩북</div>
+        <div class="nav-i"><span class="ni">👤</span>마이</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 통합 · 상품의도 (리베로) ════════ -->
+  <div class="phone" data-screen="prod">
+    <div class="screen">
+      <div class="statusbar"><span>10:06</span><span class="right">📶 🔋88</span></div>
+      <div class="searchbar-wrap">
+        <span class="back">←</span>
+        <div class="searchbar"><input value="리베로" style="color:var(--t1);"><span class="ico">🔍</span></div>
+      </div>
+      <div class="resulttabs">
+        <div class="rtab on">통합</div><div class="rtab">쇼핑</div>
+        <div class="rtab">레시피</div><div class="rtab">컬렉션</div>
+      </div>
+
+      <div class="gap-s"></div>
+
+      <!-- 상품 의도 → 쇼핑 우선 -->
+      <div class="pad"><div class="sec-head"><div class="sec-title">쇼핑 <span class="cnt">3</span></div><span class="seeall">전체보기 ›</span></div></div>
+      <div class="prod-row">
+        <div class="pcard"><div class="thumb"><div class="ph g-cream">🧻</div><span class="bk">🔖</span></div>
+          <div class="nm">리베로 물티슈 캡형 10팩</div>
+          <div class="price-row"><span class="sale">22%</span><span class="pay">15,500원</span></div>
+          <span class="delivtag">유료 (고정 배송비)</span></div>
+        <div class="pcard"><div class="thumb"><div class="ph g-warm">🧷</div><span class="bk">🔖</span></div>
+          <div class="nm">리베로 컴포트 기저귀 4단계</div>
+          <div class="price-row"><span class="sale">18%</span><span class="pay">32,900원</span></div>
+          <span class="delivtag">무료배송</span></div>
+        <div class="pcard"><div class="thumb"><div class="ph g-green">🍼</div><span class="bk">🔖</span></div>
+          <div class="nm">리베로 아기 로션 200ml</div>
+          <div class="price-row"><span class="pay">12,000원</span></div>
+          <span class="delivtag">무료배송</span></div>
+      </div>
+
+      <div class="thick"></div>
+
+      <!-- 레시피는 결과 적음 → 하단, 헤더에 카운트 -->
+      <div class="pad"><div class="sec-head"><div class="sec-title">레시피 <span class="cnt">2</span></div><span class="seeall">전체보기 ›</span></div></div>
+      <div class="grid2">
+        <div class="gcard"><div class="thumb"><div class="ph g-warm">🍳</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">이유식 후기 아기 반찬</div><div class="cr">베베쿡</div>
+          <div class="gmeta"><span>⏱ 15분</span><span>👥 1인분</span></div></div>
+        <div class="gcard"><div class="thumb"><div class="ph g-green">🥗</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">아이 간식 채소칩</div><div class="cr">하봄</div>
+          <div class="gmeta"><span>⏱ 20분</span><span>👥 2인분</span></div></div>
+      </div>
+      <!-- 컬렉션 0 → 섹션 자체를 숨김 (렌더링 안 함) -->
+
+      <div class="gap"></div>
+      <div class="botnav">
+        <div class="nav-i"><span class="ni">⌂</span>홈</div>
+        <div class="nav-i on"><span class="ni">◗</span>쇼핑</div>
+        <div class="nav-plus">＋</div>
+        <div class="nav-i"><span class="ni">🔖</span>스크랩북</div>
+        <div class="nav-i"><span class="ni">👤</span>마이</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 통합 · 레시피의도 (오징어볶음) ════════ -->
+  <div class="phone" data-screen="recipe">
+    <div class="screen">
+      <div class="statusbar"><span>10:06</span><span class="right">📶 🔋88</span></div>
+      <div class="searchbar-wrap">
+        <span class="back">←</span>
+        <div class="searchbar"><input value="오징어볶음" style="color:var(--t1);"><span class="ico">🔍</span></div>
+      </div>
+      <div class="resulttabs">
+        <div class="rtab on">통합</div><div class="rtab">쇼핑</div>
+        <div class="rtab">레시피</div><div class="rtab">컬렉션</div>
+      </div>
+
+      <!-- 레시피 의도 → 필터칩 노출 + 레시피 우선 -->
+      <div class="filterbar">
+        <span class="sortpill">최신순 ▾</span>
+        <span class="fchip on">15분 이하</span>
+        <span class="fchip">1~2인분</span>
+        <span class="fchip">영상</span>
+        <span class="fchip">오리지널</span>
+      </div>
+
+      <div class="pad" style="display:flex;justify-content:space-between;align-items:baseline;">
+        <div class="sec-head" style="flex:1;"><div class="sec-title">레시피 <span class="cnt">24</span></div></div>
+        <span class="viewed-legend">본 카드</span>
+      </div>
+      <div class="grid2">
+        <div class="gcard viewed"><div class="thumb"><div class="ph g-red">🦑</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">물기 없이 볶아낸 오징어볶음 황금레시피</div><div class="cr">추추의 한끼식사</div>
+          <div class="gmeta"><span>⏱ 10분</span><span>👥 2인분</span></div></div>
+        <div class="gcard"><div class="thumb"><div class="ph g-warm">🦑</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">물기 없이 꾸덕한 매콤 오징어볶음</div><div class="cr">추추의 한끼식사</div>
+          <div class="gmeta"><span>⏱ 10분</span><span>👥 2인분</span></div></div>
+        <div class="gcard viewed"><div class="thumb"><div class="ph g-green">🌶</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">밥도둑 오징어 제육볶음</div><div class="cr">매일맛나</div>
+          <div class="gmeta"><span>⏱ 15분</span><span>👥 3인분</span></div></div>
+        <div class="gcard"><div class="thumb"><div class="ph g-cream">🍚</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">오징어볶음 덮밥 한 그릇</div><div class="cr">Luda Table</div>
+          <div class="gmeta"><span>⏱ 12분</span><span>👥 1인분</span></div></div>
+      </div>
+      <div class="more">레시피 더보기 ⌄</div>
+
+      <div class="thick"></div>
+
+      <!-- 레시피 의도 → 쇼핑은 '관련 재료'로 하단에 -->
+      <div class="pad"><div class="sec-head"><div class="sec-title">관련 재료 <span class="cnt">5</span></div><span class="seeall">전체보기 ›</span></div></div>
+      <div class="prod-row">
+        <div class="pcard"><div class="thumb"><div class="ph g-cream">🦑</div><span class="bk">🔖</span></div>
+          <div class="nm">손질 오징어 냉동 1kg</div>
+          <div class="price-row"><span class="sale">12%</span><span class="pay">13,900원</span></div></div>
+        <div class="pcard"><div class="thumb"><div class="ph g-red">🌶</div><span class="bk">🔖</span></div>
+          <div class="nm">청양고추 고춧가루 500g</div>
+          <div class="price-row"><span class="pay">8,500원</span></div></div>
+        <div class="pcard"><div class="thumb"><div class="ph g-green">🧅</div><span class="bk">🔖</span></div>
+          <div class="nm">국내산 양파 3kg</div>
+          <div class="price-row"><span class="pay">6,900원</span></div></div>
+      </div>
+
+      <div class="gap"></div>
+      <div class="botnav">
+        <div class="nav-i"><span class="ni">⌂</span>홈</div>
+        <div class="nav-i on"><span class="ni">◗</span>쇼핑</div>
+        <div class="nav-plus">＋</div>
+        <div class="nav-i"><span class="ni">🔖</span>스크랩북</div>
+        <div class="nav-i"><span class="ni">👤</span>마이</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 레시피 단독 탭 (무한스크롤) ════════ -->
+  <div class="phone" data-screen="recipe-only">
+    <div class="screen">
+      <div class="statusbar"><span>10:09</span><span class="right">📶 🔋88</span></div>
+      <div class="searchbar-wrap">
+        <span class="back">←</span>
+        <div class="searchbar"><input value="오징어볶음" style="color:var(--t1);"><span class="mic">🎤</span><span class="div"></span><span class="ico">🔍</span></div>
+      </div>
+      <div class="resulttabs">
+        <div class="rtab">통합</div><div class="rtab">쇼핑</div>
+        <div class="rtab on">레시피</div><div class="rtab">컬렉션</div>
+      </div>
+
+      <!-- 영속 필터 (DEC-029) -->
+      <div class="filterbar">
+        <span class="sortpill">인기순 ▾</span>
+        <span class="fchip on">15분 이하</span>
+        <span class="fchip">1~2인분</span>
+        <span class="fchip">영상</span>
+        <span class="fchip">오리지널</span>
+        <span class="fchip">난이도</span>
+      </div>
+
+      <div class="pad" style="display:flex;justify-content:space-between;align-items:baseline;">
+        <div class="cnt"><b style="color:var(--t1);font-weight:600;">127</b>개 · 15분 이하</div>
+        <span class="viewed-legend">본 카드</span>
+      </div>
+
+      <div class="grid2">
+        <div class="gcard viewed"><div class="thumb"><div class="ph g-red">🦑</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">물기 없이 볶아낸 오징어볶음 황금레시피</div><div class="cr">추추의 한끼식사</div>
+          <div class="gmeta"><span>⏱ 10분</span><span>👥 2인분</span></div></div>
+        <div class="gcard"><div class="thumb"><div class="ph g-warm">🦑</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">물기 없이 꾸덕한 매콤 오징어볶음</div><div class="cr">추추의 한끼식사</div>
+          <div class="gmeta"><span>⏱ 10분</span><span>👥 2인분</span></div></div>
+        <div class="gcard"><div class="thumb"><div class="ph g-green">🌶</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">밥도둑 오징어 제육볶음</div><div class="cr">매일맛나</div>
+          <div class="gmeta"><span>⏱ 15분</span><span>👥 3인분</span></div></div>
+        <div class="gcard viewed"><div class="thumb"><div class="ph g-cream">🍚</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">오징어볶음 덮밥 한 그릇</div><div class="cr">Luda Table</div>
+          <div class="gmeta"><span>⏱ 12분</span><span>👥 1인분</span></div></div>
+        <div class="gcard"><div class="thumb"><div class="ph g-red">🦑</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">아빠표 오징어볶음 매콤버전</div><div class="cr">하봄</div>
+          <div class="gmeta"><span>⏱ 13분</span><span>👥 4인분</span></div></div>
+        <div class="gcard"><div class="thumb"><div class="ph g-warm">🥢</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">오징어 야채볶음 가볍게</div><div class="cr">베베쿡</div>
+          <div class="gmeta"><span>⏱ 8분</span><span>👥 2인분</span></div></div>
+
+        <!-- 100+ 누적 시 좁히기 CTA (DEC-030) -->
+        <div class="narrow-cta">
+          <div class="nt">결과가 많아요. 좁혀볼까요?</div>
+          <div class="ns">자주 쓰는 조건으로 빠르게 추리기</div>
+          <div class="nchips">
+            <span class="nch">10분 이하</span>
+            <span class="nch">1인분</span>
+            <span class="nch">오리지널만</span>
+            <span class="nch">저장 많은순</span>
+          </div>
+        </div>
+
+        <div class="gcard"><div class="thumb"><div class="ph g-green">🍳</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">오징어 계란말이</div><div class="cr">Luda Table</div>
+          <div class="gmeta"><span>⏱ 12분</span><span>👥 2인분</span></div></div>
+        <div class="gcard"><div class="thumb"><div class="ph g-cream">🌶</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">간장 오징어볶음</div><div class="cr">매일맛나</div>
+          <div class="gmeta"><span>⏱ 14분</span><span>👥 3인분</span></div></div>
+      </div>
+
+      <div class="loading">더 불러오는 중</div>
+
+      <div class="botnav">
+        <div class="nav-i"><span class="ni">⌂</span>홈</div>
+        <div class="nav-i on"><span class="ni">◗</span>쇼핑</div>
+        <div class="nav-plus">＋</div>
+        <div class="nav-i"><span class="ni">🔖</span>스크랩북</div>
+        <div class="nav-i"><span class="ni">👤</span>마이</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 쇼핑 단독 탭 (무한스크롤) ════════ -->
+  <div class="phone" data-screen="shop-only">
+    <div class="screen">
+      <div class="statusbar"><span>10:10</span><span class="right">📶 🔋88</span></div>
+      <div class="searchbar-wrap">
+        <span class="back">←</span>
+        <div class="searchbar"><input value="물티슈" style="color:var(--t1);"><span class="mic">🎤</span><span class="div"></span><span class="ico">🔍</span></div>
+      </div>
+      <div class="resulttabs">
+        <div class="rtab">통합</div><div class="rtab on">쇼핑</div>
+        <div class="rtab">레시피</div><div class="rtab">컬렉션</div>
+      </div>
+
+      <!-- 쇼핑 필터 — 영속 -->
+      <div class="filterbar">
+        <span class="sortpill">인기순 ▾</span>
+        <span class="fchip on">무료배송</span>
+        <span class="fchip">할인</span>
+        <span class="fchip">5만원 이하</span>
+        <span class="fchip">카테고리</span>
+      </div>
+
+      <div class="pad">
+        <div class="cnt"><b style="color:var(--t1);font-weight:600;">84</b>개 · 무료배송</div>
+      </div>
+
+      <div class="grid2">
+        <div class="pcard"><div class="thumb"><div class="ph g-cream">🧻</div><span class="bk">🔖</span></div>
+          <div class="nm">리베로 물티슈 캡형 10팩</div>
+          <div class="price-row"><span class="sale">22%</span><span class="pay">15,500원</span></div>
+          <span class="delivtag">무료배송</span></div>
+        <div class="pcard"><div class="thumb"><div class="ph g-warm">🧻</div><span class="bk">🔖</span></div>
+          <div class="nm">베베 순수 물티슈 80매 20팩</div>
+          <div class="price-row"><span class="sale">35%</span><span class="pay">22,900원</span></div>
+          <span class="delivtag">무료배송</span></div>
+        <div class="pcard"><div class="thumb"><div class="ph g-green">🌿</div><span class="bk">🔖</span></div>
+          <div class="nm">에네스 자연유래 물티슈</div>
+          <div class="price-row"><span class="pay">12,800원</span></div>
+          <span class="delivtag">무료배송</span></div>
+        <div class="pcard"><div class="thumb"><div class="ph g-red">🧻</div><span class="bk">🔖</span></div>
+          <div class="nm">아기물티슈 캡형 100매 12팩</div>
+          <div class="price-row"><span class="sale">18%</span><span class="pay">18,400원</span></div>
+          <span class="delivtag">무료배송</span></div>
+        <div class="pcard"><div class="thumb"><div class="ph g-cream">🧻</div><span class="bk">🔖</span></div>
+          <div class="nm">대용량 휴대용 물티슈 30매 30팩</div>
+          <div class="price-row"><span class="sale">12%</span><span class="pay">9,900원</span></div>
+          <span class="delivtag">무료배송</span></div>
+        <div class="pcard"><div class="thumb"><div class="ph g-warm">🧻</div><span class="bk">🔖</span></div>
+          <div class="nm">유한킴벌리 화이트 물티슈</div>
+          <div class="price-row"><span class="pay">14,500원</span></div>
+          <span class="delivtag">무료배송</span></div>
+      </div>
+
+      <div class="loading">더 불러오는 중</div>
+
+      <div class="botnav">
+        <div class="nav-i"><span class="ni">⌂</span>홈</div>
+        <div class="nav-i on"><span class="ni">◗</span>쇼핑</div>
+        <div class="nav-plus">＋</div>
+        <div class="nav-i"><span class="ni">🔖</span>스크랩북</div>
+        <div class="nav-i"><span class="ni">👤</span>마이</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 빈 상태 ════════ -->
+  <div class="phone" data-screen="empty">
+    <div class="screen">
+      <div class="statusbar"><span>10:06</span><span class="right">📶 🔋88</span></div>
+      <div class="searchbar-wrap">
+        <span class="back">←</span>
+        <div class="searchbar"><input value="그릭요거트볼" style="color:var(--t1);"><span class="ico">🔍</span></div>
+      </div>
+      <div class="resulttabs">
+        <div class="rtab on">통합</div><div class="rtab">쇼핑</div>
+        <div class="rtab">레시피</div><div class="rtab">컬렉션</div>
+      </div>
+
+      <div class="empty">
+        <div class="emj">🍳</div>
+        <div class="et">‘그릭요거트볼’ 검색 결과가 없어요</div>
+        <div class="es">철자를 확인하거나, 더 간단한 단어로 찾아보세요.</div>
+      </div>
+
+      <div class="gap"></div>
+
+      <!-- 빈 상태는 텍스트만 두지 않고 실제 추천으로 채움 (3단 폴백: 임베딩 유사 → 카테고리 인기 → 전체) -->
+      <div class="pad" style="display:flex;justify-content:space-between;align-items:baseline;">
+        <div><div class="sec-title">비슷한 키워드 결과</div>
+          <div class="sec-sub">‘요거트’가 포함된 레시피</div></div>
+      </div>
+      <div class="grid2">
+        <div class="gcard"><div class="thumb"><div class="ph g-cream">🥣</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">그릭요거트 과일볼 만들기</div><div class="cr">하봄</div>
+          <div class="gmeta"><span>⏱ 5분</span><span>👥 1인분</span></div></div>
+        <div class="gcard"><div class="thumb"><div class="ph g-warm">🥐</div><span class="play">▶</span><span class="bk">🔖</span></div>
+          <div class="nm">노오븐 요거트 케이크</div><div class="cr">Luda Table</div>
+          <div class="gmeta"><span>⏱ 20분</span><span>👥 4인분</span></div></div>
+      </div>
+
+      <div class="gap-s"></div>
+      <div class="chips" style="margin-top:6px;">
+        <span class="chip chip-rec">🥣 요거트볼</span>
+        <span class="chip chip-rec">🍓 과일 디저트</span>
+        <span class="chip chip-rec">🥗 가벼운 아침</span>
+      </div>
+
+      <div class="gap"></div>
+      <div class="botnav">
+        <div class="nav-i"><span class="ni">⌂</span>홈</div>
+        <div class="nav-i on"><span class="ni">◗</span>쇼핑</div>
+        <div class="nav-plus">＋</div>
+        <div class="nav-i"><span class="ni">🔖</span>스크랩북</div>
+        <div class="nav-i"><span class="ni">👤</span>마이</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 컬렉션 탭 (개선) ════════ -->
+  <div class="phone" data-screen="collection">
+    <div class="screen">
+      <div class="statusbar"><span>10:07</span><span class="right">📶 🔋88</span></div>
+      <div class="searchbar-wrap">
+        <span class="back">←</span>
+        <div class="searchbar"><input value="오징어볶음" style="color:var(--t1);"><span class="ico">🔍</span></div>
+      </div>
+      <div class="resulttabs">
+        <div class="rtab">통합</div><div class="rtab">쇼핑</div>
+        <div class="rtab">레시피</div><div class="rtab on">컬렉션</div>
+      </div>
+
+      <!-- 정렬: 담긴 개수순 추가 -->
+      <div class="filterbar">
+        <span class="sortpill">인기순 ▾</span>
+        <span class="fchip">최신순</span>
+        <span class="fchip">담긴 개수순</span>
+      </div>
+      <div class="pad"><div class="cnt" style="padding:2px 0 4px;"><b style="color:var(--t1);font-weight:600;">9</b>개의 컬렉션</div></div>
+
+      <div class="gap-s"></div>
+
+      <!-- 채워진 컬렉션만 노출 (0개·디폴트 제외) -->
+      <div class="col-card">
+        <div class="col-cover">
+          <div class="cc"><div class="ph g-red">🦑</div></div>
+          <div class="cc"><div class="ph g-warm">🍜</div></div>
+          <div class="cc"><div class="ph g-green">🌶</div></div>
+        </div>
+        <div class="col-body">
+          <div><div class="ct">매콤하게 한 끼</div>
+            <div class="cm">By 매일맛나 · 8개 · 저장 1.2천</div></div>
+          <span class="bk" style="position:static;">🔖</span>
+        </div>
+      </div>
+
+      <div class="col-card">
+        <div class="col-cover">
+          <div class="cc"><div class="ph g-warm">🦑</div></div>
+          <div class="cc"><div class="ph g-cream">🍚</div></div>
+          <div class="cc"><div class="ph g-green">🥗</div></div>
+        </div>
+        <div class="col-body">
+          <div><div class="ct">남편 입맛 저격 메뉴</div>
+            <div class="cm">By 하봄 · 12개 · 저장 856</div></div>
+          <span class="bk" style="position:static;">🔖</span>
+        </div>
+      </div>
+
+      <div class="col-card">
+        <div class="col-cover">
+          <div class="cc"><div class="ph g-green">🦑</div></div>
+          <div class="cc"><div class="ph g-red">🌶</div></div>
+          <div class="cc"><div class="ph g-cream">🍳</div></div>
+        </div>
+        <div class="col-body">
+          <div><div class="ct">10분 컷 저녁</div>
+            <div class="cm">By 추추의 한끼식사 · 5개 · 저장 421</div></div>
+          <span class="bk" style="position:static;">🔖</span>
+        </div>
+      </div>
+
+      <div class="more">컬렉션 더보기 ⌄</div>
+
+      <div class="gap"></div>
+      <div class="botnav">
+        <div class="nav-i"><span class="ni">⌂</span>홈</div>
+        <div class="nav-i on"><span class="ni">◗</span>쇼핑</div>
+        <div class="nav-plus">＋</div>
+        <div class="nav-i"><span class="ni">🔖</span>스크랩북</div>
+        <div class="nav-i"><span class="ni">👤</span>마이</div>
+      </div>
+    </div>
+  <!-- ════════ 스크랩북 내 검색 (컨텍스트 분리) ════════ -->
+  <div class="phone" data-screen="scrap">
+    <div class="screen">
+      <div class="statusbar"><span>10:08</span><span class="right">📶 🔋88</span></div>
+
+      <div class="scrap-head">
+        <div class="scrap-title">스크랩북</div>
+        <div class="scrap-sub">저장한 콘텐츠 247개</div>
+      </div>
+
+      <!-- 통합 검색과 분리된 자체 검색바 -->
+      <div class="scrap-search">
+        <span class="ico" style="color:var(--t2);font-size:15px;">🔍</span>
+        <input value="오징어" placeholder="스크랩북에서 검색">
+      </div>
+
+      <div class="scrap-tabs">
+        <div class="stb on">전체저장</div>
+        <div class="stb">컬렉션</div>
+        <div class="stb">요리후기</div>
+      </div>
+
+      <div class="pad" style="padding-top:14px;">
+        <div class="cnt"><b style="color:var(--t1);font-weight:600;">8</b>개 저장됨 · 검색어 ‘오징어’</div>
+      </div>
+
+      <div class="grid2">
+        <div class="gcard"><div class="thumb"><div class="ph g-red">🦑</div><span class="play">▶</span><span class="bk" style="color:var(--primary);">🔖</span></div>
+          <div class="nm">물기 없이 볶아낸 오징어볶음 황금레시피</div><div class="cr">추추의 한끼식사</div>
+          <div class="gmeta"><span>⏱ 10분</span><span>3주 전 저장</span></div></div>
+        <div class="gcard"><div class="thumb"><div class="ph g-warm">🦑</div><span class="play">▶</span><span class="bk" style="color:var(--primary);">🔖</span></div>
+          <div class="nm">물기 없이 꾸덕한 매콤 오징어볶음</div><div class="cr">추추의 한끼식사</div>
+          <div class="gmeta"><span>⏱ 10분</span><span>한 달 전</span></div></div>
+        <div class="gcard"><div class="thumb"><div class="ph g-green">🌶</div><span class="play">▶</span><span class="bk" style="color:var(--primary);">🔖</span></div>
+          <div class="nm">오징어 제육볶음</div><div class="cr">매일맛나</div>
+          <div class="gmeta"><span>⏱ 15분</span><span>지난주</span></div></div>
+        <div class="gcard"><div class="thumb"><div class="ph g-cream">🦑</div><span class="play">▶</span><span class="bk" style="color:var(--primary);">🔖</span></div>
+          <div class="nm">오징어 덮밥</div><div class="cr">Luda Table</div>
+          <div class="gmeta"><span>⏱ 12분</span><span>어제</span></div></div>
+      </div>
+
+      <div class="more">더 많은 결과 ⌄</div>
+
+      <div class="gap"></div>
+      <div class="botnav">
+        <div class="nav-i"><span class="ni">⌂</span>홈</div>
+        <div class="nav-i"><span class="ni">◗</span>쇼핑</div>
+        <div class="nav-plus">＋</div>
+        <div class="nav-i on"><span class="ni">🔖</span>스크랩북</div>
+        <div class="nav-i"><span class="ni">👤</span>마이</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="note" id="note"></div>
+
+<script>
+  const notes = {
+    a:'<b>진입(검색)</b> — 최근 검색어 + 추천 검색어 + 레시피 비주얼 / 상품 텍스트 하이브리드. 검색바에 <b>🎤 음성 검색</b>(H) 추가. 요리·운전 중 양손 사용 어려운 상황 대응.',
+    ac:'<b>자동완성</b>(A, P1 신규) — 검색 인터랙션 시간의 절반을 차지하는 구간. <b>1~2글자</b>는 카테고리 분기 텍스트 후보, <b>3글자+</b>는 완성형 + 28px 썸네일 + 인기/최근 가중치 라벨. 졸리팟의 "떠올려주기" 정체성에 직결.',
+    prod:'<b>통합 · 상품의도</b> — "리베로" 같은 상품 쿼리 → 쇼핑 우선. 할인율 테라코타. 결과 0인 섹션은 통째로 숨김. <b>DEC: 통합 검색 단일화</b>로 어디서 들어와도 동일 결과.',
+    recipe:'<b>통합 · 레시피의도</b> — 레시피 우선 + 필터칩 + 쇼핑은 "관련 재료"로 하단. <b>본 카드 회색 점 표시(B)</b>로 카드 탭 후 복귀 시 어디까지 봤는지 인지 비용 절감. 필터 활성 상태는 <b>세션 내 유지(E)</b>.',
+    'recipe-only':'<b>레시피 단독 탭(DEC-030)</b> — 한 카테고리 깊이 탐색이 목적이라 <b>무한 스크롤</b>. 영속 필터(15분 이하 활성 유지). 결과 누적 100+ 지점에 <b>"좁히기" CTA</b>를 그리드 중간에 풀너비 삽입 — 자주 쓰는 조건 칩으로 즉시 추리기. 본 카드 회색 점은 단독 탭에서도 동일 적용.',
+    'shop-only':'<b>쇼핑 단독 탭(DEC-030)</b> — 무한 스크롤. 정렬·필터 영속. 할인율 <b>테라코타 통일</b>(가이드 준수). 무료배송 필터 활성. 카드 그리드는 레시피와 같은 2열이지만 비율은 상품 특성에 맞춤.',
+    empty:'<b>빈 상태</b> — "결과 없음" 안내 + <b>"비슷한 키워드 결과" 라벨로 폴백 로직 명시(C)</b>. 추천은 임베딩 유사도 → 카테고리 인기 → 전체 인기 3단 폴백. 알고리즘 투명성으로 신뢰도 확보.',
+    collection:'<b>컬렉션 탭</b> — 0개·디폴트 컬렉션 검색 제외. 채워진 릴스 그리드 커버 + 담긴 개수/인기순 정렬 + 저장수 메타.',
+    scrap:'<b>스크랩북 검색(G)</b> — 통합 검색과 분리된 자체 검색바. 247개 누적 시 통합으로는 못 찾음. "스크랩북에서 검색"으로 컨텍스트 명시. 저장 시점("3주 전", "어제") 노출로 회상 단서 제공.'
+  };
+  const tabs=document.querySelectorAll('.proto-tab');
+  const note=document.getElementById('note');
+  function show(s){
+    document.querySelectorAll('.phone').forEach(p=>p.classList.toggle('show',p.dataset.screen===s));
+    tabs.forEach(t=>t.classList.toggle('active',t.dataset.s===s));
+    note.innerHTML=notes[s];
+  }
+  tabs.forEach(t=>t.addEventListener('click',()=>show(t.dataset.s)));
+
+  // 자동완성 내부 토글
+  document.querySelectorAll('.ac-tg').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('.ac-tg').forEach(x=>x.classList.toggle('on',x===b));
+      const mode=b.dataset.ac;
+      document.getElementById('ac-short').style.display=mode==='short'?'block':'none';
+      document.getElementById('ac-long').style.display=mode==='long'?'block':'none';
+      document.getElementById('acInput').value=mode==='short'?'오징':'오징어';
+    });
+  });
+
+  show('a');
+</script>
+<script src="proto-link.js"></script>
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>졸리팟 V2 · 주문완료 v3-3-11 (모바일)</title>
+<style>
+  :root {
+    --color-brand: #FDB813;
+    --color-primary: #C75D3E;
+    --color-secondary: #8FA68E;
+    --color-bg: #FFFFFF;
+    --color-surface: #F5F0E8;
+    --color-surface-alt: #F7F2EA;
+    --color-text-primary: #2A2A2A;
+    --color-text-secondary: #6B6B6B;
+    --color-text-tertiary: #A8A8A8;
+    --color-success: #5B8A6B;
+    --color-info: #3D6B8C;
+    --color-border: #EDE8E0;
+    --color-line: #F0EDE7;
+  }
+  .proto {
+    --proto-bar-bg: #1E1E2E;
+    --proto-toggle-active-bg: #5B6ABF;
+    --proto-toggle-active-text: #FFFFFF;
+    --proto-toggle-inactive-bg: #2D2D3D;
+    --proto-toggle-inactive-text: #8888A0;
+    --proto-label-text: #CCCCDD;
+    --proto-divider: #3A3A4E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Pretendard', -apple-system, 'Apple SD Gothic Neo', system-ui, sans-serif;
+    background: #E6E6E9; display: flex; flex-direction: column; align-items: center;
+    padding: 24px 0 60px; color: var(--color-text-primary); -webkit-font-smoothing: antialiased;
+  }
+  .wrap { width: 390px; }
+
+  /* ===== 컨트롤 바 ===== */
+  .proto { width: 390px; background: var(--proto-bar-bg); border-radius: 14px; padding: 16px 16px 14px; margin-bottom: 16px; }
+  .proto-group { margin-bottom: 13px; }
+  .proto-label { color: var(--proto-label-text); font-size: 12px; font-weight: 600; margin-bottom: 7px; }
+  .proto-toggles { display: flex; flex-wrap: wrap; gap: 6px; }
+  .proto-btn { background: var(--proto-toggle-inactive-bg); color: var(--proto-toggle-inactive-text); border: none; border-radius: 8px; padding: 8px 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .15s ease; }
+  .proto-btn.active { background: var(--proto-toggle-active-bg); color: var(--proto-toggle-active-text); }
+  .proto-ver { border-top: 1px solid var(--proto-divider); margin-top: 4px; padding-top: 10px; color: var(--proto-label-text); font-size: 12px; font-family: ui-monospace, Menlo, monospace; opacity: .85; }
+  .dev-notes { width: 390px; background: var(--proto-bar-bg); border-radius: 14px; padding: 16px 18px; margin-top: 16px; }
+  .dev-notes-t { font-size: 12px; font-weight: 700; color: var(--proto-label-text); letter-spacing: .03em; margin-bottom: 8px; }
+  .dev-notes ul { margin: 0; padding-left: 17px; }
+  .dev-notes li { font-size: 12px; line-height: 1.6; color: #B0B0C4; margin-bottom: 4px; }
+
+  /* ===== 앱 프레임 ===== */
+  .phone { position: relative; width: 390px; height: 844px; background: var(--color-bg); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 12px 40px rgba(0,0,0,.16); }
+  .app-header { flex-shrink: 0; height: 52px; display: flex; align-items: center; justify-content: flex-start; padding: 0 12px; }
+  .hd-close { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: none; border: none; cursor: pointer; color: var(--color-text-secondary); }
+  .app-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; }
+  .app-scroll::-webkit-scrollbar { width: 0; }
+
+  /* ===== 히어로 (완료 비트) ===== */
+  .oc-hero { text-align: center; padding: 10px 24px 26px; position: relative; overflow: hidden; }
+  .oc-check { width: 70px; height: 70px; border-radius: 50%; background: var(--color-brand); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; box-shadow: 0 8px 22px rgba(253,184,19,.38); position: relative; z-index: 2; animation: pop .45s cubic-bezier(.18,.89,.32,1.28) both; }
+  .oc-check svg { width: 36px; height: 36px; }
+  @keyframes pop { 0% { transform: scale(.4); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .oc-title { font-size: 22px; font-weight: 700; color: var(--color-text-primary); margin-bottom: 8px; position: relative; z-index: 2; }
+  .oc-subtitle { font-size: 14px; color: var(--color-text-secondary); position: relative; z-index: 2; }
+  .confetti { position: absolute; top: 0; width: 8px; height: 8px; opacity: 0; z-index: 1; animation: fall 1.25s ease-out forwards; }
+  @keyframes fall { 0% { opacity: 0; transform: translateY(0) rotate(0deg); } 18% { opacity: 1; } 100% { opacity: 0; transform: translateY(150px) rotate(380deg); } }
+
+  /* ===== 주문 정보 카드 (오늘의집형 행) ===== */
+  .oc-card { margin: 0 20px 12px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 16px; padding: 16px; }
+  .oc-prod { display: flex; gap: 12px; align-items: center; }
+  .oc-prod-thumb { width: 52px; height: 52px; border-radius: 11px; overflow: hidden; border: 1px solid var(--color-border); background: #fff; flex-shrink: 0; }
+  .oc-prod-thumb svg { width: 100%; height: 100%; display: block; }
+  .oc-prod-info { min-width: 0; }
+  .oc-prod-k { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 3px; }
+  .oc-prod-name { font-size: 15px; font-weight: 500; color: var(--color-text-primary); line-height: 1.35; }
+  .oc-prod-cnt { color: var(--color-text-secondary); font-weight: 400; }
+  .oc-divline { height: 1px; background: var(--color-line); margin: 7px 0 4px; }
+  .oc-row { display: flex; gap: 14px; padding: 5px 0; font-size: 13.5px; }
+  .oc-row-k { color: var(--color-text-secondary); flex-shrink: 0; width: 64px; }
+  .oc-row-v { color: var(--color-text-primary); flex: 1; line-height: 1.45; }
+  .oc-row.total { align-items: baseline; padding: 6px 0 0; }
+
+  /* ===== 적립 예정 ===== */
+  .oc-earn { margin: 0 20px; display: flex; gap: 10px; align-items: flex-start; padding: 14px 16px; background: var(--color-surface-alt); border-radius: 12px; }
+  .oc-earn-emoji { font-size: 18px; line-height: 1.3; }
+  .oc-earn-text { font-size: 13px; color: var(--color-text-secondary); line-height: 1.55; }
+  .oc-earn-text b { color: var(--color-success); font-weight: 700; }
+
+  /* ===== 하단 추천 피드 ===== */
+  .oc-feed-divider { height: 8px; background: var(--color-surface); margin-top: 18px; }
+  .oc-feed-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 20px 20px 14px; }
+  .oc-feed-title { font-size: 20px; font-weight: 700; color: var(--color-text-primary); }
+  .oc-feed-sub { font-size: 14px; color: var(--color-text-secondary); margin-top: 4px; }
+
+  .oc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 11px; padding: 0 20px; }
+  .oc-grid .rc { width: 100%; cursor: pointer; }
+  .rc-thumb { position: relative; width: 100%; aspect-ratio: 2 / 3; border-radius: 14px; overflow: hidden; background: #CFC8BC; }
+  .rc-thumb svg { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .rc-scrim { position: absolute; left: 0; right: 0; bottom: 0; height: 48%; background: linear-gradient(to top, rgba(0,0,0,.5), rgba(0,0,0,0)); pointer-events: none; }
+  .rc-time { position: absolute; left: 10px; bottom: 9px; display: flex; align-items: center; gap: 4px; color: #fff; font-size: 13px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,.35); }
+  .rc-time svg { width: 14px; height: 14px; }
+  .rc-bookmark { position: absolute; right: 8px; bottom: 7px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .rc-bookmark svg { width: 17px; height: 19px; filter: drop-shadow(0 1px 2px rgba(0,0,0,.45)); }
+  .rc-bookmark.saved svg path { fill: #fff; }
+  .rc-title { font-size: 14px; font-weight: 600; color: var(--color-text-primary); margin-top: 10px; line-height: 1.32; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.64em; }
+  .rc-creator { font-size: 12.5px; color: var(--color-text-secondary); margin-top: 4px; }
+
+  /* ===== 배송 기다리는 동안 바텀시트 ===== */
+  .oc-backdrop { position: absolute; inset: 0; background: rgba(20,18,16,.45); opacity: 0; pointer-events: none; transition: opacity .28s ease; z-index: 50; }
+  .oc-backdrop.open { opacity: 1; pointer-events: auto; }
+  .oc-sheet { position: absolute; left: 0; right: 0; bottom: 0; max-height: 94%; background: #fff; border-radius: 22px 22px 0 0; z-index: 60; transform: translateY(105%); transition: transform .34s cubic-bezier(.32,.72,0,1); display: flex; flex-direction: column; box-shadow: 0 -8px 30px rgba(0,0,0,.16); }
+  .oc-sheet.open { transform: translateY(0); }
+  .oc-grabber { width: 40px; height: 4px; border-radius: 2px; background: #D8D2C7; margin: 10px auto 2px; flex-shrink: 0; cursor: pointer; }
+  .oc-sheet-head { padding: 14px 20px 12px; font-size: 19px; font-weight: 700; line-height: 1.42; color: var(--color-text-primary); flex-shrink: 0; }
+  .oc-carousel { display: flex; flex-shrink: 0; gap: 12px; overflow-x: auto; padding: 0 20px 12px; scroll-snap-type: x mandatory; scroll-padding: 0 20px; -webkit-overflow-scrolling: touch; }
+  .oc-carousel::-webkit-scrollbar { display: none; }
+  .oc-carousel .rc { width: 136px; flex-shrink: 0; scroll-snap-align: start; cursor: pointer; }
+  .oc-sheet-footer { display: flex; gap: 10px; padding: 14px 20px 18px; flex-shrink: 0; border-top: 1px solid var(--color-line); margin-top: 14px; }
+  .oc-sheet-close { flex: 1; height: 52px; border: 1.5px solid var(--color-border); background: #fff; color: var(--color-text-primary); border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .oc-sheet-more { flex: 1.5; height: 52px; border: none; background: var(--color-secondary); color: #fff; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .pc-brand { font-size: 12px; color: var(--color-text-tertiary); margin-top: 9px; }
+  .pc .rc-thumb { aspect-ratio: 1 / 1; }
+  .pc .rc-title { margin-top: 3px; }
+  .pc-list { font-size: 12px; color: var(--color-text-tertiary); text-decoration: line-through; margin-top: 5px; }
+  .pc-price { margin-top: 2px; display: flex; align-items: baseline; gap: 5px; }
+  .pc-rate { color: var(--color-primary); font-weight: 700; font-size: 15px; }
+  .pc-amt { color: var(--color-text-primary); font-weight: 700; font-size: 15px; }
+  .pc-rating { display: flex; align-items: center; gap: 3px; margin-top: 6px; }
+  .pc-rating svg { width: 13px; height: 13px; flex-shrink: 0; }
+  .pc-rate-num { font-size: 12.5px; color: var(--color-text-primary); font-weight: 500; }
+  .pc-reviews { font-size: 12.5px; color: var(--color-text-tertiary); }
+  .pc-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 9px; }
+  .pc-badge { font-size: 11px; color: var(--color-text-secondary); background: var(--color-surface); border-radius: 5px; padding: 3px 7px; }
+  .pc-fast { color: var(--color-info); font-weight: 600; }
+  .pc-bm svg { filter: drop-shadow(0 0 2px rgba(255,255,255,.9)); }
+
+  /* 무한스크롤 로딩/끝 */
+  .oc-feed-loading { display: flex; justify-content: center; padding: 20px 0 6px; min-height: 30px; }
+  .oc-spinner { width: 24px; height: 24px; border: 3px solid var(--color-border); border-top-color: var(--color-secondary); border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .oc-feed-end { text-align: center; color: var(--color-text-tertiary); font-size: 13px; }
+  .scroll-pad { height: 16px; }
+
+  /* ===== 하단 고정 바 ===== */
+  .oc-bottom-bar { flex-shrink: 0; display: flex; gap: 9px; padding: 10px 20px 12px; border-top: 1px solid var(--color-line); background: #fff; }
+  .oc-bottom-bar button { flex: 1; height: 50px; border-radius: 12px; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; }
+  .oc-bb-sub { background: #fff; border: 1.5px solid var(--color-border); color: var(--color-text-primary); }
+  .oc-bb-main { background: #fff; border: 1.5px solid var(--color-secondary); color: #5B7A5C; }
+
+  /* ===== 모바일 풀블리드 ===== */
+  @media (max-width: 480px) {
+    body { background: #fff; padding: 0; display: block; }
+    .wrap { width: 100%; height: 100dvh; display: flex; flex-direction: column; }
+    .proto { width: 100%; border-radius: 0; margin-bottom: 0; flex-shrink: 0; padding: calc(8px + env(safe-area-inset-top, 0px)) 14px 9px; }
+    .proto-group { margin-bottom: 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .proto-label { margin-bottom: 0; }
+    .proto-ver { margin-top: 8px; padding-top: 8px; font-size: 11px; }
+    .phone { width: 100%; flex: 1; height: auto; min-height: 0; border-radius: 0; box-shadow: none; }
+    .oc-sheet-footer { padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)); }
+    .oc-bottom-bar { padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+    .dev-notes { width: 100%; border-radius: 0; margin-top: 0; padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px)); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 컨트롤 바 ===== -->
+  <div class="proto">
+    <div class="proto-group">
+      <div class="proto-label">바텀시트</div>
+      <div class="proto-toggles" id="g-sheet">
+        <button class="proto-btn active" data-sheet="1">열림</button>
+        <button class="proto-btn" data-sheet="0">닫힘</button>
+      </div>
+    </div>
+    <div class="proto-group">
+      <div class="proto-label">완료 효과</div>
+      <div class="proto-toggles">
+        <button class="proto-btn" id="replayFx">다시재생</button>
+      </div>
+    </div>
+    <div class="proto-ver">jollypot-v2-order-complete-v3-3-11</div>
+  </div>
+
+  <!-- ===== 앱 화면 ===== -->
+  <div class="phone">
+
+    <div class="app-header">
+      <button class="hd-close" aria-label="닫기">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <div class="app-scroll">
+
+      <!-- 히어로 -->
+      <div class="oc-hero" id="hero">
+        <div class="oc-check">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="oc-title">주문이 완료됐어요</div>
+      </div>
+
+      <!-- 주문 정보 -->
+      <div class="oc-card">
+        <div class="oc-prod">
+          <div class="oc-prod-thumb">
+            <svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#ECEAE6"/><rect x="15" y="15" width="34" height="2.6" rx="1" fill="#9AA0A6"/><rect x="15" y="30.7" width="34" height="2.6" rx="1" fill="#9AA0A6"/><rect x="15" y="46.4" width="34" height="2.6" rx="1" fill="#9AA0A6"/><rect x="15.5" y="15" width="2.4" height="34" fill="#B8BCC2"/><rect x="46.1" y="15" width="2.4" height="34" fill="#B8BCC2"/></svg>
+          </div>
+          <div class="oc-prod-info">
+            <div class="oc-prod-k">주문 상품</div>
+            <div class="oc-prod-name">스텐 3단 주방 수납선반</div>
+          </div>
+        </div>
+        <div class="oc-divline"></div>
+        <div class="oc-row"><span class="oc-row-k">주문번호</span><span class="oc-row-v">2026-0602-00123</span></div>
+        <div class="oc-row"><span class="oc-row-k">배송지</span><span class="oc-row-v">(04024) 서울 마포구 월드컵로3길 14, 202동 1402호</span></div>
+        <div class="oc-row total"><span class="oc-row-k">결제 금액</span><span class="oc-row-v">24,700원</span></div>
+      </div>
+
+      <!-- 적립 예정 -->
+      <div class="oc-earn">
+        <span class="oc-earn-emoji">🎁</span>
+        <div class="oc-earn-text">이 주문으로 <b>247원</b>이 적립될 예정이에요.<br>상품 리뷰를 남기면 <b>500원</b>이 더 쌓여요.</div>
+      </div>
+
+      <!-- 이런 상품은 어때요? (상품만, 무한스크롤) -->
+      <div class="oc-feed-divider"></div>
+      <div class="oc-feed-head">
+        <div>
+          <div class="oc-feed-title">이런 상품은 어때요?</div>
+          <div class="oc-feed-sub">주방을 채워줄 인기 상품이에요</div>
+        </div>
+      </div>
+      <div class="oc-grid" id="prodGrid"></div>
+      <div class="oc-feed-loading" id="prodSentinel"><div class="oc-spinner"></div></div>
+      <div class="scroll-pad"></div>
+
+    </div>
+
+    <!-- 하단 고정 바 -->
+    <div class="oc-bottom-bar">
+      <button class="oc-bb-sub">쇼핑 계속하기</button>
+      <button class="oc-bb-main">주문 상세 보기</button>
+    </div>
+
+    <!-- 배송 기다리는 동안 — 바텀시트 (레시피 캐러셀 + 닫기/더보기 = 한 세트) -->
+    <div class="oc-backdrop" id="ocBackdrop"></div>
+    <div class="oc-sheet" id="ocSheet">
+      <div class="oc-grabber" id="ocGrabber"></div>
+      <div class="oc-sheet-head">배송 오는 동안,<br>오늘 저녁 메뉴 정해볼까요? 🍳</div>
+      <div class="oc-carousel" id="recipeCarousel"></div>
+      <div class="oc-sheet-footer">
+        <button class="oc-sheet-close" id="sheetClose">닫기</button>
+        <button class="oc-sheet-more">레시피 더 보러가기</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 개발 지침 (HTML 하단) -->
+<div class="dev-notes">
+  <div class="dev-notes-t">개발 지침 (핵심 동작)</div>
+  <ul>
+    <li>X(닫기) → 홈으로 이동</li>
+    <li>[쇼핑 계속하기] → 쇼핑 탭 · [주문 상세 보기] → 주문 상세</li>
+    <li>하단 바 sticky · 바텀시트 열리면 시트가 위로 덮음</li>
+    <li>추천 상품 = 큐레이션 · 무한스크롤 · 방금 주문한 상품은 제외</li>
+    <li>바텀시트 = 레시피 추천(배송 대기 중) · [레시피 더 보러가기] → 레시피 탐색</li>
+    <li>적립 = 구매 자동 적립 + 상품 리뷰 작성 시 추가</li>
+    <li>진입 시 완료 애니메이션 1회</li>
+    <li>도착 예정일 미표기 (배송일 보증 불가, 의도적 생략)</li>
+  </ul>
+</div>
+
+<script>
+  /* ===== 컨페티 (완료 비트) ===== */
+  function launchConfetti() {
+    const hero = document.getElementById('hero');
+    hero.querySelectorAll('.confetti').forEach(c => c.remove());
+    const colors = ['#FDB813', '#C75D3E', '#8FA68E', '#FDB813', '#E8C98A'];
+    for (let i = 0; i < 14; i++) {
+      const c = document.createElement('span');
+      c.className = 'confetti';
+      c.style.left = (6 + Math.random() * 86) + '%';
+      c.style.background = colors[i % colors.length];
+      c.style.animationDelay = (Math.random() * 0.35) + 's';
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      c.style.width = (6 + Math.random() * 5) + 'px';
+      c.style.height = c.style.width;
+      hero.appendChild(c);
+    }
+  }
+  launchConfetti();
+  document.getElementById('replayFx').addEventListener('click', launchConfetti);
+
+  /* ===== 추천 피드 데이터 ===== */
+  const SVG = {
+    bibimbap: '<rect width="100" height="150" fill="#E7DCC6"/><ellipse cx="50" cy="78" rx="44" ry="44" fill="#3A2E22"/><ellipse cx="50" cy="76" rx="40" ry="40" fill="#F3ECD9"/><path d="M30 62 q8 -10 18 -2" stroke="#7BA23F" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M52 60 q10 -6 18 4" stroke="#5E8A2F" stroke-width="5" fill="none" stroke-linecap="round"/><ellipse cx="40" cy="90" rx="12" ry="6" fill="#C0492E"/><ellipse cx="64" cy="86" rx="10" ry="5" fill="#D98C3A"/><circle cx="52" cy="76" r="9" fill="#F4C430"/>',
+    kongguksu: '<rect width="100" height="150" fill="#DCE3E8"/><ellipse cx="50" cy="80" rx="44" ry="44" fill="#C4CED6"/><ellipse cx="50" cy="78" rx="40" ry="40" fill="#F7F8F4"/><path d="M34 74 q16 -8 32 0" stroke="#ECEBDD" stroke-width="3" fill="none"/><path d="M32 82 q18 -6 36 0" stroke="#ECEBDD" stroke-width="3" fill="none"/><rect x="44" y="60" width="12" height="5" rx="2" fill="#5E8A4A"/><circle cx="40" cy="92" r="3" fill="#E8E0C0"/><circle cx="60" cy="90" r="3" fill="#E8E0C0"/>',
+    kimchi: '<rect width="100" height="150" fill="#E5D8C4"/><ellipse cx="50" cy="80" rx="46" ry="46" fill="#2A2018"/><ellipse cx="50" cy="78" rx="41" ry="41" fill="#BC3A24"/><ellipse cx="50" cy="76" rx="36" ry="36" fill="#C8442A"/><rect x="36" y="66" width="13" height="13" rx="2" fill="#F2EAD6"/><rect x="54" y="74" width="12" height="12" rx="2" fill="#F2EAD6"/><circle cx="62" cy="64" r="4" fill="#D9622E"/><rect x="42" y="88" width="14" height="4" rx="2" fill="#5E8A3A"/>',
+    friedrice: '<rect width="100" height="150" fill="#E3DAC8"/><ellipse cx="50" cy="80" rx="46" ry="40" fill="#F0EAD8"/><ellipse cx="50" cy="78" rx="40" ry="34" fill="#F2D98A"/><path d="M40 70 q6 -7 12 0 q-6 6 -12 0Z" fill="#E8845C"/><path d="M58 84 q6 -7 12 0 q-6 6 -12 0Z" fill="#E8845C"/><circle cx="46" cy="86" r="3" fill="#7AA84A"/><circle cx="62" cy="70" r="3" fill="#7AA84A"/><circle cx="52" cy="78" r="2.5" fill="#D98C3A"/>',
+    doenjang: '<rect width="100" height="150" fill="#E6DAC6"/><ellipse cx="50" cy="80" rx="46" ry="46" fill="#2A2018"/><ellipse cx="50" cy="78" rx="41" ry="41" fill="#A8753A"/><ellipse cx="50" cy="76" rx="36" ry="36" fill="#B6843F"/><rect x="38" y="68" width="12" height="12" rx="2" fill="#EFE6CF"/><rect x="55" y="76" width="11" height="11" rx="2" fill="#EFE6CF"/><circle cx="60" cy="66" r="3.5" fill="#7FA046"/><rect x="42" y="88" width="13" height="4" rx="2" fill="#5E8A3A"/>',
+    pasta: '<rect width="100" height="150" fill="#E4DACA"/><ellipse cx="50" cy="80" rx="46" ry="40" fill="#F4EFE3"/><ellipse cx="50" cy="78" rx="38" ry="32" fill="#E8C77A"/><path d="M30 76 q20 -10 40 0" stroke="#D9A23E" stroke-width="3" fill="none"/><path d="M30 82 q20 -8 40 0" stroke="#D9A23E" stroke-width="3" fill="none"/><ellipse cx="44" cy="74" rx="6" ry="4" fill="#C0402A"/><ellipse cx="60" cy="82" rx="6" ry="4" fill="#C0402A"/><path d="M48 70 q3 -4 6 0" stroke="#5E8A2F" stroke-width="2.5" fill="none"/>',
+    salad: '<rect width="100" height="150" fill="#DDE6D2"/><ellipse cx="50" cy="80" rx="45" ry="42" fill="#EFEFE2"/><circle cx="42" cy="74" r="11" fill="#6FA03A"/><circle cx="60" cy="72" r="12" fill="#6FA03A"/><circle cx="50" cy="86" r="11" fill="#6FA03A"/><circle cx="66" cy="86" r="9" fill="#6FA03A"/><circle cx="42" cy="74" r="4" fill="#4F8027"/><circle cx="60" cy="72" r="4" fill="#4F8027"/><circle cx="54" cy="80" r="4" fill="#E0573C"/><circle cx="40" cy="88" r="3.5" fill="#E8B23C"/>',
+    eggroll: '<rect width="100" height="150" fill="#EFE7D6"/><ellipse cx="50" cy="84" rx="44" ry="30" fill="#F6F1E4"/><ellipse cx="36" cy="78" rx="11" ry="13" fill="#F4CE5A"/><ellipse cx="50" cy="76" rx="11" ry="13" fill="#F6D667"/><ellipse cx="64" cy="78" rx="11" ry="13" fill="#F4CE5A"/><ellipse cx="36" cy="78" rx="6" ry="8" fill="none" stroke="#E0A93C" stroke-width="1.4"/><ellipse cx="50" cy="76" rx="6" ry="8" fill="none" stroke="#E0A93C" stroke-width="1.4"/><ellipse cx="64" cy="78" rx="6" ry="8" fill="none" stroke="#E0A93C" stroke-width="1.4"/><rect x="30" y="94" width="40" height="3" rx="1.5" fill="#7BA23F"/>',
+    mat: '<rect width="100" height="150" fill="#EBE5DA"/><rect x="22" y="48" width="56" height="54" rx="8" fill="#9CB3C9"/><rect x="28" y="54" width="44" height="42" rx="5" fill="#B6C7D6"/><circle cx="38" cy="64" r="3" fill="#8AA0B5"/><circle cx="50" cy="64" r="3" fill="#8AA0B5"/><circle cx="62" cy="64" r="3" fill="#8AA0B5"/><circle cx="38" cy="76" r="3" fill="#8AA0B5"/><circle cx="50" cy="76" r="3" fill="#8AA0B5"/><circle cx="62" cy="76" r="3" fill="#8AA0B5"/><circle cx="38" cy="88" r="3" fill="#8AA0B5"/><circle cx="50" cy="88" r="3" fill="#8AA0B5"/><circle cx="62" cy="88" r="3" fill="#8AA0B5"/>',
+    bowl: '<rect width="100" height="150" fill="#E7E2D8"/><path d="M28 64 h44 a6 6 0 0 1 6 6 q-2 24 -28 24 q-26 0 -28 -24 a6 6 0 0 1 6 -6 Z" fill="#C7CDD2"/><ellipse cx="50" cy="66" rx="22" ry="6" fill="#DEE2E5"/><path d="M30 70 q4 16 20 18" stroke="#AEB5BB" stroke-width="2" fill="none"/>',
+    container: '<rect width="100" height="150" fill="#E9E3D8"/><rect x="30" y="58" width="40" height="22" rx="3" fill="#CFE0E6" stroke="#A9C2CB" stroke-width="1.4"/><rect x="30" y="56" width="40" height="5" rx="2" fill="#9FBAC4"/><rect x="33" y="82" width="34" height="18" rx="3" fill="#D8E6EB" stroke="#A9C2CB" stroke-width="1.4"/><rect x="33" y="80" width="34" height="5" rx="2" fill="#9FBAC4"/>',
+    scale: '<rect width="100" height="150" fill="#E6E1D7"/><rect x="26" y="76" width="48" height="30" rx="6" fill="#D5D9DC"/><ellipse cx="50" cy="74" rx="24" ry="6" fill="#C4C9CD"/><rect x="36" y="88" width="28" height="10" rx="2" fill="#3A4046"/><text x="50" y="96" font-size="7" fill="#7FE0B0" text-anchor="middle" font-family="monospace">1250g</text>',
+    trash: '<rect width="100" height="150" fill="#ECEAE4"/><rect x="34" y="56" width="32" height="46" rx="4" fill="#F2F1EC" stroke="#D9D6CE" stroke-width="1.4"/><rect x="31" y="51" width="38" height="7" rx="3" fill="#DAD7CF"/><rect x="44" y="46" width="12" height="5" rx="2" fill="#CFCBC1"/><circle cx="50" cy="76" r="6" fill="#C7C3B8"/>',
+    cloth: '<rect width="100" height="150" fill="#EAE6DD"/><rect x="29" y="60" width="22" height="30" rx="2" fill="#AFC6DA"/><rect x="50" y="56" width="22" height="34" rx="2" fill="#E4B7C2"/><rect x="33" y="64" width="14" height="3" rx="1.5" fill="#94B0C8"/><rect x="54" y="60" width="14" height="3" rx="1.5" fill="#D198A6"/>',
+    rack: '<rect width="100" height="150" fill="#EBE7DE"/><rect x="28" y="50" width="44" height="52" fill="none" stroke="#B9B3A6" stroke-width="2.5"/><line x1="28" y1="68" x2="72" y2="68" stroke="#B9B3A6" stroke-width="2.5"/><line x1="28" y1="86" x2="72" y2="86" stroke="#B9B3A6" stroke-width="2.5"/><rect x="40" y="56" width="8" height="8" rx="1" fill="#CFC8BB"/>',
+    board: '<rect width="100" height="150" fill="#EAE4D8"/><rect x="32" y="52" width="36" height="48" rx="6" fill="#D8B782"/><rect x="36" y="56" width="28" height="40" rx="4" fill="#E4C896"/><circle cx="50" cy="50" r="3" fill="#C9A56B"/><line x1="42" y1="64" x2="58" y2="64" stroke="#CBA770" stroke-width="1.5"/><line x1="42" y1="74" x2="58" y2="74" stroke="#CBA770" stroke-width="1.5"/>',
+    tumbler: '<rect width="100" height="150" fill="#E8E4DB"/><path d="M40 54 h20 l-2 48 h-16 Z" fill="#C9D4DA"/><rect x="38" y="50" width="24" height="6" rx="2" fill="#AEBCC4"/><rect x="44" y="62" width="12" height="18" rx="2" fill="#E0E7EB"/>'
+  };
+
+  const recipes = [
+    { t: '봄나물 비빔밥', c: '집밥의달인', time: '20분', svg: 'bibimbap' },
+    { t: '시원한 콩국수', c: '승우아빠', time: '15분', svg: 'kongguksu' },
+    { t: '얼큰 김치찌개', c: '한끼뚝딱', time: '30분', svg: 'kimchi' },
+    { t: '새우 볶음밥', c: '밥선생', time: '25분', svg: 'friedrice' },
+    { t: '구수한 된장찌개', c: '엄마손맛', time: '20분', svg: 'doenjang' },
+    { t: '토마토 바질 파스타', c: '오늘뭐먹지', time: '18분', svg: 'pasta' },
+    { t: '닭가슴살 샐러드', c: '헬시테이블', time: '12분', svg: 'salad' },
+    { t: '폭신 계란말이', c: '자취요리', time: '10분', svg: 'eggroll' },
+    { t: '매콤 제육볶음', c: '백반연구소', time: '25분', svg: 'kimchi' },
+    { t: '든든 카레라이스', c: '집밥조아', time: '22분', svg: 'friedrice' },
+    { t: '담백 두부조림', c: '건강한끼', time: '15분', svg: 'doenjang' },
+    { t: '고소 시금치나물', c: '나물장인', time: '8분', svg: 'salad' }
+  ];
+  const products = [
+    { brand: '프로리빙', t: '봉투 자동 흡착 센서 휴지통', list: '39,900', rate: '28%', amt: '28,700', rating: '4.7', reviews: '2,840', fast: true, ship: '무료배송', svg: 'trash' },
+    { brand: '키친무드', t: '일회용 극세사 면 행주 50매', list: '8,900', rate: '20%', amt: '7,100', rating: '4.8', reviews: '358', fast: true, ship: '무료배송', svg: 'cloth' },
+    { brand: '우드무드', t: '편백나무 도마 2P 세트', list: '27,000', rate: '30%', amt: '18,900', rating: '4.9', reviews: '934', fast: true, ship: '무료배송', svg: 'board' },
+    { brand: '오브제컵', t: '진공 보온 텀블러 500ml', list: '21,000', rate: '22%', amt: '16,500', rating: '4.8', reviews: '664', fast: false, ship: '무료배송', svg: 'tumbler' },
+    { brand: '베이크홈', t: '실리콘 베이킹 매트 2P', list: '17,900', rate: '28%', amt: '12,900', rating: '4.7', reviews: '512', fast: true, ship: '무료배송', svg: 'mat' },
+    { brand: '쿡웨어랩', t: '스텐 믹싱볼 3종 세트', list: '29,800', rate: '34%', amt: '19,800', rating: '4.8', reviews: '1,890', fast: false, ship: '조건부 무료배송', svg: 'bowl' },
+    { brand: '심플리빙', t: '간편 밀폐 보관용기 6P', list: '28,000', rate: '42%', amt: '16,500', rating: '4.9', reviews: '3,201', fast: true, ship: '무료배송', svg: 'container' },
+    { brand: '스케일랩', t: '디지털 주방 저울', list: '19,900', rate: '30%', amt: '14,900', rating: '4.6', reviews: '734', fast: false, ship: '무료배송', svg: 'scale' }
+  ];
+
+  const clockSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const bmSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 4h12v16l-6-4-6 4z"/></svg>';
+  const bmSvgDark = '<svg viewBox="0 0 24 24" fill="none" stroke="#5A5A5A" stroke-width="2"><path d="M6 4h12v16l-6-4-6 4z"/></svg>';
+  const starSvg = '<svg viewBox="0 0 24 24" fill="#FDB813"><path d="M12 17.3l6.2 3.7-1.6-7 5.4-4.7-7.1-.6L12 2 9.1 8.7 2 9.3l5.4 4.7-1.6 7z"/></svg>';
+
+  function recipeCard(d) {
+    return '<div class="rc"><div class="rc-thumb"><svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice">' + SVG[d.svg] + '</svg>'
+      + '<div class="rc-scrim"></div><div class="rc-time">' + clockSvg + d.time + '</div>'
+      + '<div class="rc-bookmark">' + bmSvg + '</div></div>'
+      + '<div class="rc-title">' + d.t + '</div><div class="rc-creator">' + d.c + '</div></div>';
+  }
+  function productCard(d) {
+    const fast = d.fast ? '<span class="pc-badge pc-fast">⚡오늘출발</span>' : '';
+    return '<div class="rc pc"><div class="rc-thumb"><svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice">' + SVG[d.svg] + '</svg>'
+      + '<div class="rc-bookmark pc-bm">' + bmSvgDark + '</div></div>'
+      + '<div class="pc-brand">' + d.brand + '</div>'
+      + '<div class="rc-title">' + d.t + '</div>'
+      + '<div class="pc-list">' + d.list + '</div>'
+      + '<div class="pc-price"><span class="pc-rate">' + d.rate + '</span><span class="pc-amt">' + d.amt + '</span></div>'
+      + '<div class="pc-rating">' + starSvg + '<span class="pc-rate-num">' + d.rating + '</span><span class="pc-reviews">리뷰 ' + d.reviews + '</span></div>'
+      + '<div class="pc-badges">' + fast + '<span class="pc-badge">' + d.ship + '</span></div>'
+      + '</div>';
+  }
+
+  function shuffled(arr) { return arr.map(v => v).sort(() => Math.random() - 0.5); }
+
+  // 단일 타입 무한스크롤 피드 팩토리
+  function buildFeed(opt) {
+    const grid = document.getElementById(opt.gridId);
+    const sentinel = document.getElementById(opt.sentinelId);
+    const pool = shuffled(opt.pool);
+    let idx = 0, count = 0, loading = false, ended = false;
+    const MAX = 42;
+    function load(n) {
+      let html = '';
+      for (let i = 0; i < n; i++) { html += opt.cardFn(pool[idx % pool.length]); idx++; count++; }
+      grid.insertAdjacentHTML('beforeend', html);
+      if (count >= MAX) { ended = true; sentinel.innerHTML = '<div class="oc-feed-end">추천을 모두 둘러봤어요 🍳</div>'; }
+    }
+    load(8);
+    const io = new IntersectionObserver((es) => {
+      if (es[0].isIntersecting && !loading && !ended) {
+        loading = true;
+        setTimeout(() => { load(6); loading = false; }, 550);
+      }
+    }, { root: opt.rootEl, rootMargin: '160px' });
+    io.observe(sentinel);
+  }
+
+  // 주문완료 페이지 = 상품만 (무한스크롤)
+  buildFeed({ gridId: 'prodGrid', sentinelId: 'prodSentinel', rootEl: document.querySelector('.app-scroll'), pool: products, cardFn: productCard });
+  // 바텀시트 = 레시피만 (큐레이션 가로 캐러셀, 무한스크롤 없음)
+  document.getElementById('recipeCarousel').innerHTML = shuffled(recipes).slice(0, 8).map(recipeCard).join('');
+
+  // 북마크 (이벤트 위임 — 두 피드 공통)
+  document.addEventListener('click', (e) => {
+    const bm = e.target.closest('.rc-bookmark');
+    if (bm) { e.stopPropagation(); bm.classList.toggle('saved'); }
+  });
+
+  // 바텀시트 열고 닫기
+  const sheetState = { open: true };
+  function renderSheet() {
+    document.getElementById('ocBackdrop').classList.toggle('open', sheetState.open);
+    document.getElementById('ocSheet').classList.toggle('open', sheetState.open);
+    document.querySelectorAll('#g-sheet .proto-btn').forEach(x => x.classList.toggle('active', (x.dataset.sheet === '1') === sheetState.open));
+  }
+  const closeSheet = () => { sheetState.open = false; renderSheet(); };
+  document.querySelectorAll('#g-sheet .proto-btn').forEach(x => x.addEventListener('click', () => { sheetState.open = x.dataset.sheet === '1'; renderSheet(); }));
+  document.getElementById('ocBackdrop').addEventListener('click', closeSheet);
+  document.getElementById('ocGrabber').addEventListener('click', closeSheet);
+  document.getElementById('sheetClose').addEventListener('click', closeSheet);
+  renderSheet();
+</script>
+<script src="proto-link.js"></script>
+</body>
+</html>
