@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>시딩 시트 v4 — 품질 루프</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<style>
+  :root{
+    --proto-bg:#1E1E2E; --proto-active:#5B6ABF; --proto-inactive:#2D2D3D;
+    --proto-inactive-text:#8888A0; --proto-label:#CCCCDD;
+    --gs-green:#188038; --gs-blue:#1a73e8; --gs-text:#202124; --gs-gray:#5f6368;
+    --gs-headbg:#f8f9fa; --gs-border:#e1e3e6; --gs-line:#ededed;
+    --page:#E8EAED;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Pretendard',-apple-system,Roboto,Arial,sans-serif;background:var(--page);color:var(--gs-text);-webkit-font-smoothing:antialiased;padding:0 0 40px}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+  .proto-bar{background:var(--proto-bg);color:var(--proto-label);display:flex;align-items:center;gap:14px;padding:8px 20px;font-size:12px;flex-wrap:wrap}
+  .proto-bar .pb-label{font-weight:600}
+  .proto-bar .pb-btn{background:var(--proto-inactive);color:var(--proto-inactive-text);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:500}
+  .proto-bar .pb-btn:hover{background:var(--proto-active);color:#fff}
+  .proto-bar .pb-ver{margin-left:auto;color:var(--proto-inactive-text)}
+
+  .wrap{max-width:1200px;margin:0 auto;padding:18px}
+  .lead{margin:4px 4px 14px}
+  .lead h1{font-size:19px;font-weight:700}
+  .lead p{font-size:13px;color:var(--gs-gray);margin-top:5px;line-height:1.5}
+
+  .fixes{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .fix{flex:1;min-width:220px;background:#fff;border:1px solid var(--gs-border);border-radius:9px;padding:10px 13px;font-size:12px;display:flex;gap:9px;align-items:flex-start}
+  .fix .tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;flex-shrink:0;background:#e8f0fe;color:#1967d2}
+  .fix b{color:var(--gs-text)}.fix small{color:var(--gs-gray)}
+
+  .sheet{background:#fff;border:1px solid var(--gs-border);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .gs-title{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--gs-line)}
+  .gs-logo{width:22px;height:28px;background:var(--gs-green);border-radius:3px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
+  .gs-fname{font-size:15px;font-weight:500}
+  .budget{margin-left:auto;display:flex;align-items:center;gap:9px;font-size:11.5px;color:var(--gs-gray)}
+  .budget .track{width:90px;height:7px;background:#eef1f0;border-radius:5px;overflow:hidden}
+  .budget .bar{height:100%;background:var(--gs-green)}
+  .budget .bar.warn{background:#e8a33d}.budget .bar.full{background:#c5221f}
+
+  .gs-menu{display:flex;align-items:center;gap:2px;padding:2px 12px 6px;border-bottom:1px solid var(--gs-line);position:relative;flex-wrap:wrap}
+  .gs-menu .m{font-size:12.5px;color:var(--gs-text);padding:4px 8px;border-radius:5px}
+  .gs-menu .m:hover{background:var(--gs-headbg)}
+  .gs-menu .m.custom{color:var(--gs-green);font-weight:700}
+  .gs-menu .trigger-note{margin-left:auto;font-size:11px;color:var(--gs-gray);display:inline-flex;align-items:center;gap:5px}
+  .gs-menu .trigger-note .dot{width:7px;height:7px;border-radius:50%;background:var(--gs-green);animation:blink 1.6s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  .gs-dropdown{position:absolute;top:34px;background:#fff;border:1px solid var(--gs-border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.18);padding:6px;z-index:20;min-width:250px;display:none}
+  .gs-dropdown.open{display:block}
+  .gs-dropdown .di{display:flex;gap:10px;padding:9px 11px;border-radius:6px;font-size:13px;cursor:pointer;align-items:flex-start}
+  .gs-dropdown .di:hover{background:var(--gs-headbg)}
+  .gs-dropdown .di small{display:block;color:var(--gs-gray);font-size:11px;margin-top:1px}
+  .gs-dropdown .sep{height:1px;background:var(--gs-line);margin:5px 2px}
+
+  .panel{display:none}.panel.on{display:block}
+
+  .inbox-paste{padding:14px 16px;background:#f8fbf9;border-bottom:1px solid var(--gs-line)}
+  .inbox-row{display:flex;gap:10px;align-items:flex-start}
+  .inbox-row textarea{flex:1;border:1px solid var(--gs-border);border-radius:8px;padding:9px 11px;font-size:12.5px;resize:vertical;min-height:46px;font-family:inherit;line-height:1.5}
+  .inbox-row textarea:focus{outline:none;border-color:var(--gs-green)}
+  .btn-add{background:var(--gs-green);color:#fff;font-size:12.5px;font-weight:700;border-radius:8px;padding:9px 16px;white-space:nowrap}
+  .btn-process{background:var(--gs-blue);color:#fff;font-size:12.5px;font-weight:700;border-radius:8px;padding:9px 16px;white-space:nowrap}
+  .grad{margin-top:10px;font-size:11.5px;color:#8a6312;background:#fcf6e8;border:1px dashed #e3cd96;border-radius:8px;padding:8px 11px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .grad .gbtn{font-size:11px;font-weight:700;color:#9aa0a6;border:1px solid var(--gs-border);border-radius:6px;padding:4px 9px;background:#fff;cursor:not-allowed}
+
+  .gs-scroll{overflow-x:auto}
+  table.grid{border-collapse:collapse;font-size:12px;width:100%;min-width:740px}
+  .grid th,.grid td{border:1px solid var(--gs-line);text-align:left;vertical-align:middle}
+  .grid .colhead th{background:var(--gs-headbg);color:var(--gs-gray);font-weight:500;text-align:center;height:22px;font-size:11px}
+  .grid .rownum{background:var(--gs-headbg);color:var(--gs-gray);text-align:center;width:34px;font-size:10.5px}
+  .grid .fieldrow td{background:#f6f8fc;font-weight:700;color:#3c4043;padding:6px 9px;font-size:11.5px;border-bottom:2px solid #d2e3fc}
+  .grid td.cell{padding:7px 9px}
+  .grid td.cell.url{color:var(--gs-blue);font-size:11px;white-space:nowrap;max-width:230px;overflow:hidden;text-overflow:ellipsis}
+  .plat{font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px}
+  .plat.youtube{background:#fce8e6;color:#c5221f}.plat.instagram{background:#f3e8fd;color:#8430ce}
+  .pill{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:20px}
+  .pill.inbox{background:#f1f3f4;color:#5f6368}
+  .pill.checking{background:#fff4e5;color:#b06000;font-style:italic}
+  .pill.extracting{background:#eaeaf2;color:#5B6ABF;font-style:italic}
+  .pill.published{background:#e6f4ea;color:#137333}
+  .rowbtn{font-size:11px;font-weight:600;color:var(--gs-blue);padding:3px 8px;border:1px solid var(--gs-border);border-radius:6px;margin-right:4px}
+  .rowbtn:hover{background:var(--gs-headbg)}
+  .rowbtn.del{color:#c5221f}
+  .retrybadge{font-size:10px;font-weight:700;color:#b06000;background:#fef0e6;padding:2px 7px;border-radius:10px}
+  .empty{padding:40px 24px;text-align:center;color:var(--gs-gray);font-size:13px}
+  .empty b{display:block;color:var(--gs-text);font-size:14px;margin-bottom:6px}
+
+  /* 품질 루프 */
+  .quality{padding:16px}
+  .qsec-h{font-size:13.5px;font-weight:700;margin:4px 0 4px;display:flex;align-items:center;gap:8px}
+  .qsec-h .badge{font-size:10.5px;font-weight:700;background:#fce8e6;color:#c5221f;border-radius:20px;padding:1px 9px}
+  .qsec-note{font-size:11.5px;color:var(--gs-gray);margin-bottom:11px;line-height:1.5}
+  .qsec-note b{color:var(--gs-text)}
+  .qtbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:8px}
+  .qtbl th{text-align:left;font-size:11px;color:var(--gs-gray);font-weight:600;padding:7px 9px;border-bottom:2px solid var(--gs-border)}
+  .qtbl td{padding:9px;border-bottom:1px solid var(--gs-line);vertical-align:middle}
+  .rid{font-weight:700;color:#137333}
+  .reason{color:#c5221f;font-size:11.5px}
+  .btn-down{font-size:11.5px;font-weight:700;color:#fff;background:#c5221f;border-radius:7px;padding:6px 12px;margin-right:5px}
+  .btn-down:hover{background:#a51d1a}
+  .btn-keep{font-size:11.5px;font-weight:600;color:var(--gs-gray);border:1px solid var(--gs-border);border-radius:7px;padding:6px 11px}
+  .btn-keep:hover{background:var(--gs-headbg)}
+  .divline{height:1px;background:var(--gs-border);margin:18px 0 16px}
+  .tier{font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:20px}
+  .tier.trusted{background:#e6f4ea;color:#137333}
+  .tier.watch{background:#fef0e6;color:#b06000}
+  .tier.limited{background:#fce8e6;color:#c5221f}
+  .ptrack{width:74px;height:7px;background:#eef1f0;border-radius:5px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:7px}
+  .pbar{height:100%;background:var(--gs-green)}.pbar.mid{background:#e8a33d}.pbar.low{background:#c5221f}
+  .rep{font-weight:700}.rep.has{color:#c5221f}
+  .qrule{margin-top:12px;font-size:11.5px;color:var(--gs-gray);background:#f8fbf9;border:1px solid var(--gs-border);border-radius:9px;padding:11px 13px;line-height:1.6}
+  .qrule b{color:var(--gs-text)}
+
+  .dash{padding:20px}
+  .kpis{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+  .kpi{flex:1;min-width:118px;background:#f8fbf9;border:1px solid var(--gs-border);border-radius:10px;padding:13px 15px}
+  .kpi .n{font-size:24px;font-weight:700;line-height:1}.kpi .n .tr{font-size:13px;margin-left:5px}
+  .kpi .k{font-size:11px;color:var(--gs-gray);margin-top:5px}
+  .kpi.pub .n{color:#137333}.kpi.rate .n{color:var(--gs-blue)}.kpi.q .n{color:#c5221f}.kpi.rep .n{color:#b06000}
+  .alert{background:#fce8e6;border:1px solid #f5c6c0;color:#9a3b28;border-radius:9px;padding:10px 13px;font-size:12px;margin-bottom:16px;display:none}
+  .alert.on{display:block}
+  .dash-h{font-size:13px;font-weight:700;margin-bottom:12px;color:#3c4043}
+  .cat{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .cat .cname{width:64px;font-size:12px;color:var(--gs-gray);flex-shrink:0}
+  .cat .track{flex:1;height:9px;background:#eef1f0;border-radius:5px;overflow:hidden}
+  .cat .bar{height:100%;background:var(--gs-green);border-radius:5px;transition:width .4s}
+  .cat .bar.low{background:#e8a33d}
+  .cat .cn{width:54px;text-align:right;font-size:12px;color:var(--gs-gray)}
+  .cat .cn .low{color:#b06000;font-weight:700}
+
+  .gs-tabs{display:flex;align-items:center;gap:0;padding:0 8px;border-top:1px solid var(--gs-border);background:#fff;overflow-x:auto}
+  .gs-tab{font-size:12.5px;color:var(--gs-gray);padding:10px 15px;border-right:1px solid var(--gs-line);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+  .gs-tab.on{color:var(--gs-green);font-weight:700;border-bottom:2px solid var(--gs-green);background:#f5faf6}
+  .gs-tab .tb{font-size:10.5px;font-weight:700;background:#eceff1;color:#5f6368;border-radius:10px;padding:1px 7px}
+  .gs-tab.on .tb{background:#d6ecdd;color:#137333}
+  .gs-tab.alert-tab .tb{background:#fce8e6;color:#c5221f}
+
+  .mapping{margin-top:16px;background:#fff;border:1px solid var(--gs-border);border-left:3px solid var(--gs-green);border-radius:10px;padding:14px 16px}
+  .mapping h3{font-size:13.5px;font-weight:700;margin-bottom:9px}
+  .mapping .mrow{display:flex;gap:10px;padding:6px 0;font-size:12.5px;border-bottom:1px solid var(--gs-line)}
+  .mapping .mrow:last-child{border:none}
+  .mapping .k{font-weight:700;flex-shrink:0;width:120px;color:#3c4043}
+
+  .toasts{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:50}
+  .toast{background:#202124;color:#fff;font-size:13px;font-weight:500;padding:11px 18px;border-radius:11px;box-shadow:0 6px 20px rgba(0,0,0,.22);animation:tin .2s ease}
+  .toast.good{background:#188038}.toast.bad{background:#c5221f}
+  @keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="proto-bar">
+  <span class="pb-label">프로토타입</span>
+  <button class="pb-btn" onclick="fillExample()">예시 URL 채우기</button>
+  <button class="pb-btn" onclick="resetDemo()">데모 초기화</button>
+  <span class="pb-ver">jollypot-seeding-sheets-v4</span>
+</div>
+
+<div class="wrap">
+  <div class="lead">
+    <h1>시딩 시트 v4 — 품질 루프 완성</h1>
+    <p>v3 대비 변경: <b>DEC-032 신고된 카드 수동 내리기</b> 표면 추가(품질 탭) + <b>DEC-033 pre-check를 추출 전</b>으로 정교화. 고객 신고가 카드 내리기·소스 신뢰로 흐르는 루프가 닫힌다.</p>
+  </div>
+
+  <div class="fixes">
+    <div class="fix"><span class="tag">v4-1</span><div><b>신고 카드 수동 내리기</b> <small>— 품질 탭에 신고된 카드 + [내리기]. 운영진이 보고 숨김(DEC-032). 내리면 그 소스 신뢰도 하향</small></div></div>
+    <div class="fix"><span class="tag">v4-2</span><div><b>pre-check 추출 전</b> <small>— 중복은 "중복 확인 → 스킵"으로 추출/예산 소모 없이 빠짐(DEC-033). 추출비 직접 절감</small></div></div>
+  </div>
+
+  <div class="sheet">
+    <div class="gs-title">
+      <div class="gs-logo">▦</div>
+      <span class="gs-fname">졸리팟_시딩_파이프라인</span>
+      <div class="budget" id="budget"></div>
+    </div>
+
+    <div class="gs-menu">
+      <span class="m">파일</span><span class="m">수정</span><span class="m">보기</span><span class="m">데이터</span><span class="m">확장프로그램</span><span class="m">도움말</span>
+      <span class="m custom" onclick="toggleMenu(event)">🍋 졸리팟 시딩 ▾</span>
+      <div class="gs-dropdown" id="ddMenu">
+        <div class="di" onclick="processNow()"><span>▶</span><div>지금 처리<small>pre-check→추출→채점→PASS 자동발행 / 실패 격리</small></div></div>
+        <div class="di" onclick="goTab('quar')"><span>🔁</span><div>격리 재시도<small>재시도 예산 내에서만</small></div></div>
+        <div class="sep"></div>
+        <div class="di" onclick="goTab('quality')"><span>🛡</span><div>품질 루프<small>신고 카드 내리기 + 소스 신뢰</small></div></div>
+        <div class="di" onclick="goTab('dash')"><span>📊</span><div>현황<small>최근 통과율·격리율·신고</small></div></div>
+      </div>
+      <span class="trigger-note"><span class="dot"></span>자동 트리거 (예산 내 청크 실행)</span>
+    </div>
+
+    <div class="panel on" id="p-inbox">
+      <div class="inbox-paste">
+        <div class="inbox-row">
+          <textarea id="urlBox" placeholder="영상 URL 붙여넣기 (한 줄에 하나)&#10;youtube.com/...   /   instagram.com/reel/..."></textarea>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="btn-add" onclick="addUrls()">수집함에 추가</button>
+            <button class="btn-process" onclick="processNow()">▶ 지금 처리</button>
+          </div>
+        </div>
+        <div class="grad">🚀 다음 단계: <b>신뢰 채널 구독</b> → 새 영상 자동 인제스트(붙여넣기 제거). <span style="color:#b58a3a">(백엔드 필요 · 규모 신호 오면)</span> <button class="gbtn">채널 구독 +</button></div>
+      </div>
+      <div class="gs-scroll" id="inboxGrid"></div>
+    </div>
+
+    <div class="panel" id="p-quar"><div class="gs-scroll" id="quarGrid"></div></div>
+    <div class="panel" id="p-log"><div class="gs-scroll" id="logGrid"></div></div>
+    <div class="panel" id="p-quality"><div class="quality" id="qualityWrap"></div></div>
+    <div class="panel" id="p-dash"><div class="dash" id="dash"></div></div>
+
+    <div class="gs-tabs" id="tabs"></div>
+  </div>
+
+  <div class="mapping">
+    <h3>품질 루프 — 고객 신고가 흐르는 길 (DEC-030 + 032)</h3>
+    <div class="mrow"><span class="k">① 앱에서 신고</span><span>레시피 상세 "🚩 신고" → 백엔드 <code>POST /reports</code> 저장</span></div>
+    <div class="mrow"><span class="k">② 품질 탭</span><span>신고된 카드가 여기 뜸 → 운영진이 <b>수동 [내리기]</b> (DEC-032, 자동 임계 없음)</span></div>
+    <div class="mrow"><span class="k">③ 소스 신뢰</span><span>내리면 그 크리에이터 신고 누적 → <b>등급 강등</b> → 이후 추출에서 스킵/관찰</span></div>
+    <div class="mrow"><span class="k" style="color:var(--gs-gray)">졸업</span><span style="color:var(--gs-gray)">신고→신뢰 자동 스코어링은 백엔드 졸업. 지금은 시트에서 수동 라벨.</span></div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+const EXT_POOL=[
+  {title:'두부 김치찌개',category:'국·찌개',creator:'국물대장'},
+  {title:'간장 비빔국수',category:'면',creator:'쿡탁'},
+  {title:'시금치 나물',category:'반찬',creator:'반찬요정'},
+  {title:'토마토 달걀볶음',category:'메인요리',creator:'쿡탁'},
+  {title:'미역국',category:'국·찌개',creator:'국물대장'},
+  {title:'오이무침',category:'반찬',creator:'반찬요정'},
+];
+let extIdx=0;
+const CATS=['디저트','메인요리','반찬','국·찌개','밥','면','음료'];
+const CAT_GOAL=10, LOW=4, MAX_RETRY=3;
+function platFromUrl(u){return /instagram\./i.test(u)?'instagram':'youtube';}
+
+function seed(){return {
+  rows:[
+    {id:1,url:'youtube.com/watch?v=To4pm',plat:'youtube',state:'published',title:'토마토 달걀볶음',category:'메인요리',creator:'쿡탁',recipeId:'1042',time:'오늘 09:40',reports:1,reportReason:'재료 분량이 영상과 달라요'},
+    {id:2,url:'youtube.com/watch?v=Jb3kd',plat:'youtube',state:'published',title:'두부 김치찌개',category:'국·찌개',creator:'국물대장',recipeId:'1052',time:'오늘 09:42',reports:0},
+    {id:3,url:'instagram.com/reel/Bad1z',plat:'instagram',state:'quarantine',title:'에어프라이어 닭다리',category:'메인요리',creator:'집밥리나',reason:'분량·타임스탬프 누락',retries:1},
+    {id:4,url:'youtube.com/watch?v=aBc12',plat:'youtube',state:'inbox'},
+    {id:5,url:'instagram.com/reel/Gh56i',plat:'instagram',state:'inbox'},
+    {id:6,url:'youtube.com/watch?v=dEf34',plat:'youtube',state:'inbox'},
+    {id:7,url:'youtube.com/watch?v=To4pm',plat:'youtube',state:'inbox'},
+  ],
+  sources:[
+    {name:'매일맛나',plat:'youtube',tier:'trusted',pass:96,reports:0,pub:142},
+    {name:'쿡탁',plat:'youtube',tier:'trusted',pass:91,reports:1,pub:88},
+    {name:'반찬요정',plat:'youtube',tier:'watch',pass:78,reports:0,pub:34},
+    {name:'집밥리나',plat:'instagram',tier:'watch',pass:54,reports:2,pub:12},
+    {name:'한그릇',plat:'instagram',tier:'limited',pass:38,reports:5,pub:6},
+  ],
+  fill:{'디저트':6,'메인요리':5,'반찬':5,'국·찌개':4,'밥':3,'면':1,'음료':2},
+  budget:{used:340,cap:500},
+  todayPass:26,todayQuar:3,reportsToday:3,prevRate:90,
+  idc:7,
+};}
+let S=seed();
+let tab='inbox';
+const publishedUrls=new Set(['youtube.com/watch?v=To4pm','youtube.com/watch?v=Jb3kd']);
+
+function uid(){S.idc++;return S.idc;}
+function rowsBy(s){return S.rows.filter(r=>r.state===s);}
+function reportedCards(){return S.rows.filter(r=>r.state==='published'&&r.reports>0);}
+function srcByName(n){return S.sources.find(s=>s.name===n);}
+function recalcTier(s){if(s.reports>=5)s.tier='limited';else if(s.reports>=2)s.tier='watch';}
+function todayRate(){const t=S.todayPass+S.todayQuar;return t?Math.round(S.todayPass/t*100):0;}
+
+function renderBudget(){
+  const p=Math.round(S.budget.used/S.budget.cap*100);
+  const cls=p>=100?'full':p>=80?'warn':'';
+  document.getElementById('budget').innerHTML=`오늘 처리 예산 <b>${S.budget.used}/${S.budget.cap}</b><div class="track"><div class="bar ${cls}" style="width:${Math.min(100,p)}%"></div></div>`;
+}
+
+function renderTabs(){
+  const spike=todayRate()<70;
+  const repN=reportedCards().length;
+  const t=[['inbox','수집함',rowsBy('inbox').length+rowsBy('extracting').length+rowsBy('checking').length,false],
+           ['quar','격리',rowsBy('quarantine').length,true],
+           ['log','발행로그',rowsBy('published').length,false],
+           ['quality','품질',repN,true],
+           ['dash','현황',null,spike]];
+  document.getElementById('tabs').innerHTML=t.map(([k,l,n,al])=>{
+    const alert=al&&((k==='quar'&&n>0)||(k==='quality'&&repN>0)||(k==='dash'&&spike));
+    return `<div class="gs-tab ${tab===k?'on':''} ${alert?'alert-tab':''}" onclick="goTab('${k}')">${l}${n!==null?`<span class="tb">${n}</span>`:''}</div>`;}).join('');
+}
+function goTab(k){tab=k;['inbox','quar','log','quality','dash'].forEach(x=>document.getElementById('p-'+x).classList.toggle('on',x===k));renderTabs();
+  if(k==='inbox')renderInbox();if(k==='quar')renderQuar();if(k==='log')renderLog();if(k==='quality')renderQuality();if(k==='dash')renderDash();menuClose();}
+
+function renderInbox(){
+  const rows=[...rowsBy('checking'),...rowsBy('inbox'),...rowsBy('extracting')];
+  const el=document.getElementById('inboxGrid');
+  if(!rows.length){el.innerHTML=`<div class="empty"><b>수집함이 비었습니다</b>URL을 추가하면 트리거가 예산 내에서 자동 처리합니다.</div>`;return;}
+  el.innerHTML=`<table class="grid">
+    <tr class="colhead"><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+    <tr class="fieldrow"><td class="rownum">1</td><td>source_url</td><td>platform</td><td>판정</td><td>비고</td></tr>
+    ${rows.map((r,i)=>{
+      let pill='<span class="pill inbox">대기</span>',note='트리거 또는 [지금 처리]';
+      if(r.state==='checking'){pill='<span class="pill checking">중복 확인 중…</span>';note='pre-check (추출 전, 비용 0)';}
+      if(r.state==='extracting'){pill='<span class="pill extracting">추출·채점 중…</span>';note='신규 확인됨 → 채점→발행/격리';}
+      return `<tr><td class="rownum">${i+2}</td>
+      <td class="cell url">${r.url}</td>
+      <td class="cell" style="text-align:center"><span class="plat ${r.plat}">${r.plat.toUpperCase()}</span></td>
+      <td class="cell" style="text-align:center">${pill}</td>
+      <td class="cell" style="color:#9aa0a6;font-size:11px">${note}</td></tr>`;}).join('')}
+  </table>`;
+}
+
+function renderQuar(){
+  const rows=rowsBy('quarantine');
+  const el=document.getElementById('quarGrid');
+  if(!rows.length){el.innerHTML=`<div class="empty"><b>격리된 행이 없습니다 🎉</b>재시도 예산 소진 행은 자동 보관. 비어 있을수록 좋은 신호.</div>`;return;}
+  el.innerHTML=`<table class="grid">
+    <tr class="colhead"><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr>
+    <tr class="fieldrow"><td class="rownum">1</td><td>source_url</td><td>title</td><td>사유</td><td>재시도</td><td>처리</td></tr>
+    ${rows.map((r,i)=>`<tr><td class="rownum">${i+2}</td>
+      <td class="cell url">${r.url}</td><td class="cell">${r.title||'<span style="color:#bdc1c6">추출 실패</span>'}</td>
+      <td class="cell reason">${r.reason||'품질 바 미달'}</td>
+      <td class="cell"><span class="retrybadge">${r.retries||0}/${MAX_RETRY}</span></td>
+      <td class="cell">${(r.retries||0)<MAX_RETRY?`<button class="rowbtn" onclick="retryOne(${r.id})">재시도</button>`:'<span style="font-size:11px;color:#9aa0a6">예산 소진</span>'}<button class="rowbtn del" onclick="discardOne(${r.id})">보관</button></td></tr>`).join('')}
+  </table>`;
+}
+
+function renderLog(){
+  const rows=rowsBy('published').slice().reverse();
+  const el=document.getElementById('logGrid');
+  if(!rows.length){el.innerHTML=`<div class="empty"><b>발행된 레시피가 없습니다</b></div>`;return;}
+  el.innerHTML=`<table class="grid">
+    <tr class="colhead"><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr>
+    <tr class="fieldrow"><td class="rownum">1</td><td>recipe_id</td><td>title</td><td>category</td><td>크리에이터</td><td>thumbnail</td><td>발행 시각</td></tr>
+    ${rows.map((r,i)=>`<tr><td class="rownum">${i+2}</td>
+      <td class="cell" style="text-align:center;font-weight:700;color:#137333">#${r.recipeId}</td>
+      <td class="cell">${r.title}${r.reports>0?' <span style="color:#c5221f;font-size:10px">🚩'+r.reports+'</span>':''}</td>
+      <td class="cell">${r.category}</td><td class="cell">${r.creator||''}</td>
+      <td class="cell" style="color:#9aa0a6;font-size:10.5px">서버 자동추출</td>
+      <td class="cell" style="color:#5f6368;font-size:11px">${r.time}</td></tr>`).join('')}
+  </table>`;
+}
+
+/* 품질 루프 — 신고 카드 내리기 + 소스 신뢰 */
+function renderQuality(){
+  const rep=reportedCards();
+  const repRows = rep.length
+    ? rep.map(r=>`<tr>
+        <td><span class="rid">#${r.recipeId}</span></td>
+        <td>${r.title}</td>
+        <td>${r.creator}</td>
+        <td class="reason">🚩 ${r.reportReason||'정보 오류'} (${r.reports})</td>
+        <td><button class="btn-down" onclick="takedown(${r.id})">내리기</button><button class="btn-keep" onclick="keepCard(${r.id})">유지</button></td>
+      </tr>`).join('')
+    : `<tr><td colspan="5" style="text-align:center;color:#9aa0a6;padding:18px">신고된 카드가 없습니다.</td></tr>`;
+
+  const tierLabel={trusted:'신뢰',watch:'관찰',limited:'제한'};
+  const srcRows=S.sources.map(s=>{
+    const pcls=s.pass>=85?'':s.pass>=60?'mid':'low';
+    return `<tr><td><b>${s.name}</b></td><td><span class="plat ${s.plat}">${s.plat.toUpperCase()}</span></td>
+      <td><span class="tier ${s.tier}">${tierLabel[s.tier]}</span></td>
+      <td><span class="ptrack"><span class="pbar ${pcls}" style="width:${s.pass}%"></span></span>${s.pass}%</td>
+      <td class="rep ${s.reports>0?'has':''}">${s.reports}</td><td style="color:#5f6368">${s.pub}</td></tr>`;}).join('');
+
+  document.getElementById('qualityWrap').innerHTML=`
+    <div class="qsec-h">신고된 카드 — 수동 내리기 ${rep.length?`<span class="badge">${rep.length}</span>`:''}</div>
+    <div class="qsec-note">고객 신고(앱 🚩)가 들어온 발행 카드. 운영진이 보고 <b>수동으로 내린다</b>(DEC-032 · 자동 임계 없음). 내리면 그 크리에이터 신고가 누적돼 소스 신뢰가 내려간다.</div>
+    <table class="qtbl"><tr><th>recipe_id</th><th>title</th><th>크리에이터</th><th>신고 사유</th><th>처리</th></tr>${repRows}</table>
+
+    <div class="divline"></div>
+
+    <div class="qsec-h">소스 신뢰 — 효율 라우팅</div>
+    <div class="qsec-note"><b>고신뢰</b>는 공격적 자동발행, <b>제한</b>은 통과율·신고가 나빠 스킵/관찰. 잘 뽑히는 소스 소수가 좋은 레시피 대부분을 준다.</div>
+    <table class="qtbl"><tr><th>크리에이터</th><th>플랫폼</th><th>등급</th><th>통과율</th><th>신고</th><th>발행수</th></tr>${srcRows}</table>
+    <div class="qrule">📐 신고 카드 [내리기] → 카드 숨김 + 해당 크리에이터 신고 +1 → <b>통과율 ↓ / 신고 누적 시 등급 강등</b>(신뢰→관찰→제한) → 이후 추출에서 스킵/관찰. 품질 루프가 닫힌다.</div>`;
+}
+function takedown(id){
+  const r=S.rows.find(x=>x.id===id);if(!r)return;
+  r.state='hidden';
+  const s=srcByName(r.creator);
+  if(s){s.reports++;s.pass=Math.max(0,s.pass-6);recalcTier(s);}
+  renderTabs();renderQuality();renderLog();
+  toast(`카드 #${r.recipeId} 내림(숨김) — ${r.creator} 신뢰 재산정${s&&s.tier!=='trusted'?` → ${({watch:'관찰',limited:'제한'})[s.tier]}`:''}`,'bad');
+}
+function keepCard(id){const r=S.rows.find(x=>x.id===id);if(!r)return;r.reports=0;renderTabs();renderQuality();renderLog();toast('유지 — 오신고로 처리(카드 노출 유지)');}
+
+function renderDash(){
+  const max=Math.max(CAT_GOAL,...CATS.map(c=>S.fill[c]||0));
+  const bars=CATS.map(c=>{const n=S.fill[c]||0;const low=n<LOW;const w=Math.round(n/max*100);
+    return `<div class="cat"><span class="cname">${c}</span><div class="track"><div class="bar ${low?'low':''}" style="width:${w}%"></div></div><span class="cn">${n}${low?' <span class="low">부족</span>':''}</span></div>`;}).join('');
+  const rate=todayRate();const dir=rate>=S.prevRate?'↑':'↓';const spike=rate<70;
+  document.getElementById('dash').innerHTML=`
+    <div class="alert ${spike?'on':''}">⚠ 오늘 통과율 ${rate}% — 격리율이 높습니다. 추출 품질 또는 저신뢰 소스 유입 점검.</div>
+    <div class="kpis">
+      <div class="kpi pub"><div class="n">${S.todayPass}</div><div class="k">오늘 발행</div></div>
+      <div class="kpi rate"><div class="n">${rate}%<span class="tr" style="color:${rate>=S.prevRate?'#137333':'#c5221f'}">${dir}</span></div><div class="k">오늘 통과율 (전일 ${S.prevRate}%)</div></div>
+      <div class="kpi q"><div class="n">${S.todayQuar}</div><div class="k">오늘 격리</div></div>
+      <div class="kpi rep"><div class="n">${reportedCards().length}</div><div class="k">미처리 신고 카드</div></div>
+    </div>
+    <div class="dash-h">카테고리 채움 — 부족한 곳으로 URL 투입</div>${bars}`;
+}
+
+function toggleMenu(e){e.stopPropagation();document.getElementById('ddMenu').classList.toggle('open');}
+function menuClose(){document.getElementById('ddMenu').classList.remove('open');}
+document.addEventListener('click',menuClose);
+
+function addUrls(){
+  const raw=document.getElementById('urlBox').value.split(/[\n\r]+/).map(s=>s.trim()).filter(Boolean);
+  if(!raw.length){toast('URL을 입력하세요','bad');return;}
+  const inSheet=new Set(S.rows.filter(r=>r.state!=='published'&&r.state!=='hidden').map(r=>r.url));
+  let add=0,dup=0;
+  raw.forEach(u=>{if(inSheet.has(u)){dup++;return;}inSheet.add(u);S.rows.push({id:uid(),url:u,plat:platFromUrl(u),state:'inbox'});add++;});
+  document.getElementById('urlBox').value='';goTab('inbox');
+  toast(`수집함에 ${add}개 추가${dup?` · ${dup}개 시트 내 중복 차단`:''}`,add?'good':'bad');
+}
+
+function processNow(){
+  menuClose();
+  const inbox=rowsBy('inbox');
+  if(!inbox.length){toast('처리할 URL이 없습니다','bad');goTab('inbox');return;}
+  if(S.budget.used>=S.budget.cap){toast('오늘 처리 예산 소진 — 내일 트리거가 이어서 처리','bad');return;}
+  // 1) pre-check: 추출 전 중복 확인 (비용 0)
+  inbox.forEach(r=>r.state='checking');
+  goTab('inbox');
+  toast(`${inbox.length}개 pre-check (추출 전 중복 확인)`);
+  inbox.forEach((r,k)=>{
+    setTimeout(()=>{
+      if(publishedUrls.has(r.url)){ // 서버에 이미 존재 → 추출 없이 스킵
+        S.rows=S.rows.filter(x=>x.id!==r.id);
+        renderTabs();renderInbox();
+        toast('중복 스킵 — 이미 발행됨 (추출/예산 0)','bad');
+        return;
+      }
+      r.state='extracting';renderInbox();
+      setTimeout(()=>{
+        S.budget.used+=1; // 신규만 추출비 발생
+        const t=EXT_POOL[extIdx%EXT_POOL.length];extIdx++;
+        r.title=t.title;r.category=t.category;r.creator=t.creator;r.reports=0;
+        let pass=r.plat==='youtube'?true:Math.random()>0.5;
+        if(pass){r.state='published';r.recipeId=String(1053+Math.floor(Math.random()*900));r.time='방금';publishedUrls.add(r.url);S.todayPass++;S.fill[r.category]=(S.fill[r.category]||0)+1;}
+        else{r.state='quarantine';r.reason='재추출(fps5) 후에도 분량·타임스탬프 누락';r.retries=1;S.todayQuar++;}
+        renderTabs();renderInbox();renderBudget();
+      },700+Math.random()*500);
+    },500+k*450);
+  });
+  setTimeout(()=>toast('자동 처리 진행 — 신규는 발행/격리, 중복은 스킵 (사람 개입 0)','good'),700);
+}
+
+function retryOne(id){
+  const r=S.rows.find(x=>x.id===id);if(!r)return;
+  r.retries=(r.retries||0)+1;
+  setTimeout(()=>{const pass=Math.random()>0.4;
+    if(pass){r.state='published';r.recipeId=String(1053+Math.floor(Math.random()*900));r.time='방금';r.reports=0;publishedUrls.add(r.url);S.todayPass++;S.fill[r.category]=(S.fill[r.category]||0)+1;toast(`재시도 성공 — ${r.title} 발행`,'good');}
+    else if(r.retries>=MAX_RETRY){toast('재시도 예산 소진 — 자동 보관','bad');}
+    else{toast('미달 — 격리 유지','bad');}
+    renderTabs();renderQuar();},600);
+  toast(`재추출 중… (${r.retries}/${MAX_RETRY})`);
+}
+function discardOne(id){S.rows=S.rows.filter(x=>x.id!==id);renderTabs();renderQuar();toast('보관 처리');}
+
+function fillExample(){
+  document.getElementById('urlBox').value=`youtube.com/watch?v=Pp11q\ninstagram.com/reel/Ss33e\nyoutube.com/watch?v=Tt44r\nyoutube.com/watch?v=Jb3kd`;
+  goTab('inbox');
+  toast('예시 채움 — 마지막 줄은 이미 발행된 영상(pre-check 스킵 확인용)');
+}
+function toast(m,k){const t=document.createElement('div');t.className='toast'+(k?' '+k:'');t.textContent=m;document.getElementById('toasts').appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300);},2700);}
+function resetDemo(){S=seed();extIdx=0;tab='inbox';publishedUrls.clear();['youtube.com/watch?v=To4pm','youtube.com/watch?v=Jb3kd'].forEach(u=>publishedUrls.add(u));document.getElementById('urlBox').value='';goTab('inbox');renderBudget();toast('데모를 초기화했습니다');}
+
+renderBudget();renderTabs();renderInbox();
+</script>
+</body>
+</html>
