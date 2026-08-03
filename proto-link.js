@@ -8,7 +8,7 @@
 
   // 하단 탭 backbone (모든 화면 공통)
   var TAB = {
-    '홈': 'jollypot-v2-home-v14-9-8.html',
+    '홈': 'jollypot-v2-home-v14-10.html',
     '쇼핑': 'jollypot-v2-search-v2-2.html',
     '스크랩북': 'jollypot-v2-scrapbook-v11-16-9.html',
     '마이': 'jollypot-v2-profile-my-v2-14.html'
@@ -42,7 +42,7 @@
   }
   if (p.indexOf('cook-mode') >= 0) {
     add('.review-submit', 'jollypot-v2-cook-review-v2-4.html');
-    add('.done-home', 'jollypot-v2-home-v14-9-8.html');
+    add('.done-home', 'jollypot-v2-home-v14-10.html');
   }
   if (p.indexOf('cook-review') >= 0) {
     add('.c-btn', 'jollypot-v2-cook-mode-v11-1.html');
@@ -58,7 +58,7 @@
     add('.bs-buy', 'jollypot-v2-order-complete-v3-3-11.html');
   }
   if (p.indexOf('order-complete') >= 0) {
-    add('.hd-close', 'jollypot-v2-home-v14-9-8.html');
+    add('.hd-close', 'jollypot-v2-home-v14-10.html');
     add('.oc-bb-sub', 'jollypot-v2-search-v2-2.html');
     add('.oc-bb-main', 'jollypot-v2-profile-my-v2-14.html');
     add('.oc-sheet-more', 'jollypot-v2-recipe-detail-v1-5.html');
