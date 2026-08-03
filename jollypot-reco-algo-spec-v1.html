@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>졸리팟 — 홈 추천 섹션 알고리즘 정의서 v1</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --brand:#FDB813; --action:#C75D3E; --sage:#8FA68E; --sage-dark:#5B7A5C;
+    --bg:#FBF8F2; --surface:#F5F0E8; --white:#FFFFFF;
+    --text:#2A2A2A; --text2:#6B6B6B; --text3:#A8A8A8; --border:#EDE8E0;
+    --off:#B23B3B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Pretendard",-apple-system,"Apple SD Gothic Neo",system-ui,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.65;letter-spacing:-.01em;padding:40px 20px 80px;font-size:14.5px}
+  .wrap{max-width:860px;margin:0 auto}
+  h1{font-size:23px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+  .sub{color:var(--text2);font-size:13.5px;margin-bottom:8px}
+  .badge{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:3px 11px;margin:2px 4px 18px 0}
+  .badge.off{background:#FBEAEA;color:var(--off);border:1px solid #EFC7C7}
+  .badge.dev{background:var(--surface);color:var(--sage-dark);border:1px solid var(--border)}
+  h2{font-size:17px;font-weight:750;margin:34px 0 10px;padding-top:22px;border-top:1px solid var(--border)}
+  h3{font-size:15px;font-weight:700;margin:20px 0 6px;color:var(--action)}
+  p{margin:0 0 10px}
+  ul{margin:0 0 10px 20px}
+  li{margin-bottom:4px}
+  table{width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:13.5px;background:var(--white)}
+  th{background:var(--surface);text-align:left;font-weight:700}
+  th,td{border:1px solid var(--border);padding:8px 10px;vertical-align:top}
+  code{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;background:var(--surface);
+    border:1px solid var(--border);border-radius:5px;padding:1px 6px}
+  pre{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;background:#2A2A3E;color:#E8E8F0;
+    border-radius:10px;padding:14px 16px;overflow-x:auto;margin:8px 0 16px;line-height:1.6}
+  pre b{color:var(--brand);font-weight:600}
+  .note{background:var(--surface);border-left:4px solid var(--brand);border-radius:8px;padding:12px 14px;margin:10px 0 16px;font-size:13.5px}
+  .note.warn{border-left-color:var(--off)}
+  .ok{color:var(--sage-dark);font-weight:700}
+  .no{color:var(--off);font-weight:700}
+  footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--text3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>홈 추천 섹션 — 알고리즘 정의서</h1>
+<p class="sub">개발사 전달용 · 룰베이스(비 ML) · 홈 v14-10의 코너 컴포넌트를 재사용하는 <b>자동 추천 섹션 4종</b>의 정의와 구현 방향</p>
+<span class="badge off">전 섹션 기본 OFF — 오픈은 어드민 토글로</span>
+<span class="badge dev">jollypot-reco-algo-spec-v1 · 2026-08-03</span>
+
+<h2>0. 배경과 결론</h2>
+<p>어드민 프로토타입 초기안에는 <b>오늘의 추천 레시피 · 인기 급상승 · 테마 컬렉션</b> 3개의 알고리즘 섹션이 데모로 들어 있었다.
+"이 3개가 고객가치가 가장 높은 구성인가"를 검토한 결과가 아래 표이며, 결론은 <b>2개 재정의 + 1개 제외 + 2개 추가 = 확정 4종</b>이다.</p>
+<table>
+  <tr><th style="width:150px">초기안</th><th style="width:90px">판정</th><th>사유</th></tr>
+  <tr><td>오늘의 추천 레시피</td><td class="ok">재정의</td><td>"막연한 추천"은 히어로 데크(에디터 픽)·화제 코너와 역할이 겹침. <b>시간대 컨텍스트 추천("지금 이 시간엔")</b>으로 구체화해야 고유 가치가 생김 — 타깃(바쁜 엄마)의 실질 질문은 "지금 뭐 해주지"이므로</td></tr>
+  <tr><td>인기 급상승</td><td class="ok">유지+게이트</td><td>가치 있음. 단 초기 트래픽(DAU 수십)에선 "급상승"이 통계적 노이즈 — <b>볼륨 게이트 미달 시 섹션 자체 미노출</b> 조건 필수. 누적 인기(화제의 레시피)와 구분: 화제=누적, 급상승=최근 변화율</td></tr>
+  <tr><td>테마 컬렉션</td><td class="no">제외</td><td>알고리즘이 아니라 큐레이션. 이미 홈 v14-10의 <b>로테이션 슬롯("이번 주 테마" · 수동 핀)</b>으로 존재 — 중복 구현 금지</td></tr>
+  <tr><td style="color:var(--sage-dark)"><b>+ 새로 올라온 레시피</b></td><td class="ok">추가</td><td>UGC 플라이휠의 시동 장치 — 새 레시피가 홈에 즉시 노출돼야 올리는 사람이 생긴다(레시피계의 오늘의집 전략과 직결). 구현 비용 최저</td></tr>
+  <tr><td style="color:var(--sage-dark)"><b>+ 우리집 냉장고 추천</b></td><td class="ok">추가</td><td>졸리팟 차별화의 핵심(냉장고 기능 연계). "지금 있는 재료로" — 03 냉장고 트랙의 레시피 매칭 로직 재사용. 냉장고 데이터 있는 유저에게만 노출</td></tr>
+</table>
+
+<h2>1. 공통 규칙 (전 섹션 적용)</h2>
+<ul>
+  <li><b>후보 풀</b>: 발행 상태 = <code>published</code> AND 검수 통과 AND 미처리 신고 없음</li>
+  <li><b>빈 섹션 금지</b>: 섹션별 최소 노출 개수 미달 시 <b>섹션 자체를 렌더링하지 않는다</b> (레시피 상세 v1.5의 조건부 렌더링 원칙과 동일)</li>
+  <li><b>기본 OFF</b>: 4종 모두 어드민 [큐레이션 ▸ 홈 섹션 편성] 토글 기본 OFF 상태로 출고. 코드 배포 없이 토글만으로 ON</li>
+  <li><b>표시 형태</b>: 홈 v14-10의 기존 가로 코너 컴포넌트(<code>context-section</code>) 재사용 — 신규 UI 없음</li>
+  <li><b>노출 개수</b>: 섹션당 12개 (신규 섹션만 최소 6개)</li>
+  <li><b>중복 제거</b>: 같은 홈 화면 안에서 상위 섹션에 이미 노출된 레시피는 하위 알고리즘 섹션 후보에서 제외</li>
+  <li><b>파라미터 상수화</b>: 아래 정의의 모든 숫자(윈도우·임계값·가중치)는 하드코딩하지 말고 설정 테이블(<code>reco_params</code>)로 분리 — 운영 중 조정 가능하게</li>
+  <li><b>계산 방식</b>: 서버 배치(크론) 계산 + 캐시 서빙. 실시간 쿼리 불필요, ML 불필요 — 전부 SQL 집계 수준</li>
+  <li><b>최소 로깅</b>: 섹션 노출(<code>section_impression</code>)·섹션 내 카드 탭(<code>section_card_tap</code>) 2개 이벤트만. 상세 측정 설계는 이번 범위 아님</li>
+</ul>
+
+<h2>2. 알고리즘 정의 4종</h2>
+
+<h3>A. 지금 이 시간엔 — 시간대 컨텍스트 추천</h3>
+<table>
+  <tr><th style="width:110px">입력</th><td>현재 시간대 슬롯. 경계는 홈 데크 헤더와 동일 재사용: 아침 05–11 · 점심 11–15 · 저녁 15–21 · 야식 21–05</td></tr>
+  <tr><th>데이터</th><td>레시피별 <code>time_slot</code> 적합 태그(다중). 초기엔 <b>카테고리→슬롯 매핑 테이블</b>(운영자 관리)로 자동 부여. 예: 국·찌개·메인반찬→저녁, 도시락→아침·점심, 디저트·간식→야식 외</td></tr>
+  <tr><th>정렬</th><td>슬롯 적합 필터 → 최근 30일 저장수 내림차순 → 동률 시 최신 발행순</td></tr>
+  <tr><th>노출 게이트</th><td>슬롯 적합 후보 ≥ 12</td></tr>
+  <tr><th>캐시</th><td>1시간 (슬롯 경계에서 강제 갱신)</td></tr>
+</table>
+<pre><b># 의사코드</b>
+slot = time_slot(now)                      # 데크 헤더와 동일 함수 재사용
+pool = published_pool()                    # 공통 후보 풀
+cand = [r for r in pool if slot in r.time_slots]
+cand.sort(key=(saves_30d desc, published_at desc))
+return cand[:12] if len(cand) >= 12 else None   # None = 섹션 미노출</pre>
+
+<h3>B. 인기 급상승 — 최근 변화율</h3>
+<table>
+  <tr><th style="width:110px">정의</th><td>최근 72시간 저장수가 직전 72시간 대비 <b>2배 이상 성장</b>했고, 최근 72시간 저장수가 최소 5 이상인 레시피</td></tr>
+  <tr><th>정렬</th><td><code>saves_72h</code> 내림차순</td></tr>
+  <tr><th>노출 게이트</th><td>조건 충족 후보 ≥ 12. <b>미달이면 섹션 미노출 — 누적 인기로 대체하지 않는다</b>(화제의 레시피 코너와 중복되므로)</td></tr>
+  <tr><th>캐시</th><td>15분</td></tr>
+</table>
+<pre><b># 의사코드</b>
+for r in published_pool():
+    grow = saves(r, last=72h) / max(saves(r, prev=72h), 1)
+    if saves(r, last=72h) >= MIN_SAVES(5) and grow >= MIN_GROWTH(2.0):
+        cand.append(r)
+cand.sort(key=saves_72h desc)
+return cand[:12] if len(cand) >= 12 else None</pre>
+<div class="note warn"><b>왜 게이트가 필수인가</b> — DAU가 낮은 초기엔 저장 2→4건도 "2배 성장"이다. 임계 없이 켜면 급상승 섹션이 사실상 난수 추첨이 되고, 유저가 섹션 이름을 불신하게 된다. 게이트 미달 시 숨기는 것이 틀린 추천을 보여주는 것보다 낫다.</div>
+
+<h3>C. 새로 올라온 레시피 — 최신 + 검수 통과</h3>
+<table>
+  <tr><th style="width:110px">정의</th><td>최근 7일 내 발행 + 검수 통과 레시피, 최신순</td></tr>
+  <tr><th>다양성 규칙</th><td>동일 크리에이터 최대 2개 (한 명이 섹션을 도배하는 것 방지)</td></tr>
+  <tr><th>노출 게이트</th><td>후보 ≥ 6 (타 섹션보다 낮음 — 신규 콘텐츠는 6개여도 가치 있음)</td></tr>
+  <tr><th>캐시</th><td>1시간</td></tr>
+</table>
+<pre><b># 의사코드</b>
+cand = [r for r in published_pool() if r.published_at >= now - 7d]
+cand.sort(key=published_at desc)
+cand = cap_per_creator(cand, max=2)
+return cand[:12] if len(cand) >= 6 else None</pre>
+
+<h3>D. 우리집 냉장고 추천 — 재료 매칭 (유저별)</h3>
+<table>
+  <tr><th style="width:110px">정의</th><td>유저 냉장고 재료 집합 F와 레시피 필수 재료 집합 R의 매칭률 <code>match = |F∩R| / |R|</code>이 0.6 이상인 레시피</td></tr>
+  <tr><th>제외 규칙</th><td>기본 조미료(소금·설탕·식용유·간장 등 <b>팬트리 상비 목록</b> — 운영자 관리 테이블)는 R에서 제외하고 계산</td></tr>
+  <tr><th>정렬</th><td>match 내림차순 → 유통기한 임박 재료 포함 시 +0.2 가산 → 저장수</td></tr>
+  <tr><th>노출 게이트</th><td>냉장고 재료 ≥ 3 등록 유저에게만 섹션 노출 + 후보 ≥ 6</td></tr>
+  <tr><th>캐시</th><td>유저별 · 냉장고 변경 시 무효화</td></tr>
+</table>
+<pre><b># 의사코드</b>
+F = fridge_items(user) - PANTRY_STAPLES        # 상비 조미료 제외
+if len(F) < 3: return None                     # 냉장고 없는 유저에겐 섹션 자체 미노출
+for r in published_pool():
+    R = r.ingredients_normalized - PANTRY_STAPLES   # 재료 마스터 ID 기준
+    match = len(F & R) / max(len(R), 1)
+    if match >= MIN_MATCH(0.6):
+        score = match + (0.2 if F & expiring_items(user) & R else 0)
+        cand.append((r, score))
+cand.sort(key=(score desc, saves desc))
+return cand[:12] if len(cand) >= 6 else None</pre>
+<div class="note"><b>전제 — 재료 마스터 DB.</b> 이 알고리즘은 재료명이 정규화돼 있어야 동작한다("대파"="파"="쪽파❌"). 재료 마스터 1개가 <b>냉장고 매칭 + 레시피 상세의 대체재 치환 + 영양 자동계산</b> 3곳의 공통 기반이므로 개발 착수 시 최우선 구축을 권고. 유일하게 03 냉장고 트랙과 의존 관계가 있는 섹션 — 나머지 A·B·C는 독립적으로 개발 가능.</div>
+
+<h2>3. 구현 방향</h2>
+<ul>
+  <li><b>아키텍처</b>: 크론 배치(A·B·C는 전역 캐시, D는 유저별 온디맨드+캐시) → 홈 API가 캐시를 읽어 섹션 배열로 응답. 프론트는 섹션 배열을 순서대로 렌더링할 뿐, 알고리즘을 모른다</li>
+  <li><b>어드민 연동</b>: [큐레이션 ▸ 홈 섹션 편성]에 4행이 <b>OFF 상태로 이미 등재</b>(jollypot-admin-v4-19-3). 토글 ON 시 홈 API 응답에 포함되기 시작. 순서도 같은 화면의 드래그 정렬을 따름</li>
+  <li><b>파라미터</b>: <code>reco_params</code> 테이블 — 위 정의의 굵은 숫자들이 기본값. 어드민 [운영 설정]에서 편집 가능하면 이상적이나, MVP에선 DB 직접 수정도 허용</li>
+  <li><b>실패 처리</b>: 계산 실패·캐시 만료 시 해당 섹션만 조용히 미노출 — 홈 전체를 막지 않는다</li>
+</ul>
+
+<h2>4. 오픈 순서 제안 (운영 판단, 개발 범위 아님)</h2>
+<table>
+  <tr><th style="width:70px">순서</th><th style="width:180px">섹션</th><th>켜는 시점</th></tr>
+  <tr><td>출시 시</td><td>(전부 OFF)</td><td>홈 = 에디터 픽 데크 + 고정 4 + 로테이션 1로 시작</td></tr>
+  <tr><td>1</td><td>C. 새로 올라온</td><td>주간 신규 발행이 6개를 안정적으로 넘을 때 — UGC 동기부여를 가장 먼저</td></tr>
+  <tr><td>2</td><td>A. 지금 이 시간엔</td><td>카테고리→슬롯 매핑 테이블 등록 완료 시</td></tr>
+  <tr><td>3</td><td>B. 인기 급상승</td><td>게이트(72h 저장 5건 이상 레시피 12개+)가 자연 충족되기 시작할 때</td></tr>
+  <tr><td>4</td><td>D. 냉장고 추천</td><td>재료 마스터 구축 + 냉장고 기능 안착 후</td></tr>
+</table>
+
+<footer>jollypot-reco-algo-spec-v1 · 2026-08-03 · 관련 문서: jollypot-dev-scope-v1-3(개발 범위) · jollypot-admin-v4-19-3(큐레이션 편성) · jollypot-v2-home-v14-10(홈 프로토타입)</footer>
+</div>
+</body>
+</html>
