@@ -38,7 +38,9 @@
     add('.ac-row', 'jollypot-v2-recipe-detail-v1-8.html');
   }
   if (/recipe-detail|recipe-upgraded/.test(p)) {
-    add('.shopping-card', 'jollypot-v2-product-detail-v3-3-1.html');
+    add('.header .header-icon:first-of-type', 'jollypot-v2-home-v14-10.html');   // ← 뒤로가기
+    add('.header .header-icon:last-of-type', 'jollypot-v2-search-v2-2.html'); // 🔍 검색
+    add('.shopping-card', 'jollypot-v2-product-detail-v3-3-1.html'); // v1.4 이하 장보기 카드
   }
   if (p.indexOf('cook-mode') >= 0) {
     add('.review-submit', 'jollypot-v2-cook-review-v2-4.html');
