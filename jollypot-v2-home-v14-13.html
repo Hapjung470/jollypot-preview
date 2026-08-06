@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-12 · 졸리팟 V2 홈 (데크 3:4)</title>
+<title>v14-13 · 졸리팟 V2 홈 (데크 3:4 · 여백)</title>
 <style>
   :root {
     --color-brand: #FDB813;
@@ -1131,31 +1131,33 @@
   .deck-region.slim .step-list,
   .deck-region.slim .expand-toggle { display: none; }
 
-  /* ===== v14-12 — 데크: 이미지 3:4 자산 기준 재설계 =====
+  /* ===== v14-13 — 데크: 3:4 사진 + 여백·라운딩 (v14-10 스펙 계승) =====
      원본 자산 = 3:4 (숏폼 9:16 · 롱폼 16:9를 함께 담는 중간 규격).
-     전폭 3:4는 사진만 440px라 데크가 화면 전체를 먹어 불가 → 좌측 풀블리드 분할. */
+     전폭 3:4는 사진만 440px라 데크가 화면을 다 먹어 불가 → 좌측 분할.
+     v14-12의 풀블리드는 가장자리 잘림이 어색 → 카드 padding 16px + 사진 radius 14px. */
   .full-recipe-card.v16 {
-    background: #FFFFFF; padding: 0; overflow: hidden;
+    background: #FFFFFF;
+    padding: 16px;
     display: grid;
-    grid-template-columns: 44% 1fr;
+    grid-template-columns: 137px 1fr;
+    column-gap: 14px;
+    row-gap: 12px;
     grid-template-areas: "photo side" "steps steps" "cta cta";
   }
   /* 컴팩트: 스텝을 사진 옆으로 → 카드 최소 높이 */
   .deck-region.compact .full-recipe-card.v16 {
     grid-template-areas: "photo side" "photo steps" "cta cta";
+    row-gap: 8px;
   }
   .frc2-photo {
-    grid-area: photo; aspect-ratio: 3 / 4; min-height: 100%;
+    grid-area: photo; width: 137px; aspect-ratio: 3 / 4;
+    border-radius: 14px; overflow: hidden;
     background-size: cover; background-position: center;
     background-color: var(--color-surface);
   }
   .frc2-photo.real { background-image: var(--thumb-img); }
-  .v16 .card-menu {
-    top: 10px; right: 10px; z-index: 2;
-    background: rgba(255,255,255,0.9); border-radius: 50%;
-    color: var(--color-text-primary);
-  }
-  .frc2-side { grid-area: side; padding: 14px 14px 6px; min-width: 0; }
+  .v16 .card-menu { top: 12px; right: 12px; z-index: 2; color: var(--color-text-secondary); }
+  .frc2-side { grid-area: side; min-width: 0; padding-right: 26px; }
   .v16 .recipe-title { font-size: 16px; margin-bottom: 4px; }
   .v16 .recipe-source { margin-bottom: 9px; }
   .frc2-chips { display: flex; gap: 5px; flex-wrap: wrap; }
@@ -1164,8 +1166,7 @@
     background: #FDF3D6; color: #6B531F; white-space: nowrap;
   }
   .frc2-chip:nth-child(2) { background: #E7EFE4; color: #3D5A40; }
-  .frc2-steps { grid-area: steps; padding: 10px 16px 0; min-width: 0; }
-  .deck-region.compact .frc2-steps { padding: 2px 14px 10px 0; }
+  .frc2-steps { grid-area: steps; min-width: 0; }
   .frc2-step { display: flex; gap: 7px; align-items: baseline; margin-bottom: 6px; min-width: 0; }
   .frc2-num { font-size: 12.5px; font-weight: 700; color: var(--color-primary); flex-shrink: 0; width: 11px; }
   .frc2-text {
@@ -1173,14 +1174,14 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .frc2-more { font-size: 11.5px; color: var(--color-text-tertiary); margin-left: 18px; }
-  .frc2-cta { grid-area: cta; display: flex; justify-content: space-between; align-items: center; padding: 12px 16px 16px; }
+  .frc2-cta { grid-area: cta; display: flex; justify-content: space-between; align-items: center; }
   .v16 .deck-save { padding: 10px 15px; font-size: 13.5px; }
   .v16 .cook-cta { padding: 10px 18px; font-size: 13.5px; }
 </style>
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-12.html">v14-12<small>풀블리드</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>여백·권장</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn" href="jollypot-v2-home-v14-14.html">v14-14<small>컬러비교</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
@@ -1227,7 +1228,9 @@
 
         <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-12 · 이미지 3:4 자산 기준 재설계</b>: 원본 자산이 <b>3:4</b>(숏폼 9:16·롱폼 16:9를 함께 담는 중간 규격)라는 전제를 반영. v14-11의 4:3 전폭은 자산 규격과 불일치했음.<br>· <b>전폭 3:4는 불가</b> — 카드폭 330px 기준 사진만 <b>440px</b>가 되어 데크(510px+)가 스크롤 영역 672px를 거의 다 먹음. 실측으로 기각.<br>· <b>해법: 좌측 풀블리드 3:4 분할</b>(폭 44% ≈ 145×194). 사진 면적이 v14-10 대비 <b>약 1.9배</b>이면서 카드 높이는 오히려 감소.<br>· <b>레이아웃 토글</b> — <b>균형(권장)</b>: 스텝을 카드 전폭에 배치해 문장이 덜 잘림 / <b>컴팩트</b>: 스텝을 사진 옆에 배치해 카드 최소 높이. 상단 토글로 즉시 비교.<br>· ⚠ 프로토 이미지는 기존 자산을 3:4로 크롭 표시. 실제 구현은 <b>3:4로 저장된 원본</b>을 사용.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-12</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-13 · 사진 여백 + 라운딩</b>: v14-12의 좌측 <b>풀블리드</b>가 카드 가장자리에서 사진을 잘라 어색하다는 지적 반영.<br>· <b>v14-10 스펙 계승</b> — 카드 <code>padding:16px</code> 복원, 사진 <code>border-radius:14px</code>(카드 18px보다 작게 = 중첩 라운딩 규칙). 사진이 카드 안에 '놓인' 형태로 복귀.<br>· 사진 <b>137×183 (3:4 유지)</b> — v14-10(108×144) 대비 면적 <b>약 1.6배</b>. 여백을 되찾으면서도 사진 크기는 유지.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-13</div>
   </div>
 
   <div class="phone-frame">

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-12 · 졸리팟 V2 홈 (데크 3:4)</title>
+<title>v14-14 · 졸리팟 V2 홈 (컬러 테마 비교)</title>
 <style>
   :root {
     --color-brand: #FDB813;
@@ -1131,31 +1131,33 @@
   .deck-region.slim .step-list,
   .deck-region.slim .expand-toggle { display: none; }
 
-  /* ===== v14-12 — 데크: 이미지 3:4 자산 기준 재설계 =====
+  /* ===== v14-13 — 데크: 3:4 사진 + 여백·라운딩 (v14-10 스펙 계승) =====
      원본 자산 = 3:4 (숏폼 9:16 · 롱폼 16:9를 함께 담는 중간 규격).
-     전폭 3:4는 사진만 440px라 데크가 화면 전체를 먹어 불가 → 좌측 풀블리드 분할. */
+     전폭 3:4는 사진만 440px라 데크가 화면을 다 먹어 불가 → 좌측 분할.
+     v14-12의 풀블리드는 가장자리 잘림이 어색 → 카드 padding 16px + 사진 radius 14px. */
   .full-recipe-card.v16 {
-    background: #FFFFFF; padding: 0; overflow: hidden;
+    background: #FFFFFF;
+    padding: 16px;
     display: grid;
-    grid-template-columns: 44% 1fr;
+    grid-template-columns: 137px 1fr;
+    column-gap: 14px;
+    row-gap: 12px;
     grid-template-areas: "photo side" "steps steps" "cta cta";
   }
   /* 컴팩트: 스텝을 사진 옆으로 → 카드 최소 높이 */
   .deck-region.compact .full-recipe-card.v16 {
     grid-template-areas: "photo side" "photo steps" "cta cta";
+    row-gap: 8px;
   }
   .frc2-photo {
-    grid-area: photo; aspect-ratio: 3 / 4; min-height: 100%;
+    grid-area: photo; width: 137px; aspect-ratio: 3 / 4;
+    border-radius: 14px; overflow: hidden;
     background-size: cover; background-position: center;
     background-color: var(--color-surface);
   }
   .frc2-photo.real { background-image: var(--thumb-img); }
-  .v16 .card-menu {
-    top: 10px; right: 10px; z-index: 2;
-    background: rgba(255,255,255,0.9); border-radius: 50%;
-    color: var(--color-text-primary);
-  }
-  .frc2-side { grid-area: side; padding: 14px 14px 6px; min-width: 0; }
+  .v16 .card-menu { top: 12px; right: 12px; z-index: 2; color: var(--color-text-secondary); }
+  .frc2-side { grid-area: side; min-width: 0; padding-right: 26px; }
   .v16 .recipe-title { font-size: 16px; margin-bottom: 4px; }
   .v16 .recipe-source { margin-bottom: 9px; }
   .frc2-chips { display: flex; gap: 5px; flex-wrap: wrap; }
@@ -1164,8 +1166,7 @@
     background: #FDF3D6; color: #6B531F; white-space: nowrap;
   }
   .frc2-chip:nth-child(2) { background: #E7EFE4; color: #3D5A40; }
-  .frc2-steps { grid-area: steps; padding: 10px 16px 0; min-width: 0; }
-  .deck-region.compact .frc2-steps { padding: 2px 14px 10px 0; }
+  .frc2-steps { grid-area: steps; min-width: 0; }
   .frc2-step { display: flex; gap: 7px; align-items: baseline; margin-bottom: 6px; min-width: 0; }
   .frc2-num { font-size: 12.5px; font-weight: 700; color: var(--color-primary); flex-shrink: 0; width: 11px; }
   .frc2-text {
@@ -1173,14 +1174,57 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .frc2-more { font-size: 11.5px; color: var(--color-text-tertiary); margin-left: 18px; }
-  .frc2-cta { grid-area: cta; display: flex; justify-content: space-between; align-items: center; padding: 12px 16px 16px; }
+  .frc2-cta { grid-area: cta; display: flex; justify-content: space-between; align-items: center; }
   .v16 .deck-save { padding: 10px 15px; font-size: 13.5px; }
   .v16 .cook-cta { padding: 10px 18px; font-size: 13.5px; }
+
+  /* ===== v14-14 — 컬러 테마 비교 (Kitchen Stories 참고) =====
+     KS 실측 체계: 오렌지=앱 액센트(탭·링크·FAB·네비) / 딥그린=전환 CTA(Sign-up·Try for free)
+                   옐로우=브랜드 IP / 피치크림=카드 배경 / 옅은노랑·옅은그린=칩
+     졸리팟 팔레트는 KS와 구조가 같고 채도만 낮음 → 채도 상향안(B)과 KS 대응안(C)을 비교. */
+
+  /* B · 선명 — 테라코타 색상각(14°) 유지, 채도 55%→85% */
+  body.theme-vivid {
+    --color-primary: #EE582B;
+  }
+  /* C · KS 스타일 — 오렌지 액센트 + 딥그린 보조 */
+  body.theme-ks {
+    --color-primary: #F5642D;
+    --color-secondary: #12513A;
+  }
+  body.theme-ks .frc2-chip { background: #FBEFC8; color: #6B531F; }
+  body.theme-ks .frc2-chip:nth-child(2) { background: #E4F0DC; color: #12513A; }
+  /* KS는 결제·전환 버튼만 딥그린 — 홈의 저장 버튼을 그 역할로 대응 */
+  body.theme-ks .deck-save.saved {
+    color: #12513A; border-color: #12513A;
+  }
+  body.theme-ks .deck-save.saved svg { fill: #12513A; }
+
+  /* D · 권장 — 우리 색상각(14°) 주황 + 딥그린 보조 (채도 균형) */
+  body.theme-rec {
+    --color-primary: #EE582B;
+    --color-secondary: #1C5F3D;
+  }
+  body.theme-rec .frc2-chip { background: #FDF0D4; color: #6B531F; }
+  body.theme-rec .frc2-chip:nth-child(2) { background: #E3EFE6; color: #1C5F3D; }
+  body.theme-rec .deck-save.saved { color: #1C5F3D; border-color: #1C5F3D; }
+  body.theme-rec .deck-save.saved svg { fill: #1C5F3D; }
+
+  /* 가상요소(::after)는 조상의 변수 변경을 반영하지 않는 브라우저가 있어 명시 지정 */
+  body.theme-vivid .deck-progress-bar.active::after,
+  body.theme-vivid .deck-progress-bar.passed::after { background: #EE582B; }
+  body.theme-ks .deck-progress-bar.active::after,
+  body.theme-ks .deck-progress-bar.passed::after { background: #F5642D; }
+  body.theme-rec .deck-progress-bar.active::after,
+  body.theme-rec .deck-progress-bar.passed::after { background: #EE582B; }
+
+  /* 테마 스와치 (프로토 토글 안 미니 컬러칩) */
+  .sw { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
 </style>
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-12.html">v14-12<small>풀블리드</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>여백·권장</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-14.html">v14-14<small>컬러비교</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
@@ -1194,6 +1238,15 @@
       <div class="proto-toggles">
         <button class="proto-toggle active" data-group="commerce" data-value="off" onclick="setCommerce('off')">상품 제외 · 확정</button>
         <button class="proto-toggle" data-group="commerce" data-value="on" onclick="setCommerce('on')">상품 포함 (v12.12 이전 · 참고용)</button>
+      </div>
+    </div>
+    <div class="proto-group">
+      <div class="proto-label">컬러 테마 (비교용)</div>
+      <div class="proto-toggles">
+        <button class="proto-toggle active" data-group="theme" data-value="base" onclick="setTheme('base')"><span class="sw" style="background:#C75D3E"></span><span class="sw" style="background:#8FA68E"></span>A 현행</button>
+        <button class="proto-toggle" data-group="theme" data-value="vivid" onclick="setTheme('vivid')"><span class="sw" style="background:#EE582B"></span><span class="sw" style="background:#8FA68E"></span>B 주황만 (비교)</button>
+        <button class="proto-toggle" data-group="theme" data-value="ks" onclick="setTheme('ks')"><span class="sw" style="background:#F5642D"></span><span class="sw" style="background:#12513A"></span>C KS 그대로</button>
+        <button class="proto-toggle" data-group="theme" data-value="rec" onclick="setTheme('rec')"><span class="sw" style="background:#EE582B"></span><span class="sw" style="background:#1C5F3D"></span>D 권장</button>
       </div>
     </div>
     <div class="proto-group">
@@ -1227,7 +1280,18 @@
 
         <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-12 · 이미지 3:4 자산 기준 재설계</b>: 원본 자산이 <b>3:4</b>(숏폼 9:16·롱폼 16:9를 함께 담는 중간 규격)라는 전제를 반영. v14-11의 4:3 전폭은 자산 규격과 불일치했음.<br>· <b>전폭 3:4는 불가</b> — 카드폭 330px 기준 사진만 <b>440px</b>가 되어 데크(510px+)가 스크롤 영역 672px를 거의 다 먹음. 실측으로 기각.<br>· <b>해법: 좌측 풀블리드 3:4 분할</b>(폭 44% ≈ 145×194). 사진 면적이 v14-10 대비 <b>약 1.9배</b>이면서 카드 높이는 오히려 감소.<br>· <b>레이아웃 토글</b> — <b>균형(권장)</b>: 스텝을 카드 전폭에 배치해 문장이 덜 잘림 / <b>컴팩트</b>: 스텝을 사진 옆에 배치해 카드 최소 높이. 상단 토글로 즉시 비교.<br>· ⚠ 프로토 이미지는 기존 자산을 3:4로 크롭 표시. 실제 구현은 <b>3:4로 저장된 원본</b>을 사용.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-12</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-13 · 사진 여백 + 라운딩</b>: v14-12의 좌측 <b>풀블리드</b>가 카드 가장자리에서 사진을 잘라 어색하다는 지적 반영.<br>· <b>v14-10 스펙 계승</b> — 카드 <code>padding:16px</code> 복원, 사진 <code>border-radius:14px</code>(카드 18px보다 작게 = 중첩 라운딩 규칙). 사진이 카드 안에 '놓인' 형태로 복귀.<br>· 사진 <b>137×183 (3:4 유지)</b> — v14-10(108×144) 대비 면적 <b>약 1.6배</b>. 여백을 되찾으면서도 사진 크기는 유지.</div>
+
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-14 · 컬러 테마 비교</b> — 상단 <b>[컬러 테마]</b> 토글로 3안을 같은 화면에서 전환.<br>
+· <b>Kitchen Stories 실측 체계</b>: 오렌지 <code>#F5642D</code>=앱 액센트(탭·링크·FAB·하단네비) / 딥그린 <code>#12513A</code>=전환 CTA(Sign-up·Try for free) / 옐로우 <code>#FFC72C</code>=브랜드 IP(Plus 로고·아바타) / 피치크림 <code>#FDF0E4</code>=카드 배경.<br>
+· <b>핵심 발견 — 졸리팟 팔레트는 KS와 구조가 같고 채도만 낮다</b>: 옐로우(IP) · 주황 계열(액션) · 크림(카드)까지 역할 배치가 동일. 테라코타 <code>#C75D3E</code>는 HSL(14°,55%,51%), KS 오렌지는 약 (16°,90%,57%) — <b>색상각은 사실상 같고 채도만 35%p 차이</b>. 그래서 '주황으로 바꾸는' 게 아니라 '같은 색을 선명하게'가 정확한 처방.<br>
+· <b>채도 격차 실측</b> — 현행 테라코타 55% ↔ 세이지 <b>12%</b>(사실상 회색)로 이미 43%p 벌어져 있음. 주황만 85%로 올리면 격차가 <b>73%p</b>로 더 커져 "따로 노는" 느낌이 발생. KS는 오렌지 91% ↔ 딥그린 64%로 격차가 <b>27%p</b>에 불과. <b>→ 액션색만 올리는 B안은 구조적으로 어색해짐.</b><br>
+· <b>노른자 옐로는 이미 채도 98%</b> — 즉 현 팔레트는 브랜드색만 쨍하고 액션·보조가 물 빠진 상태.<br>
+· <b>세이지 실사용은 4곳뿐</b>(출처 점·스텝 번호 배경·데크 끝 화살표·로딩 스피너) — 면적이 작아 딥그린으로 바꿔도 화면이 무거워지지 않음.<br>
+· <b>A 현행</b> / <b>B 주황만</b>(어색함 확인용) / <b>C KS 그대로</b>(#F5642D+#12513A) / <b>D 권장</b>: 주황은 <b>테라코타 색상각 14° 유지</b>한 #EE582B(KS의 16°를 베끼지 않아 브랜드 연속성 확보), 딥그린은 #1C5F3D로 KS(명도 19%)보다 약간 밝게 — 보조색의 부드러움 유지.<br>
+· ⚠ <b>디자인 가이드 충돌</b> — 가이드는 "메인 CTA는 항상 테라코타"(전환 데이터 일관성)를 규정. B·C 채택 시 <b>Jollypot_Design_Guide.md 개정이 선행</b>돼야 함. 이 시안은 의사결정용 비교 장치.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-14</div>
   </div>
 
   <div class="phone-frame">
@@ -1932,6 +1996,14 @@
       b.classList.toggle('active', b.dataset.value === mode);
     });
     applyFridge();
+  }
+
+  function setTheme(name) {
+    document.querySelectorAll('.proto-toggle[data-group="theme"]').forEach(function(b){
+      b.classList.toggle('active', b.dataset.value === name);
+    });
+    document.body.classList.remove('theme-vivid', 'theme-ks', 'theme-rec');
+    if (name !== 'base') document.body.classList.add('theme-' + name);
   }
 
   function setDeckLayout(mode) {
