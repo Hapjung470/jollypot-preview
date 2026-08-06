@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-10 · 졸리팟 V2 홈</title>
+<title>v14-11 · 졸리팟 V2 홈 (데크 재설계)</title>
 <style>
   :root {
     --color-brand: #FDB813;
@@ -628,14 +628,14 @@
     border-radius: 2px;
     transition: all 0.3s;
   }
-  /* passed = 이미 본 카드: 옅은 세이지 */
+  /* passed = 이미 본 카드: 옅은 테라코타 (v14-11 — 데크 색상 정리) */
   .deck-progress-bar.passed::after {
-    background: var(--color-secondary);
-    opacity: 0.35;
+    background: var(--color-primary);
+    opacity: 0.25;
   }
-  /* active = 현재 카드: 진한 세이지 100% */
+  /* active = 현재 카드: 테라코타 */
   .deck-progress-bar.active::after {
-    background: var(--color-secondary);
+    background: var(--color-primary);
   }
 
   /* ★ 캐러셀 재수정 — flex 대신 명시적 width + 카드 margin 복귀 */
@@ -1130,6 +1130,35 @@
   .deck-region.slim .recipe-section-title:has(+ .step-list),
   .deck-region.slim .step-list,
   .deck-region.slim .expand-toggle { display: none; }
+
+  /* ===== v14-11 — 데크 신규: 화이트 + 사진 지배 + 만드는 법 1·2·3 (이사 피드백 2026-08-06) ===== */
+  .full-recipe-card.v15 { background: #FFFFFF; padding: 0; overflow: hidden; }
+  .frc-photo {
+    position: relative; width: 100%; aspect-ratio: 4 / 3;
+    background-size: cover; background-position: center;
+    background-color: var(--color-surface);
+  }
+  .frc-photo.real { background-image: var(--thumb-img); }
+  .v15 .card-menu {
+    top: 12px; right: 12px; z-index: 2;
+    background: rgba(255,255,255,0.88); border-radius: 50%;
+    color: var(--color-text-primary);
+  }
+  .frc-chips { position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; }
+  .frc-chip {
+    font-size: 12px; font-weight: 600; padding: 5px 11px; border-radius: 999px;
+    background: #FDF3D6; color: #6B531F; white-space: nowrap;
+  }
+  .frc-chip.serv { background: #E7EFE4; color: #3D5A40; }
+  .frc-body { padding: 14px 16px 16px; }
+  .v15 .recipe-title { margin-bottom: 4px; }
+  .v15 .recipe-source { margin-bottom: 12px; }
+  .frc-steps { display: flex; flex-direction: column; gap: 8px; }
+  .frc-step { display: flex; gap: 8px; align-items: baseline; min-width: 0; }
+  .frc-num { font-size: 13px; font-weight: 700; color: var(--color-primary); flex-shrink: 0; width: 14px; text-align: center; }
+  .frc-text { font-size: 13.5px; color: var(--color-text-secondary); line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+  .frc-more { font-size: 12px; color: var(--color-text-tertiary); margin: 7px 0 0 22px; }
+  .v15 .cook-cta-row { margin-top: 14px; }
   /* ===== 버전 스위처 (프로토 검토 전용) ===== */
   .ver-switch {
     position: fixed; top: 0; left: 0; right: 0; height: 46px; z-index: 9999;
@@ -1173,7 +1202,7 @@
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn active" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-11.html">v14-11<small>4:3</small></a><a class="vs-btn" href="jollypot-v2-home-v14-12.html">v14-12<small>3:4</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-11.html">v14-11<small>4:3</small></a><a class="vs-btn" href="jollypot-v2-home-v14-12.html">v14-12<small>3:4</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
@@ -1187,13 +1216,6 @@
       <div class="proto-toggles">
         <button class="proto-toggle active" data-group="commerce" data-value="off" onclick="setCommerce('off')">상품 제외 · 확정</button>
         <button class="proto-toggle" data-group="commerce" data-value="on" onclick="setCommerce('on')">상품 포함 (v12.12 이전 · 참고용)</button>
-      </div>
-    </div>
-    <div class="proto-group">
-      <div class="proto-label">데크 카드</div>
-      <div class="proto-toggles">
-        <button class="proto-toggle active" data-group="deck" data-value="slim" onclick="setDeckStyle('slim')">결정카드 · 현재</button>
-        <button class="proto-toggle" data-group="deck" data-value="full" onclick="setDeckStyle('full')">풀레시피 · 이전</button>
       </div>
     </div>
     <div class="proto-group">
@@ -1216,7 +1238,9 @@
     <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-9-8</b>: 좌상단 ☰카테고리 → <b>졸리팟 마스코트 로고</b>(텍스트 없는 마크, 탭=맨 위로) · 초기 빈약한 카테고리 제거 · 검색 바 확장(유일한 능동 발견 수단으로 격상) · 우측 🧊🛒 유지 · 카테고리는 추후 가로 칩줄로 부활 예정<br>· <b>v14-9-4</b>: 처음 본 사람도 상단 아님 → <b>채운 사람과 같은 위치(화제의 레시피 아래 = 레시피 3번째)</b>로 통일<br>· 오늘의집 참고 헤더(☰카테고리+검색 바+🧊🛒) 유지 · 냉장고/＋/카드 링크 유지</div>
     <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-10 · 코너 9 → 5 (이사 피드백 2026-07-27)</b>: 가로 코너 9개가 "다 비슷해 지루하고, 옆으로 넘겨야 보이는 건 안 보고 지나침" 지적 수용. <b>고정 4(화제·5분·제철·덜맵고) + 로테이션 1(이번 주 테마)</b>로 축소. 디저트·도시락은 <b>전체 카테고리 보기</b>로 편입(v12.6에 만든 릴리프 밸브가 받음).<br>· 남기는 기준 — 화제=소셜프루프 / 5분=시간축 / 덜맵고=아이축 / 제철=시의성(유일하게 내용이 자동으로 바뀜) / 로테이션=지루함 해소. 초기 콘텐츠 볼륨이 작아 코너를 늘리면 코너당 밀도가 떨어짐.<br>· <b>로테이션 슬롯은 어드민 [큐레이션 ▸ 홈 섹션 편성]에서 주간 교체</b> — 섹션 추가·ON/OFF·드래그 정렬이 이미 구현돼 있어 추가 개발 없음.<br>· <b>상품(커머스) 코너 = 제외 확정</b>(v12.13 결정 유지). "이질감의 정체는 커머스가 아니라 맥락 없는 커머스" — 졸리팟 커머스 동선은 상세▸재료 장보기. 토글은 before/after 시연용이며 미결정이 아님.<br>· <b>데크 개인화 = 추후(P2)</b>: 출시 초기 저장 이력 0인 유저가 대부분이라 만들어도 대부분 fallback으로 뜸. P1은 <b>에디터 픽 + 시간대 슬롯 큐레이션 룰</b>("오늘 저녁" 헤더엔 저녁 메인이 뜨도록). 냉장고 재료 매칭 카드 1장 교체가 전면 개인화보다 싼 1단계.<br>· <b>검색 현행 유지</b> — 퀵필터 제거(v14) 유지. 측정 스펙은 이번 범위 아님.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-10</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-11 · 데크 재설계 (이사 피드백 2026-08-06)</b>: "정체성 약함 + 너무 김 + 색상 불만" — 세 지적의 공통 원인은 <b>작은 사진(108px) + 텍스트 과다</b>로 진단.<br>· <b>사진 지배</b>: 썸네일 108×144 → 전폭 4:3 풀블리드(카드의 ~60%). 레시피 앱의 정체성은 음식 사진.<br>· <b>재료 5줄 → 만드는 법 1·2·3</b>(각 1줄 말줄임) + "…이후 N단계": 이사님 의도(첫 화면에서 가치 체감→저장 유도) 반영. v13-1의 "실행 정보 배제" 결정은 <b>3줄 티저로 절충</b> — 전체 스텝은 여전히 상세로.<br>· <b>화이트 카드</b>: 크림(#F5F0E8) → 흰색. 사진이 살도록 배경 소음 제거. Kitchen Stories 참고 — 컬러는 브랜드가 아니라 음식 사진이 낸다.<br>· <b>주황+녹색 역할 분리(KS 참고)</b>: 사진 위 시간 칩=옅은 노랑 / 인분 칩=옅은 그린 · 프로그레스 바 세이지→테라코타 · CTA "다음 단계 보러가기"(이사님 문구) 테라코타 유지.<br>· kcal 칩 제거(레시피 상세 v1.5의 AI 추정치 배제 원칙과 통일) · 결정카드/풀레시피 구(舊)토글 제거 — 기존안 비교는 v14-10 파일로.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-11</div>
   </div>
 
   <div class="phone-frame">
@@ -1268,268 +1292,167 @@
       <div class="deck-carousel" id="deckCarousel">
 
       <div class="deck-card-slot" data-index="0">
-        <div class="full-recipe-card">
+        <div class="full-recipe-card v15">
           <button class="card-menu">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
           </button>
-          
-          <div class="recipe-head">
-            <div class="recipe-thumb real"></div>
-            <div class="recipe-info">
-              <h3 class="recipe-title">키위 카스테라 케이크</h3>
-              <div class="recipe-source"><span class="source-dot claimed"></span>데일리쿡</div>
-              <div class="meta-chips">
-                <span class="meta-chip">⏱ 24분</span>
-                <span class="meta-chip">🍽 4인분</span>
-                <span class="meta-chip">🔥 180 kcal</span>
-              </div>
+          <div class="frc-photo real">
+            <div class="frc-chips">
+              <span class="frc-chip time">⏱ 24분</span>
+              <span class="frc-chip serv">🍽 4인분</span>
             </div>
           </div>
-          <div class="recipe-section-title">재료</div>
-          <div class="ingredient-grid"><div class="ingredient-row"><span>카스테라</span><span class="ingredient-amount">50g</span></div>
-<div class="ingredient-row"><span>키위</span><span class="ingredient-amount">1/2개</span></div>
-<div class="ingredient-row"><span>생크림</span><span class="ingredient-amount">30g</span></div>
-<div class="ingredient-row"><span>설탕</span><span class="ingredient-amount">10g</span></div>
-<div class="ingredient-row"><span>코코아가루</span><span class="ingredient-amount">5g</span></div>
-</div>
-          <div class="recipe-section-title">만드는 법</div>
-          <div class="step-list">
-            <div class="step-item"><div class="step-num">1</div><div class="step-text">카스테라를 적당한 두께로 슬라이스해요.</div></div>
-<div class="step-item"><div class="step-num">2</div><div class="step-text">키위 껍질을 벗기고 얇게 슬라이스해요.</div></div>
-<div class="step-item"><div class="step-num">3</div><div class="step-text">생크림에 설탕을 넣고 단단하게 휘핑해요.</div></div>
-<div class="step-item"><div class="step-num">4</div><div class="step-text">케이크 틀 바닥에 카스테라 한 층을 깔아요.</div></div>
-<div class="step-item"><div class="step-num">5</div><div class="step-text">휘핑한 크림을 위에 골고루 펴 발라요.</div></div>
-
-            <div class="step-item step-hidden"><div class="step-num">6</div><div class="step-text">키위 슬라이스를 크림 위에 가지런히 올려요.</div></div>
-<div class="step-item step-hidden"><div class="step-num">7</div><div class="step-text">두 번째 카스테라 층을 그 위에 덮어요.</div></div>
-<div class="step-item step-hidden"><div class="step-num">8</div><div class="step-text">남은 크림으로 옆면까지 매끈하게 발라요.</div></div>
-<div class="step-item step-hidden"><div class="step-num">9</div><div class="step-text">코코아가루를 체에 쳐서 윗면에 뿌려요.</div></div>
-<div class="step-item step-hidden"><div class="step-num">10</div><div class="step-text">냉장고에서 1시간 이상 굳혀 마무리해요.</div></div>
-
-          </div>
-          <button class="expand-toggle" onclick="toggleSteps(this)">
-          <span class="toggle-label">5단계 더 보기</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-          <div class="cook-cta-row">
-            <button class="deck-save" onclick="toggleSave(event, this)">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>
-              저장
-            </button>
-            <button class="cook-cta">
-              만드는 법 10단계
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-            </button>
+          <div class="frc-body">
+            <h3 class="recipe-title">키위 카스테라 케이크</h3>
+            <div class="recipe-source"><span class="source-dot claimed"></span>데일리쿡</div>
+            <div class="frc-steps">
+              <div class="frc-step"><span class="frc-num">1</span><span class="frc-text">카스테라를 적당한 두께로 슬라이스해요</span></div>
+              <div class="frc-step"><span class="frc-num">2</span><span class="frc-text">키위 껍질을 벗기고 얇게 슬라이스해요</span></div>
+              <div class="frc-step"><span class="frc-num">3</span><span class="frc-text">생크림에 설탕을 넣고 단단하게 휘핑해요</span></div>
+            </div>
+            <div class="frc-more">…이후 7단계</div>
+            <div class="cook-cta-row">
+              <button class="deck-save" onclick="toggleSave(event, this)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>
+                저장
+              </button>
+              <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-8.html'">
+                다음 단계 보러가기
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
       <div class="deck-card-slot" data-index="1">
-        <div class="full-recipe-card">
+        <div class="full-recipe-card v15">
           <button class="card-menu">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
           </button>
-          
-          <div class="recipe-head">
-            <div class="recipe-thumb fi-spicy_chicken"></div>
-            <div class="recipe-info">
-              <h3 class="recipe-title">매콤한 닭볶음탕</h3>
-              <div class="recipe-source"><span class="source-dot claimed"></span>매일맛나</div>
-              <div class="meta-chips">
-                <span class="meta-chip">⏱ 40분</span>
-                <span class="meta-chip">🍽 3인분</span>
-                <span class="meta-chip">🔥 480 kcal</span>
-              </div>
+          <div class="frc-photo fi-spicy_chicken">
+            <div class="frc-chips">
+              <span class="frc-chip time">⏱ 40분</span>
+              <span class="frc-chip serv">🍽 3인분</span>
             </div>
           </div>
-          <div class="recipe-section-title">재료</div>
-          <div class="ingredient-grid"><div class="ingredient-row"><span>닭 한 마리</span><span class="ingredient-amount">1kg</span></div>
-<div class="ingredient-row"><span>감자</span><span class="ingredient-amount">2개</span></div>
-<div class="ingredient-row"><span>당근</span><span class="ingredient-amount">1/2개</span></div>
-<div class="ingredient-row"><span>고추장</span><span class="ingredient-amount">2T</span></div>
-<div class="ingredient-row"><span>고춧가루</span><span class="ingredient-amount">2T</span></div>
-</div>
-          <div class="recipe-section-title">만드는 법</div>
-          <div class="step-list">
-            <div class="step-item"><div class="step-num">1</div><div class="step-text">닭을 깨끗이 씻어 한 번 데쳐 잡내를 빼요.</div></div>
-<div class="step-item"><div class="step-num">2</div><div class="step-text">감자와 당근을 큼직하게 썰어요.</div></div>
-<div class="step-item"><div class="step-num">3</div><div class="step-text">양념장(고추장·고춧가루·간장·설탕·다진마늘)을 만들어요.</div></div>
-<div class="step-item"><div class="step-num">4</div><div class="step-text">냄비에 닭과 양념을 넣고 잘 버무려요.</div></div>
-<div class="step-item"><div class="step-num">5</div><div class="step-text">물 2컵을 붓고 중불에서 15분 끓여요.</div></div>
-
-            <div class="step-item step-hidden"><div class="step-num">6</div><div class="step-text">감자와 당근을 넣고 15분 더 끓여요.</div></div>
-<div class="step-item step-hidden"><div class="step-num">7</div><div class="step-text">국물이 졸아들면 대파를 넣고 한소끔 끓여요.</div></div>
-<div class="step-item step-hidden"><div class="step-num">8</div><div class="step-text">깨와 참기름을 뿌려 마무리해요.</div></div>
-
-          </div>
-          <button class="expand-toggle" onclick="toggleSteps(this)">
-          <span class="toggle-label">3단계 더 보기</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-          <div class="cook-cta-row">
-            <button class="deck-save" onclick="toggleSave(event, this)">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>
-              저장
-            </button>
-            <button class="cook-cta">
-              만드는 법 8단계
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-            </button>
+          <div class="frc-body">
+            <h3 class="recipe-title">매콤한 닭볶음탕</h3>
+            <div class="recipe-source"><span class="source-dot claimed"></span>매일맛나</div>
+            <div class="frc-steps">
+              <div class="frc-step"><span class="frc-num">1</span><span class="frc-text">닭을 깨끗이 씻어 한 번 데쳐 잡내를 빼요</span></div>
+              <div class="frc-step"><span class="frc-num">2</span><span class="frc-text">감자와 당근을 큼직하게 썰어요</span></div>
+              <div class="frc-step"><span class="frc-num">3</span><span class="frc-text">양념장(고추장·고춧가루·간장·설탕·다진마늘)을 만들어요</span></div>
+            </div>
+            <div class="frc-more">…이후 5단계</div>
+            <div class="cook-cta-row">
+              <button class="deck-save" onclick="toggleSave(event, this)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>
+                저장
+              </button>
+              <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-8.html'">
+                다음 단계 보러가기
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
       <div class="deck-card-slot" data-index="2">
-        <div class="full-recipe-card">
+        <div class="full-recipe-card v15">
           <button class="card-menu">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
           </button>
-          
-          <div class="recipe-head">
-            <div class="recipe-thumb fi-pea_toast"></div>
-            <div class="recipe-info">
-              <h3 class="recipe-title">폭신폭신 리코타 팬케이크</h3>
-              <div class="recipe-source"><span class="source-dot claimed"></span>베이크홈</div>
-              <div class="meta-chips">
-                <span class="meta-chip">⏱ 30분</span>
-                <span class="meta-chip">🍽 2인분</span>
-                <span class="meta-chip">🔥 320 kcal</span>
-              </div>
+          <div class="frc-photo fi-pea_toast">
+            <div class="frc-chips">
+              <span class="frc-chip time">⏱ 30분</span>
+              <span class="frc-chip serv">🍽 2인분</span>
             </div>
           </div>
-          <div class="recipe-section-title">재료</div>
-          <div class="ingredient-grid"><div class="ingredient-row"><span>리코타 치즈</span><span class="ingredient-amount">200g</span></div>
-<div class="ingredient-row"><span>계란</span><span class="ingredient-amount">2개</span></div>
-<div class="ingredient-row"><span>박력분</span><span class="ingredient-amount">60g</span></div>
-<div class="ingredient-row"><span>우유</span><span class="ingredient-amount">60ml</span></div>
-<div class="ingredient-row"><span>설탕</span><span class="ingredient-amount">20g</span></div>
-</div>
-          <div class="recipe-section-title">만드는 법</div>
-          <div class="step-list">
-            <div class="step-item"><div class="step-num">1</div><div class="step-text">계란 흰자와 노른자를 분리해요.</div></div>
-<div class="step-item"><div class="step-num">2</div><div class="step-text">노른자에 리코타·우유·설탕을 섞어요.</div></div>
-<div class="step-item"><div class="step-num">3</div><div class="step-text">체 친 박력분을 넣고 가볍게 섞어요.</div></div>
-<div class="step-item"><div class="step-num">4</div><div class="step-text">흰자를 단단한 머랭으로 만들어요.</div></div>
-<div class="step-item"><div class="step-num">5</div><div class="step-text">머랭을 반죽에 3번 나눠 가볍게 섞어요.</div></div>
-
-            <div class="step-item step-hidden"><div class="step-num">6</div><div class="step-text">약불 팬에 동그랗게 올려 뚜껑 덮고 5분 구워요.</div></div>
-<div class="step-item step-hidden"><div class="step-num">7</div><div class="step-text">뒤집어 3분 더 구워요.</div></div>
-<div class="step-item step-hidden"><div class="step-num">8</div><div class="step-text">메이플시럽과 베리를 곁들여 완성해요.</div></div>
-
-          </div>
-          <button class="expand-toggle" onclick="toggleSteps(this)">
-          <span class="toggle-label">3단계 더 보기</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-          <div class="cook-cta-row">
-            <button class="deck-save" onclick="toggleSave(event, this)">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>
-              저장
-            </button>
-            <button class="cook-cta">
-              만드는 법 8단계
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-            </button>
+          <div class="frc-body">
+            <h3 class="recipe-title">폭신폭신 리코타 팬케이크</h3>
+            <div class="recipe-source"><span class="source-dot claimed"></span>베이크홈</div>
+            <div class="frc-steps">
+              <div class="frc-step"><span class="frc-num">1</span><span class="frc-text">계란 흰자와 노른자를 분리해요</span></div>
+              <div class="frc-step"><span class="frc-num">2</span><span class="frc-text">노른자에 리코타·우유·설탕을 섞어요</span></div>
+              <div class="frc-step"><span class="frc-num">3</span><span class="frc-text">체 친 박력분을 넣고 가볍게 섞어요</span></div>
+            </div>
+            <div class="frc-more">…이후 5단계</div>
+            <div class="cook-cta-row">
+              <button class="deck-save" onclick="toggleSave(event, this)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>
+                저장
+              </button>
+              <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-8.html'">
+                다음 단계 보러가기
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
       <div class="deck-card-slot" data-index="3">
-        <div class="full-recipe-card">
+        <div class="full-recipe-card v15">
           <button class="card-menu">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
           </button>
-          <span class="ai-summary-badge">AI 요약</span>
-          <div class="recipe-head">
-            <div class="recipe-thumb fi-cheese_fries"></div>
-            <div class="recipe-info">
-              <h3 class="recipe-title">시원한 콩국수</h3>
-              <div class="recipe-source"><span class="source-dot unclaimed"></span>백종원 · YouTube에서 보기 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg></div>
-              <div class="meta-chips">
-                <span class="meta-chip">⏱ 15분</span>
-                <span class="meta-chip">🍽 1인분</span>
-                <span class="meta-chip">🔥 420 kcal</span>
-              </div>
+          <div class="frc-photo fi-cheese_fries">
+            <div class="frc-chips">
+              <span class="frc-chip time">⏱ 15분</span>
+              <span class="frc-chip serv">🍽 1인분</span>
             </div>
           </div>
-          <div class="recipe-section-title">재료</div>
-          <div class="ingredient-grid"><div class="ingredient-row"><span>소면</span><span class="ingredient-amount">100g</span></div>
-<div class="ingredient-row"><span>서리태</span><span class="ingredient-amount">100g</span></div>
-<div class="ingredient-row"><span>얼음</span><span class="ingredient-amount">6~8개</span></div>
-<div class="ingredient-row"><span>소금</span><span class="ingredient-amount">약간</span></div>
-<div class="ingredient-row"><span>오이채</span><span class="ingredient-amount">약간</span></div>
-</div>
-          <div class="recipe-section-title">만드는 법</div>
-          <div class="step-list">
-            <div class="step-item"><div class="step-num">1</div><div class="step-text">서리태를 5시간 이상 충분히 불려요.</div></div>
-<div class="step-item"><div class="step-num">2</div><div class="step-text">불린 콩을 10분간 삶아요.</div></div>
-<div class="step-item"><div class="step-num">3</div><div class="step-text">삶은 콩에 물을 부어 곱게 갈아요.</div></div>
-<div class="step-item"><div class="step-num">4</div><div class="step-text">면포에 걸러 부드러운 콩물을 만들어요.</div></div>
-<div class="step-item"><div class="step-num">5</div><div class="step-text">소금으로 간하고 차게 식혀요.</div></div>
-
-            <div class="step-item step-hidden"><div class="step-num">6</div><div class="step-text">소면을 삶아 찬물에 헹궈요.</div></div>
-<div class="step-item step-hidden"><div class="step-num">7</div><div class="step-text">그릇에 면을 담고 콩물·얼음·오이채를 올려요.</div></div>
-<div class="step-item step-hidden"><div class="step-num">8</div><div class="step-text">취향에 따라 소금이나 설탕을 곁들여요.</div></div>
-
-          </div>
-          <button class="expand-toggle" onclick="toggleSteps(this)">
-          <span class="toggle-label">3단계 더 보기</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-          <div class="cook-cta-row">
-            <button class="deck-save" onclick="toggleSave(event, this)">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>
-              저장
-            </button>
-            <button class="cook-cta">
-              만드는 법 8단계
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-            </button>
+          <div class="frc-body">
+            <h3 class="recipe-title">시원한 콩국수</h3>
+            <div class="recipe-source"><span class="source-dot unclaimed"></span>백종원 · YouTube에서 보기 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg></div>
+            <div class="frc-steps">
+              <div class="frc-step"><span class="frc-num">1</span><span class="frc-text">서리태를 5시간 이상 충분히 불려요</span></div>
+              <div class="frc-step"><span class="frc-num">2</span><span class="frc-text">불린 콩을 10분간 삶아요</span></div>
+              <div class="frc-step"><span class="frc-num">3</span><span class="frc-text">삶은 콩에 물을 부어 곱게 갈아요</span></div>
+            </div>
+            <div class="frc-more">…이후 5단계</div>
+            <div class="cook-cta-row">
+              <button class="deck-save" onclick="toggleSave(event, this)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>
+                저장
+              </button>
+              <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-8.html'">
+                다음 단계 보러가기
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
       <div class="deck-card-slot" data-index="4">
-        <div class="full-recipe-card">
+        <div class="full-recipe-card v15">
           <button class="card-menu">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
           </button>
-          <span class="ai-summary-badge">AI 요약</span>
-          <div class="recipe-head">
-            <div class="recipe-thumb fi-honey_chicken"></div>
-            <div class="recipe-info">
-              <h3 class="recipe-title">5분 토마토 계란 볶음</h3>
-              <div class="recipe-source"><span class="source-dot unclaimed"></span>이연복 · YouTube에서 보기 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg></div>
-              <div class="meta-chips">
-                <span class="meta-chip">⏱ 5분</span>
-                <span class="meta-chip">🍽 1인분</span>
-                <span class="meta-chip">🔥 280 kcal</span>
-              </div>
+          <div class="frc-photo fi-honey_chicken">
+            <div class="frc-chips">
+              <span class="frc-chip time">⏱ 5분</span>
+              <span class="frc-chip serv">🍽 1인분</span>
             </div>
           </div>
-          <div class="recipe-section-title">재료</div>
-          <div class="ingredient-grid"><div class="ingredient-row"><span>방울토마토</span><span class="ingredient-amount">10개</span></div>
-<div class="ingredient-row"><span>계란</span><span class="ingredient-amount">3개</span></div>
-<div class="ingredient-row"><span>대파</span><span class="ingredient-amount">약간</span></div>
-<div class="ingredient-row"><span>소금</span><span class="ingredient-amount">약간</span></div>
-<div class="ingredient-row"><span>식용유</span><span class="ingredient-amount">1T</span></div>
-</div>
-          <div class="recipe-section-title">만드는 법</div>
-          <div class="step-list">
-            <div class="step-item"><div class="step-num">1</div><div class="step-text">방울토마토를 반으로 잘라요.</div></div>
-<div class="step-item"><div class="step-num">2</div><div class="step-text">계란을 풀어 소금 약간 넣어요.</div></div>
-<div class="step-item"><div class="step-num">3</div><div class="step-text">팬에 기름 두르고 토마토를 30초 볶아요.</div></div>
-<div class="step-item"><div class="step-num">4</div><div class="step-text">풀어둔 계란을 부어 부드럽게 저어요.</div></div>
-<div class="step-item"><div class="step-num">5</div><div class="step-text">대파를 송송 썰어 올려 완성해요.</div></div>
-
-            
-          </div>
-          
-          <div class="cook-cta-row">
-            <button class="deck-save" onclick="toggleSave(event, this)">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>
-              저장
-            </button>
-            <button class="cook-cta">
-              만드는 법 5단계
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-            </button>
+          <div class="frc-body">
+            <h3 class="recipe-title">5분 토마토 계란 볶음</h3>
+            <div class="recipe-source"><span class="source-dot unclaimed"></span>이연복 · YouTube에서 보기 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg></div>
+            <div class="frc-steps">
+              <div class="frc-step"><span class="frc-num">1</span><span class="frc-text">방울토마토를 반으로 잘라요</span></div>
+              <div class="frc-step"><span class="frc-num">2</span><span class="frc-text">계란을 풀어 소금 약간 넣어요</span></div>
+              <div class="frc-step"><span class="frc-num">3</span><span class="frc-text">팬에 기름 두르고 토마토를 30초 볶아요</span></div>
+            </div>
+            <div class="frc-more">…이후 2단계</div>
+            <div class="cook-cta-row">
+              <button class="deck-save" onclick="toggleSave(event, this)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>
+                저장
+              </button>
+              <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-8.html'">
+                다음 단계 보러가기
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -2125,14 +2048,7 @@
   })();
 
   // ===== v14 · 데크 풀↔슬림 토글 (슬림=현재, 풀=이전 비교용) =====
-  function setDeckStyle(style) {
-    document.querySelectorAll('.proto-toggle[data-group="deck"]').forEach(b => {
-      b.classList.toggle('active', b.dataset.value === style);
-    });
-    const region = document.querySelector('.deck-region');
-    if (region) region.classList.toggle('slim', style === 'slim');
-  }
-
+  
   function toggleSave(e, btn) {
     e.stopPropagation();
     const wasSaved = btn.classList.contains('saved');
