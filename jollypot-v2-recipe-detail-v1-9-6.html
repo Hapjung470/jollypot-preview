@@ -488,7 +488,7 @@
 
   /* ===== 장보기 ===== */
   .shopping-header { font-size: 18px; font-weight: 600; color: var(--color-text-primary); padding-bottom: 4px; }
-  .partner-disclosure { font-size: 12px; color: var(--color-text-tertiary); line-height: 1.4; padding-bottom: 14px; }
+  .partner-disclosure { font-size: 12px; color: var(--color-text-tertiary); line-height: 1.4; }   /* v1-9-6: 하단 여백은 divider가 전담 */
   .shopping-scroll {
     display: flex; gap: 12px; overflow-x: auto;
     padding-bottom: 4px; padding-right: 16px; margin-right: -16px;
@@ -568,7 +568,6 @@
   /* ===== 댓글 ===== */
   .comment-entry {
     display: flex; align-items: baseline; justify-content: space-between;
-    margin-top: 32px;
     padding-bottom: 12px;
   }
   .comment-entry-left {
@@ -849,7 +848,7 @@
 
   /* ===== v1.8 — 알아두면 좋아요 (위계 정리: 라벨 강등 + 카드 컨테인먼트) ===== */
   .more-acc { border-top: none !important; border-bottom: none !important; }
-  .more-acc > summary { padding: 20px 0 10px; }
+  .more-acc > summary { padding: 0 0 10px; }   /* v1-9-6: 상단 여백은 divider가 전담 */
   .mi-head { display: flex; flex-direction: column; }
   .mi-title { font-size: 18px; font-weight: 600; color: var(--color-text-primary); }
   .mi-sub { font-size: 12.5px; color: var(--color-text-tertiary); font-weight: 400; margin-top: 4px; }
@@ -989,7 +988,7 @@
     <button id="togMoreOn" class="active fmt" onclick="setMoreInfo(true)">더 알아보기 · 데이터 있음</button>
     <button id="togMoreOff" onclick="setMoreInfo(false)">데이터 없음 (미노출)</button>
   </div>
-  <div style="font-size:12px; color:#CCCCDD; padding:6px 4px 0;">jollypot-v2-recipe-detail-v1-9-5</div>
+  <div style="font-size:12px; color:#CCCCDD; padding:6px 4px 0;">jollypot-v2-recipe-detail-v1-9-6</div>
 </div>
 
 <!-- ===== 헤더 ===== -->
@@ -1834,6 +1833,7 @@ function toggleSave() {
   • <b style="color:#fff;">SEO 지침</b>: 접힘 콘텐츠는 모바일 퍼스트 인덱싱에서 <b>동일 가중치</b> — 단 <b style="color:#FFC520;">반드시 초기 HTML/DOM에 포함</b>(펼침 시 fetch/lazy-load 금지). nutrition 스키마는 영양 모듈 노출 시에만 포함(화면-스키마 일치). <b>FAQPage 스키마는 넣지 않는다</b> — FAQ 리치결과는 2026-05 완전 종료, 텍스트 인덱싱(롱테일 질의)으로만 기여<br>
   • <b style="color:#fff;">재료 마스터 DB 1개가 3곳을 먹여살린다</b>: 대체재 치환 + 영양 계산 + 냉장고 레시피 매칭(03 트랙) — 착수 시 최우선 구축 권고<br>
   • 메타 kcal·준비/조리 분리표시는 계속 제외(메타 행은 총시간·인분 2칸 유지) · 별점·후기·갤러리는 여전히 P2(이 보관함과 무관)<br>
+  • <b style="color:#8FA68E;">v1-9-6 · 섹션 여백 통일</b>: 원칙 — <b>섹션 간 여백은 구분선(.divider margin 24px)이 전담</b>하고, 인접 요소는 같은 방향 여백을 갖지 않는다. 잉크 기준 실측으로 잡은 3건: 재료 하단(쿠팡 공시 pb14 가산 40px→24) · 댓글 상단(margin-top 32→24) · "알아두면 좋아요" 상단(summary pt20 가산 44px→24). 댓글 입력칸(36)·AI 라벨(30)의 초과분은 pill 테두리·라인하이트 내부값이라 시각 경계 기준 24로 정상.<br>
   • <b style="color:#8FA68E;">v1-9-5 · 스텝 소제목 제거</b>: 만드는 법 각 단계 = <b>번호 + 설명문 바로 시작</b>(소제목 없음). 설명이 주 콘텐츠가 되므로 색을 세컨더리→<b>잉크(#212121)</b>로 승격. <b>JSON-LD의 HowToStep name도 함께 제거</b>(화면-스키마 일치 — text만 유지, Google 스키마에서 name은 선택 필드). 파이프라인 효과: AI 추출에서 <b>스텝 소제목 생성 단계 자체가 불필요</b>해짐 — 추출 스펙 단순화. 직접업로드 모드(스텝 이미지)도 동일 구조.<br>
   • <b style="color:#145F48;">v1.7 (대표 피드백 2026-08-03)</b>: ① 섹션 승격 — 상하 <b>두꺼운 구분 바</b> + 헤더를 "만드는 법" 레벨(18px·700)로, 회색 세부 라벨 유지 ② 라벨 "레시피 더 알아보기" → <b>"알아두면 좋아요"</b> — 기존 보조 라벨 보이스("없으면 이걸로"·"이것만 조심하세요"·"이런 레시피는 어때요?")와 통일, "더 알아보기"의 페이지 이동 오해 제거 ③ 펼침 시 전 모듈 동시 펼침<br>
   • <b style="color:#145F48;">v1.8 (대표 피드백 2026-08-04)</b>: 펼침 상태에서 "알아두면 좋아요 > 없으면 이걸로 > 생크림" 3레벨이 비슷한 검정 볼드로 보여 위계 불분명 → <b>레벨마다 다른 신호</b>로 해결: ① 섹션(18px·700·블랙) ② 모듈 = <b>라벨로 강등</b>(14px·700·세컨더리 그레이) ③ 콘텐츠 = <b>서피스 카드(#FFF5EA) 수납</b> — 카드 안의 볼드는 라벨과 경쟁하지 않음. 모듈 간 1px 라인 제거(카드+여백이 경계) · FAQ 출처 캡션 제거(FAQ는 AI 추론 질문으로 소스 변경)
