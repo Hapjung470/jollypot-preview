@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-23 · 졸리팟 V2 홈 (헤더 타이포 정정)</title>
+<title>v14-24 · 졸리팟 V2 홈 (화살표·여백 조정)</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
   :root {
@@ -451,7 +451,6 @@
     padding: 0 2px;
     display: -webkit-box; -webkit-line-clamp: 2;
     -webkit-box-orient: vertical; overflow: hidden;
-    min-height: 39px;
   }
   .continue-meta {
     font-size: 12px; color: var(--color-text-secondary);
@@ -981,14 +980,14 @@
   /* 오늘의집 패턴 — 텍스트 '더보기' 대신 원형 화살표 */
   .context-link {
     flex-shrink: 0;
-    width: 32px; height: 32px;
+    width: 24px; height: 24px;
     border-radius: 50%;
     background: var(--color-surface);
     display: flex; align-items: center; justify-content: center;
     color: var(--color-text-primary);
     cursor: pointer;
   }
-  .context-link svg { width: 15px; height: 15px; }
+  .context-link svg { width: 13px; height: 13px; }
 
   .product-section {
     background: var(--color-surface-alt);
@@ -1051,7 +1050,6 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 39px;
   }
   .compact-meta {
     font-size: 11px;
@@ -1224,7 +1222,7 @@
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-23.html">v14-23<small>최신</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-24.html">v14-24<small>최신</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
@@ -1340,7 +1338,12 @@
 · <b>굵기 800 → 700</b>(과했음, 실측이 700) · <b>자간 -0.5px → -0.3px</b>(과하게 조여 답답해 보였음, 실측이 -0.3px) · <b>크기 18px → 19px</b>(오늘의집 18px @375px를 우리 390px 뷰포트에 비례 환산: 18 × 390/375 = 18.7).<br>
 · <code>line-height: 1.25</code> 명시 — 오늘의집은 18px/18px(=1.0)로 매우 타이트. 한글 글리프 잘림을 피하면서 비슷한 밀도를 내는 값으로 1.25 채택.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-23</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-24</b> ① <b>화살표 원 32 → 24px</b>(아이콘 15 → 13px). 같은 배율 스크린샷 비교로 산출: 우리 32px가 78 device px로 찍혔으므로 배율 2.44, 오늘의집 원은 56 device px ≈ <b>23 CSS px</b>. 24px로 맞춤.<br>
+· ② <b>카드 제목↔메타 여백 제거</b> — 원인은 <code>min-height: 39px</code>(2줄 높이 강제). "바삭한 닭강정"은 1줄인데 2줄 자리를 잡아 <b>약 20px 빈 공간</b>이 생겼음. <b>최근저장·코너 카드에서 제거</b>.<br>
+· ⚠ <b>하단 무한추천(.ig-title)은 유지</b> — 제목이 1줄·2줄 섞여 있어(예: "기름 없이 에어프라이어 닭다리"=2줄) 제거하면 3열 그리드의 메타 줄이 어긋남. 실측 후 예외 처리.<br>
+· <b>오늘의집 폰트 = Pretendard Variable</b>(store.ohou.se computed style). v14-23에서 Pretendard CDN 로드로 이미 동일 계열 적용 중.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-24</div>
   </div>
 
   <div class="phone-frame">
