@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-22 · 졸리팟 V2 홈 (섹션 헤더 개편)</title>
+<title>v14-23 · 졸리팟 V2 홈 (헤더 타이포 정정)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
   :root {
     --color-brand: #FDB813;
@@ -22,7 +23,7 @@
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
     background: #ECECEC;
     color: var(--color-text-primary);
     padding: 32px 20px 60px;
@@ -400,7 +401,7 @@
     gap: 12px;
   }
   .continue-title-wrap { display: flex; align-items: center; flex: 1; }
-  .continue-title { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+  .continue-title { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.25; }
   .continue-scroll {
     display: flex; gap: 12px;
     overflow-x: auto;
@@ -583,9 +584,10 @@
   .deck-title-wrap { display: flex; align-items: center; gap: 10px; flex: 1; }
   .deck-text-wrap { flex: 1; }
   .deck-title-text {
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    line-height: 1.25;
   }
   .deck-page {
     font-size: 12px;
@@ -975,7 +977,7 @@
   }
   .context-title-wrap { display: flex; align-items: center; flex: 1; }
   .context-text-wrap { flex: 1; min-width: 0; }
-  .context-title { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+  .context-title { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.25; }
   /* 오늘의집 패턴 — 텍스트 '더보기' 대신 원형 화살표 */
   .context-link {
     flex-shrink: 0;
@@ -1222,7 +1224,7 @@
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-22.html">v14-22<small>최신</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-23.html">v14-23<small>최신</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
@@ -1331,7 +1333,14 @@
 · <b>④ 간격 재조정</b> — 부가설명이 없어져 헤더가 낮아진 만큼 <b>헤더 아래 16→14px</b>(제목과 콘텐츠를 붙임), <b>섹션 간 32→40px</b>(24+8 → 32+8)로 벌림. 오늘의집 실측 추정치(제목아래 ~19px / 섹션간 ~41px)에 맞춤.<br>
 · 헤더 정렬을 <code>flex-start → center</code>로 변경(부가설명이 없어 상단 정렬이 불필요) · 데크 "1/5" 페이지 표시의 <code>padding-top:5px</code> 보정도 함께 제거.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-22</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-23 · 헤더 타이포 정정 — v14-22의 추정이 틀렸음</b><br>
+· <b>측정 방식을 바꿈</b>: 스크린샷 픽셀 눈대중(v14-22) → <b>store.ohou.se에 직접 접속해 375px 뷰포트에서 computed style 추출</b>.<br>
+· <b>오늘의집 실측값</b>: 섹션 헤더 <code>18px / 700 / letter-spacing -0.3px / line-height 18px / #2F3438 / Pretendard Variable</code>.<br>
+· <b>가장 큰 원인은 폰트였음</b> — 우리 프로토는 <code>font-family</code>에 Pretendard를 <b>선언만 하고 실제로 로드하지 않아</b>(<code>document.fonts</code>가 비어 있었음) 시스템 폰트로 폴백 중이었음. Pretendard는 x-height가 커서 같은 px에서도 더 크게 보이는데, 폴백 폰트라 작아 보였던 것. → <b>Pretendard CDN 로드 + 스택 최상단 배치</b>로 해결.<br>
+· <b>굵기 800 → 700</b>(과했음, 실측이 700) · <b>자간 -0.5px → -0.3px</b>(과하게 조여 답답해 보였음, 실측이 -0.3px) · <b>크기 18px → 19px</b>(오늘의집 18px @375px를 우리 390px 뷰포트에 비례 환산: 18 × 390/375 = 18.7).<br>
+· <code>line-height: 1.25</code> 명시 — 오늘의집은 18px/18px(=1.0)로 매우 타이트. 한글 글리프 잘림을 피하면서 비슷한 밀도를 내는 값으로 1.25 채택.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-23</div>
   </div>
 
   <div class="phone-frame">
