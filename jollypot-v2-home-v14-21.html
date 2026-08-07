@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-20 · 졸리팟 V2 홈 (컬러 3안)</title>
+<title>v14-21 · 졸리팟 V2 홈 (컬러 3안)</title>
 <style>
   :root {
     --color-brand: #FDB813;
@@ -671,7 +671,8 @@
   /* ③ 데크 종료 카드 */
   .deck-end-card {
     background: #FFFFFF;
-    border: 1px dashed var(--color-border);
+    /* v14-21: 보더가 흰 배경 대비 1.22:1로 사실상 안 보였음 → 1.77:1로 강화 (전 테마 공통) */
+    border: 1px dashed #C9C2B6;
     border-radius: 18px;
     padding: 40px 24px;
     display: flex;
@@ -1219,7 +1220,7 @@
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-20.html">v14-20<small>최신</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-21.html">v14-21<small>최신</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
@@ -1316,7 +1317,12 @@
         <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-20 · 데크 종료 카드 배경 제거</b> — "오늘의 추천을 다 봤어요" 카드가 <b>크림(<code>#F5F0E8</code>)</b>이라 흰색인 레시피 카드들과 어긋나 있었음 → <b>흰색으로 통일</b>.<br>
 · <b>1px 점선 보더는 유지</b> — 데크의 '끝'을 알리는 신호이자, 흰 배경 위에서 카드 경계를 잡아주는 장치(디자인 가이드: 크림/흰색 명도차가 6~7%라 보더가 안전장치).</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-20</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-21 · 데크 종료 카드 점선 보더 가시화</b><br>
+· 점선 보더는 <b>원래부터 3개 테마 모두에 동일하게</b> 적용돼 있었음(<code>dashed 1px</code>). 안 보였던 진짜 원인은 <b>색상 대비</b>: 기존 <code>#EDE8E0</code>은 흰 배경 대비 명암비가 <b>1.22:1</b>로 사실상 비가시 상태. 이전에는 카드 배경이 크림이라 <b>1.08:1</b>로 더 안 보였고, v14-20에서 배경만 흰색으로 바꾸면서 보더 색은 그대로 둔 것이 원인.<br>
+· <b>#C9C2B6로 강화 (1.77:1)</b> — 점선이 확실히 읽히면서도 과하지 않은 수준. 차가운 회색 대신 <b>따뜻한 크림 계열</b>을 유지해 브랜드 팔레트와 어긋나지 않게 함.<br>
+· 테마별로 다르게 두지 않고 <b>전 테마 공통</b>으로 적용 — 이 보더는 "데크의 끝"이라는 구조 신호이지 브랜드 액센트가 아니므로.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-21</div>
   </div>
 
   <div class="phone-frame">

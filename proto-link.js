@@ -8,7 +8,7 @@
 
   // 하단 탭 backbone (모든 화면 공통)
   var TAB = {
-    '홈': 'jollypot-v2-home-v14-20.html',
+    '홈': 'jollypot-v2-home-v14-21.html',
     '쇼핑': 'jollypot-v2-search-v2-2.html',
     '스크랩북': 'jollypot-v2-scrapbook-v11-16-9.html',
     '마이': 'jollypot-v2-profile-my-v2-14.html'
@@ -38,13 +38,13 @@
     add('.ac-row', 'jollypot-v2-recipe-detail-v1-8.html');
   }
   if (/recipe-detail|recipe-upgraded/.test(p)) {
-    add('.header .header-icon:first-of-type', 'jollypot-v2-home-v14-20.html');   // ← 뒤로가기
+    add('.header .header-icon:first-of-type', 'jollypot-v2-home-v14-21.html');   // ← 뒤로가기
     add('.header .header-icon:last-of-type', 'jollypot-v2-search-v2-2.html'); // 🔍 검색
     add('.shopping-card', 'jollypot-v2-product-detail-v3-3-1.html'); // v1.4 이하 장보기 카드
   }
   if (p.indexOf('cook-mode') >= 0) {
     add('.review-submit', 'jollypot-v2-cook-review-v2-4.html');
-    add('.done-home', 'jollypot-v2-home-v14-20.html');
+    add('.done-home', 'jollypot-v2-home-v14-21.html');
   }
   if (p.indexOf('cook-review') >= 0) {
     add('.c-btn', 'jollypot-v2-cook-mode-v11-1.html');
@@ -60,7 +60,7 @@
     add('.bs-buy', 'jollypot-v2-order-complete-v3-3-11.html');
   }
   if (p.indexOf('order-complete') >= 0) {
-    add('.hd-close', 'jollypot-v2-home-v14-20.html');
+    add('.hd-close', 'jollypot-v2-home-v14-21.html');
     add('.oc-bb-sub', 'jollypot-v2-search-v2-2.html');
     add('.oc-bb-main', 'jollypot-v2-profile-my-v2-14.html');
     add('.oc-sheet-more', 'jollypot-v2-recipe-detail-v1-8.html');
