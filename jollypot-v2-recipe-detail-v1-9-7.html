@@ -848,11 +848,11 @@
 
   /* ===== v1.8 — 알아두면 좋아요 (위계 정리: 라벨 강등 + 카드 컨테인먼트) ===== */
   .more-acc { border-top: none !important; border-bottom: none !important; }
-  .more-acc > summary { padding: 0 0 10px; }   /* v1-9-6: 상단 여백은 divider가 전담 */
+  .more-acc > summary { padding: 0; }   /* v1-9-7: 상하 여백 모두 divider 전담 (접힘 시 하단 34→24) */
   .mi-head { display: flex; flex-direction: column; }
   .mi-title { font-size: 18px; font-weight: 600; color: var(--color-text-primary); }
   .mi-sub { font-size: 12.5px; color: var(--color-text-tertiary); font-weight: 400; margin-top: 4px; }
-  .more-info-body { padding: 0 0 4px; }
+  .more-info-body { padding: 0; }   /* v1-9-7: 펼침 시 하단 28→24 */
   .more-info-body .acc { border: none !important; }
   .more-info-body summary {
     font-size: 14px; font-weight: 700; color: var(--color-text-secondary);
@@ -988,7 +988,7 @@
     <button id="togMoreOn" class="active fmt" onclick="setMoreInfo(true)">더 알아보기 · 데이터 있음</button>
     <button id="togMoreOff" onclick="setMoreInfo(false)">데이터 없음 (미노출)</button>
   </div>
-  <div style="font-size:12px; color:#CCCCDD; padding:6px 4px 0;">jollypot-v2-recipe-detail-v1-9-6</div>
+  <div style="font-size:12px; color:#CCCCDD; padding:6px 4px 0;">jollypot-v2-recipe-detail-v1-9-7</div>
 </div>
 
 <!-- ===== 헤더 ===== -->
