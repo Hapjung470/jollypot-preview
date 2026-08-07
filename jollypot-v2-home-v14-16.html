@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-15 · 졸리팟 V2 홈 (컬러 테마 비교)</title>
+<title>v14-16 · 졸리팟 V2 홈 (섹션 이모지 제거)</title>
 <style>
   :root {
     --color-brand: #FDB813;
@@ -583,7 +583,6 @@
     gap: 12px;
   }
   .deck-title-wrap { display: flex; align-items: center; gap: 10px; flex: 1; }
-  .deck-emoji { font-size: 22px; line-height: 1; }
   .deck-text-wrap { flex: 1; }
   .deck-title-text {
     font-size: 16px;
@@ -981,8 +980,7 @@
     margin-bottom: 16px;
     gap: 12px;
   }
-  .context-title-wrap { display: flex; align-items: center; gap: 10px; flex: 1; }
-  .context-emoji { font-size: 24px; line-height: 1; }
+  .context-title-wrap { display: flex; align-items: center; flex: 1; }
   .context-text-wrap { flex: 1; min-width: 0; }
   .context-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
   .context-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 3px; }
@@ -1229,7 +1227,7 @@
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-15.html">v14-15<small>최신</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-16.html">v14-16<small>최신</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
@@ -1301,7 +1299,14 @@
 · <b>제목 영역 확대</b> — '···' 자리를 비우려 잡아둔 우측 여백 26px를 회수. 제목 폭 <b>103px → 129px</b>.<br>
 · <b>제목 2줄 클램프</b> — <code>-webkit-line-clamp:2</code>로 최대 2줄, 넘치면 말줄임. <code>word-break:keep-all</code>로 <b>한글 어절이 중간에서 끊기지 않게</b> 처리(예: "팬케이크"가 "팬케/이크"로 갈라지는 현상 방지). 폭보다 긴 단일 어절만 <code>overflow-wrap:anywhere</code>로 예외 처리.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-15</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-16 · 섹션 헤더 이모지 제거</b> (오늘의집 패턴 — 이모지는 구조가 아니라 카피의 일부)<br>
+· <b>제거</b>: 코너 헤더 7개(🔥화제·⏱5분·🧸키즈·🍅제철·🍼덜맵고·🌿가볍게·🍲김치찌개) + 데크 헤더 🍳.<br>
+· <b>유지</b>: 냉장고 모듈 <b>🧊</b> — 이건 코너 헤더가 아니라 <b>기능 진입점 아이콘</b>(38×38 원형 배경). 성격이 다름.<br>
+· <b>왜 빼는가</b> ① 어드민 [섹션 추가] 모달에 이모지 입력란이 없는데 화면엔 자리가 있어 <b>구조와 운영도구가 어긋나 있었음</b> ② 알고리즘 섹션 4종(지금 이 시간엔·인기 급상승·새로 올라온·냉장고 추천)은 시스템이 자동 생성하는데 이모지를 정할 주체가 없음 ③ 로테이션 슬롯은 매주 바뀌어 이모지도 매주 선택해야 함 ④ 코너가 전부 레시피라 이모지가 카테고리를 구분해주지 못함.<br>
+· <b>데크 🍳를 함께 뺀 이유</b> — 데크 헤더는 시간대별로 문구가 바뀌는데(아침 "뭐 차려주지" / 저녁 "뭐 해주지" / 야식 "출출한데 뭐 만들지") <b>이모지는 고정이라 이미 어긋나 있었음</b>. 야식 문구에 🍳는 부적절.<br>
+· <b>필요하면 담당자가 제목 텍스트 끝에 직접 입력</b>(어드민 섹션명 필드) — 구조가 강제하지 않으므로 붙이고 안 붙이고가 자유로워짐.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-16</div>
   </div>
 
   <div class="phone-frame">
@@ -1333,8 +1338,7 @@
     <div class="deck-region slim">
       <div class="deck-region-header">
         <div class="deck-title-wrap">
-          <span class="deck-emoji">🍳</span>
-          <div class="deck-text-wrap">
+                    <div class="deck-text-wrap">
             <div class="deck-title-text" id="deckTitle">오늘 저녁 뭐 해주지?</div>
             <div class="deck-sub">에디터가 골라 본 한 그릇</div>
           </div>
@@ -1517,8 +1521,7 @@
 <div class="context-section">
       <div class="context-header">
         <div class="context-title-wrap">
-          <span class="context-emoji">🔥</span>
-          <div class="context-text-wrap">
+                      <div class="context-text-wrap">
             <div class="context-title">화제의 레시피</div>
             <div class="context-sub">졸리팟에서 자주 저장되는</div>
           </div>
@@ -1598,8 +1601,7 @@
     <div class="context-section">
       <div class="context-header">
         <div class="context-title-wrap">
-          <span class="context-emoji">⏱</span>
-          <div class="context-text-wrap">
+                      <div class="context-text-wrap">
             <div class="context-title">5분 완성</div>
             <div class="context-sub">바쁠 때 든든하게</div>
           </div>
@@ -1629,8 +1631,7 @@
     <div class="product-section commerce-section" style="display:none">
       <div class="context-header">
         <div class="context-title-wrap">
-          <span class="context-emoji">🧸</span>
-          <div class="context-text-wrap">
+                      <div class="context-text-wrap">
             <div class="context-title">키즈 셀렉션</div>
             <div class="context-sub">졸리팟이 골라 본</div>
           </div>
@@ -1665,8 +1666,7 @@
     <div class="context-section">
       <div class="context-header">
         <div class="context-title-wrap">
-          <span class="context-emoji">🍅</span>
-          <div class="context-text-wrap">
+                      <div class="context-text-wrap">
             <div class="context-title">제철 레시피</div>
             <div class="context-sub">재료가 가장 맛있을 때</div>
           </div>
@@ -1698,8 +1698,7 @@
     <div class="context-section">
       <div class="context-header">
         <div class="context-title-wrap">
-          <span class="context-emoji">🍼</span>
-          <div class="context-text-wrap">
+                      <div class="context-text-wrap">
             <div class="context-title">덜 맵고 부드럽게</div>
             <div class="context-sub">아이도 함께 먹는 한 끼</div>
           </div>
@@ -1729,8 +1728,7 @@
     <div class="product-section commerce-section" style="display:none">
       <div class="context-header">
         <div class="context-title-wrap">
-          <span class="context-emoji">🌿</span>
-          <div class="context-text-wrap">
+                      <div class="context-text-wrap">
             <div class="context-title">가볍게 먹는 사람을 위해</div>
             <div class="context-sub">졸리팟이 골라 본</div>
           </div>
@@ -1768,8 +1766,7 @@
 <div class="context-section">
       <div class="context-header">
         <div class="context-title-wrap">
-          <span class="context-emoji">🍲</span>
-          <div class="context-text-wrap">
+                      <div class="context-text-wrap">
             <div class="context-title">김치찌개 모음</div>
             <div class="context-sub">이번 주 테마 · 매주 교체</div>
           </div>
