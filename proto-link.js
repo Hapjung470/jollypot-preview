@@ -8,12 +8,12 @@
 
   // 하단 탭 backbone (모든 화면 공통)
   var TAB = {
-    '홈': 'jollypot-v2-home-v14-27.html',
-    '쇼핑': 'jollypot-v2-search-v2-2.html',
-    '스크랩북': 'jollypot-v2-scrapbook-v11-16-9.html',
-    '마이': 'jollypot-v2-profile-my-v2-14.html'
+    '홈': 'jollypot-v2-home-v14-28.html',
+    '쇼핑': 'jollypot-v2-search-v2-3.html',
+    '스크랩북': 'jollypot-v2-scrapbook-v11-17.html',
+    '마이': 'jollypot-v2-profile-my-v2-15.html'
   };
-  var PLUS = 'jollypot-v2-recipe-create-v12.html';
+  var PLUS = 'jollypot-v2-recipe-create-v12-1.html';
 
   // 화면별 forward 규칙 [selector, destination]
   var RULES = [];
@@ -21,52 +21,52 @@
   var p = CUR;
 
   if (p.indexOf('home') >= 0) {
-    add('.hdr-search', 'jollypot-v2-search-v2-2.html');
-    add('.fridge-home-card', 'jollypot-v2-fridge-v3-1-1.html');
-    add('.fridge-home', 'jollypot-v2-fridge-v3-1-1.html');
-    add('.product-card', 'jollypot-v2-product-detail-v3-3-1.html');
-    add('.full-recipe-card', 'jollypot-v2-recipe-detail-v1-8.html');
-    add('.compact-card', 'jollypot-v2-recipe-detail-v1-8.html');
-    add('.continue-card', 'jollypot-v2-recipe-detail-v1-8.html');
-    add('.deck-card-slot', 'jollypot-v2-recipe-detail-v1-8.html');
-    add('.summary-cta', 'jollypot-v2-scrapbook-v11-16-9.html');
+    add('.hdr-search', 'jollypot-v2-search-v2-3.html');
+    add('.fridge-home-card', 'jollypot-v2-fridge-v3-2.html');
+    add('.fridge-home', 'jollypot-v2-fridge-v3-2.html');
+    add('.product-card', 'jollypot-v2-product-detail-v3-4.html');
+    add('.full-recipe-card', 'jollypot-v2-recipe-detail-v1-9.html');
+    add('.compact-card', 'jollypot-v2-recipe-detail-v1-9.html');
+    add('.continue-card', 'jollypot-v2-recipe-detail-v1-9.html');
+    add('.deck-card-slot', 'jollypot-v2-recipe-detail-v1-9.html');
+    add('.summary-cta', 'jollypot-v2-scrapbook-v11-17.html');
   }
   if (p.indexOf('search') >= 0) {
-    add('.gcard', 'jollypot-v2-recipe-detail-v1-8.html');
-    add('.pcard', 'jollypot-v2-product-detail-v3-3-1.html');
-    add('.col-card', 'jollypot-v2-collection-detail-v5-3-2.html');
-    add('.ac-row', 'jollypot-v2-recipe-detail-v1-8.html');
+    add('.gcard', 'jollypot-v2-recipe-detail-v1-9.html');
+    add('.pcard', 'jollypot-v2-product-detail-v3-4.html');
+    add('.col-card', 'jollypot-v2-collection-detail-v5-4.html');
+    add('.ac-row', 'jollypot-v2-recipe-detail-v1-9.html');
   }
   if (/recipe-detail|recipe-upgraded/.test(p)) {
-    add('.header .header-icon:first-of-type', 'jollypot-v2-home-v14-27.html');   // ← 뒤로가기
-    add('.header .header-icon:last-of-type', 'jollypot-v2-search-v2-2.html'); // 🔍 검색
-    add('.shopping-card', 'jollypot-v2-product-detail-v3-3-1.html'); // v1.4 이하 장보기 카드
+    add('.header .header-icon:first-of-type', 'jollypot-v2-home-v14-28.html');   // ← 뒤로가기
+    add('.header .header-icon:last-of-type', 'jollypot-v2-search-v2-3.html'); // 🔍 검색
+    add('.shopping-card', 'jollypot-v2-product-detail-v3-4.html'); // v1.4 이하 장보기 카드
   }
   if (p.indexOf('cook-mode') >= 0) {
-    add('.review-submit', 'jollypot-v2-cook-review-v2-4.html');
-    add('.done-home', 'jollypot-v2-home-v14-27.html');
+    add('.review-submit', 'jollypot-v2-cook-review-v2-5.html');
+    add('.done-home', 'jollypot-v2-home-v14-28.html');
   }
   if (p.indexOf('cook-review') >= 0) {
-    add('.c-btn', 'jollypot-v2-cook-mode-v11-1.html');
+    add('.c-btn', 'jollypot-v2-cook-mode-v11-2.html');
   }
   if (p.indexOf('scrapbook') >= 0) {
-    add('.col-card', 'jollypot-v2-collection-detail-v5-3-2.html');
+    add('.col-card', 'jollypot-v2-collection-detail-v5-4.html');
   }
   if (p.indexOf('collection-detail') >= 0) {
-    add('.recipe-grid-item', 'jollypot-v2-recipe-detail-v1-8.html');
-    add('.recipe-list-item', 'jollypot-v2-recipe-detail-v1-8.html');
+    add('.recipe-grid-item', 'jollypot-v2-recipe-detail-v1-9.html');
+    add('.recipe-list-item', 'jollypot-v2-recipe-detail-v1-9.html');
   }
   if (p.indexOf('product-detail') >= 0) {
-    add('.bs-buy', 'jollypot-v2-order-complete-v3-3-11.html');
+    add('.bs-buy', 'jollypot-v2-order-complete-v3-4.html');
   }
   if (p.indexOf('order-complete') >= 0) {
-    add('.hd-close', 'jollypot-v2-home-v14-27.html');
-    add('.oc-bb-sub', 'jollypot-v2-search-v2-2.html');
-    add('.oc-bb-main', 'jollypot-v2-profile-my-v2-14.html');
-    add('.oc-sheet-more', 'jollypot-v2-recipe-detail-v1-8.html');
+    add('.hd-close', 'jollypot-v2-home-v14-28.html');
+    add('.oc-bb-sub', 'jollypot-v2-search-v2-3.html');
+    add('.oc-bb-main', 'jollypot-v2-profile-my-v2-15.html');
+    add('.oc-sheet-more', 'jollypot-v2-recipe-detail-v1-9.html');
   }
   if (p.indexOf('fridge') >= 0) {
-    add('.recipe-card', 'jollypot-v2-recipe-detail-v1-8.html');
+    add('.recipe-card', 'jollypot-v2-recipe-detail-v1-9.html');
   }
 
   function kor(s) { return (s || '').replace(/[^가-힣]/g, ''); }

@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta name="robots" content="noindex, nofollow">
 <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>졸리팟 V2.0 — 상품상세 v3-3</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
   html{font-size:16px;-webkit-text-size-adjust:100%;}
-  body{font-family:-apple-system,'Apple SD Gothic Neo',Pretendard,sans-serif;background:#E8E2D8;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 0 40px;}
+  body{font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;background:#E8E2D8;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 0 40px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.3px;}
   :root{
-    --primary:#C75D3E;--secondary:#8FA68E;--secondary-dark:#5B7A5C;
-    --bg:#FFF;--surface:#F5F0E8;--surface-alt:#F7F2EA;
-    --txt1:#2A2A2A;--txt2:#6B6B6B;--txt3:#A8A8A8;
-    --ok:#5B8A6B;--info:#3D6B8C;--warn:#E8A33D;
-    --border:#EDE8E0;--line:#F0EDE7;
+    --primary:#FC642D;--secondary:#145F48;--secondary-dark:#145F48;
+    --bg:#FFF;--surface:#FFF5EA;--surface-alt:#FFEEDC;
+    --txt1:#212121;--txt2:#666666;--txt3:#9E9E9E;
+    --ok:#145F48;--info:#3276AE;--warn:#FFC520;
+    --border:#DECAAE;--line:#E8DBC8;
   }
 
   /* === CONTROL BAR === */
@@ -69,7 +73,7 @@
   .dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);display:block;font-style:normal;}.dots i.on{background:#fff;width:18px;border-radius:3px;}
 
   /* TIMER BAR */
-  .timer-bar{align-items:center;justify-content:center;gap:6px;padding:10px 16px;background:#2A2A2A;color:#fff;font-size:13px;font-weight:600;}
+  .timer-bar{align-items:center;justify-content:center;gap:6px;padding:10px 16px;background:#212121;color:#fff;font-size:13px;font-weight:600;}
   .timer-bar .clock{color:var(--primary);font-variant-numeric:tabular-nums;}
 
   /* BRAND */
@@ -203,7 +207,7 @@
   .bs-sheet{width:100%;background:var(--bg);border-radius:16px 16px 0 0;padding:0;max-height:60%;animation:slideUp .25s ease-out;}
   @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
   .bs-header{display:flex;align-items:center;justify-content:space-between;padding:18px 16px 14px;border-bottom:1px solid var(--line);}
-  .bs-title{font-size:17px;font-weight:700;color:var(--txt1);}
+  .bs-title{font-size:17px;font-weight:600;color:var(--txt1);}
   .bs-close{width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;background:none;}
   .bs-close svg{width:20px;height:20px;color:var(--txt2);}
   .bs-body{padding:16px;}
@@ -522,136 +526,136 @@
 <div style="max-width:680px;width:100%;margin:40px auto 0;padding:0 16px;">
   <div style="background:#fff;border-radius:16px;padding:32px 24px;box-shadow:0 4px 20px rgba(0,0,0,.08);">
 
-    <h2 style="font-size:20px;font-weight:700;color:#2A2A2A;margin-bottom:4px;">📋 개발 지침</h2>
-    <p style="font-size:13px;color:#A8A8A8;margin-bottom:24px;">상품상세페이지(PDP) v3-3 · DEC-027 · 2026.05</p>
+    <h2 style="font-size:20px;font-weight:700;color:#212121;margin-bottom:4px;">📋 개발 지침</h2>
+    <p style="font-size:13px;color:#9E9E9E;margin-bottom:24px;">상품상세페이지(PDP) v3-3 · DEC-027 · 2026.05</p>
 
     <!-- 핵심 원칙 박스 -->
-    <div style="background:#F7F2EA;border-radius:12px;padding:20px;margin-bottom:28px;border-left:3px solid #C75D3E;">
-      <h3 style="font-size:15px;font-weight:700;color:#2A2A2A;margin-bottom:12px;">⭐ 핵심 원칙 (먼저 읽기)</h3>
-      <div style="font-size:13px;color:#6B6B6B;line-height:1.75;">
-        <strong style="color:#2A2A2A;">1. 얼굴과 뒤편의 분리</strong><br>
+    <div style="background:#FFEEDC;border-radius:12px;padding:20px;margin-bottom:28px;border-left:3px solid #FC642D;">
+      <h3 style="font-size:15px;font-weight:700;color:#212121;margin-bottom:12px;">⭐ 핵심 원칙 (먼저 읽기)</h3>
+      <div style="font-size:13px;color:#666666;line-height:1.75;">
+        <strong style="color:#212121;">1. 얼굴과 뒤편의 분리</strong><br>
         졸리팟의 "얼굴"(홈·레시피·장보기)에는 레시피 연결 상품만 노출 → 신규 유저에게 "레시피 플랫폼" 정체성 유지. "뒤편"(쇼핑·검색)에서는 전 상품 접근 가능 → 기존 고객 매출 유지. PDP는 이 두 갈래를 모두 받으므로 Tier 분기가 필수.<br><br>
 
-        <strong style="color:#2A2A2A;">2. Tier 1의 킥은 스타일링샷</strong><br>
+        <strong style="color:#212121;">2. Tier 1의 킥은 스타일링샷</strong><br>
         "이 재료로 완성한 요리"가 쿠팡·네이버에 없는 졸리팟만의 가치. PDP 전환의 핵심 가설이므로 우선순위 최상. 다른 요소가 이걸 가리지 않도록 함.<br><br>
 
-        <strong style="color:#2A2A2A;">3. 가격 영역 인지부하 경계</strong><br>
+        <strong style="color:#212121;">3. 가격 영역 인지부하 경계</strong><br>
         할인율·쿠폰·긴급성·적립까지가 적정 한계. 재고 임박은 "요소 과다"로 기각됨. 신규 요소 추가 시 이 영역의 밀도를 반드시 재검토.<br><br>
 
-        <strong style="color:#2A2A2A;">4. 데이터로 검증할 것 (P1 출시 후)</strong><br>
+        <strong style="color:#212121;">4. 데이터로 검증할 것 (P1 출시 후)</strong><br>
         스타일링샷의 전환 기여 · 쿠폰적용가 강조 효과 · 에디터 코멘트 가치(현재 OFF). PDP를 더 만지지 말고 데이터로 판단.<br><br>
 
-        <strong style="color:#2A2A2A;">5. 기각된 안 (재논의 금지)</strong><br>
+        <strong style="color:#212121;">5. 기각된 안 (재논의 금지)</strong><br>
         5버전 단일안 → Tier 분기로 수렴 / "~에서 오셨네요" 컨텍스트 배너 / 신뢰 시그널 스트립(당일발송·정품보장) / 첫뷰포트 구매수 배지(데이터 부족) / 재고 임박 / 함께둘러보면 별도 섹션. 모두 검토 후 제거 결정됨.
       </div>
     </div>
 
     <!-- 1 -->
-    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">1. PDP 분기 로직</h3>
-    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
-      상품 DB에 <code style="background:#F5F0E8;padding:2px 6px;border-radius:4px;font-size:13px;">linked_recipe_count</code> 필드 기준으로 자동 분기.<br><br>
-      <strong style="color:#2A2A2A;">Tier 1</strong> (<code>linked_recipe_count >= 1</code>): 레시피 연결 상품. "이 재료로 완성한 요리" 스타일링샷 섹션 노출.<br>
-      <strong style="color:#2A2A2A;">Tier 2</strong> (<code>linked_recipe_count == 0</code>): 일반 상품. 스타일링샷 섹션 미노출, 배송 → 스티키 탭 직행.
+    <h3 style="font-size:16px;font-weight:700;color:#212121;margin-bottom:10px;">1. PDP 분기 로직</h3>
+    <div style="font-size:14px;color:#666666;line-height:1.7;margin-bottom:24px;">
+      상품 DB에 <code style="background:#FFF5EA;padding:2px 6px;border-radius:4px;font-size:13px;">linked_recipe_count</code> 필드 기준으로 자동 분기.<br><br>
+      <strong style="color:#212121;">Tier 1</strong> (<code>linked_recipe_count >= 1</code>): 레시피 연결 상품. "이 재료로 완성한 요리" 스타일링샷 섹션 노출.<br>
+      <strong style="color:#212121;">Tier 2</strong> (<code>linked_recipe_count == 0</code>): 일반 상품. 스타일링샷 섹션 미노출, 배송 → 스티키 탭 직행.
     </div>
 
     <!-- 2 -->
-    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">2. 조건부 요소</h3>
-    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
+    <h3 style="font-size:16px;font-weight:700;color:#212121;margin-bottom:10px;">2. 조건부 요소</h3>
+    <div style="font-size:14px;color:#666666;line-height:1.7;margin-bottom:24px;">
       <table style="width:100%;border-collapse:collapse;font-size:13px;">
-        <tr style="border-bottom:1px solid #F0EDE7;">
-          <td style="padding:10px 0;color:#2A2A2A;font-weight:600;width:130px;">타임세일 바</td>
-          <td style="padding:10px 0;">상품의 <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">timesale_end_at</code> 존재 시 노출. 카운트다운 실시간 감소. 종료 시 자동 숨김.</td>
+        <tr style="border-bottom:1px solid #E8DBC8;">
+          <td style="padding:10px 0;color:#212121;font-weight:600;width:130px;">타임세일 바</td>
+          <td style="padding:10px 0;">상품의 <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">timesale_end_at</code> 존재 시 노출. 카운트다운 실시간 감소. 종료 시 자동 숨김.</td>
         </tr>
-        <tr style="border-bottom:1px solid #F0EDE7;">
-          <td style="padding:10px 0;color:#2A2A2A;font-weight:600;">쿠폰적용가</td>
+        <tr style="border-bottom:1px solid #E8DBC8;">
+          <td style="padding:10px 0;color:#212121;font-weight:600;">쿠폰적용가</td>
           <td style="padding:10px 0;">활성 쿠폰 존재 시에만 노출. 쿠폰 만료 후 자동 숨김. 타임세일과 독립적으로 동작 가능.</td>
         </tr>
-        <tr style="border-bottom:1px solid #F0EDE7;">
-          <td style="padding:10px 0;color:#2A2A2A;font-weight:600;">"내일 비싸져요"</td>
-          <td style="padding:10px 0;">타임세일 종료까지 24시간 이내일 때 노출. 금액은 <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">original_price - sale_price</code>.</td>
+        <tr style="border-bottom:1px solid #E8DBC8;">
+          <td style="padding:10px 0;color:#212121;font-weight:600;">"내일 비싸져요"</td>
+          <td style="padding:10px 0;">타임세일 종료까지 24시간 이내일 때 노출. 금액은 <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">original_price - sale_price</code>.</td>
         </tr>
-        <tr style="border-bottom:1px solid #F0EDE7;">
-          <td style="padding:10px 0;color:#2A2A2A;font-weight:600;">에디터 코멘트</td>
-          <td style="padding:10px 0;">상품 DB에 <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">editor_comment</code> 필드 존재 시 노출. 현재 우선순위 낮음 (기본 OFF).</td>
+        <tr style="border-bottom:1px solid #E8DBC8;">
+          <td style="padding:10px 0;color:#212121;font-weight:600;">에디터 코멘트</td>
+          <td style="padding:10px 0;">상품 DB에 <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">editor_comment</code> 필드 존재 시 노출. 현재 우선순위 낮음 (기본 OFF).</td>
         </tr>
-        <tr style="border-bottom:1px solid #F0EDE7;">
-          <td style="padding:10px 0;color:#2A2A2A;font-weight:600;">후기 Empty State</td>
-          <td style="padding:10px 0;"><code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">review_count == 0</code>일 때 별점 분포 대신 "첫 후기 작성하기" empty state 노출. 별점 행도 빈 별(☆)로 전환.</td>
+        <tr style="border-bottom:1px solid #E8DBC8;">
+          <td style="padding:10px 0;color:#212121;font-weight:600;">후기 Empty State</td>
+          <td style="padding:10px 0;"><code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">review_count == 0</code>일 때 별점 분포 대신 "첫 후기 작성하기" empty state 노출. 별점 행도 빈 별(☆)로 전환.</td>
         </tr>
-        <tr style="border-bottom:1px solid #F0EDE7;">
-          <td style="padding:10px 0;color:#2A2A2A;font-weight:600;">무료배송 여부</td>
-          <td style="padding:10px 0;">상품의 <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">is_free_shipping</code> 기준. 무료 시 세이지 "무료배송" 뱃지, 유료 시 그레이 "배송비 N원" 뱃지 + "N원 더 담으면 무료배송" 임박 안내.</td>
+        <tr style="border-bottom:1px solid #E8DBC8;">
+          <td style="padding:10px 0;color:#212121;font-weight:600;">무료배송 여부</td>
+          <td style="padding:10px 0;">상품의 <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">is_free_shipping</code> 기준. 무료 시 세이지 "무료배송" 뱃지, 유료 시 그레이 "배송비 N원" 뱃지 + "N원 더 담으면 무료배송" 임박 안내.</td>
         </tr>
         <tr>
-          <td style="padding:10px 0;color:#2A2A2A;font-weight:600;">적립 포인트</td>
-          <td style="padding:10px 0;"><code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">point_rate</code> 설정 시 노출. "구매 시 NP 적립". 포인트 제도 운영 여부에 따라 전역 ON/OFF.</td>
+          <td style="padding:10px 0;color:#212121;font-weight:600;">적립 포인트</td>
+          <td style="padding:10px 0;"><code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">point_rate</code> 설정 시 노출. "구매 시 NP 적립". 포인트 제도 운영 여부에 따라 전역 ON/OFF.</td>
         </tr>
       </table>
-      <p style="font-size:12px;color:#A8A8A8;margin-top:12px;line-height:1.6;">※ 상단 토글(타임세일 · 에디터 · 후기 · 무료배송 · 적립)은 프로토타입 검토용. 실제 노출 여부는 위 표의 데이터 조건에 따라 자동 결정됨.</p>
+      <p style="font-size:12px;color:#9E9E9E;margin-top:12px;line-height:1.6;">※ 상단 토글(타임세일 · 에디터 · 후기 · 무료배송 · 적립)은 프로토타입 검토용. 실제 노출 여부는 위 표의 데이터 조건에 따라 자동 결정됨.</p>
     </div>
 
     <!-- 3 -->
-    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">3. 샵바이 Enterprise 연동</h3>
-    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
+    <h3 style="font-size:16px;font-weight:700;color:#212121;margin-bottom:10px;">3. 샵바이 Enterprise 연동</h3>
+    <div style="font-size:14px;color:#666666;line-height:1.7;margin-bottom:24px;">
       샵바이 Enterprise 헤드리스 모드 기반. PDP 프론트는 자체 구축, 샵바이 API로 데이터 호출.<br><br>
-      <strong style="color:#2A2A2A;">필수 API</strong><br>
-      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">GET /products/{productNo}</code> — 상품 기본 정보 (이름, 가격, 옵션, 이미지)<br>
-      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">GET /products/{productNo}/options</code> — 옵션 목록<br>
-      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">GET /products/{productNo}/reviews</code> — 후기 목록<br>
-      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">POST /cart</code> — 장바구니 담기<br>
-      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">POST /orders</code> — 바로 구매<br><br>
-      <strong style="color:#2A2A2A;">자체 API (졸리팟 백엔드)</strong><br>
-      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">GET /recipes?ingredient_id={id}</code> — 연결 레시피 목록 (스타일링샷 데이터)<br>
-      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">GET /products/{id}/editor-comment</code> — 에디터 코멘트<br>
-      · <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">GET /products/{id}/recommendations</code> — 추천 상품
+      <strong style="color:#212121;">필수 API</strong><br>
+      · <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">GET /products/{productNo}</code> — 상품 기본 정보 (이름, 가격, 옵션, 이미지)<br>
+      · <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">GET /products/{productNo}/options</code> — 옵션 목록<br>
+      · <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">GET /products/{productNo}/reviews</code> — 후기 목록<br>
+      · <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">POST /cart</code> — 장바구니 담기<br>
+      · <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">POST /orders</code> — 바로 구매<br><br>
+      <strong style="color:#212121;">자체 API (졸리팟 백엔드)</strong><br>
+      · <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">GET /recipes?ingredient_id={id}</code> — 연결 레시피 목록 (스타일링샷 데이터)<br>
+      · <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">GET /products/{id}/editor-comment</code> — 에디터 코멘트<br>
+      · <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">GET /products/{id}/recommendations</code> — 추천 상품
     </div>
 
     <!-- 4 -->
-    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">4. 스타일링샷 데이터 소스</h3>
-    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
-      <strong style="color:#2A2A2A;">P1 (현재)</strong>: 상품-레시피 매핑 테이블에서 연결된 레시피의 썸네일을 가져옴. 썸네일 = 유튜브 영상 썸네일 (완성 요리 컷이 대부분).<br><br>
-      <strong style="color:#2A2A2A;">P2 이후</strong>: Gemini Flash로 영상 마지막 프레임(완성 컷) 자동 추출 → 썸네일 대체. 더 감성적인 완성 사진으로 교체 가능.<br><br>
-      <strong style="color:#2A2A2A;">카드 구조</strong>: 3:4 비율, 72% 폭, 횡스크롤 snap. 최소 2장 이상일 때만 섹션 노출. 1장이면 숨김.
+    <h3 style="font-size:16px;font-weight:700;color:#212121;margin-bottom:10px;">4. 스타일링샷 데이터 소스</h3>
+    <div style="font-size:14px;color:#666666;line-height:1.7;margin-bottom:24px;">
+      <strong style="color:#212121;">P1 (현재)</strong>: 상품-레시피 매핑 테이블에서 연결된 레시피의 썸네일을 가져옴. 썸네일 = 유튜브 영상 썸네일 (완성 요리 컷이 대부분).<br><br>
+      <strong style="color:#212121;">P2 이후</strong>: Gemini Flash로 영상 마지막 프레임(완성 컷) 자동 추출 → 썸네일 대체. 더 감성적인 완성 사진으로 교체 가능.<br><br>
+      <strong style="color:#212121;">카드 구조</strong>: 3:4 비율, 72% 폭, 횡스크롤 snap. 최소 2장 이상일 때만 섹션 노출. 1장이면 숨김.
     </div>
 
     <!-- 5 -->
-    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">5. 가격 표시 규칙</h3>
-    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
+    <h3 style="font-size:16px;font-weight:700;color:#212121;margin-bottom:10px;">5. 가격 표시 규칙</h3>
+    <div style="font-size:14px;color:#666666;line-height:1.7;margin-bottom:24px;">
       <table style="width:100%;border-collapse:collapse;font-size:13px;">
-        <tr style="border-bottom:1px solid #F0EDE7;">
-          <td style="padding:8px 0;color:#2A2A2A;font-weight:600;width:130px;">정가</td>
-          <td style="padding:8px 0;">14px / 400 / #A8A8A8 / 취소선</td>
+        <tr style="border-bottom:1px solid #E8DBC8;">
+          <td style="padding:8px 0;color:#212121;font-weight:600;width:130px;">정가</td>
+          <td style="padding:8px 0;">14px / 400 / #9E9E9E / 취소선</td>
         </tr>
-        <tr style="border-bottom:1px solid #F0EDE7;">
-          <td style="padding:8px 0;color:#2A2A2A;font-weight:600;">할인율</td>
-          <td style="padding:8px 0;">14px / 700 / #C75D3E (테라코타)</td>
+        <tr style="border-bottom:1px solid #E8DBC8;">
+          <td style="padding:8px 0;color:#212121;font-weight:600;">할인율</td>
+          <td style="padding:8px 0;">14px / 700 / #FC642D (테라코타)</td>
         </tr>
-        <tr style="border-bottom:1px solid #F0EDE7;">
-          <td style="padding:8px 0;color:#2A2A2A;font-weight:600;">판매가</td>
-          <td style="padding:8px 0;">24px / 700 / #2A2A2A (차콜)</td>
+        <tr style="border-bottom:1px solid #E8DBC8;">
+          <td style="padding:8px 0;color:#212121;font-weight:600;">판매가</td>
+          <td style="padding:8px 0;">24px / 700 / #212121 (차콜)</td>
         </tr>
-        <tr style="border-bottom:1px solid #F0EDE7;">
-          <td style="padding:8px 0;color:#2A2A2A;font-weight:600;">쿠폰적용가</td>
-          <td style="padding:8px 0;">24px / 700 / #C75D3E (테라코타). 활성 쿠폰 있을 때만.</td>
+        <tr style="border-bottom:1px solid #E8DBC8;">
+          <td style="padding:8px 0;color:#212121;font-weight:600;">쿠폰적용가</td>
+          <td style="padding:8px 0;">24px / 700 / #FC642D (테라코타). 활성 쿠폰 있을 때만.</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;color:#2A2A2A;font-weight:600;">긴급성 뱃지</td>
+          <td style="padding:8px 0;color:#212121;font-weight:600;">긴급성 뱃지</td>
           <td style="padding:8px 0;">인라인 뱃지. 배경 rgba(214,69,69,.06) / 보더 rgba(214,69,69,.12) / 텍스트 #D64545</td>
         </tr>
       </table>
     </div>
 
     <!-- 6 -->
-    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">6. 스크롤 연동</h3>
-    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
-      <strong style="color:#2A2A2A;">스티키 탭</strong>: 네비바(46px) 아래에 고정 (<code>top:46px</code>). 3탭(상품정보 / 후기 / 문의) 스크롤 위치에 따라 활성 탭 자동 전환 (IntersectionObserver 또는 scroll event).<br><br>
-      <strong style="color:#2A2A2A;">탭 클릭</strong>: 해당 섹션의 <code>sec-anchor</code>로 smooth scroll. <code>scroll-margin-top:95px</code> (네비+스티키 높이).<br><br>
-      <strong style="color:#2A2A2A;">CTA 바</strong>: <code>position:sticky; bottom:0</code>. 항상 하단 고정.
+    <h3 style="font-size:16px;font-weight:700;color:#212121;margin-bottom:10px;">6. 스크롤 연동</h3>
+    <div style="font-size:14px;color:#666666;line-height:1.7;margin-bottom:24px;">
+      <strong style="color:#212121;">스티키 탭</strong>: 네비바(46px) 아래에 고정 (<code>top:46px</code>). 3탭(상품정보 / 후기 / 문의) 스크롤 위치에 따라 활성 탭 자동 전환 (IntersectionObserver 또는 scroll event).<br><br>
+      <strong style="color:#212121;">탭 클릭</strong>: 해당 섹션의 <code>sec-anchor</code>로 smooth scroll. <code>scroll-margin-top:95px</code> (네비+스티키 높이).<br><br>
+      <strong style="color:#212121;">CTA 바</strong>: <code>position:sticky; bottom:0</code>. 항상 하단 고정.
     </div>
 
     <!-- 7 -->
-    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">7. 바텀시트 동작</h3>
-    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
+    <h3 style="font-size:16px;font-weight:700;color:#212121;margin-bottom:10px;">7. 바텀시트 동작</h3>
+    <div style="font-size:14px;color:#666666;line-height:1.7;margin-bottom:24px;">
       "구매하기" 탭 → 오버레이 + 바텀시트 slide up.<br>
       오버레이 탭 또는 X 버튼 → 닫힘.<br>
       옵션 미선택 시 "장바구니 담기" / "바로 구매" 비활성 처리 필요 (프로토타입 미구현).<br>
@@ -660,27 +664,27 @@
     </div>
 
     <!-- 8 -->
-    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">8. 디자인 토큰</h3>
-    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;margin-bottom:24px;">
-      <code style="background:#F5F0E8;padding:2px 6px;border-radius:4px;font-size:12px;">Jollypot_Design_Guide.md</code> 참조. 핵심 토큰:<br><br>
-      · CTA: <span style="display:inline-block;width:12px;height:12px;background:#C75D3E;border-radius:2px;vertical-align:middle;"></span> #C75D3E (테라코타)<br>
-      · 서브: <span style="display:inline-block;width:12px;height:12px;background:#8FA68E;border-radius:2px;vertical-align:middle;"></span> #8FA68E (세이지) — 상품정보 더보기 버튼<br>
-      · 텍스트: #2A2A2A / #6B6B6B / #A8A8A8 (3단계)<br>
-      · 카드: #F5F0E8 배경 + 1px #EDE8E0 보더 + 16px radius<br>
-      · 순검정(#000) 사용 금지. 차콜(#2A2A2A) 통일.<br>
+    <h3 style="font-size:16px;font-weight:700;color:#212121;margin-bottom:10px;">8. 디자인 토큰</h3>
+    <div style="font-size:14px;color:#666666;line-height:1.7;margin-bottom:24px;">
+      <code style="background:#FFF5EA;padding:2px 6px;border-radius:4px;font-size:12px;">Jollypot_Design_Guide.md</code> 참조. 핵심 토큰:<br><br>
+      · CTA: <span style="display:inline-block;width:12px;height:12px;background:#FC642D;border-radius:2px;vertical-align:middle;"></span> #FC642D (테라코타)<br>
+      · 서브: <span style="display:inline-block;width:12px;height:12px;background:#145F48;border-radius:2px;vertical-align:middle;"></span> #145F48 (세이지) — 상품정보 더보기 버튼<br>
+      · 텍스트: #212121 / #666666 / #9E9E9E (3단계)<br>
+      · 카드: #FFF5EA 배경 + 1px #DECAAE 보더 + 16px radius<br>
+      · 순검정(#000) 사용 금지. 차콜(#212121) 통일.<br>
       · font-weight 700은 섹션 헤더(L1·L2)와 가격에만 사용.
     </div>
 
     <!-- 9 -->
-    <h3 style="font-size:16px;font-weight:700;color:#2A2A2A;margin-bottom:10px;">9. 주의사항</h3>
-    <div style="font-size:14px;color:#6B6B6B;line-height:1.7;">
+    <h3 style="font-size:16px;font-weight:700;color:#212121;margin-bottom:10px;">9. 주의사항</h3>
+    <div style="font-size:14px;color:#666666;line-height:1.7;">
       · 쿠팡 파트너스 연동 상품은 쿠팡 링크 사용. 졸리팟 자체 상품(샵바이)과 쿠팡 파트너스 상품의 CTA 동작이 다름 — 쿠팡 상품은 "구매하기" 클릭 시 쿠팡 앱/웹으로 이동, 바텀시트 미사용.<br>
       · 스타일링샷의 레시피 카드 탭 → 해당 레시피 상세 페이지로 이동 (앱 내 화면 전환).<br>
       · 찜 토글 상태는 로컬 + 서버 동기화. 비로그인 시 로그인 유도.<br>
       · 선물하기는 샵바이 선물하기 API 연동. 미지원 상품은 아이콘 숨김 처리.<br>
       · 상품정보 더보기: 접힌 상태에서 max-height 720px → 펼치면 max-height 제거 + 버튼 "접기"로 전환.<br>
       · 후기 "리뷰 더보기" → 후기 전체 목록 페이지로 이동 (별도 화면).<br>
-      · 포토리뷰 필터: API에서 <code style="background:#F5F0E8;padding:1px 4px;border-radius:3px;">has_image=true</code> 파라미터로 필터링.
+      · 포토리뷰 필터: API에서 <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">has_image=true</code> 파라미터로 필터링.
     </div>
 
   </div>
@@ -789,5 +793,11 @@ runClock('ck1',19937);runClock('ck2',8143);
 </script>
 
 <script src="proto-link.js"></script>
+
+<!-- ==== 디자인 가이드 v2.0 적용 (v3-4 · 2026-08-07) ====
+  컬러: 테라코타→오렌지 #FC642D · 세이지→딥그린 #145F48 · 크림→피치크림 #FFF5EA
+        텍스트 #212121/#666666/#9E9E9E · 보더 #DECAAE (명암비 검증값)
+  타이포: Pretendard Variable 로드 · antialiased · 자간 -0.3px · 헤더 700→600
+  기준 문서: C:/dev/Jollypot/Jollypot_Design_Guide.md (v2.0) -->
 </body>
 </html>

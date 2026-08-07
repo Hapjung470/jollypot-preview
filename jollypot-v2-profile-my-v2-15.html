@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta name="robots" content="noindex, nofollow">
 <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>졸리팟 V2 · 마이 v2-14</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<title>졸리팟 V2 · 마이 v2-15</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root{
-    --brand:#FDB813;--primary:#C75D3E;--secondary:#8FA68E;
-    --bg:#FFFFFF;--surface:#FAF6EE;--surface-alt:#F7F2EA;
-    --text:#2A2A2A;--text2:#6B6B6B;--text3:#A8A8A8;
-    --info:#3D6B8C;--success:#5B8A6B;--error:#D64545;
-    --border:#EDE8E0;--divider:#E8EDE6;
+    --brand:#FDB813;--primary:#FC642D;--secondary:#145F48;
+    --bg:#FFFFFF;--surface:#FAF6EE;--surface-alt:#FFEEDC;
+    --text:#212121;--text2:#666666;--text3:#9E9E9E;
+    --info:#3276AE;--success:#145F48;--error:#D64545;
+    --border:#DECAAE;--divider:#E8DBC8;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  body{font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo',sans-serif;
+  body{font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
     background:#E5E2DC;color:var(--text);line-height:1.45;
-    display:flex;flex-direction:column;align-items:center;padding:22px 12px 60px;}
+    display:flex;flex-direction:column;align-items:center;padding:22px 12px 60px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.3px;}
 
   .state-tg{display:flex;align-items:center;gap:6px;margin-bottom:6px;width:390px;max-width:100%;}
   .state-tg .lab{font-size:12px;color:#7c776e;margin-right:4px;}
@@ -49,7 +52,7 @@
   .eg0{background:radial-gradient(circle at 38% 30%,#FFFFFF,#ECE4D6 78%);border:1px solid #E2D9CB;}
   .eg1{background:radial-gradient(circle at 38% 30%,#E6B184,#B97C49 76%);}
   .eg2{background:radial-gradient(circle at 38% 30%,#EFEFF2,#B7BAC2 76%);}
-  .eg3{background:radial-gradient(circle at 38% 30%,#BCD0B7,#8FA68E 76%);}
+  .eg3{background:radial-gradient(circle at 38% 30%,#BCD0B7,#145F48 76%);}
   .eg4{background:radial-gradient(circle at 38% 30%,#FFDD7A,#FDB813 74%);}
 
   /* 내 혜택 카드 — 좌: 등급 / 우: 적립금·쿠폰 수직 */
@@ -58,8 +61,8 @@
   .bcard-egg{width:52px;height:64px;}
   .bcard-info{flex:1;min-width:0;}
   .bcard-name{font-size:18px;font-weight:700;}
-  .bcard-rate{font-size:13px;color:#5B7A5C;font-weight:600;margin-top:3px;}
-  .bcard-rate b{color:#5B7A5C;font-weight:700;}
+  .bcard-rate{font-size:13px;color:#145F48;font-weight:600;margin-top:3px;}
+  .bcard-rate b{color:#145F48;font-weight:700;}
   .bcard-wallet{display:grid;grid-template-columns:auto auto;column-gap:14px;row-gap:8px;align-items:baseline;flex-shrink:0;}
   .bcard-wallet .wl{font-size:12px;color:var(--text2);}
   .bcard-wallet .wv{font-size:15px;font-weight:700;text-align:right;line-height:1;}
@@ -85,7 +88,7 @@
   .rc-mid{flex:1;min-width:0;}
   .rc-status{font-size:13px;font-weight:700;}
   .rc-name{font-size:13px;color:var(--text2);margin-top:3px;line-height:1.35;}
-  .rc-track{flex-shrink:0;padding:9px 13px;border:1px solid var(--secondary);border-radius:9px;background:transparent;color:#5B7A5C;font-size:12.5px;font-weight:500;font-family:inherit;cursor:pointer;}
+  .rc-track{flex-shrink:0;padding:9px 13px;border:1px solid var(--secondary);border-radius:9px;background:transparent;color:#145F48;font-size:12.5px;font-weight:500;font-family:inherit;cursor:pointer;}
   .all-link{display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text2);padding:13px 0 0;cursor:pointer;}
 
   /* 최근 본 상품 */
@@ -129,7 +132,7 @@
   .me-info{flex:1;min-width:0;}
   .me-name{font-size:18px;font-weight:700;}
   .me-rate{font-size:13px;color:var(--secondary);font-weight:600;margin-top:2px;}
-  .me-rate b{color:#5B7A5C;}
+  .me-rate b{color:#145F48;}
   .me-cta{flex-shrink:0;height:38px;padding:0 15px;border:none;border-radius:20px;background:var(--primary);color:#fff;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;}
   .me-bar{height:8px;border-radius:6px;background:#E6DCCB;overflow:hidden;margin:16px 0 11px;}
   .me-fill{height:100%;width:18%;background:linear-gradient(90deg,#E8A86B,var(--primary));border-radius:6px;}
@@ -146,14 +149,14 @@
   .rung.sel .bar .be{opacity:1;}
   .rung.sel .nm{color:var(--text);font-weight:700;}
   .detail{margin-top:18px;}
-  .d-title{font-size:18px;font-weight:700;display:flex;align-items:baseline;gap:7px;}
+  .d-title{font-size:18px;font-weight:600;display:flex;align-items:baseline;gap:7px;}
   .d-title .lv{font-size:13px;color:var(--text2);font-weight:500;}
   .d-rows{margin-top:14px;}
   .d-row{display:flex;gap:14px;padding:7px 0;font-size:14px;}
   .d-row .k{width:34px;color:var(--text2);flex-shrink:0;}
   .d-row .v{color:var(--text);flex:1;}
   .d-gap{margin-top:14px;font-size:12.5px;padding:11px 14px;border-radius:10px;background:var(--surface-alt);color:var(--text2);}
-  .d-gap.cur{background:rgba(143,166,142,.13);color:#5B7A5C;font-weight:500;}
+  .d-gap.cur{background:rgba(20,95,72,.13);color:#145F48;font-weight:500;}
   .d-gap b{color:var(--primary);font-weight:600;}
   .divider{height:1px;background:var(--divider);margin:22px 0;}
   .explain{display:flex;align-items:center;gap:12px;cursor:pointer;}
@@ -177,7 +180,7 @@
   .contact{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
   .cbtn{height:52px;border-radius:12px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .cbtn.primary{background:var(--primary);color:#fff;border:none;}
-  .cbtn.outline{background:transparent;border:1px solid var(--secondary);color:#5B7A5C;}
+  .cbtn.outline{background:transparent;border:1px solid var(--secondary);color:#145F48;}
   .faq-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;}
   .chip{font-size:13px;padding:8px 14px;border-radius:20px;background:#F2ECE1;color:var(--text2);border:1px solid var(--border);cursor:pointer;}
   .chip.on{background:var(--secondary);color:#fff;border-color:var(--secondary);}
@@ -210,7 +213,7 @@
   .ord-search input::placeholder{color:var(--text3);}
   .ord-search .si{color:var(--text3);font-size:15px;}
   .rv-banner{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;}
-  .rv-ic{width:24px;height:24px;border-radius:50%;background:rgba(199,93,62,.13);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+  .rv-ic{width:24px;height:24px;border-radius:50%;background:rgba(252,100,45,.13);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
   .rv-t{flex:1;font-size:13.5px;}
   .rv-amt{font-size:14px;font-weight:700;color:var(--primary);margin-right:4px;}
   .rv-c{color:var(--text3);font-size:15px;}
@@ -665,5 +668,11 @@
   })();
 </script>
 <script src="proto-link.js"></script>
+
+<!-- ==== 디자인 가이드 v2.0 적용 (v2-15 · 2026-08-07) ====
+  컬러: 테라코타→오렌지 #FC642D · 세이지→딥그린 #145F48 · 크림→피치크림 #FFF5EA
+        텍스트 #212121/#666666/#9E9E9E · 보더 #DECAAE (명암비 검증값)
+  타이포: Pretendard Variable 로드 · antialiased · 자간 -0.3px · 헤더 700→600
+  기준 문서: C:/dev/Jollypot/Jollypot_Design_Guide.md (v2.0) -->
 </body>
 </html>

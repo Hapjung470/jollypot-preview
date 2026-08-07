@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta name="robots" content="noindex, nofollow">
 <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>jollypot-v2-scrapbook-v11-16-9</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<title>jollypot-v2-scrapbook-v11-17</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root{
     /* 졸리팟 디자인 토큰 */
     --brand:#FDB813;
-    --primary:#C75D3E;
-    --secondary:#8FA68E;
+    --primary:#FC642D;
+    --secondary:#145F48;
     --bg:#FFFFFF;
-    --surface:#F5F0E8;
-    --surface-alt:#F7F2EA;
-    --text-1:#2A2A2A;
-    --text-2:#6B6B6B;
-    --text-3:#A8A8A8;
-    --border:#EDE8E0;
-    --divider:#E8EDE6;
-    --line:#F0EDE7;
-    --info:#3D6B8C;
+    --surface:#FFF5EA;
+    --surface-alt:#FFEEDC;
+    --text-1:#212121;
+    --text-2:#666666;
+    --text-3:#9E9E9E;
+    --border:#DECAAE;
+    --divider:#E8DBC8;
+    --line:#E8DBC8;
+    --info:#3276AE;
     --error:#D64545;
-    --success:#5B8A6B;
+    --success:#145F48;
 
     /* 프로토타입 컨트롤 전용 (졸리팟 토큰과 분리) */
     --proto-bar-bg:#1E1E2E;
@@ -36,13 +36,14 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   body{
-    font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo',sans-serif;
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
     background:#dcdce4;
     color:var(--text-1);
     display:flex;flex-direction:column;align-items:center;
     padding:24px 0 60px;
     -webkit-font-smoothing:antialiased;
-  }
+  
+    letter-spacing: -0.3px;}
 
   /* ===== 프로토타입 컨트롤 바 ===== */
   .proto-bar{
@@ -86,7 +87,7 @@
   }
   .appbar .ic{font-size:22px;color:var(--text-1);line-height:1;width:28px;text-align:center;cursor:pointer;}
   .appbar .ic.ph{visibility:hidden;}
-  .appbar .title{font-size:16px;font-weight:700;}
+  .appbar .title{font-size:16px;font-weight:600;}
   .appbar .ab-actions{display:flex;align-items:center;gap:14px;}
   .appbar #tab-add{color:var(--primary);font-size:24px;}
 
@@ -134,10 +135,10 @@
   /* 빈 상태 카드 */
   .empty-card{
     border:1.5px dashed var(--primary);border-radius:16px;padding:26px 18px 20px;
-    background:linear-gradient(180deg,rgba(199,93,62,.04),rgba(199,93,62,0));
+    background:linear-gradient(180deg,rgba(252,100,45,.04),rgba(252,100,45,0));
   }
   .empty-emoji{font-size:32px;text-align:center;margin-bottom:12px;}
-  .empty-title{font-size:16px;font-weight:700;text-align:center;}
+  .empty-title{font-size:16px;font-weight:600;text-align:center;}
   .empty-desc{font-size:13px;color:var(--text-2);text-align:center;line-height:1.5;margin-top:6px;}
   .empty-sub{font-size:14px;font-weight:700;margin:20px 0 12px;}
   .empty-create{display:flex;align-items:center;justify-content:center;gap:8px;margin:18px auto 4px;
@@ -181,7 +182,7 @@
   .price-rate{font-size:13px;font-weight:700;color:var(--primary);}
   .price-now{font-size:13px;font-weight:700;color:var(--text-1);}
   .chip-row{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap;}
-  .chip{font-size:10px;color:var(--secondary);background:rgba(143,166,142,.15);padding:2px 6px;border-radius:5px;}
+  .chip{font-size:10px;color:var(--secondary);background:rgba(20,95,72,.15);padding:2px 6px;border-radius:5px;}
 
   /* "지금 인기있는 ~" 섹션 헤더 */
   .sec-head{font-size:15px;font-weight:700;margin:26px 0 12px;}
@@ -206,13 +207,13 @@
   .cc-more{position:absolute;right:6px;bottom:6px;z-index:2;background:rgba(0,0,0,.6);color:#fff;
     font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;line-height:1;
     display:flex;align-items:center;}
-  .cc-title{font-size:15px;font-weight:700;margin-top:13px;}
+  .cc-title{font-size:15px;font-weight:600;margin-top:13px;}
   .cc-meta{font-size:13px;color:var(--text-2);margin-top:4px;}
   .cc-meta b{color:var(--text-1);font-weight:600;}
   /* 컬렉션 출처 구분 (안 C) */
   .cc-avatar{width:18px;height:18px;border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;vertical-align:middle;margin-right:4px;}
   .src-tag{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;margin-top:12px;}
-  .src-tag.mine{background:rgba(143,166,142,.18);color:#5B7A5C;}
+  .src-tag.mine{background:rgba(20,95,72,.18);color:#145F48;}
   .src-tag.saved{background:rgba(61,107,140,.14);color:var(--info);}
   .col-card.tagged .cc-title{margin-top:8px;}
   /* 새 컬렉션 만들기 진입 카드 */
@@ -379,7 +380,7 @@
   .edit-field input:focus,.edit-field textarea:focus{outline:none;border-color:var(--secondary);}
   .edit-divider{height:1px;background:var(--line);margin:12px -16px 20px;}
   .edit-rep-head{display:flex;align-items:center;justify-content:space-between;}
-  .edit-rep-title{font-size:15px;font-weight:700;}
+  .edit-rep-title{font-size:15px;font-weight:600;}
   .edit-rep-max{font-size:12px;color:var(--text-2);}
   .edit-rep-desc{font-size:13px;color:var(--text-2);margin-top:5px;line-height:1.5;}
   .edit-rep-scroll{display:flex;gap:14px;overflow-x:auto;margin-top:14px;padding-bottom:4px;}
@@ -463,8 +464,8 @@
 #screen-create .cta.primary{background:var(--primary);color:#fff;}
 #screen-create .cta.primary:active{background:#b04f33;}
 #screen-create .cta.disabled{background:var(--surface-alt);color:var(--text-3);cursor:default;}
-#screen-create .cta.ghost{background:#fff;color:#5B7A5C;border:1.5px solid var(--secondary);}
-#screen-create .cta.ghost:active{background:rgba(143,166,142,.1);}
+#screen-create .cta.ghost{background:#fff;color:#145F48;border:1.5px solid var(--secondary);}
+#screen-create .cta.ghost:active{background:rgba(20,95,72,.1);}
 #screen-create .cta-sub{display:block;width:100%;margin-top:9px;background:none;border:none;font-family:inherit;
     font-size:14px;color:var(--text-2);cursor:pointer;padding:7px;transition:.12s;}
 #screen-create .cta-sub:active{color:var(--text-1);}
@@ -494,7 +495,7 @@
 #screen-create .det-meta{padding:16px 16px 12px;}
 #screen-create .det-meta h1{font-size:20px;font-weight:700;color:var(--text-1);}
 #screen-create .det-meta .dm-sub{font-size:13px;color:var(--text-2);margin-top:6px;display:flex;align-items:center;gap:6px;}
-#screen-create .det-meta .dm-sub .badge{font-size:11px;font-weight:600;color:#5B7A5C;background:rgba(143,166,142,.15);
+#screen-create .det-meta .dm-sub .badge{font-size:11px;font-weight:600;color:#145F48;background:rgba(20,95,72,.15);
     padding:2px 8px;border-radius:6px;}
 #screen-create .det-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
 #screen-create .det-grid .dcell{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--surface-alt);}
@@ -543,7 +544,7 @@
   @keyframes rcpBob{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-9px) rotate(4deg);}}
   .rcp-mascot-wrap.done{animation:rcpPop .45s ease;}
   @keyframes rcpPop{0%{transform:scale(.7);}60%{transform:scale(1.14);}100%{transform:scale(1);}}
-  .rcp-title{font-size:19px;font-weight:700;color:var(--text-1);text-align:center;}
+  .rcp-title{font-size:19px;font-weight:600;color:var(--text-1);text-align:center;}
   .rcp-cur{font-size:13px;color:var(--text-2);text-align:center;margin-top:6px;min-height:18px;}
   .rcp-steps{margin:24px auto 0;max-width:228px;}
   .rcp-step{display:flex;align-items:center;gap:11px;padding:6px 0;font-size:14px;color:var(--text-3);transition:color .3s;}
@@ -553,11 +554,11 @@
     justify-content:center;font-size:11px;color:#fff;flex:0 0 20px;transition:all .3s;}
   .rcp-step.done .rcp-dot{background:var(--secondary);border-color:var(--secondary);}
   .rcp-step.active .rcp-dot{border-color:var(--primary);animation:rcpPulse 1s ease-in-out infinite;}
-  @keyframes rcpPulse{0%,100%{box-shadow:0 0 0 0 rgba(199,93,62,.4);}50%{box-shadow:0 0 0 5px rgba(199,93,62,0);}}
+  @keyframes rcpPulse{0%,100%{box-shadow:0 0 0 0 rgba(252,100,45,.4);}50%{box-shadow:0 0 0 5px rgba(252,100,45,0);}}
   .rcp-pv{margin-top:30px;background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;}
   .rcp-pv-h{font-size:14px;font-weight:700;color:var(--text-1);margin-bottom:10px;}
   .rcp-pv-ing{display:flex;flex-wrap:wrap;gap:7px;}
-  .rcp-skel{display:inline-block;background:linear-gradient(90deg,#EDE8E0 25%,#F5F0E8 50%,#EDE8E0 75%);
+  .rcp-skel{display:inline-block;background:linear-gradient(90deg,#DECAAE 25%,#FFF5EA 50%,#DECAAE 75%);
     background-size:200% 100%;animation:rcpShim 1.3s infinite;border-radius:7px;}
   @keyframes rcpShim{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
   .rcp-skel-chip{width:72px;height:30px;}
@@ -580,17 +581,17 @@
 #screen-cookreview .appbar{display:flex;align-items:center;height:52px;padding:0 8px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:10;}
 #screen-cookreview .appbar .ic{width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:23px;color:var(--text-1);cursor:pointer;border-radius:50%;}
 #screen-cookreview .appbar .ic:active{background:var(--surface);}
-#screen-cookreview .appbar .title{flex:1;text-align:center;font-size:16px;font-weight:700;color:var(--text-1);}
+#screen-cookreview .appbar .title{flex:1;text-align:center;font-size:16px;font-weight:600;color:var(--text-1);}
 #screen-cookreview .appbar .right{min-width:48px;text-align:right;padding-right:10px;font-size:14px;color:var(--text-2);cursor:pointer;}
 #screen-cookreview .appbar .right.spacer{cursor:default;}
 #screen-cookreview .stepbar{display:flex;gap:5px;padding:12px 16px 4px;}
 #screen-cookreview .stepbar .dot{height:3px;flex:1;border-radius:2px;background:var(--border);}
 #screen-cookreview .stepbar .dot.act{background:var(--secondary);}
 #screen-cookreview .body{flex:1;}
-#screen-cookreview .ph{display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;background:linear-gradient(135deg,#D98B5F,#C75D3E);}
-#screen-cookreview .ph.a{background:linear-gradient(135deg,#A8B89A,#8FA68E);}
+#screen-cookreview .ph{display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;background:linear-gradient(135deg,#D98B5F,#FC642D);}
+#screen-cookreview .ph.a{background:linear-gradient(135deg,#A8B89A,#145F48);}
 #screen-cookreview .ph.b{background:linear-gradient(135deg,#E8B760,#D99A3D);}
-#screen-cookreview .ph.c{background:linear-gradient(135deg,#7FA0B5,#3D6B8C);}
+#screen-cookreview .ph.c{background:linear-gradient(135deg,#7FA0B5,#3276AE);}
 #screen-cookreview .ph.d{background:linear-gradient(135deg,#C99A86,#A8745C);}
   /* Step1 */
 #screen-cookreview .pick-head{padding:16px 16px 6px;}
@@ -611,7 +612,7 @@
 #screen-cookreview .pl-row .pl-t{font-size:14px;font-weight:500;color:var(--text-1);}
 #screen-cookreview .pl-row .pl-n{font-size:12px;color:var(--text-2);margin-top:3px;display:flex;align-items:center;gap:5px;}
 #screen-cookreview .pl-row .pl-n .src{color:var(--info);}
-#screen-cookreview .pl-row .pl-n .cook{color:#5B7A5C;font-weight:600;}
+#screen-cookreview .pl-row .pl-n .cook{color:#145F48;font-weight:600;}
 #screen-cookreview .pl-row .pl-go{color:var(--text-3);font-size:19px;}
 #screen-cookreview .pl-add{display:flex;align-items:center;gap:12px;padding:14px 0 4px;cursor:pointer;}
 #screen-cookreview .pl-add .pa-ic{width:54px;height:54px;border-radius:11px;flex:0 0 54px;border:1.5px dashed #D8CFC0;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--primary);}
@@ -627,7 +628,7 @@
 #screen-cookreview .w-custom .wc-label{font-size:13.5px;font-weight:600;color:var(--text-1);margin-bottom:6px;}
 #screen-cookreview .w-custom .wc-label .req{font-size:12px;font-weight:600;color:var(--primary);margin-left:6px;}
 #screen-cookreview .w-custom .wc-label .opt{font-size:12px;font-weight:500;color:var(--text-3);margin-left:6px;}
-#screen-cookreview .w-custom .wc-title{width:100%;border:none;border-bottom:1.5px solid var(--border);background:none;font-family:inherit;font-size:18px;font-weight:700;color:var(--text-1);padding:5px 2px 9px;outline:none;}
+#screen-cookreview .w-custom .wc-title{width:100%;border:none;border-bottom:1.5px solid var(--border);background:none;font-family:inherit;font-size:18px;font-weight:600;color:var(--text-1);padding:5px 2px 9px;outline:none;}
 #screen-cookreview .w-custom .wc-title:focus{border-bottom-color:var(--secondary);}
 #screen-cookreview .w-custom .wc-title::placeholder{color:var(--text-3);font-weight:500;}
 #screen-cookreview .wc-src{width:100%;border:none;border-bottom:1.5px solid var(--border);background:none;font-family:inherit;font-size:15px;color:var(--text-1);padding:5px 2px 8px;outline:none;}
@@ -647,11 +648,11 @@
 #screen-cookreview .photo-add .pa-plus{font-size:22px;color:var(--primary);}
 #screen-cookreview .photo-add .pa-tx{font-size:11px;}
 #screen-cookreview .photo-thumb{width:84px;height:84px;border-radius:12px;position:relative;flex:0 0 84px;font-size:26px;}
-#screen-cookreview .photo-thumb .px{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:#2A2A2A;color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+#screen-cookreview .photo-thumb .px{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:#212121;color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 #screen-cookreview .photo-skip{font-size:12.5px;color:var(--text-3);margin-top:9px;}
 #screen-cookreview .w-body{width:100%;border:1px solid var(--border);border-radius:12px;background:var(--bg);font-family:inherit;font-size:14px;color:var(--text-1);padding:13px;height:96px;line-height:1.55;resize:none;outline:none;}
 #screen-cookreview .w-body:focus{border-color:var(--secondary);}
-#screen-cookreview .cook-note{display:none;align-items:center;gap:7px;margin:16px 16px 0;padding:11px 13px;background:rgba(143,166,142,.12);border-radius:11px;font-size:12.5px;color:#5B7A5C;line-height:1.45;}
+#screen-cookreview .cook-note{display:none;align-items:center;gap:7px;margin:16px 16px 0;padding:11px 13px;background:rgba(20,95,72,.12);border-radius:11px;font-size:12.5px;color:#145F48;line-height:1.45;}
 #screen-cookreview .cook-note.on{display:flex;}
 #screen-cookreview .cta-wrap{position:sticky;bottom:0;background:var(--bg);padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);}
 #screen-cookreview .cta{width:100%;height:52px;border:none;border-radius:12px;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;transition:.15s;}
@@ -670,7 +671,7 @@
 #screen-cookreview .done-card .dc-quote .qx{position:relative;z-index:1;font-size:17px;font-weight:700;line-height:1.5;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;}
 #screen-cookreview .done-card .dc-meta{padding:13px 15px 15px;}
 #screen-cookreview .done-card .dc-recipe{font-size:13px;color:var(--text-2);display:flex;align-items:center;gap:6px;}
-#screen-cookreview .done-card .dc-recipe .cookb{font-size:10px;font-weight:600;color:#5B7A5C;background:rgba(143,166,142,.16);padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;}
+#screen-cookreview .done-card .dc-recipe .cookb{font-size:10px;font-weight:600;color:#145F48;background:rgba(20,95,72,.16);padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;}
 #screen-cookreview .done-card .dc-stars{font-size:14px;letter-spacing:2px;color:var(--brand);margin-top:8px;}
 #screen-cookreview .done-card .dc-body{font-size:13.5px;color:var(--text-1);line-height:1.6;margin-top:8px;white-space:pre-wrap;word-break:break-word;}
 #screen-cookreview .done-card .dc-src{font-size:12px;color:var(--text-2);line-height:1.5;margin-top:8px;}
@@ -1029,7 +1030,7 @@
     </div>
     <div class="stepbar"><span class="dot act"></span><span class="dot"></span></div>
     <div class="body">
-      <div class="cover" id="cover" style="background:#8FA68E;">
+      <div class="cover" id="cover" style="background:#145F48;">
         <span class="cv-emoji">📁</span>
         <span class="cv-name" id="cv-name">새 컬렉션</span>
         <span class="cv-hint" id="cv-hint">이름을 지으면 표지 색이 정해져요</span>
@@ -1240,9 +1241,9 @@
        <svg width="84" height="84" viewBox="0 0 84 84" fill="none">
          <ellipse cx="42" cy="46" rx="32" ry="28" fill="#FDF0D2"/>
          <circle cx="42" cy="42" r="19" fill="#FDB813"/>
-         <circle cx="35.5" cy="40" r="2.6" fill="#2A2A2A"/>
-         <circle cx="48.5" cy="40" r="2.6" fill="#2A2A2A"/>
-         <path d="M36 47 Q42 51 48 47" stroke="#2A2A2A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+         <circle cx="35.5" cy="40" r="2.6" fill="#212121"/>
+         <circle cx="48.5" cy="40" r="2.6" fill="#212121"/>
+         <path d="M36 47 Q42 51 48 47" stroke="#212121" stroke-width="2.2" fill="none" stroke-linecap="round"/>
        </svg>
      </div>
      <div class="rcp-title" id="rcp-title">레시피를 정리하고 있어요</div>
@@ -1326,7 +1327,7 @@ const PROD=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkI
     {name:'5분 이내 다이어트 한끼', rc:7, sc:312, thumbs:[{r:71,v:'7만'},{r:72,v:'8,685'}], more:5, moreThumb:73},
     {name:'고단백 도시락 모음', rc:3, sc:89, thumbs:[{r:74,v:'24.8만'},{r:75,v:'40.5만'},{r:76,v:'6.5만'}], more:0},
   ];
-  const avColors=['#8FA68E','#3D6B8C','#C77D5A','#6B8E7F'];
+  const avColors=['#145F48','#3276AE','#C77D5A','#6B8E7F'];
   const savedCollections = [
     {name:'어묵김밥 마스터', author:'수미네반찬', initial:'수', ci:0, rc:8, thumbs:[{r:80,v:'6.5만'},{r:81,v:'40.5만'}], more:6, moreThumb:73},
     {name:'자취 첫해 생존 레시피', author:'한끼연구소', initial:'한', ci:1, rc:15, thumbs:[{r:71,v:'24.8만'},{r:77,v:'1.2만'}], more:13, moreThumb:74},
@@ -1418,7 +1419,7 @@ const PROD=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkI
     if(on) showToast('한입민지님을 팔로우했어요');
   };
   /* ---------- 새 컬렉션 만들기 ---------- */
-  const COVERS=['#8FA68E','#C75D3E','#3D6B8C','#E8A33D','#6B8E7F'];
+  const COVERS=['#145F48','#FC642D','#3276AE','#FFC520','#6B8E7F'];
   function hashColor(name){
     let h=0; for(let i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))>>>0;
     return COVERS[h % COVERS.length];
@@ -2073,5 +2074,11 @@ const PROD=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkI
 </script>
 
 <script src="proto-link.js"></script>
+
+<!-- ==== 디자인 가이드 v2.0 적용 (v11-17 · 2026-08-07) ====
+  컬러: 테라코타→오렌지 #FC642D · 세이지→딥그린 #145F48 · 크림→피치크림 #FFF5EA
+        텍스트 #212121/#666666/#9E9E9E · 보더 #DECAAE (명암비 검증값)
+  타이포: Pretendard Variable 로드 · antialiased · 자간 -0.3px · 헤더 700→600
+  기준 문서: C:/dev/Jollypot/Jollypot_Design_Guide.md (v2.0) -->
 </body>
 </html>

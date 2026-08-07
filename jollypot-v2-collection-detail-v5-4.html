@@ -1,34 +1,38 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta name="robots" content="noindex, nofollow">
 <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>졸리팟 V2.0 · 컬렉션 상세 v5</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
 :root {
   --color-brand: #FDB813;
-  --color-primary: #C75D3E;
-  --color-secondary: #8FA68E;
-  --color-secondary-deep: #5B7A5C;
+  --color-primary: #FC642D;
+  --color-secondary: #145F48;
+  --color-secondary-deep: #145F48;
   --color-bg: #FFFFFF;
-  --color-surface: #F5F0E8;
-  --color-surface-alt: #F7F2EA;
-  --color-text-primary: #2A2A2A;
-  --color-text-secondary: #6B6B6B;
-  --color-text-tertiary: #A8A8A8;
+  --color-surface: #FFF5EA;
+  --color-surface-alt: #FFEEDC;
+  --color-text-primary: #212121;
+  --color-text-secondary: #666666;
+  --color-text-tertiary: #9E9E9E;
   --color-error: #D64545;
-  --color-success: #5B8A6B;
-  --color-info: #3D6B8C;
-  --color-border: #EDE8E0;
-  --color-divider: #E8EDE6;
-  --color-line: #F0EDE7;
+  --color-success: #145F48;
+  --color-info: #3276AE;
+  --color-border: #DECAAE;
+  --color-divider: #E8DBC8;
+  --color-line: #E8DBC8;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body { margin: 0; padding: 0; }
+html, body {
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; margin: 0; padding: 0; 
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.3px;}
 body {
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
   background: #DEDAD4;
@@ -43,10 +47,10 @@ body {
   position: sticky; top: 0; z-index: 100;
   display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap;
   padding: 10px 16px;
-  background: #2A2A2A; color: #fff;
+  background: #212121; color: #fff;
   font-size: 12px; font-weight: 500;
 }
-.devbar-label { color: #A8A8A8; font-size: 11px; margin-right: 4px; }
+.devbar-label { color: #9E9E9E; font-size: 11px; margin-right: 4px; }
 .devbar-toggle {
   display: inline-flex; background: rgba(255,255,255,0.08); border-radius: 999px; padding: 3px;
 }
@@ -55,7 +59,7 @@ body {
   font-family: inherit; font-size: 12px; font-weight: 500;
   padding: 6px 12px; border-radius: 999px; cursor: pointer;
 }
-.devbar-toggle button.active { background: var(--color-brand); color: #2A2A2A; }
+.devbar-toggle button.active { background: var(--color-brand); color: #212121; }
 .devbar-btn {
   border: 0; background: var(--color-primary); color: #fff;
   font-family: inherit; font-size: 12px; font-weight: 600;
@@ -196,7 +200,7 @@ body {
 /* Identity */
 .identity { padding: 20px 20px 16px; }
 .identity-title {
-  font-size: 20px; font-weight: 700; line-height: 1.35;
+  font-size: 20px; font-weight: 600; line-height: 1.35;
   color: var(--color-text-primary);
   margin: 0 0 8px;
   letter-spacing: -0.02em;
@@ -304,7 +308,7 @@ body.identity-compact .collection-link { order: 5; font-size: 12px; margin-botto
   color: var(--color-text-primary);
 }
 .action-icon:active { background: var(--color-surface); }
-.action-icon.liked { color: var(--color-primary); border-color: rgba(199,93,62,0.3); background: rgba(199,93,62,0.06); }
+.action-icon.liked { color: var(--color-primary); border-color: rgba(252,100,45,0.3); background: rgba(252,100,45,0.06); }
 
 /* Thick Divider */
 .divider-thick {
@@ -317,7 +321,7 @@ body.identity-compact .collection-link { order: 5; font-size: 12px; margin-botto
 .section { padding: 20px; }
 .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .section-title {
-  font-size: 18px; font-weight: 700; color: var(--color-text-primary);
+  font-size: 18px; font-weight: 600; color: var(--color-text-primary);
   margin: 0; letter-spacing: -0.01em;
 }
 .section-title-count { color: var(--color-text-tertiary); font-weight: 400; margin-left: 4px; }
@@ -620,7 +624,7 @@ body.thumb-ratio-34 .summary-card-d-thumb { aspect-ratio: 3 / 4; }
   font-size: 9px; font-weight: 500; color: #fff;
   z-index: 2;
 }
-.recipe-summary-thumb-badge.original { background: rgba(143,166,142,0.92); }
+.recipe-summary-thumb-badge.original { background: rgba(20,95,72,0.92); }
 
 .recipe-summary-info {
   flex: 1; min-width: 0;
@@ -996,7 +1000,7 @@ body.view-grid .recipes-grid { display: grid; }
   width: 52px; height: 52px;
   border-radius: 999px;
   background: var(--color-brand);
-  color: #2A2A2A;
+  color: #212121;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 6px 14px rgba(253,184,19,0.4);
   margin-bottom: 4px;
@@ -1397,7 +1401,7 @@ body:not(.cover-longform) .cover-case-longform {
   border-radius: 3px;
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   font-size: 11.5px;
-  color: #2A2A2A;
+  color: #212121;
 }
 .dev-notes .dev-notes-meta {
   font-size: 11px;
@@ -2016,7 +2020,7 @@ body:not(.cover-longform) .cover-case-longform {
       </div>
     </div>
     <div class="comment-item">
-      <div class="comment-avatar" style="background:#8FA68E;">진</div>
+      <div class="comment-avatar" style="background:#145F48;">진</div>
       <div class="comment-body">
         <div class="comment-meta"><span class="comment-name">진희</span><span class="comment-time">5일 전</span></div>
         <div class="comment-text">어묵김밥 진짜 신세계네요. 살 빠지는 김밥이 있다니. 컬렉션 저장!</div>
@@ -2024,7 +2028,7 @@ body:not(.cover-longform) .cover-case-longform {
       </div>
     </div>
     <div class="comment-item">
-      <div class="comment-avatar" style="background:#C75D3E;">소</div>
+      <div class="comment-avatar" style="background:#FC642D;">소</div>
       <div class="comment-body">
         <div class="comment-meta"><span class="comment-name">소연</span><span class="comment-time">1주 전</span></div>
         <div class="comment-text">연어오차즈케 일본 갔을 때 먹어본 그 맛이에요. 집에서도 이렇게 쉽게 되는구나</div>
@@ -2534,7 +2538,7 @@ document.querySelectorAll('.cover-mode-tab').forEach(tab => {
       <li>요약 카드 영상 썸네일: <strong>M(125px) · 3:4 · 메타 오버레이 ON</strong> (갤럭시 S24 기준 5스텝 한 화면 진입)</li>
       <li>목록 그리드 셀: <strong>3:4 · 3열</strong></li>
       <li>커버 그리드: <strong>9:16 · 3열</strong> (역할 분리: 표지=임팩트, 목록=스캔)</li>
-      <li>메인 CTA: 테라코타 <code>#C75D3E</code></li>
+      <li>메인 CTA: 테라코타 <code>#FC642D</code></li>
       <li>노른자 <code>#FDB813</code>은 브랜드 IP 전용 — <strong>CTA 사용 금지</strong></li>
     </ul>
 
@@ -2570,9 +2574,9 @@ document.querySelectorAll('.cover-mode-tab').forEach(tab => {
     <h4>9. 디자인 시스템 준수</h4>
     <ul>
       <li>컬러·타이포 전반 <code>Jollypot_Design_Guide.md</code> v1.1 준수</li>
-      <li>3단계 면 위계: <code>#FFFFFF</code> → 카드 <code>#F5F0E8 + 1px #EDE8E0</code> → 강조 <code>#F7F2EA</code></li>
+      <li>3단계 면 위계: <code>#FFFFFF</code> → 카드 <code>#FFF5EA + 1px #DECAAE</code> → 강조 <code>#FFEEDC</code></li>
       <li>그림자 사용 안 함 (플랫 + 보더)</li>
-      <li>본문 텍스트 <code>#2A2A2A</code> (순검정 <code>#000</code> 금지)</li>
+      <li>본문 텍스트 <code>#212121</code> (순검정 <code>#000</code> 금지)</li>
     </ul>
 
     <h4>10. 보류 · 후속 처리</h4>
@@ -2584,7 +2588,7 @@ document.querySelectorAll('.cover-mode-tab').forEach(tab => {
     </ul>
 
     <div class="dev-notes-meta">
-      졸리팟 V2.0 P1 · 컬렉션 상세 · 프로토타입 <code>jollypot-v2-collection-detail-v5-3-2.html</code><br>
+      졸리팟 V2.0 P1 · 컬렉션 상세 · 프로토타입 <code>jollypot-v2-collection-detail-v5-4.html</code><br>
       관련 문서: <code>Jollypot_Design_Guide.md</code> · <code>jollypot-v2-decision-log.md</code> · <code>jollypot-v2-prototype-convention.md</code>
     </div>
 
@@ -2592,5 +2596,11 @@ document.querySelectorAll('.cover-mode-tab').forEach(tab => {
 </details>
 
 <script src="proto-link.js"></script>
+
+<!-- ==== 디자인 가이드 v2.0 적용 (v5-4 · 2026-08-07) ====
+  컬러: 테라코타→오렌지 #FC642D · 세이지→딥그린 #145F48 · 크림→피치크림 #FFF5EA
+        텍스트 #212121/#666666/#9E9E9E · 보더 #DECAAE (명암비 검증값)
+  타이포: Pretendard Variable 로드 · antialiased · 자간 -0.3px · 헤더 700→600
+  기준 문서: C:/dev/Jollypot/Jollypot_Design_Guide.md (v2.0) -->
 </body>
 </html>

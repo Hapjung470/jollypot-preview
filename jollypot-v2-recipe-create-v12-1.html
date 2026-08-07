@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta name="robots" content="noindex, nofollow">
 <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>졸리팟 · 레시피 만들기 v3-1</title>
-<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root{
-    --brand:#FDB813; --primary:#C75D3E; --secondary:#8FA68E; --sage-dark:#5B7A5C;
-    --bg:#FFFFFF; --surface:#F5F0E8; --surface-alt:#F7F2EA;
-    --text:#2A2A2A; --text2:#6B6B6B; --text3:#A8A8A8;
-    --border:#EDE8E0; --line:#F0EDE7; --req:#D9534F;
+    --brand:#FDB813; --primary:#FC642D; --secondary:#145F48; --sage-dark:#145F48;
+    --bg:#FFFFFF; --surface:#FFF5EA; --surface-alt:#FFEEDC;
+    --text:#212121; --text2:#666666; --text3:#9E9E9E;
+    --border:#DECAAE; --line:#E8DBC8; --req:#D9534F;
   }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
-  body{font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo',sans-serif;
+  body{font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
     background:#1c1b19; color:var(--text); display:flex; flex-direction:column; align-items:center;
-    padding:22px 12px 60px; gap:14px; line-height:1.5;}
+    padding:22px 12px 60px; gap:14px; line-height:1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.3px;}
   .page-title{font-size:14px; color:#9a958c; text-align:center;}
   .page-title b{color:#d8d2c8; font-weight:600;}
 
@@ -43,7 +46,7 @@
   /* 입구 */
   .home{position:absolute; inset:0; background:#141312; display:flex; flex-direction:column;}
   .home-header{height:54px; display:flex; align-items:center; justify-content:space-between; padding:0 18px;}
-  .home-header .menu{font-size:21px; color:#fff;} .home-header .logo{font-size:19px; font-weight:700; font-style:italic; color:#fff;} .home-header .acts{display:flex; gap:15px; font-size:19px; color:#fff;}
+  .home-header .menu{font-size:21px; color:#fff;} .home-header .logo{font-size:19px; font-weight:600; font-style:italic; color:#fff;} .home-header .acts{display:flex; gap:15px; font-size:19px; color:#fff;}
   .home-sec{display:flex; align-items:center; justify-content:space-between; padding:8px 18px 0;}
   .home-sec h2{font-size:19px; font-weight:700; color:#fff;} .home-sec .all{font-size:13px; color:#9b958c;}
   .scrim{position:absolute; inset:0; background:rgba(10,9,8,.5);}
@@ -66,7 +69,7 @@
   .outline-btn{width:100%; height:50px; margin-top:14px; border:1px solid var(--border); border-radius:12px; background:#fff; color:var(--text); font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;}
   .reco{display:flex; gap:13px; align-items:center; background:var(--surface-alt); border-radius:14px; padding:14px;}
   .reco .thumb{width:62px; height:62px; border-radius:10px; flex:0 0 auto; background:#D8D2C8; border:1px solid var(--border);}
-  .reco .tag{display:inline-block; font-size:11px; font-weight:600; color:var(--sage-dark); background:rgba(143,166,142,.18); padding:2px 9px; border-radius:8px;}
+  .reco .tag{display:inline-block; font-size:11px; font-weight:600; color:var(--sage-dark); background:rgba(20,95,72,.18); padding:2px 9px; border-radius:8px;}
   .reco .rtitle{font-size:15px; font-weight:600; margin-top:6px;} .reco .rsub{font-size:13px; color:var(--text2); margin-top:3px;}
   .divider{display:flex; align-items:center; gap:12px; margin:18px 0 14px; color:var(--text3); font-size:13px;}
   .divider::before,.divider::after{content:""; flex:1; height:1px; background:var(--line);}
@@ -81,7 +84,7 @@
   .prog span.done{background:var(--secondary);} .prog span.cur{background:var(--primary);}
   .body{flex:1; overflow-y:auto; padding:0 18px;}
   .body::-webkit-scrollbar{width:0;}
-  h1.title{font-size:22px; font-weight:700; margin-top:8px;}
+  h1.title{font-size:22px; font-weight:600; margin-top:8px;}
   .subtitle{font-size:14px; color:var(--text2); margin-top:6px;}
   .tipbox{display:flex; gap:8px; background:var(--surface); border-radius:12px; padding:13px 14px; margin-top:16px; font-size:13px; color:var(--text2);}
   .tipbox .star{color:var(--brand);}
@@ -91,7 +94,7 @@
   .thumb .badge{position:absolute; top:4px; left:4px; background:rgba(42,42,42,.82); color:#fff; font-size:9px; font-weight:600; padding:2px 5px; border-radius:5px;}
   .slabel{flex:1; font-size:14px; color:var(--text3);} .slabel.filled{color:var(--text); font-weight:500;}
   .srow .x{color:var(--text3); font-size:17px; cursor:pointer;} .srow .grip{color:var(--text3); font-size:16px; cursor:grab; letter-spacing:-2px;}
-  .srow.dragging{border:1.5px solid var(--primary); box-shadow:0 8px 20px rgba(199,93,62,.22); transform:translateY(-2px);} .srow.dragging .num{background:var(--primary);}
+  .srow.dragging{border:1.5px solid var(--primary); box-shadow:0 8px 20px rgba(252,100,45,.22); transform:translateY(-2px);} .srow.dragging .num{background:var(--primary);}
   .ghost{display:flex; align-items:center; gap:11px; border:1.5px dashed var(--border); border-radius:14px; padding:12px; margin-top:11px; background:var(--surface-alt); opacity:.7;}
   .ghost .num{background:#cfcabf;} .ghost .empty{flex:1; height:58px; border-radius:9px; background:#fff; border:1px dashed var(--border);}
   .addphoto{width:100%; margin-top:14px; background:var(--surface-alt); border:none; border-radius:12px; padding:15px; font-family:inherit; font-size:14px; color:var(--text2); cursor:pointer;}
@@ -109,8 +112,8 @@
   .ing-row .ipt{margin-top:0;}
   .ing-row .nm{flex:1.3;} .ing-row .am{flex:1;}
   .icobtn{width:38px; height:38px; border-radius:50%; flex:0 0 auto; border:none; cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center;}
-  .icobtn.add{background:rgba(143,166,142,.16); color:var(--sage-dark);}
-  .icobtn.del{background:rgba(199,93,62,.12); color:var(--primary);}
+  .icobtn.add{background:rgba(20,95,72,.16); color:var(--sage-dark);}
+  .icobtn.del{background:rgba(252,100,45,.12); color:var(--primary);}
 
   /* ===== v4: 재료-상품 연결 슬롯 (P1 비활성) ===== */
   .ing-block{margin-top:10px;}
@@ -138,7 +141,7 @@
 
   /* 발행 미리보기 */
   .hero{width:calc(100% + 36px); margin:-2px -18px 0; aspect-ratio:16/9; background:linear-gradient(120deg,#e4c9a4,#d9b78c);}
-  .pv-title{font-size:21px; font-weight:700; margin-top:16px;}
+  .pv-title{font-size:21px; font-weight:600; margin-top:16px;}
   .pv-meta{display:flex; gap:14px; font-size:13px; color:var(--text2); margin-top:8px;}
   .pv-desc{font-size:14px; color:var(--text2); margin-top:14px; line-height:1.6;}
   .pv-sec{font-size:18px; font-weight:700; margin-top:24px;}
@@ -177,11 +180,11 @@
   .sg-ring{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:46px; height:46px; border:2.5px solid var(--primary); border-radius:50%; opacity:0; animation:sgRing 1.8s ease-out infinite;}
   .sg-ring.d2{animation-delay:.9s;}
   @keyframes sgRing{0%{transform:translate(-50%,-50%) scale(.7); opacity:.85;} 100%{transform:translate(-50%,-50%) scale(2); opacity:0;}}
-  .sg-tag{position:absolute; background:var(--primary); color:#fff; font-size:11px; font-weight:600; padding:5px 10px; border-radius:8px; white-space:nowrap; box-shadow:0 2px 8px rgba(199,93,62,.3); z-index:4;}
+  .sg-tag{position:absolute; background:var(--primary); color:#fff; font-size:11px; font-weight:600; padding:5px 10px; border-radius:8px; white-space:nowrap; box-shadow:0 2px 8px rgba(252,100,45,.3); z-index:4;}
   /* 인스타 피드 목업 (S1) */
   .sg-insta{width:100%; height:100%; background:#fff; display:flex; flex-direction:column;}
   .sg-if-head{display:flex; align-items:center; gap:8px; padding:10px 12px;}
-  .sg-if-av{width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#C75D3E,#FDB813);}
+  .sg-if-av{width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#FC642D,#FDB813);}
   .sg-if-name{font-size:12px; font-weight:600;}
   .sg-if-img{flex:1; background:linear-gradient(145deg,#D4A574,#8B6340); display:flex; align-items:center; justify-content:center; font-size:46px;}
   .sg-if-acts{display:flex; align-items:center; gap:18px; padding:11px 14px; color:#262626;}
@@ -203,12 +206,12 @@
   .sg-sa svg{width:24px; height:24px;} .sg-sa .cnt{font-size:10px; color:rgba(255,255,255,.85);}
   .sg-shorts-bottom{position:absolute; bottom:14px; left:14px; right:50px;}
   .sg-sc{display:flex; align-items:center; gap:8px; margin-bottom:4px;}
-  .sg-sc-av{width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg,#C75D3E,#FDB813); border:1.5px solid rgba(255,255,255,.4);}
+  .sg-sc-av{width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg,#FC642D,#FDB813); border:1.5px solid rgba(255,255,255,.4);}
   .sg-sc-nm{font-size:12px; font-weight:600; color:#fff;} .sg-sc-cap{font-size:11px; color:rgba(255,255,255,.65);}
   /* 유튜브 공유시트 목업 */
   .sg-yt-share{width:100%; height:100%; background:#1a1a1a; position:relative; display:flex; flex-direction:column; justify-content:flex-end;}
   .sg-yts-top{position:absolute; top:0; left:0; right:0; height:96px; background:linear-gradient(180deg,rgba(30,30,30,.95),rgba(30,30,30,.5)); display:flex; align-items:center; padding:0 14px; gap:11px;}
-  .sg-yts-thumb{width:70px; height:48px; background:linear-gradient(135deg,#C75D3E,#E89B6E); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; flex:0 0 auto;}
+  .sg-yts-thumb{width:70px; height:48px; background:linear-gradient(135deg,#FC642D,#E89B6E); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; flex:0 0 auto;}
   .sg-yts-title{font-size:12px; color:#fff; font-weight:500;} .sg-yts-ch{font-size:10px; color:rgba(255,255,255,.5); margin-top:2px;}
   .sg-yts-panel{background:#282828; border-radius:16px 16px 0 0; padding:16px 14px 22px;}
   .sg-yts-handle{width:28px; height:3px; background:#555; border-radius:2px; margin:0 auto 16px;}
@@ -220,16 +223,16 @@
   /* S3 완료 */
   .sg-s3{height:300px; background:var(--surface); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px 20px; gap:14px; border-radius:18px; margin-bottom:14px; border:1px solid var(--border); position:relative;}
   .sg-s3-ic{width:52px; height:52px; border-radius:50%; background:var(--brand); display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow:0 4px 16px rgba(253,184,19,.25);}
-  .sg-s3-title{font-size:16px; font-weight:700; text-align:center;}
+  .sg-s3-title{font-size:16px; font-weight:600; text-align:center;}
   .sg-s3-desc{font-size:13px; color:var(--text2); text-align:center; margin-top:3px;}
   .sg-s3-area{width:100%;}
-  .sg-url-input{background:#fff; border:2px solid var(--primary); border-radius:12px; height:48px; display:flex; align-items:center; padding:0 4px 0 14px; margin-bottom:10px; box-shadow:0 0 0 4px rgba(199,93,62,.08);}
+  .sg-url-input{background:#fff; border:2px solid var(--primary); border-radius:12px; height:48px; display:flex; align-items:center; padding:0 4px 0 14px; margin-bottom:10px; box-shadow:0 0 0 4px rgba(252,100,45,.08);}
   .sg-url-input input{flex:1; border:none; outline:none; background:none; font-size:13px; color:var(--text); font-family:inherit; min-width:0;}
   .sg-url-input input::placeholder{color:var(--text3);}
   .sg-paste-btn{background:var(--primary); border:none; color:#fff; font-size:12px; font-weight:600; padding:8px 14px; border-radius:8px; cursor:pointer; flex:0 0 auto; font-family:inherit;}
   .sg-cta{width:100%; height:48px; border-radius:12px; border:none; background:var(--primary); color:#fff; font-size:15px; font-weight:700; font-family:inherit; cursor:pointer;}
   /* 텍스트 */
-  .sg-slide-title{font-size:18px; font-weight:700; line-height:1.35; margin-bottom:5px;}
+  .sg-slide-title{font-size:18px; font-weight:600; line-height:1.35; margin-bottom:5px;}
   .sg-badge{display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:var(--secondary); color:#fff; font-size:10px; font-weight:700; margin-right:6px; vertical-align:middle;}
   .sg-slide-desc{font-size:14px; color:var(--text2); line-height:1.5;}
   .sg-slide-hint{font-size:12px; color:var(--text3); margin-top:3px;} .sg-slide-hint b{color:var(--primary); font-weight:600;}
@@ -244,7 +247,7 @@
   #pa2 .body{padding:0;}
   /* ① 컬렉션 선택 */
   .src{display:flex; gap:12px; align-items:center; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:11px; margin-top:14px;}
-  .src .th{width:96px; height:62px; border-radius:9px; flex:0 0 auto; background:linear-gradient(135deg,#C75D3E,#E89B6E); display:flex; align-items:center; justify-content:center;}
+  .src .th{width:96px; height:62px; border-radius:9px; flex:0 0 auto; background:linear-gradient(135deg,#FC642D,#E89B6E); display:flex; align-items:center; justify-content:center;}
   .src .th .pl{width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,.9); display:flex; align-items:center; justify-content:center; font-size:11px; color:#222; padding-left:2px;}
   .src .ti{font-size:14px; font-weight:600; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
   .src .mt{font-size:12px; color:var(--text2); margin-top:4px;}
@@ -253,7 +256,7 @@
   .sec .ssub{font-size:13px; color:var(--text2); margin-top:4px;}
   .auto-row{display:flex; align-items:center; gap:12px; padding:13px 14px; background:var(--surface); border:1px solid var(--border); border-radius:14px; margin-top:12px;}
   .cover{width:46px; height:46px; border-radius:11px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:20px;}
-  .cover.recent{background:rgba(143,166,142,.16);}
+  .cover.recent{background:rgba(20,95,72,.16);}
   .auto-row .nm{font-size:15px; font-weight:600;} .auto-row .meta{font-size:12px; color:var(--text2); margin-top:2px;}
   .auto-badge{margin-left:auto; display:flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:var(--sage-dark);}
   .new-row{display:flex; align-items:center; gap:12px; padding:13px 14px; border:1px dashed #D7D0C4; border-radius:14px; margin-top:10px; cursor:pointer; color:var(--text2);}
@@ -263,7 +266,7 @@
   .col-row .cv{width:46px; height:46px; border-radius:11px; flex:0 0 auto;}
   .col-row .nm{font-size:15px; font-weight:600;} .col-row .meta{font-size:12px; color:var(--text2); margin-top:2px;}
   .col-row .tog{margin-left:auto; width:26px; height:26px; border-radius:50%; border:1.6px solid var(--border); flex:0 0 auto; display:flex; align-items:center; justify-content:center; color:#fff; font-size:13px;}
-  .col-row.on{border-color:var(--secondary); background:rgba(143,166,142,.07);}
+  .col-row.on{border-color:var(--secondary); background:rgba(20,95,72,.07);}
   .col-row.on .tog{background:var(--secondary); border-color:var(--secondary);}
   #pa1 .footer{flex:0 0 auto; display:block; padding:12px 18px 18px; border-top:1px solid var(--line); background:#fff;}
   #pa1 .cta{width:100%; flex:none; height:54px; border:none; border-radius:12px; background:var(--primary); color:#fff; font-family:inherit; font-size:16px; font-weight:600; cursor:pointer;}
@@ -276,7 +279,7 @@
   .sb-top .ttl{font-size:18px; font-weight:700;}
   .pf{display:flex; gap:16px; align-items:center; padding:8px 18px 0;}
   .pf .av{width:78px; height:78px; border-radius:50%; background:var(--secondary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700; flex:0 0 auto;}
-  .pf .nm{font-size:21px; font-weight:700;}
+  .pf .nm{font-size:21px; font-weight:600;}
   .pf .st{font-size:14px; color:var(--text2); margin-top:5px;}
   .pf .st b{color:var(--text); font-weight:700;}
   .bio{padding:14px 18px 0; font-size:14px; color:var(--text);}
@@ -303,7 +306,7 @@
   .gc{position:relative; aspect-ratio:1/1.18; overflow:hidden; cursor:pointer;}
   .gc .badge{position:absolute; top:7px; right:7px; z-index:2; width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px;}
   .gc .badge.yt{background:rgba(20,20,20,.62); color:#fff;}
-  .gc .badge.ig{background:rgba(199,93,62,.92); color:#fff;}
+  .gc .badge.ig{background:rgba(252,100,45,.92); color:#fff;}
   .gc .badge.ig.b{background:rgba(61,107,140,.92);}
   .gc .time{position:absolute; left:7px; bottom:7px; z-index:2; display:flex; align-items:center; gap:3px; font-size:12px; font-weight:600; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.5);}
   .gc .menu{position:absolute; right:7px; bottom:7px; z-index:2; width:24px; height:24px; border-radius:50%; background:rgba(20,20,20,.4); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px;}
@@ -327,7 +330,7 @@
   .nav .it.on{color:var(--primary);}
   .nav .it .ic{font-size:18px;}
   .nav .plus{width:40px; height:40px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:23px; margin-top:-6px;}
-  .toast{position:absolute; left:50%; bottom:84px; transform:translateX(-50%) translateY(10px); background:#2A2A2A; color:#fff; font-size:13px; font-weight:500; padding:11px 18px; border-radius:24px; opacity:0; pointer-events:none; transition:.25s; white-space:nowrap; z-index:9;}
+  .toast{position:absolute; left:50%; bottom:84px; transform:translateX(-50%) translateY(10px); background:#212121; color:#fff; font-size:13px; font-weight:500; padding:11px 18px; border-radius:24px; opacity:0; pointer-events:none; transition:.25s; white-space:nowrap; z-index:9;}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
   .toast.top{bottom:auto; top:60px; transform:translateX(-50%) translateY(-10px);}
   .toast.top.show{transform:translateX(-50%) translateY(0);}
@@ -344,7 +347,7 @@
   #pa3 .cav{width:44px; height:44px; border-radius:50%; background:var(--secondary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700; flex:0 0 auto;}
   #pa3 .cnm{font-size:15px; font-weight:600;}
   #pa3 .cdesc{font-size:12.5px; color:var(--text2); margin-top:2px; line-height:1.4;}
-  #pa3 .mine{font-size:12px; font-weight:600; color:var(--sage-dark); background:rgba(143,166,142,.16); padding:5px 11px; border-radius:9px; flex:0 0 auto;}
+  #pa3 .mine{font-size:12px; font-weight:600; color:var(--sage-dark); background:rgba(20,95,72,.16); padding:5px 11px; border-radius:9px; flex:0 0 auto;}
   .cook-cta{width:100%; height:52px; margin-top:18px; border:none; border-radius:12px; background:var(--primary); color:#fff; font-family:inherit; font-size:16px; font-weight:600; cursor:pointer;}
   .shop-scroll{display:flex; gap:11px; overflow-x:auto; margin-top:12px; padding-bottom:4px;}
   .shop-scroll::-webkit-scrollbar{height:0;}
@@ -771,7 +774,7 @@
     <div class="rep">
       <h3>대표 레시피</h3>
       <div class="scroll">
-        <div class="it"><div class="ring"><div class="img" style="background:linear-gradient(135deg,#C75D3E,#E89B6E)"></div></div><div class="cap">10분<br>야식</div></div>
+        <div class="it"><div class="ring"><div class="img" style="background:linear-gradient(135deg,#FC642D,#E89B6E)"></div></div><div class="cap">10분<br>야식</div></div>
         <div class="it"><div class="ring"><div class="img" style="background:linear-gradient(135deg,#bcc6a8,#9aac84)"></div></div><div class="cap">김치<br>찌개</div></div>
         <div class="it"><div class="ring"><div class="img" style="background:linear-gradient(135deg,#d6a878,#c08a52)"></div></div><div class="cap">간장<br>계란밥</div></div>
         <div class="it"><div class="ring"><div class="img" style="background:linear-gradient(135deg,#e3d4ad,#cdb878)"></div></div><div class="cap">엄마<br>반찬</div></div>
@@ -785,7 +788,7 @@
       <span class="egg">🥚</span><span><b>1개</b> 정리하는 중 · 다 되면 알려드릴게요</span>
     </div>
     <div class="grid3">
-      <div class="gc prep" id="aiSlot" onclick="aiTapCard()" style="background:linear-gradient(135deg,#C75D3E,#E89B6E)">
+      <div class="gc prep" id="aiSlot" onclick="aiTapCard()" style="background:linear-gradient(135deg,#FC642D,#E89B6E)">
         <span class="badge yt">▶</span>
         <span class="newdot done-only" style="display:none;">NEW</span>
         <span class="time done-only" style="display:none;">⏱ 17분</span>
@@ -797,7 +800,7 @@
       <div class="gc" style="background:linear-gradient(135deg,#d98b5a,#c06a32)"><span class="badge yt">▶</span><span class="time">⏱ 30분</span><span class="menu">⋯</span></div>
       <div class="gc" style="background:linear-gradient(135deg,#9a7b4a,#6b4f2a)"><span class="badge ig">🎀</span><span class="lock"><span class="ic">🔒</span><span>나만 보기</span></span><span class="time">⏱ 10분</span><span class="menu">⋯</span></div>
       <div class="gc" style="background:linear-gradient(135deg,#bd5a3e,#933a26)"><span class="badge ig b">🎀</span><span class="time">⏱ 10분</span><span class="menu">⋯</span></div>
-      <div class="gc" style="background:linear-gradient(135deg,#C75D3E,#E89B6E)"><span class="badge yt">▶</span><span class="time">⏱ 15분</span><span class="menu">⋯</span></div>
+      <div class="gc" style="background:linear-gradient(135deg,#FC642D,#E89B6E)"><span class="badge yt">▶</span><span class="time">⏱ 15분</span><span class="menu">⋯</span></div>
       <div class="gc" style="background:linear-gradient(135deg,#7e9d6b,#5f7d4a)"><span class="badge ig">🎀</span><span class="time">⏱ 22분</span><span class="menu">⋯</span></div>
       <div class="gc" style="background:linear-gradient(135deg,#9a7b4a,#6b4f2a)"><span class="lock"><span class="ic">🔒</span><span>나만 보기</span></span><span class="time">⏱ 18분</span><span class="menu">⋯</span></div>
     </div>
@@ -1185,5 +1188,11 @@
 </div>
 
 <script src="proto-link.js"></script>
+
+<!-- ==== 디자인 가이드 v2.0 적용 (v12-1 · 2026-08-07) ====
+  컬러: 테라코타→오렌지 #FC642D · 세이지→딥그린 #145F48 · 크림→피치크림 #FFF5EA
+        텍스트 #212121/#666666/#9E9E9E · 보더 #DECAAE (명암비 검증값)
+  타이포: Pretendard Variable 로드 · antialiased · 자간 -0.3px · 헤더 700→600
+  기준 문서: C:/dev/Jollypot/Jollypot_Design_Guide.md (v2.0) -->
 </body>
 </html>

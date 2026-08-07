@@ -5,21 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>냉장고 · 📷 사진으로 빠르게 추가 — 분석 &amp; 최적안 · 2026.06.26</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root{
-    --brand:#FDB813;--action:#C75D3E;--action-dark:#A8492E;--sage:#8FA68E;--sage-dark:#5B7A5C;
-    --success:#5B8A6B;--success-bg:rgba(91,138,107,.12);--warn:#C9852B;--warn-bg:rgba(201,133,43,.12);
+    --brand:#FDB813;--action:#FC642D;--action-dark:#A8492E;--sage:#145F48;--sage-dark:#145F48;
+    --success:#145F48;--success-bg:rgba(91,138,107,.12);--warn:#C9852B;--warn-bg:rgba(201,133,43,.12);
     --later:#7A7F8C;--later-bg:#F1F1F3;--later-line:#D9DAE0;--danger:#C0392B;
-    --bg:#FBF8F2;--surface:#F5F0E8;--surface-alt:#F7F2EA;--white:#FFFFFF;
-    --text:#2A2A2A;--text2:#6B6B6B;--text3:#A8A8A8;--border:#EDE8E0;--line:#E8E2D6;
+    --bg:#FBF8F2;--surface:#FFF5EA;--surface-alt:#FFEEDC;--white:#FFFFFF;
+    --text:#212121;--text2:#666666;--text3:#9E9E9E;--border:#DECAAE;--line:#E8E2D6;
     --freezer:#F2F4F3;--freezer-border:#E4E8E6;
     --mono:"SFMono-Regular",ui-monospace,Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
-  body{font-family:"Pretendard",-apple-system,"Apple SD Gothic Neo",system-ui,sans-serif;
-    background:var(--bg);color:var(--text);line-height:1.55;letter-spacing:-.01em;padding:32px 20px 80px;}
+  body{font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.55;letter-spacing:-.01em;padding:32px 20px 80px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;}
   .wrap{max-width:960px;margin:0 auto}
 
   /* 헤더 */
@@ -36,12 +38,12 @@
   .back-link:hover{border-color:var(--action);color:var(--action)}
 
   /* TL;DR */
-  .tldr{margin-top:24px;background:#FCF6F3;border:1px solid rgba(199,93,62,.3);border-radius:16px;padding:20px 22px}
+  .tldr{margin-top:24px;background:#FCF6F3;border:1px solid rgba(252,100,45,.3);border-radius:16px;padding:20px 22px}
   .tldr-h{font-size:12px;font-weight:700;letter-spacing:.07em;color:var(--action);text-transform:uppercase;margin-bottom:10px}
   .tldr p{font-size:14.5px;line-height:1.62}.tldr p+p{margin-top:8px}
   .tldr b{font-weight:700}
   .verdict{margin-top:13px;display:flex;flex-wrap:wrap;gap:8px}
-  .v-chip{font-size:12.5px;font-weight:700;color:var(--sage-dark);background:rgba(143,166,142,.16);border-radius:7px;padding:6px 12px}
+  .v-chip{font-size:12.5px;font-weight:700;color:var(--sage-dark);background:rgba(20,95,72,.16);border-radius:7px;padding:6px 12px}
   .v-chip.x{color:var(--later);background:var(--later-bg)}
 
   /* 섹션 라벨 */
@@ -113,7 +115,7 @@
   .m-seg{display:flex;gap:7px}
   .m-seg .s{flex:1;height:38px;border:1px solid var(--border);border-radius:9px;font-size:12.5px;font-weight:600;
     color:var(--text2);display:flex;align-items:center;justify-content:center;gap:4px;background:var(--white)}
-  .m-seg .s.on{border-color:var(--sage);background:rgba(143,166,142,.13);color:var(--sage-dark)}
+  .m-seg .s.on{border-color:var(--sage);background:rgba(20,95,72,.13);color:var(--sage-dark)}
   .m-chips{display:flex;flex-wrap:wrap;gap:6px}
   .m-chips .c{font-size:12.5px;font-weight:500;border:1px solid var(--border);background:var(--surface);
     border-radius:18px;padding:7px 12px;color:var(--text)}
@@ -132,11 +134,11 @@
     color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
   .rec-item.low .chk{background:#fff;border-color:#E3B872;color:transparent}
   .rec-item .nm{font-size:13.5px;font-weight:600;flex:1}
-  .rec-item .loc{font-size:11px;font-weight:600;color:var(--sage-dark);background:rgba(143,166,142,.14);border-radius:6px;padding:3px 7px}
+  .rec-item .loc{font-size:11px;font-weight:600;color:var(--sage-dark);background:rgba(20,95,72,.14);border-radius:6px;padding:3px 7px}
   .rec-item .flag{font-size:10.5px;font-weight:700;color:#B5852F;background:rgba(201,133,43,.13);border-radius:5px;padding:3px 6px}
   .rec-item .dup{font-size:10.5px;font-weight:700;color:var(--later);background:var(--later-bg);border-radius:5px;padding:3px 6px}
   .rec-item.dimmed{opacity:.5}
-  .m-toast{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:#2A2A2A;color:#fff;
+  .m-toast{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:#212121;color:#fff;
     font-size:12px;font-weight:600;padding:9px 16px;border-radius:18px;white-space:nowrap}
 
   /* 양문형 mini */
@@ -149,7 +151,7 @@
   .fi{display:flex;justify-content:space-between;align-items:center;background:var(--white);border:1px solid var(--border);
     border-radius:8px;padding:6px 8px;margin:4px 0;font-size:12px}
   .fi .mt{font-size:10px;color:var(--text3)}
-  .fi.new{border-color:var(--sage);background:rgba(143,166,142,.08)}
+  .fi.new{border-color:var(--sage);background:rgba(20,95,72,.08)}
   .fi.new .mt{color:var(--sage-dark);font-weight:700}
 
   /* 스펙 코드 블록 */
@@ -160,8 +162,8 @@
   /* phasing */
   .phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
   .phase{border:1px solid var(--border);border-radius:13px;padding:15px 16px;background:var(--white)}
-  .phase.now{border-color:var(--sage);background:rgba(143,166,142,.06)}
-  .phase.next{border-color:rgba(199,93,62,.35);background:#FCF6F3}
+  .phase.now{border-color:var(--sage);background:rgba(20,95,72,.06)}
+  .phase.next{border-color:rgba(252,100,45,.35);background:#FCF6F3}
   .phase .pl{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
   .phase.now .pl{color:var(--sage-dark)}.phase.next .pl{color:var(--action)}.phase.later .pl{color:var(--later)}
   .phase .pt2{font-size:14.5px;font-weight:800;margin:4px 0 6px}
@@ -188,14 +190,14 @@
       그래서 사진을 <b>완성 도구가 아니라, 수동 입력을 빠르게 해주는 보조</b>로 재정의하고 —
       <b>냉장고 사진 + 영수증 + 바코드</b> 여러 입력을 <b>하나의 ‘확인 시트’</b>로 모으는 안을 제안합니다.
     </p>
-    <a class="back-link" href="index.html">← 목록으로</a>
+    <a class="back-link" href="jollypot-dev-scope-v1.html">← 개발 범위 정의서로</a>
   </header>
 
   <!-- 반영 상태 배너 -->
   <div class="box good" style="margin-top:20px;max-width:none">
     <div class="box-h">✅ 업데이트 — ‘냉장고 사진’ 보조 경로가 프로토타입에 반영됨</div>
     본 제안의 <b>냉장고 사진 보조(보이는 것만 · precision 우선 · 별도 스캔실패 화면 없음 · 결과를 추가 시트에 미리 채움)</b>가
-    <a href="jollypot-v2-fridge-v3-1-1.html" style="color:var(--action);font-weight:700">fridge-v3-1-1</a> 프로토타입에 구현됐습니다.
+    <a href="jollypot-v2-fridge-v3-2.html" style="color:var(--action);font-weight:700">fridge-v3-1-1</a> 프로토타입에 구현됐습니다.
     이 문서는 그 <b>설계 근거</b>와, 아직 남은 <b>확장 후보(영수증 OCR·바코드)</b>를 담은 분석본으로 보시면 됩니다.
   </div>
 
@@ -459,5 +461,11 @@
 
   <div class="ver">jollypot-fridge-photo-assist-v1 · 냉장고 사진 보조 입력 분석/제안 · 2026.06.26</div>
 </div>
+
+<!-- ==== 디자인 가이드 v2.0 적용 (v1-1 · 2026-08-07) ====
+  컬러: 테라코타→오렌지 #FC642D · 세이지→딥그린 #145F48 · 크림→피치크림 #FFF5EA
+        텍스트 #212121/#666666/#9E9E9E · 보더 #DECAAE (명암비 검증값)
+  타이포: Pretendard Variable 로드 · antialiased · 자간 -0.3px · 헤더 700→600
+  기준 문서: C:/dev/Jollypot/Jollypot_Design_Guide.md (v2.0) -->
 </body>
 </html>

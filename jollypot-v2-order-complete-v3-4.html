@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta name="robots" content="noindex, nofollow">
 <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>졸리팟 V2 · 주문완료 v3-3-11 (모바일)</title>
+<title>졸리팟 V2 · 주문완료 v3-4 (모바일)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root {
     --color-brand: #FDB813;
-    --color-primary: #C75D3E;
-    --color-secondary: #8FA68E;
+    --color-primary: #FC642D;
+    --color-secondary: #145F48;
     --color-bg: #FFFFFF;
-    --color-surface: #F5F0E8;
-    --color-surface-alt: #F7F2EA;
-    --color-text-primary: #2A2A2A;
-    --color-text-secondary: #6B6B6B;
-    --color-text-tertiary: #A8A8A8;
-    --color-success: #5B8A6B;
-    --color-info: #3D6B8C;
-    --color-border: #EDE8E0;
-    --color-line: #F0EDE7;
+    --color-surface: #FFF5EA;
+    --color-surface-alt: #FFEEDC;
+    --color-text-primary: #212121;
+    --color-text-secondary: #666666;
+    --color-text-tertiary: #9E9E9E;
+    --color-success: #145F48;
+    --color-info: #3276AE;
+    --color-border: #DECAAE;
+    --color-line: #E8DBC8;
   }
   .proto {
     --proto-bar-bg: #1E1E2E;
@@ -33,10 +34,11 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
-    font-family: 'Pretendard', -apple-system, 'Apple SD Gothic Neo', system-ui, sans-serif;
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
     background: #E6E6E9; display: flex; flex-direction: column; align-items: center;
     padding: 24px 0 60px; color: var(--color-text-primary); -webkit-font-smoothing: antialiased;
-  }
+  
+    letter-spacing: -0.3px;}
   .wrap { width: 390px; }
 
   /* ===== 컨트롤 바 ===== */
@@ -64,7 +66,7 @@
   .oc-check { width: 70px; height: 70px; border-radius: 50%; background: var(--color-brand); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; box-shadow: 0 8px 22px rgba(253,184,19,.38); position: relative; z-index: 2; animation: pop .45s cubic-bezier(.18,.89,.32,1.28) both; }
   .oc-check svg { width: 36px; height: 36px; }
   @keyframes pop { 0% { transform: scale(.4); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-  .oc-title { font-size: 22px; font-weight: 700; color: var(--color-text-primary); margin-bottom: 8px; position: relative; z-index: 2; }
+  .oc-title { font-size: 22px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 8px; position: relative; z-index: 2; }
   .oc-subtitle { font-size: 14px; color: var(--color-text-secondary); position: relative; z-index: 2; }
   .confetti { position: absolute; top: 0; width: 8px; height: 8px; opacity: 0; z-index: 1; animation: fall 1.25s ease-out forwards; }
   @keyframes fall { 0% { opacity: 0; transform: translateY(0) rotate(0deg); } 18% { opacity: 1; } 100% { opacity: 0; transform: translateY(150px) rotate(380deg); } }
@@ -93,7 +95,7 @@
   /* ===== 하단 추천 피드 ===== */
   .oc-feed-divider { height: 8px; background: var(--color-surface); margin-top: 18px; }
   .oc-feed-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 20px 20px 14px; }
-  .oc-feed-title { font-size: 20px; font-weight: 700; color: var(--color-text-primary); }
+  .oc-feed-title { font-size: 20px; font-weight: 600; color: var(--color-text-primary); }
   .oc-feed-sub { font-size: 14px; color: var(--color-text-secondary); margin-top: 4px; }
 
   .oc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 11px; padding: 0 20px; }
@@ -149,7 +151,7 @@
   .oc-bottom-bar { flex-shrink: 0; display: flex; gap: 9px; padding: 10px 20px 12px; border-top: 1px solid var(--color-line); background: #fff; }
   .oc-bottom-bar button { flex: 1; height: 50px; border-radius: 12px; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; }
   .oc-bb-sub { background: #fff; border: 1.5px solid var(--color-border); color: var(--color-text-primary); }
-  .oc-bb-main { background: #fff; border: 1.5px solid var(--color-secondary); color: #5B7A5C; }
+  .oc-bb-main { background: #fff; border: 1.5px solid var(--color-secondary); color: #145F48; }
 
   /* ===== 모바일 풀블리드 ===== */
   @media (max-width: 480px) {
@@ -284,7 +286,7 @@
   function launchConfetti() {
     const hero = document.getElementById('hero');
     hero.querySelectorAll('.confetti').forEach(c => c.remove());
-    const colors = ['#FDB813', '#C75D3E', '#8FA68E', '#FDB813', '#E8C98A'];
+    const colors = ['#FDB813', '#FC642D', '#145F48', '#FDB813', '#E8C98A'];
     for (let i = 0; i < 14; i++) {
       const c = document.createElement('span');
       c.className = 'confetti';
@@ -421,5 +423,11 @@
   renderSheet();
 </script>
 <script src="proto-link.js"></script>
+
+<!-- ==== 디자인 가이드 v2.0 적용 (v3-4 · 2026-08-07) ====
+  컬러: 테라코타→오렌지 #FC642D · 세이지→딥그린 #145F48 · 크림→피치크림 #FFF5EA
+        텍스트 #212121/#666666/#9E9E9E · 보더 #DECAAE (명암비 검증값)
+  타이포: Pretendard Variable 로드 · antialiased · 자간 -0.3px · 헤더 700→600
+  기준 문서: C:/dev/Jollypot/Jollypot_Design_Guide.md (v2.0) -->
 </body>
 </html>
