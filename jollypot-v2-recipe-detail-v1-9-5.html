@@ -519,8 +519,7 @@
     flex-shrink: 0; margin-top: 2px;
   }
   .step-content { flex: 1; min-width: 0; }
-  .step-title { font-size: 15px; font-weight: 500; line-height: 1.4; color: var(--color-text-primary); margin-bottom: 4px; }
-  .step-text { font-size: 14px; line-height: 1.6; color: var(--color-text-secondary); }
+  .step-text { font-size: 14px; line-height: 1.6; color: var(--color-text-primary); }   /* v1-9-5: 소제목 제거 후 설명이 주 콘텐츠 → 잉크색 승격 */
   .step-time {
     display: inline-block;
     font-size: 11px; font-weight: 600;
@@ -914,12 +913,12 @@
         "설탕 30g", "바닐라 에센스 2ml", "우유 100ml", "소금 1g"
       ],
       "recipeInstructions": [
-        { "@type": "HowToStep", "position": 1, "name": "스폰지케이크 썰기", "text": "카스테라를 적당한 두께로 썰어 준비합니다." },
-        { "@type": "HowToStep", "position": 2, "name": "키위 썰기", "text": "키위를 얇게 슬라이스하고 일부는 잘게 다져 준비합니다." },
-        { "@type": "HowToStep", "position": 3, "name": "케이크 틀 준비 및 키위 배열", "text": "틀에 랩을 깔고 슬라이스한 키위를 바닥과 옆면에 골고루 배열합니다." },
-        { "@type": "HowToStep", "position": 4, "name": "층층이 쌓기", "text": "키위 위에 생크림, 스폰지케이크, 다진 키위를 번갈아 가며 층층이 쌓습니다." },
-        { "@type": "HowToStep", "position": 5, "name": "냉장고에서 굳히기", "text": "랩으로 덮어 냉장고에 1시간 동안 넣어 굳힙니다." },
-        { "@type": "HowToStep", "position": 6, "name": "완성 및 서빙", "text": "굳힌 케이크를 뒤집어 접시에 담고 자른 후 시식합니다." }
+        { "@type": "HowToStep", "position": 1, "text": "카스테라를 적당한 두께로 썰어 준비합니다." },
+        { "@type": "HowToStep", "position": 2, "text": "키위를 얇게 슬라이스하고 일부는 잘게 다져 준비합니다." },
+        { "@type": "HowToStep", "position": 3, "text": "틀에 랩을 깔고 슬라이스한 키위를 바닥과 옆면에 골고루 배열합니다." },
+        { "@type": "HowToStep", "position": 4, "text": "키위 위에 생크림, 스폰지케이크, 다진 키위를 번갈아 가며 층층이 쌓습니다." },
+        { "@type": "HowToStep", "position": 5, "text": "랩으로 덮어 냉장고에 1시간 동안 넣어 굳힙니다." },
+        { "@type": "HowToStep", "position": 6, "text": "굳힌 케이크를 뒤집어 접시에 담고 자른 후 시식합니다." }
       ],
       "nutrition": {
         "@type": "NutritionInformation",
@@ -990,7 +989,7 @@
     <button id="togMoreOn" class="active fmt" onclick="setMoreInfo(true)">더 알아보기 · 데이터 있음</button>
     <button id="togMoreOff" onclick="setMoreInfo(false)">데이터 없음 (미노출)</button>
   </div>
-  <div style="font-size:12px; color:#CCCCDD; padding:6px 4px 0;">jollypot-v2-recipe-detail-v1-9-4</div>
+  <div style="font-size:12px; color:#CCCCDD; padding:6px 4px 0;">jollypot-v2-recipe-detail-v1-9-5</div>
 </div>
 
 <!-- ===== 헤더 ===== -->
@@ -1180,7 +1179,6 @@
       <span class="step-number">1</span>
       <div class="step-content">
         <div class="step-image hidden" style="background:linear-gradient(135deg,#F5E6D0,#E0C8A0);">🔪🍰</div>
-        <p class="step-title">스폰지케이크 썰기</p>
         <p class="step-text">카스테라를 적당한 두께로 썰어 준비합니다. <span class="step-time">00"05</span></p>
         <div class="step-tip"><span class="tip-badge">💡 TIP</span><span>1cm 두께로 썰면 층이 도톰하게 살아요. 시판 카스테라를 그대로 써도 충분합니다.</span></div>
       </div>
@@ -1189,7 +1187,6 @@
       <span class="step-number">2</span>
       <div class="step-content">
         <div class="step-image hidden" style="background:linear-gradient(135deg,#D4E8D0,#A8D0A0);">🔪🥝</div>
-        <p class="step-title">키위 썰기</p>
         <p class="step-text">키위를 얇게 슬라이스하고 일부는 잘게 다져 준비합니다. <span class="step-time">00"09</span></p>
       </div>
     </li>
@@ -1197,7 +1194,6 @@
       <span class="step-number">3</span>
       <div class="step-content">
         <div class="step-image hidden" style="background:linear-gradient(135deg,#E8E0D0,#D0C0A8);">🥝📐</div>
-        <p class="step-title">케이크 틀 준비 및 키위 배열</p>
         <p class="step-text">틀에 랩을 깔고 슬라이스한 키위를 바닥과 옆면에 골고루 배열합니다. <span class="step-time">00"14</span></p>
         <div class="step-tip"><span class="tip-badge">💡 TIP</span><span>랩은 틀에 딱 안 맞아도 되니 무심하게 깔아주세요. 다 굳은 뒤 이 랩을 잡고 통째로 들어내면 모양이 안 망가져요.</span></div>
       </div>
@@ -1206,7 +1202,6 @@
       <span class="step-number">4</span>
       <div class="step-content">
         <div class="step-image hidden" style="background:linear-gradient(135deg,#FFF5E8,#F0DCC0);">🍰🥝🧁</div>
-        <p class="step-title">생크림, 스폰지케이크, 다진 키위 층층이 쌓기</p>
         <p class="step-text">키위 위에 생크림, 스폰지케이크, 다진 키위를 번갈아 가며 층층이 쌓습니다. <span class="step-time">00"21</span></p>
         <div class="step-tip"><span class="tip-badge">💡 TIP</span><span>생크림을 살짝 되직하게 휘핑하면 층이 덜 무너져요. 한 층씩 살살 눌러 빈틈을 채워주세요.</span></div>
       </div>
@@ -1215,7 +1210,6 @@
       <span class="step-number">5</span>
       <div class="step-content">
         <div class="step-image hidden" style="background:linear-gradient(135deg,#D0E0F0,#A8C0E0);">❄️🧊</div>
-        <p class="step-title">냉장고에서 굳히기</p>
         <p class="step-text">랩으로 덮어 냉장고에 1시간 동안 넣어 굳힙니다. <span class="step-time">00"26</span></p>
       </div>
     </li>
@@ -1223,7 +1217,6 @@
       <span class="step-number">6</span>
       <div class="step-content">
         <div class="step-image hidden" style="background:linear-gradient(135deg,#F5E0D0,#E8C4A0);">🍽️✨</div>
-        <p class="step-title">케이크 완성 및 서빙</p>
         <p class="step-text">굳힌 케이크를 뒤집어 접시에 담고 자른 후 시식합니다. <span class="step-time">00"32</span></p>
         <div class="step-tip"><span class="tip-badge">💡 TIP</span><span>칼을 뜨거운 물에 데워 물기를 닦고 자르면 단면이 뭉개지지 않고 깔끔해요.</span></div>
       </div>
@@ -1841,6 +1834,7 @@ function toggleSave() {
   • <b style="color:#fff;">SEO 지침</b>: 접힘 콘텐츠는 모바일 퍼스트 인덱싱에서 <b>동일 가중치</b> — 단 <b style="color:#FFC520;">반드시 초기 HTML/DOM에 포함</b>(펼침 시 fetch/lazy-load 금지). nutrition 스키마는 영양 모듈 노출 시에만 포함(화면-스키마 일치). <b>FAQPage 스키마는 넣지 않는다</b> — FAQ 리치결과는 2026-05 완전 종료, 텍스트 인덱싱(롱테일 질의)으로만 기여<br>
   • <b style="color:#fff;">재료 마스터 DB 1개가 3곳을 먹여살린다</b>: 대체재 치환 + 영양 계산 + 냉장고 레시피 매칭(03 트랙) — 착수 시 최우선 구축 권고<br>
   • 메타 kcal·준비/조리 분리표시는 계속 제외(메타 행은 총시간·인분 2칸 유지) · 별점·후기·갤러리는 여전히 P2(이 보관함과 무관)<br>
+  • <b style="color:#8FA68E;">v1-9-5 · 스텝 소제목 제거</b>: 만드는 법 각 단계 = <b>번호 + 설명문 바로 시작</b>(소제목 없음). 설명이 주 콘텐츠가 되므로 색을 세컨더리→<b>잉크(#212121)</b>로 승격. <b>JSON-LD의 HowToStep name도 함께 제거</b>(화면-스키마 일치 — text만 유지, Google 스키마에서 name은 선택 필드). 파이프라인 효과: AI 추출에서 <b>스텝 소제목 생성 단계 자체가 불필요</b>해짐 — 추출 스펙 단순화. 직접업로드 모드(스텝 이미지)도 동일 구조.<br>
   • <b style="color:#145F48;">v1.7 (대표 피드백 2026-08-03)</b>: ① 섹션 승격 — 상하 <b>두꺼운 구분 바</b> + 헤더를 "만드는 법" 레벨(18px·700)로, 회색 세부 라벨 유지 ② 라벨 "레시피 더 알아보기" → <b>"알아두면 좋아요"</b> — 기존 보조 라벨 보이스("없으면 이걸로"·"이것만 조심하세요"·"이런 레시피는 어때요?")와 통일, "더 알아보기"의 페이지 이동 오해 제거 ③ 펼침 시 전 모듈 동시 펼침<br>
   • <b style="color:#145F48;">v1.8 (대표 피드백 2026-08-04)</b>: 펼침 상태에서 "알아두면 좋아요 > 없으면 이걸로 > 생크림" 3레벨이 비슷한 검정 볼드로 보여 위계 불분명 → <b>레벨마다 다른 신호</b>로 해결: ① 섹션(18px·700·블랙) ② 모듈 = <b>라벨로 강등</b>(14px·700·세컨더리 그레이) ③ 콘텐츠 = <b>서피스 카드(#FFF5EA) 수납</b> — 카드 안의 볼드는 라벨과 경쟁하지 않음. 모듈 간 1px 라인 제거(카드+여백이 경계) · FAQ 출처 캡션 제거(FAQ는 AI 추론 질문으로 소스 변경)
   </p>
