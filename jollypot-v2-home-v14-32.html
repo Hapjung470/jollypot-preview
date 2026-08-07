@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-31 · 졸리팟 V2 홈 (보더 뉴트럴)</title>
+<title>v14-32 · 졸리팟 V2 홈 (검색창 정리)</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root {
@@ -132,7 +132,8 @@
     flex: 1; min-width: 0;
     display: flex; align-items: center; gap: 8px;
     height: 40px; padding: 0 14px;
-    background: var(--color-surface); border: 1px solid var(--color-border);
+    background: transparent;   /* v14-32: 배경 제거 — 보더만으로 (KS/오집 아웃라인형) */
+    border: 1px solid var(--color-border);
     border-radius: 20px; cursor: pointer;
   }
   .hdr-search:active { background: var(--color-surface-alt); }
@@ -1190,7 +1191,7 @@
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>구팔레트</small></a><a class="vs-btn" href="jollypot-v2-home-v14-27.html">v14-27<small>컬러비교</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-31.html">v14-31<small>최신</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>구팔레트</small></a><a class="vs-btn" href="jollypot-v2-home-v14-27.html">v14-27<small>컬러비교</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-32.html">v14-32<small>최신</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">데크 배경</div>
@@ -1335,7 +1336,9 @@
 
         <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-31 · 선 계열 뉴트럴 그레이 통일</b> — 카드 보더 <code>#DECAAE</code>(웜) → <code>#CCCFD4</code>(그레이·흰 배경 대비 1.56:1로 웜 1.60과 동급 가시성) · 구분선/라인 → <code>#E5E7EB</code>(KS hr).<br>· 원칙: <b>면(카드)은 웜, 선(보더·구분)은 뉴트럴</b> — KS가 피치크림 카드에 회색 선을 쓰는 구조. 웜 위 웜 선은 흐릿함.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-31</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-32 · 검색창 정리</b> — 배경(피치크림) 제거 → 투명 + 1px 보더만(아웃라인형). 플레이스홀더 "레시피·재료 검색" → <b>"레시피 또는 상품을 검색해보세요"</b>(검색이 레시피/상품 의도를 분기하는 진입점임을 문구로 안내 — 스코프의 검색 분기 룰과 일치).</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-32</div>
   </div>
 
   <div class="phone-frame">
@@ -1354,7 +1357,7 @@
       <!-- 중앙: 검색 바 (오늘의집 스타일) -->
       <div class="hdr-search" title="검색" aria-label="검색">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
-        <span>레시피·재료 검색</span>
+        <span>레시피 또는 상품을 검색해보세요</span>
       </div>
       <!-- 우: 내 보관함 (냉장고 · 장바구니) -->
       <div class="header-icons">
