@@ -1279,12 +1279,12 @@
         <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-13 · 사진 여백 + 라운딩</b>: v14-12의 좌측 <b>풀블리드</b>가 카드 가장자리에서 사진을 잘라 어색하다는 지적 반영.<br>· <b>v14-10 스펙 계승</b> — 카드 <code>padding:16px</code> 복원, 사진 <code>border-radius:14px</code>(카드 18px보다 작게 = 중첩 라운딩 규칙). 사진이 카드 안에 '놓인' 형태로 복귀.<br>· 사진 <b>137×183 (3:4 유지)</b> — v14-10(108×144) 대비 면적 <b>약 1.6배</b>. 여백을 되찾으면서도 사진 크기는 유지.</div>
 
         <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-14 · 컬러 테마 비교</b> — 상단 <b>[컬러 테마]</b> 토글로 3안을 같은 화면에서 전환.<br>
-· <b>Kitchen Stories 실측 체계</b>: 오렌지 <code>#F5642D</code>=앱 액센트(탭·링크·FAB·하단네비) / 딥그린 <code>#12513A</code>=전환 CTA(Sign-up·Try for free) / 옐로우 <code>#FFC72C</code>=브랜드 IP(Plus 로고·아바타) / 피치크림 <code>#FDF0E4</code>=카드 배경.<br>
+· <b>Kitchen Stories 체계</b> <span style="color:#E8A33D;">(당시 스크린샷 육안 추정 — v14-17에서 실측으로 정정)</span>: 오렌지 <code>#F5642D</code>=앱 액센트(탭·링크·FAB·하단네비) / 딥그린 <code>#12513A</code>=전환 CTA(Sign-up·Try for free) / 옐로우 <code>#FFC72C</code>=브랜드 IP(Plus 로고·아바타) / 피치크림 <code>#FDF0E4</code>=카드 배경.<br>
 · <b>핵심 발견 — 졸리팟 팔레트는 KS와 구조가 같고 채도만 낮다</b>: 옐로우(IP) · 주황 계열(액션) · 크림(카드)까지 역할 배치가 동일. 테라코타 <code>#C75D3E</code>는 HSL(14°,55%,51%), KS 오렌지는 약 (16°,90%,57%) — <b>색상각은 사실상 같고 채도만 35%p 차이</b>. 그래서 '주황으로 바꾸는' 게 아니라 '같은 색을 선명하게'가 정확한 처방.<br>
 · <b>채도 격차 실측</b> — 현행 테라코타 55% ↔ 세이지 <b>12%</b>(사실상 회색)로 이미 43%p 벌어져 있음. 주황만 85%로 올리면 격차가 <b>73%p</b>로 더 커져 "따로 노는" 느낌이 발생. KS는 오렌지 91% ↔ 딥그린 64%로 격차가 <b>27%p</b>에 불과. <b>→ 액션색만 올리는 B안은 구조적으로 어색해짐.</b><br>
 · <b>노른자 옐로는 이미 채도 98%</b> — 즉 현 팔레트는 브랜드색만 쨍하고 액션·보조가 물 빠진 상태.<br>
 · <b>세이지 실사용은 4곳뿐</b>(출처 점·스텝 번호 배경·데크 끝 화살표·로딩 스피너) — 면적이 작아 딥그린으로 바꿔도 화면이 무거워지지 않음.<br>
-· <b>A 현행</b> / <b>B 주황만</b>(어색함 확인용) / <b>C KS 그대로</b>(#F5642D+#12513A) / <b>D 권장</b>: 주황은 <b>테라코타 색상각 14° 유지</b>한 #EE582B(KS의 16°를 베끼지 않아 브랜드 연속성 확보), 딥그린은 #1C5F3D로 KS(명도 19%)보다 약간 밝게 — 보조색의 부드러움 유지.<br>
+· <b>A 현행</b> / <s>B 주황만</s> / <s>C KS 근사치(#F5642D+#12513A)</s> <span style="color:#8888A0;">— B·C는 v14-17에서 제거</span> / <b>D 권장</b>: 주황은 <b>테라코타 색상각 14° 유지</b>한 #EE582B(KS의 16°를 베끼지 않아 브랜드 연속성 확보), 딥그린은 #1C5F3D로 KS(명도 19%)보다 약간 밝게 — 보조색의 부드러움 유지.<br>
 · ⚠ <b>디자인 가이드 충돌</b> — 가이드는 "메인 CTA는 항상 테라코타"(전환 데이터 일관성)를 규정. B·C 채택 시 <b>Jollypot_Design_Guide.md 개정이 선행</b>돼야 함. 이 시안은 의사결정용 비교 장치.</div>
 
         <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-15 · 데크 카드 정리</b><br>
