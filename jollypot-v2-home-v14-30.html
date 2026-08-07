@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-29 · 졸리팟 V2 홈 (v2.0 · 데크 배경 토글)</title>
+<title>v14-30 · 졸리팟 V2 홈 (제목 강조·이모지 예시)</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root {
@@ -1183,11 +1183,14 @@
   /* ===== v14-29 — 데크 배경 토글 (기본: 없음) ===== */
   .deck-region.deck-tinted .full-recipe-card.v16,
   .deck-region.deck-tinted .deck-end-card { background: var(--color-surface); }
+
+  /* ===== v14-30 — 제목 부분 강조 (오늘의집 '30평대' 패턴) ===== */
+  .t-hl { color: var(--color-primary); }
 </style>
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>구팔레트</small></a><a class="vs-btn" href="jollypot-v2-home-v14-27.html">v14-27<small>컬러비교</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-29.html">v14-29<small>v2.0</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>구팔레트</small></a><a class="vs-btn" href="jollypot-v2-home-v14-27.html">v14-27<small>컬러비교</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-30.html">v14-30<small>최신</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">데크 배경</div>
@@ -1324,7 +1327,13 @@
 
         <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-29 · 데크 배경 토글</b> — 상단 <b>[데크 배경]</b>에서 <b>없음(기본·흰색)</b> ↔ <b>피치크림(#FFF5EA)</b> 전환. 결정카드·종료카드에 함께 적용.<br>· v14-28에서 피치크림을 기본으로 깔았으나, 대표 지시로 <b>기본=배경 없음</b> + 비교 토글 방식으로 변경. 커머스 토글과 같은 before/after 의사결정 장치.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-29</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-30 · 제목 부분 강조 + 이모지 예시</b> — 오늘의집 패턴("우리집과 비슷한 <span style="color:#35C5F0">30평대</span> 집들이" / "여름 쿨톤 인테리어 🌊")을 주황으로 이식.<br>
+· <b>예시 배치(혼합)</b>: 화제 🔥(이모지) · <span style="color:#FC642D">5분</span> 완성(강조) · <span style="color:#FC642D">8월</span> 제철 🍑(강조+이모지) · 김치찌개 🍲(이모지) · 데크 헤더의 시간대 단어(<span style="color:#FC642D">아침/점심/저녁</span>) 자동 강조 · <b>덜맵고·최근저장은 의도적 플레인</b> — 오집도 전부 꾸미지 않음. 다 꾸미면 강조가 아님.<br>
+· <b>v14-16 결정과의 관계</b>: 그때 없앤 건 제목 앞 <b>구조 슬롯</b>. 지금 넣는 건 <b>제목 텍스트의 일부</b>(강조 단어·끝 이모지)로, 어드민 섹션 설정에서 담당자가 입력 — 원칙 그대로.<br>
+· <b>강조 단어 원칙</b>: 아무 단어가 아니라 <b>데이터성 키워드</b>(시간대·월·소요시간)만. 오집의 "30평대"가 유저 데이터인 것과 같은 원리.<br>
+· 어드민 v4-19-4의 [편집 ▸ 제목 표시]에서 강조 단어·이모지 설정.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-30</div>
   </div>
 
   <div class="phone-frame">
@@ -1537,7 +1546,7 @@
       <div class="context-header">
         <div class="context-title-wrap">
                       <div class="context-text-wrap">
-            <div class="context-title">화제의 레시피</div>
+            <div class="context-title">화제의 레시피 🔥</div>
           </div>
         </div>
         <span class="context-link" aria-label="더보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
@@ -1616,7 +1625,7 @@
       <div class="context-header">
         <div class="context-title-wrap">
                       <div class="context-text-wrap">
-            <div class="context-title">5분 완성</div>
+            <div class="context-title"><span class="t-hl">5분</span> 완성</div>
           </div>
         </div>
         <span class="context-link" aria-label="더보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
@@ -1679,7 +1688,7 @@
       <div class="context-header">
         <div class="context-title-wrap">
                       <div class="context-text-wrap">
-            <div class="context-title">제철 레시피</div>
+            <div class="context-title"><span class="t-hl">8월</span> 제철 레시피 🍑</div>
           </div>
         </div>
         <span class="context-link" aria-label="더보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
@@ -1776,7 +1785,7 @@
       <div class="context-header">
         <div class="context-title-wrap">
                       <div class="context-text-wrap">
-            <div class="context-title">김치찌개 모음</div>
+            <div class="context-title">김치찌개 모음 🍲</div>
           </div>
         </div>
         <span class="context-link" aria-label="더보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
@@ -2055,10 +2064,11 @@
     const el = document.getElementById('deckTitle');
     if (!el) return;
     const h = new Date().getHours();
-    if (h >= 5 && h < 11) el.textContent = '오늘 아침 뭐 차려주지?';
-    else if (h >= 11 && h < 15) el.textContent = '오늘 점심 뭐 해주지?';
-    else if (h >= 15 && h < 21) el.textContent = '오늘 저녁 뭐 해주지?';
-    else el.textContent = '출출한데 뭐 만들지?';
+    // v14-30: 시간대 단어 = 데이터성 키워드 → 주황 강조 (오집 '30평대' 패턴)
+    if (h >= 5 && h < 11) el.innerHTML = '오늘 <span class="t-hl">아침</span> 뭐 차려주지?';
+    else if (h >= 11 && h < 15) el.innerHTML = '오늘 <span class="t-hl">점심</span> 뭐 해주지?';
+    else if (h >= 15 && h < 21) el.innerHTML = '오늘 <span class="t-hl">저녁</span> 뭐 해주지?';
+    else el.innerHTML = '<span class="t-hl">출출한데</span> 뭐 만들지?';
   })();
 
   // ===== v14 · 데크 풀↔슬림 토글 (슬림=현재, 풀=이전 비교용) =====
