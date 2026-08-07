@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-26 · 졸리팟 V2 홈 (굵기 600)</title>
+<title>v14-27 · 졸리팟 V2 홈 (요약 카드 이모지 제거)</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root {
@@ -472,14 +472,6 @@
     display: flex;
     align-items: center;
     gap: 14px;
-  }
-  .summary-icon {
-    width: 48px; height: 48px;
-    border-radius: 14px;
-    background: rgba(199,93,62,0.1);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px;
-    flex-shrink: 0;
   }
   .summary-text { flex: 1; min-width: 0; }
   .summary-title {
@@ -1224,7 +1216,7 @@
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-26.html">v14-26<small>최신</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-27.html">v14-27<small>최신</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
@@ -1357,7 +1349,11 @@
 · 데크 카드 제목도 <b>700 → 600</b>으로 함께 낮춤(오늘의집 카드 제목은 500).<br>
 · 크기·자간 유지(<code>19px / -0.3px</code>) · v14-25의 가변 폰트 + <code>antialiased</code> 유지.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-26</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-27 · 요약 카드 이모지 제거</b> — "저장한 레시피는 스크랩북에 모여요" 앞의 🔖(48×48 테라코타 틴트 박스) 삭제. 죽은 CSS도 함께 정리.<br>
+· 카드가 <b>텍스트 + CTA 2단 구성</b>으로 단순화됨. <code>gap:14px</code>는 그대로라 텍스트가 좌측 패딩에 맞춰 정렬.<br>
+· 이로써 앱 화면에 남은 이모지는 <b>🧊 냉장고(기능 진입점)</b> · <b>🍽️ 데크 끝(빈 상태 일러스트)</b> · <b>하단 네비 아이콘</b> 뿐 — 셋 다 텍스트 앞 장식이 아님.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-27</div>
   </div>
 
   <div class="phone-frame">
@@ -1845,7 +1841,6 @@
 
     <!-- v13 · Peak-End 요약 카드 복원 (저장→스크랩북 전환, 실시간 카운트) -->
     <div class="today-summary" id="todaySummary">
-      <div class="summary-icon">🔖</div>
       <div class="summary-text">
         <div class="summary-title" id="summaryTitle">저장한 레시피는 <strong>스크랩북</strong>에 모여요</div>
         <div class="summary-sub" id="summarySub">마음에 드는 레시피를 저장해 보세요</div>
