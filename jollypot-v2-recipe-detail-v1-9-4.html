@@ -17,7 +17,7 @@
     --color-text-primary: #212121;
     --color-text-secondary: #666666;
     --color-text-tertiary: #9E9E9E;
-    --color-border: #DECAAE;
+    --color-border: #CCCFD4;   /* v1-9-4: 보더 뉴트럴 그레이 */
     --color-divider: #E5E7EB;   /* v1-9-3: KS hr 토큰 실측값 — 구분선은 뉴트럴 그레이 */
     --color-line: #E5E7EB;
     --sage-dark: #145F48;
@@ -990,7 +990,7 @@
     <button id="togMoreOn" class="active fmt" onclick="setMoreInfo(true)">더 알아보기 · 데이터 있음</button>
     <button id="togMoreOff" onclick="setMoreInfo(false)">데이터 없음 (미노출)</button>
   </div>
-  <div style="font-size:12px; color:#CCCCDD; padding:6px 4px 0;">jollypot-v2-recipe-detail-v1-9-3</div>
+  <div style="font-size:12px; color:#CCCCDD; padding:6px 4px 0;">jollypot-v2-recipe-detail-v1-9-4</div>
 </div>
 
 <!-- ===== 헤더 ===== -->
@@ -2085,7 +2085,7 @@ function toggleSave() {
 <tr>
   <td style="padding:8px;">팔로잉</td>
   <td style="padding:8px;">투명</td>
-  <td style="padding:8px;">1px #DECAAE</td>
+  <td style="padding:8px;">1px #CCCFD4</td>
   <td style="padding:8px;">#666666 "팔로잉"</td>
 </tr>
 </table>
@@ -2097,7 +2097,7 @@ function toggleSave() {
 • <code style="background:#2a2a4a; padding:2px 6px; border-radius:4px;">position: fixed; bottom: 0</code> + <code style="background:#2a2a4a; padding:2px 6px; border-radius:4px;">padding-bottom: max(10px, env(safe-area-inset-bottom))</code></p>
 
 <p><b style="color:#fff;">댓글 입력 필드</b></p>
-<p>• 좌측 pill 인풋 (크림 배경 #FFF5EA, 보더 #DECAAE, h36, r18)<br>
+<p>• 좌측 pill 인풋 (크림 배경 #FFF5EA, 보더 #CCCFD4, h36, r18)<br>
 • 탭 시 댓글 섹션으로 스크롤 이동 또는 키보드 올림</p>
 
 <p><b style="color:#fff;">엔게이지먼트 아이콘</b></p>
@@ -2276,7 +2276,7 @@ function toggleSave() {
 <h3 style="color:#FC642D; font-size:15px; font-weight:700; margin:24px 0 8px;">11. 스타일 체크리스트</h3>
 <p>• <b style="color:#fff;">순검정 #000 사용 금지</b> → 모든 텍스트 #212121 (차콜)<br>
 • <b style="color:#fff;">font-weight: 700</b>은 섹션 헤더(L1·L2)와 가격에만 허용. 그 외는 500 이하<br>
-• 카드 컴포넌트: <code style="background:#2a2a4a; padding:2px 6px; border-radius:4px;">background: #FFF5EA + border: 1px solid #DECAAE</code> — 보더 누락 금지 (OLED 대응)<br>
+• 카드 컴포넌트: <code style="background:#2a2a4a; padding:2px 6px; border-radius:4px;">background: #FFF5EA + border: 1px solid #CCCFD4</code> — 보더 누락 금지 (OLED 대응)<br>
 • 그림자 사용 안 함 — 전체 플랫 디자인, 보더로 경계 구분<br>
 • 서체: Pretendard (시스템 폰트 폴백: -apple-system, Apple SD Gothic Neo)</p>
 
@@ -2292,7 +2292,7 @@ function toggleSave() {
 
 <!-- ==== 디자인 가이드 v2.0 적용 (v1-9 · 2026-08-07) ====
   컬러: 테라코타→오렌지 #FC642D · 세이지→딥그린 #145F48 · 크림→피치크림 #FFF5EA
-        텍스트 #212121/#666666/#9E9E9E · 보더 #DECAAE (명암비 검증값)
+        텍스트 #212121/#666666/#9E9E9E · 보더 #CCCFD4 (명암비 검증값)
   타이포: Pretendard Variable 로드 · antialiased · 자간 -0.3px · 헤더 700→600
   기준 문서: C:/dev/Jollypot/Jollypot_Design_Guide.md (v2.0) -->
 </body>

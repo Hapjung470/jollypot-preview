@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-30 · 졸리팟 V2 홈 (제목 강조·이모지 예시)</title>
+<title>v14-31 · 졸리팟 V2 홈 (보더 뉴트럴)</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root {
@@ -17,9 +17,9 @@
     --color-text-primary: #212121;
     --color-text-secondary: #666666;
     --color-text-tertiary: #9E9E9E;
-    --color-border: #DECAAE;
-    --color-divider: #E8DBC8;
-    --color-line: #E8DBC8;
+    --color-border: #CCCFD4;   /* v14-31: 보더 뉴트럴 그레이 (웜 1.60 ↔ 그레이 1.56 동급 가시성) */
+    --color-divider: #E5E7EB;
+    --color-line: #E5E7EB;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -661,7 +661,7 @@
   .deck-end-card {
     background: #FFFFFF;
     /* v14-21: 보더가 흰 배경 대비 1.22:1로 사실상 안 보였음 → 1.77:1로 강화 (전 테마 공통) */
-    border: 1px dashed #DECAAE;
+    border: 1px dashed #CCCFD4;
     border-radius: 18px;
     padding: 40px 24px;
     display: flex;
@@ -1190,7 +1190,7 @@
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>구팔레트</small></a><a class="vs-btn" href="jollypot-v2-home-v14-27.html">v14-27<small>컬러비교</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-30.html">v14-30<small>최신</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>구팔레트</small></a><a class="vs-btn" href="jollypot-v2-home-v14-27.html">v14-27<small>컬러비교</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-31.html">v14-31<small>최신</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">데크 배경</div>
@@ -1286,8 +1286,8 @@
 · <b>1px 점선 보더는 유지</b> — 데크의 '끝'을 알리는 신호이자, 흰 배경 위에서 카드 경계를 잡아주는 장치(디자인 가이드: 크림/흰색 명도차가 6~7%라 보더가 안전장치).</div>
 
         <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-21 · 데크 종료 카드 점선 보더 가시화</b><br>
-· 점선 보더는 <b>원래부터 3개 테마 모두에 동일하게</b> 적용돼 있었음(<code>dashed 1px</code>). 안 보였던 진짜 원인은 <b>색상 대비</b>: 기존 <code>#DECAAE</code>은 흰 배경 대비 명암비가 <b>1.22:1</b>로 사실상 비가시 상태. 이전에는 카드 배경이 크림이라 <b>1.08:1</b>로 더 안 보였고, v14-20에서 배경만 흰색으로 바꾸면서 보더 색은 그대로 둔 것이 원인.<br>
-· <b>#DECAAE로 강화 (1.77:1)</b> — 점선이 확실히 읽히면서도 과하지 않은 수준. 차가운 회색 대신 <b>따뜻한 크림 계열</b>을 유지해 브랜드 팔레트와 어긋나지 않게 함.<br>
+· 점선 보더는 <b>원래부터 3개 테마 모두에 동일하게</b> 적용돼 있었음(<code>dashed 1px</code>). 안 보였던 진짜 원인은 <b>색상 대비</b>: 기존 <code>#CCCFD4</code>은 흰 배경 대비 명암비가 <b>1.22:1</b>로 사실상 비가시 상태. 이전에는 카드 배경이 크림이라 <b>1.08:1</b>로 더 안 보였고, v14-20에서 배경만 흰색으로 바꾸면서 보더 색은 그대로 둔 것이 원인.<br>
+· <b>#CCCFD4로 강화 (1.77:1)</b> — 점선이 확실히 읽히면서도 과하지 않은 수준. 차가운 회색 대신 <b>따뜻한 크림 계열</b>을 유지해 브랜드 팔레트와 어긋나지 않게 함.<br>
 · 테마별로 다르게 두지 않고 <b>전 테마 공통</b>으로 적용 — 이 보더는 "데크의 끝"이라는 구조 신호이지 브랜드 액센트가 아니므로.</div>
 
         <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-22 · 섹션 헤더를 오늘의집 패턴으로</b> (스크린샷에서 비율 역산 → CSS px 환산)<br>
@@ -1333,7 +1333,9 @@
 · <b>강조 단어 원칙</b>: 아무 단어가 아니라 <b>데이터성 키워드</b>(시간대·월·소요시간)만. 오집의 "30평대"가 유저 데이터인 것과 같은 원리.<br>
 · 어드민 v4-19-4의 [편집 ▸ 제목 표시]에서 강조 단어·이모지 설정.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-30</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-31 · 선 계열 뉴트럴 그레이 통일</b> — 카드 보더 <code>#DECAAE</code>(웜) → <code>#CCCFD4</code>(그레이·흰 배경 대비 1.56:1로 웜 1.60과 동급 가시성) · 구분선/라인 → <code>#E5E7EB</code>(KS hr).<br>· 원칙: <b>면(카드)은 웜, 선(보더·구분)은 뉴트럴</b> — KS가 피치크림 카드에 회색 선을 쓰는 구조. 웜 위 웜 선은 흐릿함.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-31</div>
   </div>
 
   <div class="phone-frame">
@@ -1398,7 +1400,7 @@
           </div>
           <div class="frc2-cta">
             <button class="deck-save" onclick="toggleSave(event, this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>저장</button>
-            <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-9-3.html'">다음 단계 보러가기<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+            <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-9-4.html'">다음 단계 보러가기<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
           </div>
         </div>
       </div>
@@ -1418,7 +1420,7 @@
           </div>
           <div class="frc2-cta">
             <button class="deck-save" onclick="toggleSave(event, this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>저장</button>
-            <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-9-3.html'">다음 단계 보러가기<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+            <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-9-4.html'">다음 단계 보러가기<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
           </div>
         </div>
       </div>
@@ -1438,7 +1440,7 @@
           </div>
           <div class="frc2-cta">
             <button class="deck-save" onclick="toggleSave(event, this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>저장</button>
-            <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-9-3.html'">다음 단계 보러가기<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+            <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-9-4.html'">다음 단계 보러가기<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
           </div>
         </div>
       </div>
@@ -1458,7 +1460,7 @@
           </div>
           <div class="frc2-cta">
             <button class="deck-save" onclick="toggleSave(event, this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>저장</button>
-            <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-9-3.html'">다음 단계 보러가기<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+            <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-9-4.html'">다음 단계 보러가기<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
           </div>
         </div>
       </div>
@@ -1478,7 +1480,7 @@
           </div>
           <div class="frc2-cta">
             <button class="deck-save" onclick="toggleSave(event, this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v15.2c0 .5-.5.7-.9.4-2-1.4-4.5-3.4-6.1-3.4s-4.1 2-6.1 3.4c-.4.3-.9.1-.9-.4z"/></svg>저장</button>
-            <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-9-3.html'">다음 단계 보러가기<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+            <button class="cook-cta" onclick="event.stopPropagation();location.href='jollypot-v2-recipe-detail-v1-9-4.html'">다음 단계 보러가기<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
           </div>
         </div>
       </div>
@@ -2246,7 +2248,7 @@
 
   // ===== v14-9 · 레시피 카드 → 상세(recipe-detail-v1-8) / 만들기(+) → 생성(recipe-create-v12) 연결 =====
   (function wireRecipeNav(){
-    var DETAIL = 'jollypot-v2-recipe-detail-v1-9-3.html';   // 레시피 상세 최신
+    var DETAIL = 'jollypot-v2-recipe-detail-v1-9-4.html';   // 레시피 상세 최신
     var CREATE = 'jollypot-v2-recipe-create-v12-1.html'; // 레시피 만들기
     // 카드 내 액션 컨트롤은 이동에서 제외 (저장·장바구니·더보기·메뉴 등)
     var IGNORE = '.card-save,.card-cart,.deck-save,.card-menu,.expand-toggle,.context-link,.deck-progress-bar,.deck-end-arrow,.more-collections';
@@ -2270,7 +2272,7 @@
 
 <!-- ==== 디자인 가이드 v2.0 적용 (v14-28 · 2026-08-07) ====
   컬러: 테라코타→오렌지 #FC642D · 세이지→딥그린 #145F48 · 크림→피치크림 #FFF5EA
-        텍스트 #212121/#666666/#9E9E9E · 보더 #DECAAE (명암비 검증값)
+        텍스트 #212121/#666666/#9E9E9E · 보더 #CCCFD4 (명암비 검증값)
   타이포: Pretendard Variable 로드 · antialiased · 자간 -0.3px · 헤더 700→600
   기준 문서: C:/dev/Jollypot/Jollypot_Design_Guide.md (v2.0) -->
 </body>
