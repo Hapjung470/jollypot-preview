@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-25 · 졸리팟 V2 홈 (폰트 렌더링 일치)</title>
+<title>v14-26 · 졸리팟 V2 홈 (굵기 600)</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root {
@@ -403,7 +403,7 @@
     gap: 12px;
   }
   .continue-title-wrap { display: flex; align-items: center; flex: 1; }
-  .continue-title { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.25; }
+  .continue-title { font-size: 19px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.25; }
   .continue-scroll {
     display: flex; gap: 12px;
     overflow-x: auto;
@@ -586,7 +586,7 @@
   .deck-text-wrap { flex: 1; }
   .deck-title-text {
     font-size: 19px;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: -0.3px;
     line-height: 1.25;
   }
@@ -978,7 +978,7 @@
   }
   .context-title-wrap { display: flex; align-items: center; flex: 1; }
   .context-text-wrap { flex: 1; min-width: 0; }
-  .context-title { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.25; }
+  .context-title { font-size: 19px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.25; }
   /* 오늘의집 패턴 — 텍스트 '더보기' 대신 원형 화살표 */
   .context-link {
     flex-shrink: 0;
@@ -1160,7 +1160,7 @@
   .frc2-photo.real { background-image: var(--thumb-img); }
   .frc2-side { grid-area: side; min-width: 0; }
   .v16 .recipe-title {
-    font-size: 16px; margin-bottom: 4px;
+    font-size: 16px; font-weight: 600; margin-bottom: 4px;
     display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
     overflow: hidden;
     word-break: keep-all;       /* 한글 어절 중간에서 끊지 않음 */
@@ -1224,7 +1224,7 @@
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-25.html">v14-25<small>최신</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-26.html">v14-26<small>최신</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
@@ -1351,7 +1351,13 @@
 · 크기·굵기·자간은 실측값 유지(<code>19px / 700 / -0.3px</code>).<br>
 · ⚠ 남는 변수: 오늘의집은 <b>네이티브 앱</b>, 우리는 <b>모바일 웹</b>이라 텍스트 래스터라이저가 다름. 특히 <code>-webkit-font-smoothing</code>은 Android Chrome에서 효과가 제한적임. 이 상태에서도 두꺼워 보이면 <b>굵기를 600으로 낮추는 것</b>이 다음 카드.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-25</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-26 · 섹션 헤더 굵기 700 → 600</b><br>
+· <b>근거</b>: store.ohou.se의 <b>font-weight 분포를 전수 집계</b>한 결과 실제 섹션 헤더는 <code>"추천상품" 17px/<b>600</b></code>, <code>"오늘의집 LIVE" 16px/<b>600</b></code>. v14-23에서 참조했던 <code>18px/700</code>은 섹션 헤더가 아니라 <b>카테고리 내비 항목</b>이었음 — 잘못된 요소를 샘플링한 것이 원인.<br>
+· 오늘의집 본문 주력은 <code>400@12px</code>(161회), 카드 제목은 <code>500@12px</code>로 <b>전반적으로 가벼움</b>. 700은 가격·배너 같은 <b>강조 전용</b>으로만 사용.<br>
+· 데크 카드 제목도 <b>700 → 600</b>으로 함께 낮춤(오늘의집 카드 제목은 500).<br>
+· 크기·자간 유지(<code>19px / -0.3px</code>) · v14-25의 가변 폰트 + <code>antialiased</code> 유지.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-26</div>
   </div>
 
   <div class="phone-frame">
