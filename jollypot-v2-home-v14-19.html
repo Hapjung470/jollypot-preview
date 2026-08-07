@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-18 · 졸리팟 V2 홈 (컬러 3안)</title>
+<title>v14-19 · 졸리팟 V2 홈 (컬러 3안)</title>
 <style>
   :root {
     --color-brand: #FDB813;
@@ -870,11 +870,11 @@
     box-shadow: 0 4px 12px rgba(199,93,62,0.25);
   }
 
-  /* ★ 데크 → 16섹션 전환 (옵션 B · 얇은 라인) */
+  /* 데크 → 아래 섹션 스크롤 앵커 (v14-19: 얇은 라인 제거, 요소는 앵커로 유지)
+     ⚠ id="catalogStart"는 데크 끝 카드의 ↓ 버튼이 scrollIntoView 하는 목적지이므로 삭제 금지 */
   .deck-bottom-line {
-    height: 1px;
-    background: var(--color-line);
-    margin: 20px 20px 0;
+    height: 0;
+    margin: 20px 0 0;
   }
 
   /* ========== 우리집 냉장고 홈 모듈 (v14-5 · 크림 플랫 + 온보딩 간소화) ========== */
@@ -1219,7 +1219,7 @@
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-18.html">v14-18<small>최신</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-19.html">v14-19<small>최신</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
@@ -1308,7 +1308,12 @@
 · ② <b>"최근에 저장한 레시피" 앞 🔖 제거</b> — v14-16에서 놓쳤던 마지막 섹션 헤더 이모지.<br>
 · <b>남은 이모지는 성격이 달라 유지</b>: 🧊 냉장고(기능 진입점 아이콘) · 🍽️ 데크 끝(빈 상태 일러스트) · 🔖 오늘 요약(카드 내부 아이콘) · 하단 네비 아이콘. 셋 다 <b>섹션 헤더가 아님</b>.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-18</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-19 · 데크↔최근저장 사이 얇은 선 제거</b><br>
+· ⚠ <b>요소 자체는 남겼습니다</b> — 이 <code>&lt;div&gt;</code>에 <code>id="catalogStart"</code>가 붙어 있고, <b>데크 끝 카드의 ↓ 버튼</b>이 <code>scrollIntoView</code>로 여기를 목적지로 씁니다. 통째로 지우면 그 버튼이 동작하지 않습니다. 그래서 <b>높이 1px→0, 배경 제거</b>로 시각 요소만 없애고 앵커 기능은 유지.<br>
+· 앵커를 <code>.continue-section</code>으로 옮기는 방법도 검토했으나, <b>신규 유저(저장 0)에서는 그 섹션이 숨겨져</b> <code>scrollIntoView</code>가 동작하지 않으므로 기각.<br>
+· 간격은 기존 21px(선 1px + 여백 20px) → 20px로 사실상 동일.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-19</div>
   </div>
 
   <div class="phone-frame">
@@ -1470,7 +1475,7 @@
 
     </div>
 
-    <!-- 데크 → 16섹션 전환 (옵션 B · 얇은 라인) -->
+    <!-- 데크 → 아래 섹션 스크롤 앵커 (시각 요소 없음 · ↓ 버튼 목적지) -->
     <div class="deck-bottom-line" id="catalogStart"></div>
 
     <!-- 최근 저장 (꺼내쓰기 루프) -->
