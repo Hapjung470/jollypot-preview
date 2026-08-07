@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-19 · 졸리팟 V2 홈 (컬러 3안)</title>
+<title>v14-20 · 졸리팟 V2 홈 (컬러 3안)</title>
 <style>
   :root {
     --color-brand: #FDB813;
@@ -670,7 +670,7 @@
 
   /* ③ 데크 종료 카드 */
   .deck-end-card {
-    background: var(--color-surface);
+    background: #FFFFFF;
     border: 1px dashed var(--color-border);
     border-radius: 18px;
     padding: 40px 24px;
@@ -1219,7 +1219,7 @@
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-19.html">v14-19<small>최신</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-20.html">v14-20<small>최신</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
@@ -1313,7 +1313,10 @@
 · 앵커를 <code>.continue-section</code>으로 옮기는 방법도 검토했으나, <b>신규 유저(저장 0)에서는 그 섹션이 숨겨져</b> <code>scrollIntoView</code>가 동작하지 않으므로 기각.<br>
 · 간격은 기존 21px(선 1px + 여백 20px) → 20px로 사실상 동일.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-19</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-20 · 데크 종료 카드 배경 제거</b> — "오늘의 추천을 다 봤어요" 카드가 <b>크림(<code>#F5F0E8</code>)</b>이라 흰색인 레시피 카드들과 어긋나 있었음 → <b>흰색으로 통일</b>.<br>
+· <b>1px 점선 보더는 유지</b> — 데크의 '끝'을 알리는 신호이자, 흰 배경 위에서 카드 경계를 잡아주는 장치(디자인 가이드: 크림/흰색 명도차가 6~7%라 보더가 안전장치).</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-20</div>
   </div>
 
   <div class="phone-frame">
