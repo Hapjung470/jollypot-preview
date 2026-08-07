@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-21 · 졸리팟 V2 홈 (컬러 3안)</title>
+<title>v14-22 · 졸리팟 V2 홈 (섹션 헤더 개편)</title>
 <style>
   :root {
     --color-brand: #FDB813;
@@ -389,19 +389,18 @@
 
   /* 최근 저장 (B · 꺼내쓰기 루프) — 16섹션과 동일 구조 (흰 배경, 3:4) */
   .continue-section {
-    padding: 24px 0 8px;
+    padding: 32px 0 8px;
   }
   .continue-header {
     padding: 0 20px;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     gap: 12px;
   }
   .continue-title-wrap { display: flex; align-items: center; flex: 1; }
-  .continue-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
-  .continue-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 3px; }
+  .continue-title { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
   .continue-scroll {
     display: flex; gap: 12px;
     overflow-x: auto;
@@ -576,7 +575,7 @@
   .deck-region-header {
     padding: 0 20px;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     margin-bottom: 12px;
     gap: 12px;
@@ -584,21 +583,15 @@
   .deck-title-wrap { display: flex; align-items: center; gap: 10px; flex: 1; }
   .deck-text-wrap { flex: 1; }
   .deck-title-text {
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-  }
-  .deck-sub {
-    font-size: 12px;
-    color: var(--color-text-secondary);
-    margin-top: 2px;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
   }
   .deck-page {
     font-size: 12px;
     font-weight: 600;
     color: var(--color-text-secondary);
     font-variant-numeric: tabular-nums;
-    padding-top: 5px;
     white-space: nowrap;
   }
   .deck-page strong {
@@ -971,20 +964,29 @@
   }
 
   /* 콘텐츠 섹션 */
-  .context-section { padding: 24px 0 8px; }
+  .context-section { padding: 32px 0 8px; }
   .context-header {
     padding: 0 20px;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     gap: 12px;
   }
   .context-title-wrap { display: flex; align-items: center; flex: 1; }
   .context-text-wrap { flex: 1; min-width: 0; }
-  .context-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
-  .context-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 3px; }
-  .context-link { font-size: 12px; color: var(--color-text-secondary); padding-top: 4px; flex-shrink: 0; }
+  .context-title { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+  /* 오늘의집 패턴 — 텍스트 '더보기' 대신 원형 화살표 */
+  .context-link {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--color-surface);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-text-primary);
+    cursor: pointer;
+  }
+  .context-link svg { width: 15px; height: 15px; }
 
   .product-section {
     background: var(--color-surface-alt);
@@ -1220,7 +1222,7 @@
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-21.html">v14-21<small>최신</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-22.html">v14-22<small>최신</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
@@ -1322,7 +1324,14 @@
 · <b>#C9C2B6로 강화 (1.77:1)</b> — 점선이 확실히 읽히면서도 과하지 않은 수준. 차가운 회색 대신 <b>따뜻한 크림 계열</b>을 유지해 브랜드 팔레트와 어긋나지 않게 함.<br>
 · 테마별로 다르게 두지 않고 <b>전 테마 공통</b>으로 적용 — 이 보더는 "데크의 끝"이라는 구조 신호이지 브랜드 액센트가 아니므로.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-21</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-22 · 섹션 헤더를 오늘의집 패턴으로</b> (스크린샷에서 비율 역산 → CSS px 환산)<br>
+· <b>① 회색 부가설명 전부 제거</b> — 코너 7개("졸리팟에서 자주 저장되는" 등) + 최근저장("오늘 만들어보실래요?") + 데크("에디터가 골라 본 한 그릇") = 9건. 헤더가 <b>제목 한 줄</b>로 단순화.<br>
+· <b>② 제목 강화</b> — 코너·최근저장 <code>17px/700</code> → <code>18px/800</code>, 데크 <code>16px/700</code> → <code>18px/800</code>로 <b>3곳 통일</b>. 자간 <code>-0.3px → -0.5px</code>로 조여 오늘의집 특유의 단단한 인상 재현.<br>
+· <b>③ "더보기 ›" → 원형 화살표</b> — 32px 원형(배경 크림 <code>#F5F0E8</code>) + 15px 화살표 SVG. 8곳 교체. 텍스트가 사라져 제목이 더 도드라짐. 접근성용 <code>aria-label</code>은 유지("더보기"/"스크랩북으로").<br>
+· <b>④ 간격 재조정</b> — 부가설명이 없어져 헤더가 낮아진 만큼 <b>헤더 아래 16→14px</b>(제목과 콘텐츠를 붙임), <b>섹션 간 32→40px</b>(24+8 → 32+8)로 벌림. 오늘의집 실측 추정치(제목아래 ~19px / 섹션간 ~41px)에 맞춤.<br>
+· 헤더 정렬을 <code>flex-start → center</code>로 변경(부가설명이 없어 상단 정렬이 불필요) · 데크 "1/5" 페이지 표시의 <code>padding-top:5px</code> 보정도 함께 제거.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-22</div>
   </div>
 
   <div class="phone-frame">
@@ -1356,7 +1365,6 @@
         <div class="deck-title-wrap">
                     <div class="deck-text-wrap">
             <div class="deck-title-text" id="deckTitle">오늘 저녁 뭐 해주지?</div>
-            <div class="deck-sub">에디터가 골라 본 한 그릇</div>
           </div>
         </div>
         <div class="deck-page"><strong id="currentPage">1</strong> / 5</div>
@@ -1493,10 +1501,9 @@
         <div class="continue-title-wrap">
           <div>
             <div class="continue-title">최근에 저장한 레시피</div>
-            <div class="continue-sub">오늘 만들어보실래요?</div>
           </div>
         </div>
-        <span class="context-link">스크랩북 ›</span>
+        <span class="context-link" aria-label="스크랩북으로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
       </div>
       <div class="continue-scroll">
         <div class="continue-card">
@@ -1538,10 +1545,9 @@
         <div class="context-title-wrap">
                       <div class="context-text-wrap">
             <div class="context-title">화제의 레시피</div>
-            <div class="context-sub">졸리팟에서 자주 저장되는</div>
           </div>
         </div>
-        <span class="context-link">더보기 ›</span>
+        <span class="context-link" aria-label="더보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
       </div>
       <div class="compact-scroll">
         <div class="compact-card">
@@ -1618,10 +1624,9 @@
         <div class="context-title-wrap">
                       <div class="context-text-wrap">
             <div class="context-title">5분 완성</div>
-            <div class="context-sub">바쁠 때 든든하게</div>
           </div>
         </div>
-        <span class="context-link">더보기 ›</span>
+        <span class="context-link" aria-label="더보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
       </div>
       <div class="compact-scroll">
         <div class="compact-card">
@@ -1648,10 +1653,9 @@
         <div class="context-title-wrap">
                       <div class="context-text-wrap">
             <div class="context-title">키즈 셀렉션</div>
-            <div class="context-sub">졸리팟이 골라 본</div>
           </div>
         </div>
-        <span class="context-link">더보기 ›</span>
+        <span class="context-link" aria-label="더보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
       </div>
       <div class="product-scroll">
         <div class="product-card">
@@ -1683,10 +1687,9 @@
         <div class="context-title-wrap">
                       <div class="context-text-wrap">
             <div class="context-title">제철 레시피</div>
-            <div class="context-sub">재료가 가장 맛있을 때</div>
           </div>
         </div>
-        <span class="context-link">더보기 ›</span>
+        <span class="context-link" aria-label="더보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
       </div>
       <div class="compact-scroll">
         <div class="compact-card">
@@ -1715,10 +1718,9 @@
         <div class="context-title-wrap">
                       <div class="context-text-wrap">
             <div class="context-title">덜 맵고 부드럽게</div>
-            <div class="context-sub">아이도 함께 먹는 한 끼</div>
           </div>
         </div>
-        <span class="context-link">더보기 ›</span>
+        <span class="context-link" aria-label="더보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
       </div>
       <div class="compact-scroll">
         <div class="compact-card">
@@ -1745,10 +1747,9 @@
         <div class="context-title-wrap">
                       <div class="context-text-wrap">
             <div class="context-title">가볍게 먹는 사람을 위해</div>
-            <div class="context-sub">졸리팟이 골라 본</div>
           </div>
         </div>
-        <span class="context-link">더보기 ›</span>
+        <span class="context-link" aria-label="더보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
       </div>
       <div class="product-scroll">
         <div class="product-card">
@@ -1783,10 +1784,9 @@
         <div class="context-title-wrap">
                       <div class="context-text-wrap">
             <div class="context-title">김치찌개 모음</div>
-            <div class="context-sub">이번 주 테마 · 매주 교체</div>
           </div>
         </div>
-        <span class="context-link">더보기 ›</span>
+        <span class="context-link" aria-label="더보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
       </div>
       <div class="compact-scroll">
         <div class="compact-card">
