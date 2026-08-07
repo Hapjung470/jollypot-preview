@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-28 · 졸리팟 V2 홈 (디자인 가이드 v2.0)</title>
+<title>v14-29 · 졸리팟 V2 홈 (v2.0 · 데크 배경 토글)</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root {
@@ -659,7 +659,7 @@
 
   /* ③ 데크 종료 카드 */
   .deck-end-card {
-    background: var(--color-surface);
+    background: #FFFFFF;
     /* v14-21: 보더가 흰 배경 대비 1.22:1로 사실상 안 보였음 → 1.77:1로 강화 (전 테마 공통) */
     border: 1px dashed #DECAAE;
     border-radius: 18px;
@@ -1131,7 +1131,7 @@
      전폭 3:4는 사진만 440px라 데크가 화면을 다 먹어 불가 → 좌측 분할.
      v14-12의 풀블리드는 가장자리 잘림이 어색 → 카드 padding 16px + 사진 radius 14px. */
   .full-recipe-card.v16 {
-    background: var(--color-surface);   /* v2.0: 피치크림 #FFF5EA — KS Today's Recipe 카드 */
+    background: #FFFFFF;   /* 기본: 배경 없음 · 상단 [데크 배경] 토글로 피치크림 비교 */
     padding: 16px;
     display: grid;
     grid-template-columns: 137px 1fr;
@@ -1179,12 +1179,23 @@
   .v16 .cook-cta { padding: 10px 18px; font-size: 13.5px; }
 
     /* 테마 스와치 (프로토 토글 안 미니 컬러칩) */
+
+  /* ===== v14-29 — 데크 배경 토글 (기본: 없음) ===== */
+  .deck-region.deck-tinted .full-recipe-card.v16,
+  .deck-region.deck-tinted .deck-end-card { background: var(--color-surface); }
 </style>
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>구팔레트</small></a><a class="vs-btn" href="jollypot-v2-home-v14-27.html">v14-27<small>컬러비교</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-28.html">v14-28<small>v2.0</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>구팔레트</small></a><a class="vs-btn" href="jollypot-v2-home-v14-27.html">v14-27<small>컬러비교</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-29.html">v14-29<small>v2.0</small></a></div>
 <div class="proto-bar">
+    <div class="proto-group">
+      <div class="proto-label">데크 배경</div>
+      <div class="proto-toggles">
+        <button class="proto-toggle active" data-group="deckbg" data-value="plain" onclick="setDeckBg('plain')">없음 · 기본</button>
+        <button class="proto-toggle" data-group="deckbg" data-value="tinted" onclick="setDeckBg('tinted')">피치크림</button>
+      </div>
+    </div>
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
       <div class="proto-toggles">
@@ -1311,7 +1322,9 @@
 · 카드가 <b>텍스트 + CTA 2단 구성</b>으로 단순화됨. <code>gap:14px</code>는 그대로라 텍스트가 좌측 패딩에 맞춰 정렬.<br>
 · 이로써 앱 화면에 남은 이모지는 <b>🧊 냉장고(기능 진입점)</b> · <b>🍽️ 데크 끝(빈 상태 일러스트)</b> · <b>하단 네비 아이콘</b> 뿐 — 셋 다 텍스트 앞 장식이 아님.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-28</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-29 · 데크 배경 토글</b> — 상단 <b>[데크 배경]</b>에서 <b>없음(기본·흰색)</b> ↔ <b>피치크림(#FFF5EA)</b> 전환. 결정카드·종료카드에 함께 적용.<br>· v14-28에서 피치크림을 기본으로 깔았으나, 대표 지시로 <b>기본=배경 없음</b> + 비교 토글 방식으로 변경. 커머스 토글과 같은 before/after 의사결정 장치.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-29</div>
   </div>
 
   <div class="phone-frame">
@@ -1994,7 +2007,14 @@
     applyFridge();
   }
 
-    function setDeckLayout(mode) {
+    function setDeckBg(mode) {
+    document.querySelectorAll('.proto-toggle[data-group="deckbg"]').forEach(function(b){
+      b.classList.toggle('active', b.dataset.value === mode);
+    });
+    document.querySelector('.deck-region').classList.toggle('deck-tinted', mode === 'tinted');
+  }
+
+  function setDeckLayout(mode) {
     document.querySelectorAll('.proto-toggle[data-group="layout"]').forEach(function(b){
       b.classList.toggle('active', b.dataset.value === mode);
     });
