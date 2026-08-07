@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-24 · 졸리팟 V2 홈 (화살표·여백 조정)</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<title>v14-25 · 졸리팟 V2 홈 (폰트 렌더링 일치)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root {
     --color-brand: #FDB813;
@@ -24,6 +24,8 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
     font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    -webkit-font-smoothing: antialiased;   /* 오늘의집과 동일 — 서브픽셀 AA보다 획이 얇게 렌더됨 */
+    -moz-osx-font-smoothing: grayscale;
     background: #ECECEC;
     color: var(--color-text-primary);
     padding: 32px 20px 60px;
@@ -1222,7 +1224,7 @@
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-24.html">v14-24<small>최신</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-25.html">v14-25<small>최신</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
@@ -1343,7 +1345,13 @@
 · ⚠ <b>하단 무한추천(.ig-title)은 유지</b> — 제목이 1줄·2줄 섞여 있어(예: "기름 없이 에어프라이어 닭다리"=2줄) 제거하면 3열 그리드의 메타 줄이 어긋남. 실측 후 예외 처리.<br>
 · <b>오늘의집 폰트 = Pretendard Variable</b>(store.ohou.se computed style). v14-23에서 Pretendard CDN 로드로 이미 동일 계열 적용 중.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-24</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-25 · 폰트가 두꺼워 보이던 원인 2가지 제거</b> (눈 문제 아니었음)<br>
+· <b>① font-smoothing</b> — 오늘의집은 <code>-webkit-font-smoothing: antialiased</code>(그레이스케일 AA)를 쓰는데 우리는 <code>auto</code>(서브픽셀 AA)였음. 서브픽셀 AA는 획 주변에 색 성분을 더해 <b>같은 굵기라도 두껍게</b> 보임. → 동일하게 <code>antialiased</code> 적용.<br>
+· <b>② 폰트 파일 자체가 달랐음</b> — 오늘의집은 <b>Pretendard Variable</b>(가변, <code>font-weight: 45 920</code> 연속), 우리는 <b>정적 Pretendard</b>(100~900 단계)를 로드 중이었음. 이름만 'Pretendard Variable'로 선언해두고 실제로는 정적 파일이 렌더되고 있었음. → <b>가변 폰트 CDN으로 교체</b>해 오늘의집과 같은 파일 사용.<br>
+· 크기·굵기·자간은 실측값 유지(<code>19px / 700 / -0.3px</code>).<br>
+· ⚠ 남는 변수: 오늘의집은 <b>네이티브 앱</b>, 우리는 <b>모바일 웹</b>이라 텍스트 래스터라이저가 다름. 특히 <code>-webkit-font-smoothing</code>은 Android Chrome에서 효과가 제한적임. 이 상태에서도 두꺼워 보이면 <b>굵기를 600으로 낮추는 것</b>이 다음 카드.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-25</div>
   </div>
 
   <div class="phone-frame">
