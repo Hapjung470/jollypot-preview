@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14-16 · 졸리팟 V2 홈 (섹션 이모지 제거)</title>
+<title>v14-17 · 졸리팟 V2 홈 (컬러 3안)</title>
 <style>
   :root {
     --color-brand: #FDB813;
@@ -1181,29 +1181,13 @@
   .v16 .deck-save { padding: 10px 15px; font-size: 13.5px; }
   .v16 .cook-cta { padding: 10px 18px; font-size: 13.5px; }
 
-  /* ===== v14-14 — 컬러 테마 비교 (Kitchen Stories 참고) =====
-     KS 실측 체계: 오렌지=앱 액센트(탭·링크·FAB·네비) / 딥그린=전환 CTA(Sign-up·Try for free)
-                   옐로우=브랜드 IP / 피치크림=카드 배경 / 옅은노랑·옅은그린=칩
-     졸리팟 팔레트는 KS와 구조가 같고 채도만 낮음 → 채도 상향안(B)과 KS 대응안(C)을 비교. */
+  /* ===== v14-17 — 컬러 테마 비교 (2안 + KS 실측 동일값) =====
+     KS 팔레트는 kitchenstories.com에서 실제 computed style을 샘플링해 확보(추정 아님):
+       #FC642D 오렌지(33회, 최다 액센트) / #145F48 딥그린(Sign-up·Submit·장바구니 담기 배경)
+       #FFF5EA 카드·배너 배경(27회) / #FFF5C6 시간 칩("15 min") / #E3F4C7 태그 칩("vegetarian")
+     칩 글자색은 전부 #000000. */
 
-  /* B · 선명 — 테라코타 색상각(14°) 유지, 채도 55%→85% */
-  body.theme-vivid {
-    --color-primary: #EE582B;
-  }
-  /* C · KS 스타일 — 오렌지 액센트 + 딥그린 보조 */
-  body.theme-ks {
-    --color-primary: #F5642D;
-    --color-secondary: #12513A;
-  }
-  body.theme-ks .frc2-chip { background: #FBEFC8; color: #6B531F; }
-  body.theme-ks .frc2-chip:nth-child(2) { background: #E4F0DC; color: #12513A; }
-  /* KS는 결제·전환 버튼만 딥그린 — 홈의 저장 버튼을 그 역할로 대응 */
-  body.theme-ks .deck-save.saved {
-    color: #12513A; border-color: #12513A;
-  }
-  body.theme-ks .deck-save.saved svg { fill: #12513A; }
-
-  /* D · 권장 — 우리 색상각(14°) 주황 + 딥그린 보조 (채도 균형) */
+  /* D · 권장 — 우리 색상각(14°) 유지한 주황 + 딥그린 보조 (채도 균형) */
   body.theme-rec {
     --color-primary: #EE582B;
     --color-secondary: #1C5F3D;
@@ -1213,13 +1197,23 @@
   body.theme-rec .deck-save.saved { color: #1C5F3D; border-color: #1C5F3D; }
   body.theme-rec .deck-save.saved svg { fill: #1C5F3D; }
 
+  /* KS · 동일 — Kitchen Stories 실측값 그대로 */
+  body.theme-ks {
+    --color-primary: #FC642D;
+    --color-secondary: #145F48;
+  }
+  body.theme-ks .full-recipe-card.v16 { background: #FFF5EA; }
+  body.theme-ks .frc2-chip { background: #FFF5C6; color: #000000; }
+  body.theme-ks .frc2-chip:nth-child(2) { background: #E3F4C7; color: #000000; }
+  body.theme-ks .deck-save { background: #FFFFFF; }
+  body.theme-ks .deck-save.saved { color: #145F48; border-color: #145F48; }
+  body.theme-ks .deck-save.saved svg { fill: #145F48; }
+
   /* 가상요소(::after)는 조상의 변수 변경을 반영하지 않는 브라우저가 있어 명시 지정 */
-  body.theme-vivid .deck-progress-bar.active::after,
-  body.theme-vivid .deck-progress-bar.passed::after { background: #EE582B; }
-  body.theme-ks .deck-progress-bar.active::after,
-  body.theme-ks .deck-progress-bar.passed::after { background: #F5642D; }
   body.theme-rec .deck-progress-bar.active::after,
   body.theme-rec .deck-progress-bar.passed::after { background: #EE582B; }
+  body.theme-ks .deck-progress-bar.active::after,
+  body.theme-ks .deck-progress-bar.passed::after { background: #FC642D; }
 
   /* 테마 스와치 (프로토 토글 안 미니 컬러칩) */
   .sw { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
@@ -1227,7 +1221,7 @@
 </head>
 <body>
 
-  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-16.html">v14-16<small>최신</small></a></div>
+  <div class="ver-switch"><span class="vs-label">홈</span><a class="vs-btn" href="jollypot-v2-home-v14-10.html">v14-10<small>기존</small></a><a class="vs-btn" href="jollypot-v2-home-v14-13.html">v14-13<small>3:4 여백</small></a><a class="vs-btn active" href="jollypot-v2-home-v14-17.html">v14-17<small>최신</small></a></div>
 <div class="proto-bar">
     <div class="proto-group">
       <div class="proto-label">사용자 유형</div>
@@ -1247,9 +1241,8 @@
       <div class="proto-label">컬러 테마 (비교용)</div>
       <div class="proto-toggles">
         <button class="proto-toggle active" data-group="theme" data-value="base" onclick="setTheme('base')"><span class="sw" style="background:#C75D3E"></span><span class="sw" style="background:#8FA68E"></span>A 현행</button>
-        <button class="proto-toggle" data-group="theme" data-value="vivid" onclick="setTheme('vivid')"><span class="sw" style="background:#EE582B"></span><span class="sw" style="background:#8FA68E"></span>B 주황만 (비교)</button>
-        <button class="proto-toggle" data-group="theme" data-value="ks" onclick="setTheme('ks')"><span class="sw" style="background:#F5642D"></span><span class="sw" style="background:#12513A"></span>C KS 그대로</button>
         <button class="proto-toggle" data-group="theme" data-value="rec" onclick="setTheme('rec')"><span class="sw" style="background:#EE582B"></span><span class="sw" style="background:#1C5F3D"></span>D 권장</button>
+        <button class="proto-toggle" data-group="theme" data-value="ks" onclick="setTheme('ks')"><span class="sw" style="background:#FC642D"></span><span class="sw" style="background:#145F48"></span>KS 동일</button>
       </div>
     </div>
     <div class="proto-group">
@@ -1306,7 +1299,14 @@
 · <b>데크 🍳를 함께 뺀 이유</b> — 데크 헤더는 시간대별로 문구가 바뀌는데(아침 "뭐 차려주지" / 저녁 "뭐 해주지" / 야식 "출출한데 뭐 만들지") <b>이모지는 고정이라 이미 어긋나 있었음</b>. 야식 문구에 🍳는 부적절.<br>
 · <b>필요하면 담당자가 제목 텍스트 끝에 직접 입력</b>(어드민 섹션명 필드) — 구조가 강제하지 않으므로 붙이고 안 붙이고가 자유로워짐.</div>
 
-        <div class="proto-version">jollypot-v2-home-v14-16</div>
+        <div class="proto-note" style="border-top:1px solid #3A3A4E;margin-top:10px;padding-top:10px">· <b>v14-17 · 컬러 테마 3안으로 정리</b> — 기존 B(주황만)·C(KS 근사치) 제거, <b>A 현행</b> / <b>D 권장</b> / <b>KS 동일</b> 3안 비교.<br>
+· <b>KS 동일 = 실측값</b>. 스크린샷 추정이 아니라 kitchenstories.com에서 computed style을 직접 샘플링:<br>
+&nbsp;&nbsp;<code>#FC642D</code> 오렌지(등장 33회·최다 액센트) · <code>#145F48</code> 딥그린(Sign-up·Submit·장바구니 담기 배경) · <code>#FFF5EA</code> 카드/배너 배경(27회) · <code>#FFF5C6</code> 시간 칩("15 min") · <code>#E3F4C7</code> 태그 칩("vegetarian") · 칩 글자색 <code>#000000</code>.<br>
+· 이전 C안은 근사치(<code>#F5642D</code>/<code>#12513A</code>)였고, 실제와 특히 <b>딥그린이 달랐음</b>(실제가 더 밝고 청록 쪽 — 명도 19%→23%, 색상 158°→162°).<br>
+· <b>KS 동일</b> 선택 시 데크 카드 배경도 KS처럼 <b>피치크림 <code>#FFF5EA</code></b>로 바뀜(현행·권장은 흰색). KS의 "Today's Recipe" 히어로 카드가 실제로 피치크림.<br>
+· <b>D 권장 근거</b>: 주황은 테라코타 색상각 14°를 지켜 브랜드 연속성 확보(KS는 16° — 2도 차이라 육안 구분 불가한데 굳이 남의 값을 쓸 이유가 없음), 딥그린은 <code>#1C5F3D</code>로 KS보다 살짝 밝게 해 보조색의 부드러움 유지.</div>
+
+        <div class="proto-version">jollypot-v2-home-v14-17</div>
   </div>
 
   <div class="phone-frame">
@@ -2004,7 +2004,7 @@
     document.querySelectorAll('.proto-toggle[data-group="theme"]').forEach(function(b){
       b.classList.toggle('active', b.dataset.value === name);
     });
-    document.body.classList.remove('theme-vivid', 'theme-ks', 'theme-rec');
+    document.body.classList.remove('theme-ks', 'theme-rec');
     if (name !== 'base') document.body.classList.add('theme-' + name);
   }
 
