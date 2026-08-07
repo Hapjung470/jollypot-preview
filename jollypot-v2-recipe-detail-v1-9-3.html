@@ -18,8 +18,8 @@
     --color-text-secondary: #666666;
     --color-text-tertiary: #9E9E9E;
     --color-border: #DECAAE;
-    --color-divider: #E8DBC8;
-    --color-line: #E8DBC8;
+    --color-divider: #E5E7EB;   /* v1-9-3: KS hr 토큰 실측값 — 구분선은 뉴트럴 그레이 */
+    --color-line: #E5E7EB;
     --sage-dark: #145F48;
     --avatar-unclaimed: #E8DBC8;
     --avatar-claimed: #145F48;
@@ -510,9 +510,7 @@
   .step-list { list-style: none; }
   .step-item {
     display: flex; gap: 12px; padding: 12px 0;
-    border-bottom: 1px solid var(--color-line);
   }
-  .step-item:last-child { border-bottom: none; }
   .step-number {
     width: 24px; height: 24px; border-radius: 50%;
     background: var(--color-secondary); color: #fff;
@@ -992,7 +990,7 @@
     <button id="togMoreOn" class="active fmt" onclick="setMoreInfo(true)">더 알아보기 · 데이터 있음</button>
     <button id="togMoreOff" onclick="setMoreInfo(false)">데이터 없음 (미노출)</button>
   </div>
-  <div style="font-size:12px; color:#CCCCDD; padding:6px 4px 0;">jollypot-v2-recipe-detail-v1-9-2</div>
+  <div style="font-size:12px; color:#CCCCDD; padding:6px 4px 0;">jollypot-v2-recipe-detail-v1-9-3</div>
 </div>
 
 <!-- ===== 헤더 ===== -->
