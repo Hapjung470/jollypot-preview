@@ -13,7 +13,7 @@
     '스크랩북': 'jollypot-v2-scrapbook-v11-17.html',
     '마이': 'jollypot-v2-profile-my-v2-15.html'
   };
-  var PLUS = 'jollypot-v2-recipe-create-v12-2.html';
+  var PLUS = 'jollypot-v2-recipe-create-v12-1.html';
 
   // 화면별 forward 규칙 [selector, destination]
   var RULES = [];

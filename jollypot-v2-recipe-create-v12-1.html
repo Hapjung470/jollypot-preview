@@ -699,14 +699,14 @@
         </div>
       </div>
     </div>
-    <button class="addstep" id="addIngBtn" onclick="addIngredient()">＋ 재료 추가</button>
+    <button class="addstep" onclick="addIngredient()">＋ 재료 추가</button>
 
     <div class="flabel">만드는 법 <span class="req">*</span></div>
     <div class="ecard"><div class="head"><span class="num">1</span><div class="thumb" style="background:linear-gradient(135deg,#e7c79f,#d9b486)"></div></div><textarea placeholder="이 단계에서 무엇을 하나요?&#10;예: 양배추 500g을 채칼로 얇게 채썰어 주세요."></textarea></div>
     <div class="ecard"><div class="head"><span class="num">2</span><div class="thumb" style="background:linear-gradient(135deg,#bcc6a8,#9aac84)"></div></div><textarea placeholder="이 단계에서 무엇을 하나요?"></textarea></div>
     <div class="ecard"><div class="head"><span class="num">3</span><div class="thumb" style="background:linear-gradient(135deg,#d6a878,#c08a52)"></div></div><textarea placeholder="이 단계에서 무엇을 하나요?"></textarea></div>
     <div class="ecard"><div class="head"><span class="num">4</span><div class="nophoto">🖼</div><span class="lab" style="color:var(--text3)">사진 없는 단계</span></div><textarea placeholder="이 단계에서 무엇을 하나요?"></textarea></div>
-    <button class="addstep" id="addStepBtn" onclick="addStep()">＋ 단계 추가</button>
+    <button class="addstep" onclick="addStep()">＋ 단계 추가</button>
     <div style="height:14px;"></div>
   </div>
   <div class="footer"><button class="btn-out" onclick="go('p3')">이전</button><button class="cta" onclick="go('p6')">미리보기</button></div>
@@ -967,22 +967,6 @@
   aiNote();
 
   var prodOnState=false;
-  function removeStep(btn){
-    const card=btn.closest('.ecard');
-    if(card){ card.remove(); renumberSteps(); }
-  }
-
-  function renumberSteps(){
-    const b=document.getElementById('addStepBtn');
-    if(!b) return;
-    const body=b.parentNode;
-    [...body.querySelectorAll('.ecard')].filter(function(c){
-      return c.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
-    }).forEach(function(c,i){
-      const num=c.querySelector('.num'); if(num) num.textContent=i+1;
-    });
-  }
-
   function addIngredient(){
     const list=document.getElementById('ingList');
     const nb=document.createElement('div');
@@ -1000,16 +984,12 @@
   }
 
   function addStep(){
-    const btn=document.getElementById('addStepBtn');
-    const body=btn.parentNode;
-    // 단계 카드만 세어 번호 매김 (재료 영역의 요소가 섞이지 않도록 addStepBtn 앞쪽만 집계)
-    const cards=[...body.querySelectorAll('.ecard')].filter(function(c){
-      return c.compareDocumentPosition(btn) & Node.DOCUMENT_POSITION_FOLLOWING;
-    });
-    const n=cards.length + 1;
+    const body=document.querySelector('#p5 .body');
+    const btn=body.querySelector('.addstep');
+    const n=body.querySelectorAll('.ecard').length + 1;
     const card=document.createElement('div');
     card.className='ecard';
-    card.innerHTML='<div class="head"><span class="num">'+n+'</span><div class="nophoto">＋</div><span class="lab" style="color:var(--text3)">사진 추가 (선택)</span><button class="icobtn del" style="margin-left:auto" onclick="removeStep(this)">✕</button></div><textarea placeholder="이 단계에서 무엇을 하나요?"></textarea>';
+    card.innerHTML='<div class="head"><span class="num">'+n+'</span><div class="nophoto">＋</div><span class="lab" style="color:var(--text3)">사진 추가 (선택)</span></div><textarea placeholder="이 단계에서 무엇을 하나요?"></textarea>';
     body.insertBefore(card, btn);
     card.scrollIntoView({behavior:'smooth', block:'center'});
     const ta=card.querySelector('textarea'); if(ta) ta.focus();
