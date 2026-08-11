@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>졸리팟 — 개발사 견적용 개발 범위 (Lean MVP) · v1-4 · 2026.08.03</title>
+<title>졸리팟 — 개발사 견적용 개발 범위 (Lean MVP) · v1-6 · 2026.08.07</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
   :root{
@@ -232,7 +232,10 @@
 </style>
 </head>
 <body>
-<div style="max-width:980px;margin:0 auto 18px;padding:13px 16px;background:#FBEAEA;border:1px solid #EFC7C7;border-radius:10px;font-size:13.5px;line-height:1.6;color:#8A3B3B;"><b>&#9888; 이 문서는 이전 버전입니다.</b> 최신 개발 범위 정의서를 참고해 주세요 &rarr; <a href="jollypot-dev-scope-v1-6.html" style="color:#8A3B3B;font-weight:700;">jollypot-dev-scope-v1-6 열기</a></div>
+<div style="max-width:980px;margin:0 auto 18px;padding:14px 16px;background:#FFF5EA;border:1px solid #CCCFD4;border-radius:12px;font-size:14px;line-height:1.65;color:#212121;">
+<b style="color:#FC642D;">디자인 시스템 v2.0 적용 (2026.08.07)</b> — 모든 화면이 아래 가이드를 따릅니다. <b>화면을 보기 전에 가이드를 먼저 확인해 주세요.</b><br>
+<a href="jollypot-design-guide-v2.html" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;background:#FC642D;color:#fff;text-decoration:none;font-weight:600;border-radius:999px;padding:9px 18px;">📐 졸리팟 디자인 가이드 v2.0 열기 →</a>
+</div>
 <div class="wrap">
 
   <!-- ===== 헤더 ===== -->
@@ -273,6 +276,43 @@
   <div class="sec-label"><span class="em">이번 개발 범위</span> · 5개 영역 · 견적 대상</div>
   <main class="buckets">
 
+    <!-- 00 디자인 시스템 -->
+    <section class="card">
+      <div class="c-top">
+        <span class="num">00</span>
+        <span class="tag">디자인 시스템 · 전 화면 공통</span>
+        <span class="badge in">이번 범위</span>
+      </div>
+      <h2 class="c-title">디자인 가이드 v2.0 — 구현 기준</h2>
+      <p class="c-sub">모든 화면의 컬러·타이포·컴포넌트 스펙이 이 문서 하나로 정의됩니다. <b>개별 화면 견적 전에 이 절을 먼저 반영해 주세요.</b></p>
+
+      <div class="item">
+        <div class="item-h"><b>디자인 가이드</b><span class="key">v2.0.4</span>
+          <a class="open" href="jollypot-design-guide-v2.html" target="_blank" rel="noopener">열기 →</a></div>
+        <div class="flow">CSS Variables<span class="sep">→</span>타이포 스케일<span class="sep">→</span>컴포넌트 스펙<span class="sep">→</span>체크리스트</div>
+        <div class="chips">
+          <span class="chip hot">Kitchen Stories 실측 기준</span>
+          <span class="chip">CSS Variables 제공(§8)</span>
+          <span class="chip">Figma 네이밍(§9)</span>
+          <span class="chip">명암비 검증표(§10)</span>
+        </div>
+        <div class="pt"><span><b>핵심 스펙</b><br>
+        · <b>컬러</b>: 오렌지 <code>#FC642D</code>(액션) · 딥그린 <code>#145F48</code>(확정·분류) · 노른자 <code>#FDB813</code>(브랜드 IP) · 피치크림 <code>#FFF5EA</code>(카드 면) · 잉크 <code>#212121</code>(본문)<br>
+        · <b>선은 뉴트럴, 면은 웜</b>: 보더 <code>#CCCFD4</code> · 구분선 <code>#E5E7EB</code> (웜 톤 선 금지)<br>
+        · <b>타이포</b>: Pretendard Variable <b>웹폰트 실제 로드 필수</b> + <code>-webkit-font-smoothing: antialiased</code> + 자간 <code>-0.3px</code> · 섹션 헤더 <b>19px/600</b>(700 아님)<br>
+        · <b>한글 줄바꿈</b>: 카드 제목에 <code>word-break: keep-all</code> 필수(없으면 어절 중간에서 끊김)</span></div>
+        <div class="pt"><span><b>받을 것:</b> §8 CSS Variables를 토큰으로 구현 + §11 체크리스트 기준 자체 검수. 화면별 하드코딩 색상 금지 — 전부 변수 참조.</span></div>
+        <div class="pt"><span><b style="color:var(--later)">주의:</b> 프로토타입에 남아 있는 색상값이 가이드와 다르면 <b>가이드가 우선</b>합니다. 프로토는 의사결정 이력이 쌓인 산출물이라 일부 화면에 구값이 남아 있을 수 있습니다.</span></div>
+      </div>
+
+      <div class="item">
+        <div class="item-h"><b>섹션 여백·구분 규칙</b><span class="key">공통</span></div>
+        <div class="pt"><span><b>섹션 간 여백은 구분선이 전담합니다.</b> 구분선 <code>margin: 24px</code> 하나로 간격을 만들고, <b>인접 요소는 같은 방향의 여백을 갖지 않습니다.</b> 요소마다 자기 여백을 조금씩 들고 있으면 구분선 값을 통일해도 체감 간격이 들쭉날쭉해집니다.<br>
+        · 섹션 구분 = <b>1px 헤어라인</b>(8px 두꺼운 밴드 폐기) · 좌우 풀블리드<br>
+        · <code>min-height</code>로 카드 제목 줄 수를 강제하지 말 것 — 1줄 제목에 2줄 높이를 잡으면 제목·메타 사이에 빈 공간이 생깁니다. 가로 스크롤에서 <b>실제로 줄 수가 섞이는 경우에만</b> 정렬 목적으로 허용.</span></div>
+      </div>
+    </section>
+
     <!-- 01 UIUX 수정 -->
     <section class="card">
       <div class="c-top">
@@ -285,8 +325,8 @@
 
       <!-- 홈 -->
       <div class="item">
-        <div class="item-h"><b>① 홈 화면</b><span class="key">home · v14-10 (코너 축소판)</span>
-          <a class="open" href="jollypot-v2-home-v14-10.html" target="_blank" rel="noopener">열기 →</a></div>
+        <div class="item-h"><b>① 홈 화면</b><span class="key">home · v14-32-1</span>
+          <a class="open" href="jollypot-v2-home-v14-32-1.html" target="_blank" rel="noopener">열기 →</a></div>
         <div class="flow">신규(저장 0)<span class="sep">/</span>기존(저장 4) 유저별 피드 분기, 히어로 데크 + 큐레이션 섹션</div>
         <div class="states">
           <span class="state">신규/기존 유저</span><span class="state">상품 포함/제외</span>
@@ -324,20 +364,20 @@
 
       <!-- 레시피 상세 -->
       <div class="item">
-        <div class="item-h"><b>② 레시피 상세</b><span class="key">recipe-detail · v1.7 (축소판 + 알아두면 좋아요)</span>
-          <a class="open" href="jollypot-v2-recipe-detail-v1-8.html" target="_blank" rel="noopener">열기 →</a></div>
+        <div class="item-h"><b>② 레시피 상세</b><span class="key">recipe-detail · v1.9-7</span>
+          <a class="open" href="jollypot-v2-recipe-detail-v1-9-7.html" target="_blank" rel="noopener">열기 →</a></div>
         <div class="flow">Case1 AI요약<span class="sep">/</span>Case2 오리지널 분기 · 소스 4종 대응 · 상태 처리</div>
         <div class="chips">
           <span class="chip">YT 롱폼</span><span class="chip">YT 숏폼</span>
           <span class="chip">인스타</span><span class="chip">직접 업로드</span>
           <span class="chip">정상 · 영상삭제 · 네트워크에러</span>
           <span class="chip hot">v1.5 스코프 축소 · 16→8섹션</span>
-          <span class="chip hot">v1.6–1.7 · "알아두면 좋아요" 접힘 섹션(조건부 5모듈)</span>
+          <span class="chip hot">v1.6–1.8 · "알아두면 좋아요" 접힘 섹션(조건부 5모듈)</span>
         </div>
         <div class="pt"><span><b>받을 것:</b> Case1/Case2 분기 + 소스 4종 × 상태 3종(정상·영상삭제·네트워크에러) 매트릭스 처리.</span></div>
-        <div class="pt"><span><b>v1.6–1.7 — "알아두면 좋아요" 접힘 섹션 (2026.08.03):</b> v1.5에서 제거한 참고 정보 5종(대체재·주의사항·보관·영양정보·FAQ)을 <b>만드는 법(AI 라벨) 아래 ↔ 댓글 위</b>의 접힘 컨테이너 하나로 복원했습니다. 접힘이 해결하는 건 화면 혼잡이고, "AI가 지어낼 위험"은 <b>모듈별 데이터 소스 게이트</b>가 해결합니다 — 소스가 없으면 그 모듈은 접힘 안에도 렌더링하지 않습니다.<br>
-        · <b>모듈·소스</b>: 없으면 이걸로=재료 마스터 치환 테이블(사람 등록·AI는 매칭만) / 이것만 조심하세요=영상 근거(TIP과 동일 게이트) / 보관=카테고리별 큐레이션 테이블 / 영양정보=재료·분량×표준 영양 DB(식약처 공공데이터) 자동 계산, 재료 매칭 80% 미만이면 미노출 / FAQ=실제 댓글→운영자 승격<br>
-        · <b>렌더링 규칙 (v1.7)</b>: 모듈 0개면 섹션 자체 미노출(상하 두꺼운 바 포함) · 기본 = 접힘(18px 섹션 헤더 "알아두면 좋아요" + 회색 세부 라벨만 노출) · 펼치면 <b>전 모듈 한 번에 펼침</b>(모듈별 접기 버튼 유지) · 모듈 사이 1px 얇은 라인 · 섹션 상하는 두꺼운 구분 바<br>
+        <div class="pt"><span><b>v1.6–1.8 — "알아두면 좋아요" 접힘 섹션 (2026.08.04):</b> v1.5에서 제거한 참고 정보 5종(대체재·주의사항·보관·영양정보·FAQ)을 <b>만드는 법(AI 라벨) 아래 ↔ 댓글 위</b>의 접힘 컨테이너 하나로 복원했습니다. 접힘이 해결하는 건 화면 혼잡이고, "AI가 지어낼 위험"은 <b>모듈별 데이터 소스 게이트</b>가 해결합니다 — 소스가 없으면 그 모듈은 접힘 안에도 렌더링하지 않습니다.<br>
+        · <b>모듈·소스</b>: 없으면 이걸로=재료 마스터 치환 테이블(사람 등록·AI는 매칭만) / 이것만 조심하세요=영상 근거(TIP과 동일 게이트) / 보관=카테고리별 큐레이션 테이블 / 영양정보=재료·분량×표준 영양 DB(식약처 공공데이터) 자동 계산, 재료 매칭 80% 미만이면 미노출 / FAQ=<b>AI 추론 질문</b>(레시피를 보고 물어볼 법한 질문을 생성 — <b>답변은 레시피·영상 안의 정보로만, 외부 사실 생성 금지</b>. 출처 캡션 미표기, 추후 실제 댓글 승격으로 보강 가능)<br>
+        · <b>렌더링 규칙 (v1.8)</b>: 모듈 0개면 섹션 자체 미노출(상하 두꺼운 바 포함) · 기본 = 접힘(18px 섹션 헤더 "알아두면 좋아요" + 회색 세부 라벨만 노출) · 펼치면 <b>전 모듈 한 번에 펼침</b>(모듈별 접기 버튼 유지) · <b>위계 3신호</b> — L1 섹션 헤더(18px·700·블랙) / L2 모듈 라벨(14px·700·세컨더리 그레이) / L3 콘텐츠(서피스 #F5F0E8 카드 radius 14 수납, 카드 내부 행 구분선 rgba(0,0,0,.055)) · 모듈 간 1px 라인 없음(카드+여백이 경계) · 섹션 상하는 두꺼운 구분 바<br>
         · <b>SEO 구현 지침 (중요)</b>: 접힘 콘텐츠는 모바일 퍼스트 인덱싱에서 동일 가중치로 색인되지만 <b>반드시 초기 HTML/DOM에 포함</b>해야 합니다 — 펼침 시 fetch/lazy-load 금지. nutrition 스키마(JSON-LD)는 영양 모듈이 노출될 때만 포함(화면-스키마 일치). FAQPage 스키마는 넣지 않습니다(FAQ 리치결과 2026.05 종료 — 텍스트 색인으로만 기여)<br>
         · <b>재료 마스터 DB 1개가 3곳의 공통 기반</b>: 대체재 치환 + 영양 계산 + 냉장고 레시피 매칭(03 트랙) — 착수 시 최우선 구축 권고</span></div>
         <div class="pt"><span><b>v1.5 스코프 축소 (2026.07.27):</b> AI가 영상에서 추출 못 하는 정보(지어낼 위험)를 화면에서 제거해 <b>16개 섹션 → 8개</b>로 축소했습니다. <b>원칙 — AI는 영상에 있는 것만 옮기고, 없으면 그 섹션을 비웁니다(조건부 렌더링).</b><br>
@@ -353,8 +393,8 @@
 
       <!-- 레시피 만들기 -->
       <div class="item">
-        <div class="item-h"><b>③ 레시피 만들기</b><span class="key">recipe-create · v12</span>
-          <a class="open" href="jollypot-v2-recipe-create-v12.html" target="_blank" rel="noopener">열기 →</a></div>
+        <div class="item-h"><b>③ 레시피 만들기</b><span class="key">recipe-create · v12-1</span>
+          <a class="open" href="jollypot-v2-recipe-create-v12-1.html" target="_blank" rel="noopener">열기 →</a></div>
         <div class="flow">URL/영상 입력<span class="sep">→</span>스텝 순서·드래그·편집<span class="sep">→</span>발행<span class="sep">→</span>저장 착지</div>
         <div class="chips">
           <span class="chip">에러: 입력에러 · 못 찾음 · 확인 필요</span>
@@ -412,7 +452,7 @@
 
       <div class="item" style="border:none;padding-top:0">
         <div class="item-h"><b>냉장고 프로토타입</b><span class="key">fridge · v3-1-1 (수동+사진보조)</span>
-          <a class="open" href="jollypot-v2-fridge-v3-1-1.html" target="_blank" rel="noopener">열기 →</a></div>
+          <a class="open" href="jollypot-v2-fridge-v3-2.html" target="_blank" rel="noopener">열기 →</a></div>
         <div class="states">
           <span class="state">빈 냉장고</span>
           <span class="state">재료 있음(양문형: 냉동/냉장)</span>
@@ -458,7 +498,7 @@
       <div class="box base" style="border-color:var(--later-line)">
         <div class="box-h" style="color:var(--later)">📷 사진 보조 — 설계 근거 &amp; 확장안 (영수증·바코드)</div>
         프로토에 반영된 <b>냉장고 사진 보조</b>의 근거(왜 ‘보이는 것만’인지·정확도 데이터)와, <b>다음 확장 후보인 영수증 OCR·바코드</b>까지 별도 분석 문서에 정리돼 있습니다.
-        <div class="opens" style="margin-top:11px"><a class="open later" href="jollypot-v2-fridge-photo-assist-v1.html" target="_blank" rel="noopener">📷 사진 보조 — 분석 &amp; 최적안(영수증·바코드 포함) →</a></div>
+        <div class="opens" style="margin-top:11px"><a class="open later" href="jollypot-v2-fridge-photo-assist-v1-1.html" target="_blank" rel="noopener">📷 사진 보조 — 분석 &amp; 최적안(영수증·바코드 포함) →</a></div>
       </div>
     </section>
 
@@ -474,7 +514,7 @@
 
       <div class="item" style="border:none;padding-top:0">
         <div class="item-h"><b>어드민 프로토타입</b><span class="key">jollypot-admin · v4-19-3</span>
-          <a class="open" href="jollypot-admin-v4-19-3.html" target="_blank" rel="noopener">열기 →</a></div>
+          <a class="open" href="jollypot-admin-v4-19-4.html" target="_blank" rel="noopener">열기 →</a></div>
         <div class="chips" style="margin-top:8px">
           <span class="chip">대시보드</span><span class="chip">큐레이션</span><span class="chip">레시피</span>
           <span class="chip">에디터 노트</span><span class="chip">신고</span><span class="chip">회원</span>
@@ -499,7 +539,8 @@
         · <b>로테이션 슬롯</b>("이번 주 테마")은 수동 핀 교체로 운영 — 코너를 늘리고 싶을 때도 [+ 섹션 추가]로 대응하므로 <b>홈 코너 수는 개발 후에도 운영자가 조절 가능</b>합니다<br>
         · <b>커머스 2개는 OFF 상태로 목록에 존재</b> — 오픈 시 토글만 켜면 노출<br>
         · <b>편성 대상이 아닌 시스템 섹션</b>: 최근 저장 · 우리집 냉장고 · 전체 카테고리 · 오늘 요약 · 하단 무한추천 (유저 데이터/시스템 소유)<br>
-        · <b>알고리즘 섹션 4행(v4-19-3 추가)</b>: 지금 이 시간엔 · 인기 급상승 · 새로 올라온 · 냉장고 추천 — 전부 기본 OFF 등재. 정의는 추천 알고리즘 정의서 v1</span></div>
+        · <b>섹션 제목 표시 설정(v4-19-4 신규)</b>: [편집 ▸ 제목 표시]에서 <b>강조 단어(주황)</b>와 <b>이모지(제목 끝)</b>를 입력하면 홈 섹션 헤더에 그대로 반영. 제목 텍스트의 일부로 저장되므로 <b>별도 구조 필드가 아님</b>. 실시간 미리보기 포함. [+ 섹션 추가] 모달에도 동일 입력란.<br>
+· <b>알고리즘 섹션 4행(v4-19-3 추가)</b>: 지금 이 시간엔 · 인기 급상승 · 새로 올라온 · 냉장고 추천 — 전부 기본 OFF 등재. 정의는 추천 알고리즘 정의서 v1</span></div>
     </section>
 
     <!-- 05 앱 패키징 (네이티브 확장) -->
@@ -540,7 +581,7 @@
         <div class="box base">
           <div class="box-h">어드민에 붙는 것 — "딥링크 생성기" 화면 1개 (UTM 태깅 전용)</div>
           딥링크 전환은 <b>URL 규칙표가 자동으로</b> 처리하므로, 이 화면이 하는 일은 <b>어느 매체로 내보냈는지 UTM 태그를 남기는 것</b>뿐입니다. 어드민에 <b>새 메뉴 [딥링크 생성기]</b>를 붙입니다. 흐름 3단계: ①<b>링크 붙여넣기</b>(샵바이·졸리팟 URL을 그대로 붙여넣으면 대상 유형을 <b>패턴으로 자동 인식</b>) → ②<b>캠페인 태그</b>(마케팅 매체 <code>utm_source</code> · 자사 채널 <code>utm_medium</code> · 캠페인명 <code>utm_campaign</code> — 태그 종류는 <b>⚙ 태그 관리</b>에서 운영자가 추가·삭제) → ③<b>생성된 링크 + 복사</b>. 운영자는 이 링크를 푸시·카톡·인스타·문자에 붙여넣습니다.
-          <div class="opens" style="margin-top:9px"><a class="open" href="jollypot-admin-v4-19-3.html" target="_blank" rel="noopener">어드민 — 딥링크 생성기 열기 →</a></div>
+          <div class="opens" style="margin-top:9px"><a class="open" href="jollypot-admin-v4-19-4.html" target="_blank" rel="noopener">어드민 — 딥링크 생성기 열기 →</a></div>
         </div>
         <div class="box base">
           <div class="box-h">미설치 유저 폴백 — 상단 배너 한 줄</div>
@@ -615,8 +656,9 @@
       <tr><th>화면 / 기능</th><th style="width:96px">이번 범위</th><th>비고</th></tr>
     </thead>
     <tbody>
+      <tr><td class="feat">디자인 시스템 v2.0</td><td class="yes">포함</td><td>전 화면 공통 토큰(§8) · 타이포(Pretendard Variable 로드) · 컴포넌트 스펙 · 여백 규칙</td></tr>
       <tr><td class="feat">홈 화면</td><td class="yes">포함</td><td>유저 분기(빈 상태 표) · 데크카드(에디터 픽) · 냉장고 진입점 · <b>코너 고정4+로테이션1</b> · 커머스 ON/OFF(기본 OFF)</td></tr>
-      <tr><td class="feat">레시피 상세</td><td class="yes">포함</td><td>Case1/Case2 · 소스 4종 · 상태 3종 · <b>v1.7 = 8섹션 + "알아두면 좋아요" 접힘(조건부 5모듈)</b> · <b>저신뢰 토글 제외</b>(발행 후 신고로 처리)</td></tr>
+      <tr><td class="feat">레시피 상세</td><td class="yes">포함</td><td>Case1/Case2 · 소스 4종 · 상태 3종 · <b>v1.8 = 8섹션 + "알아두면 좋아요" 접힘(조건부 5모듈)</b> · <b>저신뢰 토글 제외</b>(발행 후 신고로 처리)</td></tr>
       <tr><td class="feat">레시피 만들기</td><td class="yes">포함</td><td>입력→편집→발행 · 에러/예외 6종</td></tr>
       <tr><td class="feat">레시피 퀄리티(추출)</td><td class="yes">포함</td><td>진단 우선 + 검수 게이트 Rule A~H</td></tr>
       <tr><td class="feat">냉장고 관리</td><td class="yes">포함</td><td>수동 담기·양문형 관리·레시피 매칭 <b>+ 📷 ‘보이는 것만’ 사진 보조</b>(precision 우선) — <b>전체 자동 스캔 제외</b></td></tr>
@@ -634,14 +676,17 @@
   <footer class="foot">
     <div class="foot-h">연결된 파일 (클릭하면 새 탭으로 열림 · ‘추후’ 항목은 이름·설명만, 링크 없음)</div>
     <div class="files">
-      <a class="file" href="jollypot-v2-home-v14-10.html" target="_blank" rel="noopener">
-        <i class="proto">01 프로토</i><span class="fn">홈 · home-v14-10 (코너 9→5)</span>
+      <a class="file" href="jollypot-v2-home-v14-32-1.html" target="_blank" rel="noopener">
+        <i class="proto">01 프로토</i><span class="fn">홈 · home-v14-32-1</span>
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
-      <a class="file" href="jollypot-v2-recipe-detail-v1-8.html" target="_blank" rel="noopener">
-        <i class="proto">01 프로토</i><span class="fn">레시피 상세 · recipe-detail-v1-7 (축소판+알아두면 좋아요)</span>
+      <a class="file" href="jollypot-v2-recipe-detail-v1-9-7.html" target="_blank" rel="noopener">
+        <i class="proto">01 프로토</i><span class="fn">레시피 상세 · recipe-detail-v1-9-7</span>
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
-      <a class="file" href="jollypot-v2-recipe-create-v12.html" target="_blank" rel="noopener">
+      <a class="file" href="jollypot-v2-recipe-create-v12-1.html" target="_blank" rel="noopener">
         <i class="proto">01 프로토</i><span class="fn">레시피 만들기 · recipe-create-v12</span>
+        <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
+      <a class="file" href="jollypot-design-guide-v2.html" target="_blank" rel="noopener">
+        <i class="doc">00 문서</i><span class="fn">디자인 가이드 · v2.0.4 <b>(먼저 읽어주세요)</b></span>
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
       <a class="file" href="jollypot-reco-algo-spec-v1.html" target="_blank" rel="noopener">
         <i class="doc">01 문서</i><span class="fn">추천 알고리즘 정의서 · reco-algo-spec-v1</span>
@@ -649,11 +694,11 @@
       <a class="file" href="recipe-quality-dev-request-v1-10.html" target="_blank" rel="noopener">
         <i class="doc">02 문서</i><span class="fn">레시피 퀄리티 개선 요청 · v1-10</span>
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
-      <a class="file" href="jollypot-v2-fridge-v3-1-1.html" target="_blank" rel="noopener">
-        <i class="proto">03 프로토</i><span class="fn">냉장고 관리 · fridge-v3-1-1 (수동+사진 보조)</span>
+      <a class="file" href="jollypot-v2-fridge-v3-2.html" target="_blank" rel="noopener">
+        <i class="proto">03 프로토</i><span class="fn">냉장고 관리 · fridge-v3-2 (수동+사진 보조)</span>
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
-      <a class="file" href="jollypot-admin-v4-19-3.html" target="_blank" rel="noopener">
-        <i class="adm">04 어드민</i><span class="fn">어드민 · jollypot-admin-v4-19-3</span>
+      <a class="file" href="jollypot-admin-v4-19-4.html" target="_blank" rel="noopener">
+        <i class="adm">04 어드민</i><span class="fn">어드민 · jollypot-admin-v4-19-4</span>
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
       <div class="file-nolink">
         <i class="later">추후</i><span class="fn">스크랩북 SNS · scrapbook (이름·설명만)</span>
@@ -674,11 +719,11 @@
         <li><b>③ 추후 개발(이번 범위 아님)</b> — 스크랩북 SNS·요리 모드·요리후기는 <b>혼선 방지를 위해 링크를 두지 않고 이름·설명만</b> 표기합니다.</li>
       </ul>
       <div style="margin-top:10px"><b>이 문서 접근 URL</b> — GitHub Pages 배포 사이트에 올라가 있어, 외부 렌더러 없이 같은 도메인 정적 링크로 바로 열립니다:<br>
-      <code>hapjung470.github.io/jollypot-preview/jollypot-dev-scope-v1-4.html</code></div>
+      <code>hapjung470.github.io/jollypot-preview/jollypot-dev-scope-v1-6.html</code></div>
       <div style="margin-top:9px"><b>결과</b>: 문서 안 모든 링크가 <code>hapjung470.github.io</code> 같은 도메인(동봉 2종은 상대링크)으로 동작합니다. 제3자 렌더러·타 브랜치 의존이 없어 개발사 접근 시 깨지지 않습니다.</div>
     </div>
 
-    <div class="ver">jollypot-dev-scope-v1-4 · 개발사 견적용 개발 범위 정의서 · 2026.06.26 · rev 2026.08.03 — 레시피 v1.7 "알아두면 좋아요" 섹션 승격·전체 펼침 + 홈 알고리즘 추천 섹션 4종(기본 OFF) 반영</div>
+    <div class="ver">jollypot-dev-scope-v1-6 · 개발사 견적용 개발 범위 정의서 · 2026.06.26 · rev 2026.08.07 — <b>디자인 가이드 v2.0 편입(00절 신설)</b> · 소비자 화면 13종 전 링크 최신화 · 어드민 제목 표시 설정 반영</div>
   </footer>
 
 </div>
