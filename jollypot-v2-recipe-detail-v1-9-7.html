@@ -846,28 +846,6 @@
   /* ===== HIDDEN ===== */
   .hidden { display: none !important; }
 
-  /* ===== v1.8 — 알아두면 좋아요 (위계 정리: 라벨 강등 + 카드 컨테인먼트) ===== */
-  .more-acc { border-top: none !important; border-bottom: none !important; }
-  .more-acc > summary { padding: 0; }   /* v1-9-7: 상하 여백 모두 divider 전담 (접힘 시 하단 34→24) */
-  .mi-head { display: flex; flex-direction: column; }
-  .mi-title { font-size: 18px; font-weight: 600; color: var(--color-text-primary); }
-  .mi-sub { font-size: 12.5px; color: var(--color-text-tertiary); font-weight: 400; margin-top: 4px; }
-  .more-info-body { padding: 0; }   /* v1-9-7: 펼침 시 하단 28→24 */
-  .more-info-body .acc { border: none !important; }
-  .more-info-body summary {
-    font-size: 14px; font-weight: 700; color: var(--color-text-secondary);
-    padding: 18px 6px 9px;
-  }
-  .more-info-body summary::after { font-size: 18px; }
-  .more-info-body .acc-list {
-    background: var(--color-surface); border-radius: 14px;
-    padding: 3px 16px; margin: 0;
-  }
-  .more-info-body .sub-row, .more-info-body .faq-qa { border-bottom-color: rgba(0,0,0,0.055); }
-  .more-info-body .sub-row:last-child, .more-info-body .faq-qa:last-child { border-bottom: none; }
-  .more-info-body .nutri-note { margin: 10px 0 2px; }
-  .more-info-body .nutri-table th, .more-info-body .nutri-table td { border-bottom-color: rgba(0,0,0,0.055); }
-  .more-info-body .nutri-table tr:last-child th, .more-info-body .nutri-table tr:last-child td { border-bottom: none; }
 </style>
 
 <!-- ===== v1.4 · SEO 메타 (값은 데모용 — 실서비스에선 실데이터로 교체) ===== -->
@@ -922,12 +900,7 @@
       "nutrition": {
         "@type": "NutritionInformation",
         "servingSize": "1인분",
-        "calories": "450 kcal",
-        "carbohydrateContent": "52 g",
-        "sugarContent": "38 g",
-        "proteinContent": "6 g",
-        "fatContent": "24 g",
-        "sodiumContent": "180 mg"
+        "calories": "450 kcal"
       },
       "video": {
         "@type": "VideoObject",
@@ -984,11 +957,7 @@
     <button id="togStateError" onclick="setState('error')">네트워크에러</button>
     <button id="togStateLow" onclick="setState('low')">저신뢰</button>
   </div>
-  <div class="proto-toggle-row">
-    <button id="togMoreOn" class="active fmt" onclick="setMoreInfo(true)">더 알아보기 · 데이터 있음</button>
-    <button id="togMoreOff" onclick="setMoreInfo(false)">데이터 없음 (미노출)</button>
-  </div>
-  <div style="font-size:12px; color:#CCCCDD; padding:6px 4px 0;">jollypot-v2-recipe-detail-v1-9-7</div>
+  <div style="font-size:12px; color:#CCCCDD; padding:6px 4px 0;">jollypot-v2-recipe-detail-v1-9-7 · rev 08-11</div>
 </div>
 
 <!-- ===== 헤더 ===== -->
@@ -1086,6 +1055,14 @@
     <div class="meta-cell">
       <svg class="meta-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg>
       <span class="meta-label">1인분</span>
+    </div>
+    <div class="meta-cell">
+      <svg class="meta-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 19v-6M12 19V9M19 19V5"/></svg>
+      <span class="meta-label">쉬움</span>
+    </div>
+    <div class="meta-cell">
+      <svg class="meta-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3c2.2 3.4 5.5 5.5 5.5 9.2a5.5 5.5 0 01-11 0c0-1.6.7-2.9 1.5-4 .2 1.4 1 2.3 2.2 2.7C9.8 8.2 10.6 5.3 12 3z"/></svg>
+      <span class="meta-label">약 450 kcal</span>
     </div>
   </div>
 
@@ -1230,158 +1207,6 @@
 
   <div class="divider"></div>
 
-  <!-- ===== 레시피 더 알아보기 (v1.6 · 접힘 보관함) =====
-       v1.5에서 제거한 참고 정보를 '데이터 소스 게이트' 조건부로 복원.
-       모듈별 데이터가 없으면 해당 모듈 미노출 · 전부 없으면 이 컨테이너 자체 미노출.
-       SEO: 초기 DOM 포함(모바일 퍼스트 인덱싱 = 접힘 콘텐츠 동일 가중치) · 펼침 시 lazy-load 금지 -->
-  <details id="moreInfo" class="acc more-acc">
-    <summary><span class="mi-head"><span class="mi-title">알아두면 좋아요</span><span class="mi-sub">대체 재료 · 주의사항 · 보관법 · 영양정보 · 자주 묻는 질문</span></span></summary>
-    <div class="more-info-body">
-
-      <!-- 모듈 1 · 없으면 이걸로 — 소스: 재료 마스터 치환 테이블(사람 등록) · AI는 매칭만 -->
-      <details class="acc" open>
-        <summary>없으면 이걸로</summary>
-        <ul class="acc-list">
-          <li class="sub-row">
-            <span class="sub-from">생크림</span>
-            <span class="sub-arrow" aria-hidden="true">&rarr;</span>
-            <span class="sr-only">대신</span>
-            <div class="sub-to">
-              <div class="sub-to-main">마스카포네 <span class="sub-amt">동량</span></div>
-              <div class="sub-benefit">더 진한 맛이 나요</div>
-            </div>
-          </li>
-          <li class="sub-row">
-            <span class="sub-from">식용유</span>
-            <span class="sub-arrow" aria-hidden="true">&rarr;</span>
-            <span class="sr-only">대신</span>
-            <div class="sub-to">
-              <div class="sub-to-main">녹인 버터 <span class="sub-amt">동량</span></div>
-              <div class="sub-benefit">풍미가 좋아져요</div>
-            </div>
-          </li>
-          <li class="sub-row">
-            <span class="sub-from">카스테라</span>
-            <span class="sub-arrow" aria-hidden="true">&rarr;</span>
-            <span class="sr-only">대신</span>
-            <div class="sub-to">
-              <div class="sub-to-main">식빵 또는 롤케이크 시트</div>
-              <div class="sub-benefit">시트 형태면 그대로 대체돼요</div>
-            </div>
-          </li>
-          <li class="sub-row">
-            <span class="sub-from">키위</span>
-            <span class="sub-arrow" aria-hidden="true">&rarr;</span>
-            <span class="sr-only">대신</span>
-            <div class="sub-to">
-              <div class="sub-to-main">딸기 또는 망고</div>
-              <div class="sub-benefit">수분이 적어 잘 안 무너져요</div>
-            </div>
-          </li>
-        </ul>
-      </details>
-
-      <!-- 모듈 2 · 이것만 조심하세요 — 소스: 영상 근거 추출(TIP과 동일 게이트) -->
-      <details class="acc" open>
-        <summary>이것만 조심하세요</summary>
-        <ul class="acc-list">
-          <li class="sub-row">
-            <span class="sub-from">생크림</span>
-            <span class="sub-arrow" aria-hidden="true">&rarr;</span>
-            <span class="sr-only">주의</span>
-            <div class="sub-to">
-              <div class="sub-to-main">되직하게 휘핑하기</div>
-              <div class="sub-benefit">묽으면 흘러내려요</div>
-            </div>
-          </li>
-          <li class="sub-row">
-            <span class="sub-from">키위</span>
-            <span class="sub-arrow" aria-hidden="true">&rarr;</span>
-            <span class="sr-only">주의</span>
-            <div class="sub-to">
-              <div class="sub-to-main">물기 꼼꼼히 제거하기</div>
-              <div class="sub-benefit">물이 생기면 시트가 눅눅해져요</div>
-            </div>
-          </li>
-          <li class="sub-row">
-            <span class="sub-from">굳히기</span>
-            <span class="sub-arrow" aria-hidden="true">&rarr;</span>
-            <span class="sr-only">주의</span>
-            <div class="sub-to">
-              <div class="sub-to-main">2시간 이상 두기</div>
-              <div class="sub-benefit">1시간보다 충분히 굳혀야 예뻐요</div>
-            </div>
-          </li>
-        </ul>
-      </details>
-
-      <!-- 모듈 3 · 보관 & 다시 먹기 — 소스: 카테고리별 큐레이션 테이블(운영자 관리) -->
-      <details class="acc" open>
-        <summary>보관 &amp; 다시 먹기</summary>
-        <ul class="acc-list">
-          <li class="sub-row">
-            <span class="sub-from">냉장</span>
-            <span class="sub-arrow" aria-hidden="true">&rarr;</span>
-            <span class="sr-only">보관</span>
-            <div class="sub-to">
-              <div class="sub-to-main">2일 이내</div>
-              <div class="sub-benefit">빨리 먹을수록 신선해요</div>
-            </div>
-          </li>
-          <li class="sub-row">
-            <span class="sub-from">냉동</span>
-            <span class="sub-arrow" aria-hidden="true">&rarr;</span>
-            <span class="sr-only">보관</span>
-            <div class="sub-to">
-              <div class="sub-to-main">1주 <span class="sub-amt">까지</span></div>
-              <div class="sub-benefit">먹기 30분 전에 해동하세요</div>
-            </div>
-          </li>
-          <li class="sub-row">
-            <span class="sub-from">자르기</span>
-            <span class="sub-arrow" aria-hidden="true">&rarr;</span>
-            <span class="sr-only">보관</span>
-            <div class="sub-to">
-              <div class="sub-to-main">칼을 데워 닦으며 자르기</div>
-              <div class="sub-benefit">단면이 깔끔하게 잘려요</div>
-            </div>
-          </li>
-        </ul>
-      </details>
-
-      <!-- 모듈 4 · 영양정보 — 소스: 재료·분량 x 표준 영양 DB(식약처) 자동 계산 -->
-      <details class="acc" open>
-        <summary>영양정보</summary>
-        <div class="acc-list">
-          <p class="nutri-note">1인분 기준 · 재료 기준 자동 계산 추정치</p>
-          <table class="nutri-table">
-            <tbody>
-              <tr><th>칼로리</th><td>약 450 kcal</td></tr>
-              <tr><th>탄수화물</th><td>52 g</td></tr>
-              <tr><th>당류</th><td>38 g</td></tr>
-              <tr><th>단백질</th><td>6 g</td></tr>
-              <tr><th>지방</th><td>24 g</td></tr>
-              <tr><th>나트륨</th><td>180 mg</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </details>
-
-      <!-- 모듈 5 · 자주 묻는 질문 — 소스: AI 추론 질문(답변은 레시피·영상 근거 한정) -->
-      <details class="acc" open>
-        <summary>자주 묻는 질문</summary>
-        <div class="acc-list">
-          <div class="faq-qa"><p class="faq-q">오븐이 정말 필요 없나요?</p><p class="faq-a">네. 냉장고에서 굳히는 노오븐 케이크라 오븐·베이킹 도구가 없어도 됩니다.</p></div>
-          <div class="faq-qa"><p class="faq-q">생크림이 자꾸 흘러내려요.</p><p class="faq-a">휘핑이 부족한 경우가 대부분이에요. 뿔이 설 정도로 단단하게 휘핑하고, 키위 물기를 제거한 뒤 쌓으세요.</p></div>
-          <div class="faq-qa"><p class="faq-q">얼마나 굳혀야 하나요?</p><p class="faq-a">최소 1시간, 단면을 깔끔하게 하려면 2시간 이상 권장합니다.</p></div>
-          <div class="faq-qa"><p class="faq-q">유당/달걀 알레르기가 있어요.</p><p class="faq-a">달걀은 들어가지 않아요. 우유·생크림은 식물성 대체유·휘핑크림으로 바꿀 수 있습니다.</p></div>
-        </div>
-      </details>
-
-    </div>
-  </details>
-
-  <div id="moreInfoDivider" class="divider"></div>
 
   <!-- ===== 댓글 진입점 ===== -->
   <div class="comment-entry">
@@ -1749,13 +1574,6 @@ function adjustServing(delta) {
   });
 }
 
-function setMoreInfo(on) {
-  document.getElementById('togMoreOn').className = on ? 'active fmt' : '';
-  document.getElementById('togMoreOff').className = on ? '' : 'active fmt';
-  document.getElementById('moreInfo').classList.toggle('hidden', !on);
-  document.getElementById('moreInfoDivider').classList.toggle('hidden', !on);
-}
-
 function toggleMoreMenu() {
   document.getElementById('moreMenu').classList.toggle('hidden');
 }
@@ -1804,15 +1622,26 @@ function toggleSave() {
   📋 개발 지침 · Recipe Detail
 </h2>
 
+<div style="background:#2a2a4a; border-left:4px solid #FC642D; padding:14px 16px; margin:0 0 24px; border-radius:6px;">
+  <p style="margin:0 0 8px;"><b style="color:#FC642D;">⚡ rev 2026-08-11 — 대표 확정 2건. 아래 모든 블록과 충돌 시 이 배너가 우선.</b></p>
+  <p style="margin:0;">
+  • <b style="color:#fff;">① "알아두면 좋아요" 섹션 전면 삭제</b> — v1.6~1.8의 접힘 보관함(대체재·주의사항·보관·영양정보·FAQ 5모듈), 데이터 소스 게이트, "데이터 없음" 상태 모두 개발 범위에서 제외. 아래 v1.6~v1.9 관련 블록은 이력 보존용.<br>
+  • <b style="color:#fff;">② 메타 2 → 4종</b>: 요리시간 · 인분 · <b>난이도</b> · <b>칼로리</b> (아이콘+값 · 4등분 셀 · 1px 세로 구분선)<br>
+  • <b style="color:#FFC520;">난이도 소스</b>: 룰베이스 자동 산정 — 총시간·단계 수 기준 3구간(쉬움/보통/어려움). 산정표는 개발 착수 시 확정 · Case2(오리지널)는 크리에이터 수정 가능<br>
+  • <b style="color:#FFC520;">칼로리 소스</b>: 재료·분량 × 표준 영양DB(식약처) 자동 계산 추정치 · <b>"약 450 kcal"처럼 '약' 표기 필수</b>(1인분 기준) · AI 생성값이 아닌 결정론적 계산값이라 v1.5 'AI 추정 배제' 원칙과 구분 · 재료 매칭 실패 시 해당 셀 미노출(조건부)<br>
+  • <b style="color:#fff;">JSON-LD</b>: nutrition은 calories·servingSize만 유지(화면-스키마 일치)
+  </p>
+</div>
+
 <div style="background:#2a2a4a; border-left:4px solid #FDB813; padding:14px 16px; margin:0 0 24px; border-radius:6px;">
   <p style="margin:0 0 8px;"><b style="color:#FDB813;">⚡ v1.5 스코프 축소 — 2026-07-27 이사 피드백 반영. 아래 개별 지침과 충돌 시 이 배너가 우선.</b></p>
   <p style="margin:0 0 6px;"><b style="color:#fff;">원칙: AI는 영상에 있는 것만 옮긴다. 없으면 그 섹션을 비운다(조건부 렌더링). 빈자리는 이후 UGC(댓글·후기)가 채운다.</b></p>
   <p style="margin:0;">
-  • <b style="color:#fff;">P1 (이번 개발)</b>: 브레드크럼 · 제목/메타(총시간·인분) · 재료+인분조절+개별 🛒 · 만드는 법+타임스탬프 · TIP(영상에 근거 있을 때만) · AI 라벨 · <b>레시피 더 알아보기(접힘 보관함 · 모듈 조건부 — v1.6)</b> · 댓글 미리보기 2개+입력칸 · 추천 고정 12개 · 에러/빈 상태<br>
+  • <b style="color:#fff;">P1 (이번 개발)</b>: 브레드크럼 · 제목/<b>메타 4종(요리시간·인분·난이도·칼로리 — rev 08-11)</b> · 재료+인분조절+개별 🛒 · 만드는 법+타임스탬프 · TIP(영상에 근거 있을 때만) · AI 라벨 · 댓글 미리보기 2개+입력칸 · 추천 고정 12개 · 에러/빈 상태<br>
   • <b style="color:#fff;">P2 (쿡모드 이후)</b>: 별점·후기수·포토갤러리 — CookHistory 기반 한 묶음, 데이터 생기기 전엔 UI 전체 미노출 · 댓글 전체화면 · 댓글→FAQ 승격 구조<br>
-  • <b style="color:#fff;">P3 (제외)</b>: 준비/조리 분리표시 · 메타 kcal · 장보기 큐레이션 섹션 · 추천 무한스크롤 <span style="color:#8888A0">(대체재·주의·보관·영양·FAQ는 v1.6에서 "더 알아보기" 접힘 보관함으로 조건부 복원 — 아래 v1.6 블록)</span><br>
+  • <b style="color:#fff;">P3 (제외)</b>: 준비/조리 분리표시 · 장보기 큐레이션 섹션 · 추천 무한스크롤 · <b>"알아두면 좋아요" 5모듈(rev 08-11 삭제 — 상단 rev 배너 참조)</b> <span style="color:#8888A0">(메타 kcal은 rev 08-11에 P1로 승격)</span><br>
   • <b style="color:#FFC520;">결정 대기</b>: 쿠팡 파트너스 MVP 포함 여부(현재 재료 🛒 개별 링크만 유지) · 카테고리 taxonomy 확정(개발 착수 전 필수) · 대체재는 재료 마스터 치환테이블 구축 시 부활 검토<br>
-  • <b style="color:#fff;">구조화데이터(JSON-LD)</b>: aggregateRating 삭제 유지(후기 0) · nutrition은 v1.6에서 조건부 복원(영양 모듈 노출 시에만) · prepTime/cookTime/totalTime은 스키마에만 유지 · FAQPage 미적용<br>
+  • <b style="color:#fff;">구조화데이터(JSON-LD)</b>: aggregateRating 삭제 유지(후기 0) · nutrition은 calories·servingSize만 유지(메타 칼로리 표기와 화면-스키마 일치 — rev 08-11) · prepTime/cookTime/totalTime은 스키마에만 유지 · FAQPage 미적용<br>
   • 지침 6(장보기)·10-2(후기 0건)·10-3(갤러리)·10-4의 전체화면 부분은 P2/P3 참고용으로만 유지
   </p>
 </div>
