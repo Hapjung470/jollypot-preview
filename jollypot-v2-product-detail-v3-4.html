@@ -18,7 +18,7 @@
     --bg:#FFF;--surface:#FFF5EA;--surface-alt:#FFEEDC;
     --txt1:#212121;--txt2:#666666;--txt3:#9E9E9E;
     --ok:#145F48;--info:#3276AE;--warn:#FFC520;
-    --border:#DECAAE;--line:#E8DBC8;
+    --border:#CCCFD4;--line:#E5E7EB;
   }
 
   /* === CONTROL BAR === */
@@ -112,7 +112,7 @@
 
   /* SHIPPING */
   .shipping{display:flex;align-items:flex-start;gap:10px;padding:16px;margin-top:8px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
-  .ship-badge{font-size:11px;font-weight:600;color:var(--ok);background:rgba(91,138,107,.08);padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;}
+  .ship-badge{font-size:11px;font-weight:600;color:var(--ok);background:rgba(20,95,72,.08);padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;}
   .ship-badge-paid{font-size:11px;font-weight:600;color:var(--txt2);background:var(--surface);padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;}
   .ship-text{font-size:13px;color:var(--txt2);line-height:1.6;}.ship-text b{color:var(--txt1);font-weight:500;}
 
@@ -180,7 +180,7 @@
   .rv-filter{display:flex;gap:6px;padding:0 16px 14px;}
   .rv-chip{padding:7px 14px;border-radius:18px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg);color:var(--txt2);font-family:inherit;}
   .rv-chip.on{background:var(--txt1);color:#fff;border-color:var(--txt1);}
-  .rv-verified{font-size:10px;color:var(--ok);font-weight:500;background:rgba(91,138,107,.08);padding:2px 6px;border-radius:3px;margin-left:4px;}
+  .rv-verified{font-size:10px;color:var(--ok);font-weight:500;background:rgba(20,95,72,.08);padding:2px 6px;border-radius:3px;margin-left:4px;}
   .rv-helpful{display:flex;align-items:center;gap:4px;margin-top:8px;font-size:12px;color:var(--txt3);cursor:pointer;}.rv-helpful:active{color:var(--txt2);}
 
   .inq-empty{padding:32px 16px;text-align:center;}.inq-empty p{font-size:14px;color:var(--txt3);margin-bottom:14px;}.inq-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;border-radius:10px;font-size:13px;font-weight:600;color:var(--txt1);border:1px solid var(--border);background:var(--bg);cursor:pointer;font-family:inherit;}
@@ -562,27 +562,27 @@
     <h3 style="font-size:16px;font-weight:700;color:#212121;margin-bottom:10px;">2. 조건부 요소</h3>
     <div style="font-size:14px;color:#666666;line-height:1.7;margin-bottom:24px;">
       <table style="width:100%;border-collapse:collapse;font-size:13px;">
-        <tr style="border-bottom:1px solid #E8DBC8;">
+        <tr style="border-bottom:1px solid #E5E7EB;">
           <td style="padding:10px 0;color:#212121;font-weight:600;width:130px;">타임세일 바</td>
           <td style="padding:10px 0;">상품의 <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">timesale_end_at</code> 존재 시 노출. 카운트다운 실시간 감소. 종료 시 자동 숨김.</td>
         </tr>
-        <tr style="border-bottom:1px solid #E8DBC8;">
+        <tr style="border-bottom:1px solid #E5E7EB;">
           <td style="padding:10px 0;color:#212121;font-weight:600;">쿠폰적용가</td>
           <td style="padding:10px 0;">활성 쿠폰 존재 시에만 노출. 쿠폰 만료 후 자동 숨김. 타임세일과 독립적으로 동작 가능.</td>
         </tr>
-        <tr style="border-bottom:1px solid #E8DBC8;">
+        <tr style="border-bottom:1px solid #E5E7EB;">
           <td style="padding:10px 0;color:#212121;font-weight:600;">"내일 비싸져요"</td>
           <td style="padding:10px 0;">타임세일 종료까지 24시간 이내일 때 노출. 금액은 <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">original_price - sale_price</code>.</td>
         </tr>
-        <tr style="border-bottom:1px solid #E8DBC8;">
+        <tr style="border-bottom:1px solid #E5E7EB;">
           <td style="padding:10px 0;color:#212121;font-weight:600;">에디터 코멘트</td>
           <td style="padding:10px 0;">상품 DB에 <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">editor_comment</code> 필드 존재 시 노출. 현재 우선순위 낮음 (기본 OFF).</td>
         </tr>
-        <tr style="border-bottom:1px solid #E8DBC8;">
+        <tr style="border-bottom:1px solid #E5E7EB;">
           <td style="padding:10px 0;color:#212121;font-weight:600;">후기 Empty State</td>
           <td style="padding:10px 0;"><code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">review_count == 0</code>일 때 별점 분포 대신 "첫 후기 작성하기" empty state 노출. 별점 행도 빈 별(☆)로 전환.</td>
         </tr>
-        <tr style="border-bottom:1px solid #E8DBC8;">
+        <tr style="border-bottom:1px solid #E5E7EB;">
           <td style="padding:10px 0;color:#212121;font-weight:600;">무료배송 여부</td>
           <td style="padding:10px 0;">상품의 <code style="background:#FFF5EA;padding:1px 4px;border-radius:3px;">is_free_shipping</code> 기준. 무료 시 세이지 "무료배송" 뱃지, 유료 시 그레이 "배송비 N원" 뱃지 + "N원 더 담으면 무료배송" 임박 안내.</td>
         </tr>
@@ -622,19 +622,19 @@
     <h3 style="font-size:16px;font-weight:700;color:#212121;margin-bottom:10px;">5. 가격 표시 규칙</h3>
     <div style="font-size:14px;color:#666666;line-height:1.7;margin-bottom:24px;">
       <table style="width:100%;border-collapse:collapse;font-size:13px;">
-        <tr style="border-bottom:1px solid #E8DBC8;">
+        <tr style="border-bottom:1px solid #E5E7EB;">
           <td style="padding:8px 0;color:#212121;font-weight:600;width:130px;">정가</td>
           <td style="padding:8px 0;">14px / 400 / #9E9E9E / 취소선</td>
         </tr>
-        <tr style="border-bottom:1px solid #E8DBC8;">
+        <tr style="border-bottom:1px solid #E5E7EB;">
           <td style="padding:8px 0;color:#212121;font-weight:600;">할인율</td>
           <td style="padding:8px 0;">14px / 700 / #FC642D (테라코타)</td>
         </tr>
-        <tr style="border-bottom:1px solid #E8DBC8;">
+        <tr style="border-bottom:1px solid #E5E7EB;">
           <td style="padding:8px 0;color:#212121;font-weight:600;">판매가</td>
           <td style="padding:8px 0;">24px / 700 / #212121 (차콜)</td>
         </tr>
-        <tr style="border-bottom:1px solid #E8DBC8;">
+        <tr style="border-bottom:1px solid #E5E7EB;">
           <td style="padding:8px 0;color:#212121;font-weight:600;">쿠폰적용가</td>
           <td style="padding:8px 0;">24px / 700 / #FC642D (테라코타). 활성 쿠폰 있을 때만.</td>
         </tr>
@@ -670,7 +670,7 @@
       · CTA: <span style="display:inline-block;width:12px;height:12px;background:#FC642D;border-radius:2px;vertical-align:middle;"></span> #FC642D (테라코타)<br>
       · 서브: <span style="display:inline-block;width:12px;height:12px;background:#145F48;border-radius:2px;vertical-align:middle;"></span> #145F48 (세이지) — 상품정보 더보기 버튼<br>
       · 텍스트: #212121 / #666666 / #9E9E9E (3단계)<br>
-      · 카드: #FFF5EA 배경 + 1px #DECAAE 보더 + 16px radius<br>
+      · 카드: #FFF5EA 배경 + 1px #CCCFD4 보더 + 16px radius<br>
       · 순검정(#000) 사용 금지. 차콜(#212121) 통일.<br>
       · font-weight 700은 섹션 헤더(L1·L2)와 가격에만 사용.
     </div>
@@ -796,7 +796,7 @@ runClock('ck1',19937);runClock('ck2',8143);
 
 <!-- ==== 디자인 가이드 v2.0 적용 (v3-4 · 2026-08-07) ====
   컬러: 테라코타→오렌지 #FC642D · 세이지→딥그린 #145F48 · 크림→피치크림 #FFF5EA
-        텍스트 #212121/#666666/#9E9E9E · 보더 #DECAAE (명암비 검증값)
+        텍스트 #212121/#666666/#9E9E9E · 보더 #CCCFD4 (명암비 검증값)
   타이포: Pretendard Variable 로드 · antialiased · 자간 -0.3px · 헤더 700→600
   기준 문서: C:/dev/Jollypot/Jollypot_Design_Guide.md (v2.0) -->
 </body>

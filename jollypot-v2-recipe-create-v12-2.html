@@ -11,7 +11,7 @@
     --brand:#FDB813; --primary:#FC642D; --secondary:#145F48; --sage-dark:#145F48;
     --bg:#FFFFFF; --surface:#FFF5EA; --surface-alt:#FFEEDC;
     --text:#212121; --text2:#666666; --text3:#9E9E9E;
-    --border:#DECAAE; --line:#E8DBC8; --req:#D9534F;
+    --border:#CCCFD4; --line:#E5E7EB; --req:#D64545;
   }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
   body{font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
@@ -309,7 +309,7 @@
   .gc .badge{position:absolute; top:7px; right:7px; z-index:2; width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px;}
   .gc .badge.yt{background:rgba(20,20,20,.62); color:#fff;}
   .gc .badge.ig{background:rgba(252,100,45,.92); color:#fff;}
-  .gc .badge.ig.b{background:rgba(61,107,140,.92);}
+  .gc .badge.ig.b{background:rgba(50,118,174,.92);}
   .gc .time{position:absolute; left:7px; bottom:7px; z-index:2; display:flex; align-items:center; gap:3px; font-size:12px; font-weight:600; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.5);}
   .gc .menu{position:absolute; right:7px; bottom:7px; z-index:2; width:24px; height:24px; border-radius:50%; background:rgba(20,20,20,.4); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px;}
   .gc .lock{position:absolute; inset:0; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:#fff; font-size:13px; font-weight:600; text-shadow:0 1px 3px rgba(0,0,0,.5);}
@@ -344,7 +344,7 @@
   .src .ana .ana-bar i{display:block; height:100%; width:42%; background:var(--brand); border-radius:2px; animation:aiSlide 1.3s ease-in-out infinite;}
 
   /* v11: 발행 착지 상세(Case2) */
-  .pub-banner{flex:0 0 auto; margin:0 0 2px; padding:11px 18px; background:rgba(91,138,107,.12); color:var(--success); font-size:14px; font-weight:600; text-align:center;}
+  .pub-banner{flex:0 0 auto; margin:0 0 2px; padding:11px 18px; background:rgba(20,95,72,.12); color:var(--success); font-size:14px; font-weight:600; text-align:center;}
   #pa3 .creator{display:flex; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid var(--line); margin-top:14px;}
   #pa3 .cav{width:44px; height:44px; border-radius:50%; background:var(--secondary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700; flex:0 0 auto;}
   #pa3 .cnm{font-size:15px; font-weight:600;}
@@ -400,10 +400,10 @@
   .pv-meta .est{color:#B5791E;}
   .ing .amt.unsure{color:#9A6A12; font-weight:600; background:rgba(232,163,61,.16); padding:3px 9px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:5px;}
   .ing .amt.unsure::after{content:"맞나요?"; font-size:11px; font-weight:600;}
-  .ing .amt.confirmed{color:var(--success); background:rgba(91,138,107,.14);}
+  .ing .amt.confirmed{color:var(--success); background:rgba(20,95,72,.14);}
   .ing .amt.confirmed::after{content:"✓"; font-size:12px;}
   .dstep .dtx .hl{background:rgba(232,163,61,.18); border-radius:4px; padding:0 3px; color:#9A6A12; cursor:pointer;}
-  .dstep .dtx .hl.confirmed{background:rgba(91,138,107,.14); color:var(--success);}
+  .dstep .dtx .hl.confirmed{background:rgba(20,95,72,.14); color:var(--success);}
   .report{display:flex; align-items:center; gap:6px; margin-top:18px; font-size:12.5px; color:var(--text3); cursor:pointer;}
   .appbar .more{color:var(--text2); font-size:20px;}
   #e3 .footer{display:block;}
@@ -958,7 +958,7 @@
       const cta=document.getElementById('e3cta'); cta.classList.remove('dim'); cta.textContent='확인 완료 · 저장하기';
       const b=document.querySelector('#e3 .rv-banner');
       b.innerHTML='<span class="e">✅</span> 다 확인했어요! 저장하면 완성돼요';
-      b.style.background='rgba(91,138,107,.13)'; b.style.color='var(--success)';
+      b.style.background='rgba(20,95,72,.13)'; b.style.color='var(--success)';
     }
   }
   function finishReview(){
@@ -1213,7 +1213,7 @@
 
 <!-- ==== 디자인 가이드 v2.0 적용 (v12-1 · 2026-08-07) ====
   컬러: 테라코타→오렌지 #FC642D · 세이지→딥그린 #145F48 · 크림→피치크림 #FFF5EA
-        텍스트 #212121/#666666/#9E9E9E · 보더 #DECAAE (명암비 검증값)
+        텍스트 #212121/#666666/#9E9E9E · 보더 #CCCFD4 (명암비 검증값)
   타이포: Pretendard Variable 로드 · antialiased · 자간 -0.3px · 헤더 700→600
   기준 문서: C:/dev/Jollypot/Jollypot_Design_Guide.md (v2.0) -->
 </body>

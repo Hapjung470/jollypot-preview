@@ -18,9 +18,9 @@
     --text-1:#212121;
     --text-2:#666666;
     --text-3:#9E9E9E;
-    --border:#DECAAE;
-    --divider:#E8DBC8;
-    --line:#E8DBC8;
+    --border:#CCCFD4;
+    --divider:#E5E7EB;
+    --line:#E5E7EB;
     --info:#3276AE;
     --error:#D64545;
     --success:#145F48;
@@ -214,7 +214,7 @@
   .cc-avatar{width:18px;height:18px;border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;vertical-align:middle;margin-right:4px;}
   .src-tag{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;margin-top:12px;}
   .src-tag.mine{background:rgba(20,95,72,.18);color:#145F48;}
-  .src-tag.saved{background:rgba(61,107,140,.14);color:var(--info);}
+  .src-tag.saved{background:rgba(50,118,174,.14);color:var(--info);}
   .col-card.tagged .cc-title{margin-top:8px;}
   /* 새 컬렉션 만들기 진입 카드 */
   .col-card.create{background:transparent;border:1.5px dashed #D8CFC0;display:flex;align-items:center;justify-content:center;gap:9px;padding:22px;color:var(--primary);font-weight:600;font-size:15px;}
@@ -537,7 +537,7 @@
   .rc-go{width:100%;height:52px;margin-top:12px;background:var(--primary);color:#fff;border:none;border-radius:12px;
     font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;}
   /* 레시피 정리 진행 화면 */
-  .rcp-screen{display:none;position:fixed;inset:0;z-index:140;background:#FBF8F2;overflow-y:auto;}
+  .rcp-screen{display:none;position:fixed;inset:0;z-index:140;background:#FFFFFF;overflow-y:auto;}
   .rcp-screen.on{display:block;}
   .rcp-inner{max-width:390px;margin:0 auto;padding:46px 24px 40px;min-height:100%;box-sizing:border-box;}
   .rcp-mascot-wrap{display:flex;justify-content:center;margin-bottom:16px;animation:rcpBob 1.5s ease-in-out infinite;}
@@ -558,7 +558,7 @@
   .rcp-pv{margin-top:30px;background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;}
   .rcp-pv-h{font-size:14px;font-weight:700;color:var(--text-1);margin-bottom:10px;}
   .rcp-pv-ing{display:flex;flex-wrap:wrap;gap:7px;}
-  .rcp-skel{display:inline-block;background:linear-gradient(90deg,#DECAAE 25%,#FFF5EA 50%,#DECAAE 75%);
+  .rcp-skel{display:inline-block;background:linear-gradient(90deg,#FFEEDC 25%,#FFF5EA 50%,#FFEEDC 75%);
     background-size:200% 100%;animation:rcpShim 1.3s infinite;border-radius:7px;}
   @keyframes rcpShim{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
   .rcp-skel-chip{width:72px;height:30px;}
@@ -1565,7 +1565,7 @@ const PROD=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkI
     document.getElementById('popular-collections-empty').innerHTML = savedCollections.slice(0,2).map(c=>savedCard(c,false)).join('');
   }
   function prodCardHTML(p){
-    const chipColor = p.chip==='오늘출발' ? 'style="color:var(--info);background:rgba(61,107,140,.12)"' : '';
+    const chipColor = p.chip==='오늘출발' ? 'style="color:var(--info);background:rgba(50,118,174,.12)"' : '';
     return `<div>
       <div class="prod-thumb">
         <span class="bookmark-ic filled">🔖</span>
@@ -2077,7 +2077,7 @@ const PROD=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkI
 
 <!-- ==== 디자인 가이드 v2.0 적용 (v11-17 · 2026-08-07) ====
   컬러: 테라코타→오렌지 #FC642D · 세이지→딥그린 #145F48 · 크림→피치크림 #FFF5EA
-        텍스트 #212121/#666666/#9E9E9E · 보더 #DECAAE (명암비 검증값)
+        텍스트 #212121/#666666/#9E9E9E · 보더 #CCCFD4 (명암비 검증값)
   타이포: Pretendard Variable 로드 · antialiased · 자간 -0.3px · 헤더 700→600
   기준 문서: C:/dev/Jollypot/Jollypot_Design_Guide.md (v2.0) -->
 </body>

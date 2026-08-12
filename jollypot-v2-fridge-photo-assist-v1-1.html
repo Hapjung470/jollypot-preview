@@ -9,10 +9,10 @@
 <style>
   :root{
     --brand:#FDB813;--action:#FC642D;--action-dark:#A8492E;--sage:#145F48;--sage-dark:#145F48;
-    --success:#145F48;--success-bg:rgba(91,138,107,.12);--warn:#C9852B;--warn-bg:rgba(201,133,43,.12);
-    --later:#7A7F8C;--later-bg:#F1F1F3;--later-line:#D9DAE0;--danger:#C0392B;
-    --bg:#FBF8F2;--surface:#FFF5EA;--surface-alt:#FFEEDC;--white:#FFFFFF;
-    --text:#212121;--text2:#666666;--text3:#9E9E9E;--border:#DECAAE;--line:#E8E2D6;
+    --success:#145F48;--success-bg:rgba(20,95,72,.12);--warn:#C9852B;--warn-bg:rgba(201,133,43,.12);
+    --later:#7A7F8C;--later-bg:#F1F1F3;--later-line:#D9DAE0;--danger:#D64545;
+    --bg:#FFFFFF;--surface:#FFF5EA;--surface-alt:#FFEEDC;--white:#FFFFFF;
+    --text:#212121;--text2:#666666;--text3:#9E9E9E;--border:#CCCFD4;--line:#E5E7EB;
     --freezer:#F2F4F3;--freezer-border:#E4E8E6;
     --mono:"SFMono-Regular",ui-monospace,Menlo,Consolas,monospace;
   }
@@ -59,7 +59,7 @@
   .card h3{font-size:16px;font-weight:800;letter-spacing:-.01em;margin-bottom:8px}
   .box{border-radius:11px;padding:13px 16px;margin-top:13px;font-size:13.5px;line-height:1.58}
   .box-h{font-size:12.5px;font-weight:700;margin-bottom:5px}
-  .box.good{background:var(--success-bg);border:1px solid rgba(91,138,107,.28)}.box.good .box-h{color:var(--success)}
+  .box.good{background:var(--success-bg);border:1px solid rgba(20,95,72,.28)}.box.good .box-h{color:var(--success)}
   .box.warn{background:var(--warn-bg);border:1px solid rgba(201,133,43,.3)}.box.warn .box-h{color:var(--warn)}
   .box.base{background:var(--white);border:1px solid var(--border)}.box.base .box-h{color:var(--text)}
   .box b{font-weight:700}
@@ -155,7 +155,7 @@
   .fi.new .mt{color:var(--sage-dark);font-weight:700}
 
   /* 스펙 코드 블록 */
-  pre.spec{background:#2a2825;color:#e8e2d6;border-radius:11px;padding:14px 16px;overflow-x:auto;margin-top:12px;
+  pre.spec{background:#2a2825;color:#E5E7EB;border-radius:11px;padding:14px 16px;overflow-x:auto;margin-top:12px;
     font-family:var(--mono);font-size:12px;line-height:1.65}
   pre.spec .k{color:#E3A857}.pre-cap{font-size:12px;font-weight:700;color:var(--text2);margin-top:14px}
 
@@ -464,7 +464,7 @@
 
 <!-- ==== 디자인 가이드 v2.0 적용 (v1-1 · 2026-08-07) ====
   컬러: 테라코타→오렌지 #FC642D · 세이지→딥그린 #145F48 · 크림→피치크림 #FFF5EA
-        텍스트 #212121/#666666/#9E9E9E · 보더 #DECAAE (명암비 검증값)
+        텍스트 #212121/#666666/#9E9E9E · 보더 #CCCFD4 (명암비 검증값)
   타이포: Pretendard Variable 로드 · antialiased · 자간 -0.3px · 헤더 700→600
   기준 문서: C:/dev/Jollypot/Jollypot_Design_Guide.md (v2.0) -->
 </body>
