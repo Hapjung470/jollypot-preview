@@ -33,7 +33,7 @@
 <div class="wrap">
 
 <h1>주문하기 — 개발 요건</h1>
-<div class="sub">졸리팟 V2 · 2026-08-13 · 프로토타입: <a href="https://hapjung470.github.io/jollypot-preview/jollypot-v2-order-checkout-v6.html">jollypot-v2-order-checkout-v6.html</a> · 디자인 가이드 v2.0.4 준수<br>v1(결제수단 단독) → v2(주문하기 전체) → <b>v3에서 결제 실패/중단 상태 5종 편입</b></div>
+<div class="sub">졸리팟 V2 · 2026-08-13 · 프로토타입: <a href="https://hapjung470.github.io/jollypot-preview/jollypot-v2-order-checkout-v7.html">jollypot-v2-order-checkout-v7.html</a> · 디자인 가이드 v2.0.4 준수<br>v1(결제수단 단독) → v2(주문하기 전체) → <b>v3에서 결제 실패/중단 상태 5종 편입</b></div>
 
 <h2>1. 화면 구성 (위 → 아래)</h2>
 <table>
@@ -60,7 +60,7 @@
 
 <h2>3. 하단 고정 바 · 절약 스트립</h2>
 <ul>
-  <li>절약 스트립과 CTA는 <b>같은 고정 컨테이너</b>에 넣어 함께 움직인다</li>
+  <li>절약 스트립과 CTA는 <b>같은 고정 컨테이너</b>에 넣어 함께 움직이며, <b>좌우 기준선(16px 인셋)과 폭을 동일하게</b> 맞춘다 — 스트립만 풀블리드로 두면 32px 어긋나 보인다</li>
   <li>문구: "지금 주문하면 <b>N원</b>을 아껴요" · N = <b>확정 할인 합계</b>(쿠폰 + 적립금 사용). <b>퀵계좌 예상 할인은 합산하지 않는다</b></li>
   <li><b>N = 0이면 스트립 미노출</b> · 이때만 바 상단에 1px 구분선(<code>#E5E7EB</code>) 노출. 스트립이 있으면 <b>구분선 없음</b>(크림 면이 경계 전담)</li>
 </ul>
