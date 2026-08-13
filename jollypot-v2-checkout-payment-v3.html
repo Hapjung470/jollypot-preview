@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>졸리팟 V2 · 결제수단 선택 v3</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  :root{
+    --color-brand:#FDB813;
+    --color-primary:#FC642D;
+    --color-secondary:#145F48;
+    --color-bg:#FFFFFF;
+    --color-surface:#FFF5EA;
+    --color-surface-alt:#FFEEDC;
+    --color-text-primary:#212121;
+    --color-text-secondary:#666666;
+    --color-text-tertiary:#9E9E9E;
+    --color-error:#D64545;
+    --color-info:#3276AE;
+    --color-warning:#FFC520;
+    --color-border:#CCCFD4;
+    --color-divider:#E5E7EB;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.3px;background:#EDEEF0;color:var(--color-text-primary);
+    word-break:keep-all;
+  }
+
+  /* ===== PROTO BAR ===== */
+  .proto-bar{background:#1E1E2E;padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .proto-bar .lab{font-size:12px;color:#CCCCDD;font-weight:600;margin-right:2px;}
+  .proto-bar button{background:#2D2D3D;color:#8888A0;border:none;border-radius:8px;padding:7px 12px;
+    font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;}
+  .proto-bar button.active{background:#5B6ABF;color:#fff;}
+  .proto-bar .ver{margin-left:auto;font-size:11.5px;color:#8888A0;}
+
+  /* ===== PHONE ===== */
+  .phone{max-width:430px;margin:0 auto;background:var(--color-bg);min-height:100vh;position:relative;padding-bottom:96px;}
+  .appbar{display:flex;align-items:center;height:52px;padding:0 16px;position:sticky;top:0;background:var(--color-bg);z-index:10;}
+  .appbar .back{width:24px;height:24px;cursor:pointer;flex-shrink:0;}
+  .appbar .title{flex:1;text-align:center;font-size:17px;font-weight:600;margin-right:24px;}
+  .content{padding:0 16px;}
+
+  .order-brief{display:flex;align-items:center;gap:10px;padding:14px 0;}
+  .ob-thumb{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#e7c79f,#d9b486);flex-shrink:0;}
+  .ob-txt{flex:1;min-width:0;}
+  .ob-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ob-meta{font-size:12.5px;color:var(--color-text-secondary);margin-top:2px;}
+  .ob-arrow{width:18px;height:18px;color:var(--color-text-tertiary);flex-shrink:0;}
+  .divider{height:1px;background:var(--color-divider);margin:0 -16px;}
+
+  .section-header{font-size:19px;font-weight:600;padding:22px 0 14px;}
+
+  /* ===== 결제수단 버튼 ===== */
+  .pm{position:relative;width:100%;border:1.5px solid var(--color-border);border-radius:14px;
+    background:#fff;margin-bottom:10px;cursor:pointer;font-family:inherit;letter-spacing:-0.3px;
+    transition:border-color .15s ease;color:var(--color-text-primary);}
+  .pm.selected{border-color:var(--color-secondary);border-width:2px;}
+
+  /* ① 퀵계좌이체 히어로 */
+  .pm.hero{padding:22px 16px 18px;text-align:center;overflow:hidden;}
+  .hero-ic{width:44px;height:44px;border-radius:12px;background:var(--color-surface-alt);margin:0 auto 8px;
+    display:flex;align-items:center;justify-content:center;}
+  .hero-ic svg{width:24px;height:24px;color:var(--color-primary);}
+  .hero-name{display:block;font-size:16px;font-weight:600;}
+
+  /* 혜택 표기 A안 — 상단 스트립 (추천) */
+  .benefit-strip{display:none;margin:-22px -16px 16px;background:var(--color-surface);
+    padding:9px 12px;font-size:13px;font-weight:600;color:var(--color-text-primary);}
+  .benefit-strip .pct{color:var(--color-primary);font-weight:700;}
+  body.va .benefit-strip{display:block;}
+  body.va .hero-chip{display:none;}
+  body.va .benefit-badge{display:none;}
+
+  /* 혜택 표기 B안 — 인라인 칩 (배지 제거) */
+  .hero-chip{display:inline-block;margin-top:8px;background:var(--color-surface);color:var(--color-text-primary);
+    font-size:12.5px;font-weight:600;border-radius:999px;padding:4px 12px;}
+  .hero-chip .pct{color:var(--color-primary);font-weight:700;}
+  body.vb .benefit-badge{display:none;}
+
+  /* 혜택 표기 C안 — v2 현행(배지+칩) 비교용 */
+  .benefit-badge{position:absolute;top:-9px;left:14px;background:var(--color-warning);
+    color:var(--color-text-primary);font-size:11.5px;font-weight:700;border-radius:6px;padding:2px 8px;}
+  .pm.hero .benefit-badge{top:-9px;}
+
+  /* ②~④ 일반 버튼 */
+  .pm.flat{padding:16px;text-align:center;font-size:15px;font-weight:500;}
+
+  /* 혜택/안내 박스 — 크림 */
+  .benefit-box{background:var(--color-surface);border-radius:12px;padding:13px 15px;margin:2px 0 12px;display:none;}
+  .benefit-box.show{display:block;}
+  .benefit-box .bt{font-size:13.5px;font-weight:600;}
+  .benefit-box .bc{font-size:12.5px;color:var(--color-text-secondary);margin-top:4px;line-height:1.55;}
+  .benefit-box .pct{color:var(--color-primary);}
+  /* A안에서는 히어로 아래 혜택 박스 생략(스트립이 전담) */
+  body.va #bxQuick{display:none;}
+
+  /* 간편결제 펼침 — 네이버페이 단일 */
+  .easy-detail{display:none;padding:2px 4px 0;}
+  .easy-detail.show{display:block;}
+  .easy-opt{display:flex;align-items:center;gap:9px;padding:11px 4px;cursor:pointer;}
+  .radio{width:21px;height:21px;border-radius:50%;border:1.5px solid var(--color-border);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;background:#fff;transition:all .15s ease;}
+  .easy-opt.on .radio{border-color:var(--color-secondary);background:var(--color-secondary);}
+  .easy-opt.on .radio::after{content:"";width:7px;height:7px;border-radius:50%;background:#fff;}
+  .easy-name{font-size:15px;font-weight:500;color:var(--color-text-primary);}
+
+  /* 가상계좌 안내 — '법인결제 가능'만 */
+  .vbank-note{background:var(--color-surface);border-radius:12px;padding:12px 15px;margin:2px 0 12px;
+    font-size:13.5px;font-weight:600;color:var(--color-text-primary);display:none;}
+  .vbank-note.show{display:block;}
+
+  /* 다음에도 사용 */
+  .keep-row{display:flex;align-items:center;gap:9px;padding:8px 2px 2px;cursor:pointer;}
+  .checkbox{width:21px;height:21px;border-radius:6px;border:1.5px solid var(--color-border);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;transition:all .15s ease;background:#fff;}
+  .keep-row.on .checkbox{background:var(--color-secondary);border-color:var(--color-secondary);}
+  .keep-row.on .checkbox svg{display:block;}
+  .checkbox svg{display:none;width:13px;height:13px;color:#fff;}
+  .keep-row .kt{font-size:14px;}
+
+  /* 결제 금액 */
+  .amount-row{display:flex;justify-content:space-between;padding:7px 0;font-size:14.5px;}
+  .amount-row .al{color:var(--color-text-secondary);}
+  .amount-row .av{font-weight:500;}
+  .amount-row .av.minus{color:var(--color-primary);}
+  .total-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0 4px;
+    margin-top:8px;border-top:1px solid var(--color-divider);}
+  .total-row .tl{font-size:16px;font-weight:600;}
+  .total-row .tv{font-size:21px;font-weight:700;color:var(--color-primary);}
+  .total-note{font-size:12px;color:var(--color-text-tertiary);text-align:right;padding-bottom:20px;min-height:18px;}
+
+  .cta-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+    background:var(--color-bg);padding:10px 16px calc(12px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--color-divider);z-index:20;}
+  .cta{width:100%;background:var(--color-primary);color:#fff;border:none;border-radius:14px;
+    padding:16px 0;font-size:17px;font-weight:700;font-family:inherit;letter-spacing:-0.3px;cursor:pointer;}
+
+  /* 문서 노트 */
+  .doc{background:#1E1E2E;color:#B8B8CC;font-size:13px;line-height:1.7;padding:28px 20px 60px;margin-top:40px;}
+  .doc-inner{max-width:760px;margin:0 auto;}
+  .doc h2{color:#fff;font-size:16px;margin:22px 0 8px;}
+  .doc b{color:#fff;}
+  .doc .hl{color:#FFC520;}
+</style>
+</head>
+<body class="va">
+
+<div class="proto-bar">
+  <span class="lab">혜택 표기</span>
+  <button id="tgA" class="active" onclick="setVariant('a')">A · 상단 스트립 (추천)</button>
+  <button id="tgB" onclick="setVariant('b')">B · 인라인 칩</button>
+  <button id="tgC" onclick="setVariant('c')">C · v2 배지 (비교용)</button>
+  <span class="ver">jollypot-v2-checkout-payment-v3</span>
+</div>
+
+<div class="phone">
+  <div class="appbar">
+    <svg class="back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    <span class="title">주문하기</span>
+  </div>
+
+  <div class="content">
+    <div class="order-brief">
+      <div class="ob-thumb"></div>
+      <div class="ob-txt">
+        <div class="ob-name">국내산 양배추 1통 외 2건</div>
+        <div class="ob-meta">배송지 · 서울 마포구 ··· <span style="color:var(--color-secondary);font-weight:600;">내일 도착</span></div>
+      </div>
+      <svg class="ob-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="content">
+    <h2 class="section-header">결제 수단</h2>
+
+    <!-- ① 퀵계좌이체 히어로 -->
+    <button id="pmQuick" class="pm hero selected" onclick="pick('quick')">
+      <span class="benefit-strip">결제할 때마다 <span class="pct">0.5% 즉시 할인</span> · 횟수 무제한</span>
+      <span class="benefit-badge">혜택</span>
+      <span class="hero-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/><path d="M13 14l2 2 3.5-3.5" stroke-width="2"/></svg>
+      </span>
+      <span class="hero-name">퀵계좌이체</span>
+      <span class="hero-chip"><span class="pct">0.5% 즉시 할인</span> · 횟수 무제한</span>
+    </button>
+    <div id="bxQuick" class="benefit-box show">
+      <div class="bt">퀵계좌이체 혜택</div>
+      <div class="bc">결제 건마다 <b class="pct">0.5% 즉시 할인</b> · 횟수 무제한</div>
+    </div>
+
+    <!-- ② 신용/체크카드 -->
+    <button id="pmCard" class="pm flat" onclick="pick('card')">신용/체크카드</button>
+
+    <!-- ③ 간편결제 — 네이버페이 단일 -->
+    <button id="pmEasy" class="pm flat" onclick="pick('easy')">간편결제</button>
+    <div id="easyDetail" class="easy-detail">
+      <div class="easy-opt on">
+        <span class="radio"></span><span class="easy-name">네이버페이</span>
+      </div>
+    </div>
+
+    <!-- ④ 가상계좌 -->
+    <button id="pmVbank" class="pm flat" onclick="pick('vbank')">가상계좌 (무통장 입금)</button>
+    <div id="bxVbank" class="vbank-note">법인결제 가능</div>
+
+    <!-- 다음에도 사용 -->
+    <div id="keepRow" class="keep-row on" onclick="this.classList.toggle('on')">
+      <span class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+      <span class="kt">선택한 결제수단을 다음에도 사용할게요</span>
+    </div>
+  </div>
+
+  <div class="divider" style="margin-top:22px;"></div>
+
+  <div class="content">
+    <h2 class="section-header">결제 금액</h2>
+    <div class="amount-row"><span class="al">총 상품 금액</span><span class="av">36,300원</span></div>
+    <div class="amount-row"><span class="al">총 배송비</span><span class="av">3,000원</span></div>
+    <div class="amount-row"><span class="al">총 할인 금액</span><span class="av minus">-2,700원</span></div>
+    <div class="amount-row"><span class="al">적립 예정</span><span class="av">19원</span></div>
+    <div class="total-row"><span class="tl">총 결제 금액</span><span class="tv">36,600원</span></div>
+    <div class="total-note" id="totalNote">퀵계좌이체 결제 시 약 183원이 즉시 할인돼요</div>
+  </div>
+
+  <div class="cta-wrap">
+    <button class="cta">36,600원 결제하기</button>
+  </div>
+</div>
+
+<div class="doc"><div class="doc-inner">
+  <h2>결제수단 선택 v3 — 대표 피드백 반영 (2026-08-13)</h2>
+  <p><b>v2 → v3</b>: ① 가상계좌 하단 상시 캡션 제거 → 선택 시 크림 박스에 <b>"법인결제 가능"만</b> 노출(입금 안내 문구 삭제) ② 혜택 문구에서 "1원 이상 결제 시" 제거 → <b>"~즉시 할인 · 횟수 무제한"</b> ③ 간편결제에서 toss 제거, <b>네이버페이 단일(검정 글씨)</b> ④ 혜택 표기 재설계(아래).</p>
+
+  <h2>④ 혜택 표기 — 왜 어색했고, 무엇으로 바꿨나</h2>
+  <p>v2는 같은 혜택을 <b>세 번</b> 말했다: 떠 있는 노란 "혜택" 배지(내용 없음) + 칩(0.5%) + 혜택 박스(0.5%). 배지는 보더를 끊고 카드 밖에 떠 있어 시각적 소음이었고, 노른자 옐로우는 가이드상 브랜드 IP 전용이라 혜택 시그널로 쓰면 역할이 흐려진다.</p>
+  <p>• <b>A안 · 상단 스트립 (추천)</b> — 카드 상단 전폭을 크림 스트립으로 쓰고 "결제할 때마다 0.5% 즉시 할인 · 횟수 무제한"을 한 줄로. 배지·칩·박스 전부 제거(스트립이 전담). 혜택이 카드 구조 안에 통합되고, 세로 리듬이 한 단 짧아진다. 쿠팡·토스 카드혜택 스트립과 같은 문법.<br>
+  • <b>B안 · 인라인 칩</b> — 배지만 제거하고 이름 아래 칩 유지(검정 글씨 + 숫자만 오렌지). 선택 시 혜택 박스 노출. v2와 가장 가깝고 보수적.<br>
+  • <b>C안 · v2 배지</b> — 비교용 보존.<br>
+  • 공통: 숫자(0.5%)만 오렌지, 나머지 텍스트는 잉크 — 명암비 확보(크림 위 오렌지 본문은 3.0:1로 AA 미달이라 숫자 강조에만 사용).</p>
+
+  <h2 class="hl">정책·개발 확정 필요 (v2와 동일)</h2>
+  <p>퀵계좌이체(오픈뱅킹) 상품의 샵바이 PG 제공 여부 · 0.5% 할인 재원과 상한 · 가상계좌 법인결제(세금계산서) 프로세스</p>
+</div></div>
+
+<script>
+  var current='quick';
+
+  function pick(m){
+    current=m;
+    ['pmQuick','pmCard','pmEasy','pmVbank'].forEach(function(id){
+      document.getElementById(id).classList.remove('selected');
+    });
+    document.getElementById({quick:'pmQuick',card:'pmCard',easy:'pmEasy',vbank:'pmVbank'}[m]).classList.add('selected');
+    document.getElementById('bxQuick').classList.toggle('show', m==='quick');
+    document.getElementById('easyDetail').classList.toggle('show', m==='easy');
+    document.getElementById('bxVbank').classList.toggle('show', m==='vbank');
+    var n=document.getElementById('totalNote');
+    if(m==='quick'){ n.textContent='퀵계좌이체 결제 시 약 183원이 즉시 할인돼요'; n.style.visibility='visible'; }
+    else{ n.style.visibility='hidden'; }
+  }
+
+  function setVariant(v){
+    document.body.className='v'+v;
+    ['tgA','tgB','tgC'].forEach(function(id){ document.getElementById(id).classList.remove('active'); });
+    document.getElementById('tg'+v.toUpperCase()).classList.add('active');
+  }
+</script>
+<script src="proto-link.js"></script>
+</body>
+</html>
