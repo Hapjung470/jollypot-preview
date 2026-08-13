@@ -33,7 +33,7 @@
 <div class="wrap">
 
 <h1>주문하기 — 개발 요건</h1>
-<div class="sub">졸리팟 V2 · 2026-08-13 · 프로토타입: <a href="https://hapjung470.github.io/jollypot-preview/jollypot-v2-order-checkout-v5.html">jollypot-v2-order-checkout-v5.html</a> · 디자인 가이드 v2.0.4 준수<br>v1(결제수단 단독) → v2(주문하기 전체) → <b>v3에서 결제 실패/중단 상태 5종 편입</b></div>
+<div class="sub">졸리팟 V2 · 2026-08-13 · 프로토타입: <a href="https://hapjung470.github.io/jollypot-preview/jollypot-v2-order-checkout-v6.html">jollypot-v2-order-checkout-v6.html</a> · 디자인 가이드 v2.0.4 준수<br>v1(결제수단 단독) → v2(주문하기 전체) → <b>v3에서 결제 실패/중단 상태 5종 편입</b></div>
 
 <h2>1. 화면 구성 (위 → 아래)</h2>
 <table>
@@ -99,6 +99,8 @@
 <ul>
   <li><b>시트 vs 전체 화면 분기</b>: 같은 주문으로 <b>복구 가능하면 바텀시트</b>(주문 컨텍스트 유지 = 재시도 마찰 최소), <b>주문 상태 자체가 바뀌었으면 전체 화면</b>(3·4번)</li>
   <li>시트 표시 중 배경 스크롤 잠금 · 딤(<code>rgba(0,0,0,.45)</code>) 탭 시 닫힘(단, 3번은 닫힘 불가)</li>
+  <li><b>스크롤 잠금 시 스크롤바 폭 보정 필수</b>(<code>scrollbar-gutter:stable</code> 등) — 보정하지 않으면 PC 웹에서 모달을 열 때마다 레이아웃이 스크롤바 두께만큼 흔들린다(실측 15px)</li>
+  <li>시트·전체화면·하단 고정바는 <b>동일한 정렬 문법</b>(<code>left:50% + translateX(-50%) + max-width</code>)을 쓴다 — 화면마다 다르면 어긋남 발생</li>
   <li><b>PG 응답코드 → 5개 상태 매핑표</b> 필요 · 미분류 코드는 <b>5번(시스템 오류)</b>으로 폴백</li>
   <li>3번은 <b>결과 폴링 + 서버 웹훅 병행</b> · 사용자가 이탈해도 서버가 결과를 확정하고 알림 발송 · <b>동일 주문 재결제 요청 차단(멱등키)</b> 필수</li>
 </ul>
