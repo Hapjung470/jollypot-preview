@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>졸리팟 V2 · 결제수단 선택 v1</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  :root{
+    --color-brand:#FDB813;
+    --color-primary:#FC642D;
+    --color-secondary:#145F48;
+    --color-bg:#FFFFFF;
+    --color-surface:#FFF5EA;
+    --color-surface-alt:#FFEEDC;
+    --color-text-primary:#212121;
+    --color-text-secondary:#666666;
+    --color-text-tertiary:#9E9E9E;
+    --color-error:#D64545;
+    --color-info:#3276AE;
+    --color-warning:#FFC520;
+    --color-border:#CCCFD4;
+    --color-divider:#E5E7EB;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.3px;background:#EDEEF0;color:var(--color-text-primary);
+    word-break:keep-all;
+  }
+
+  /* ===== PROTO CONTROL BAR ===== */
+  .proto-bar{background:#1E1E2E;padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .proto-bar .lab{font-size:12px;color:#CCCCDD;font-weight:600;margin-right:2px;}
+  .proto-bar button{background:#2D2D3D;color:#8888A0;border:none;border-radius:8px;padding:7px 12px;
+    font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;}
+  .proto-bar button.active{background:#5B6ABF;color:#fff;}
+  .proto-bar .ver{margin-left:auto;font-size:11.5px;color:#8888A0;}
+
+  /* ===== PHONE ===== */
+  .phone{max-width:430px;margin:0 auto;background:var(--color-bg);min-height:100vh;position:relative;
+    padding-bottom:96px;}
+  .appbar{display:flex;align-items:center;height:52px;padding:0 16px;position:sticky;top:0;background:var(--color-bg);z-index:10;}
+  .appbar .back{width:24px;height:24px;cursor:pointer;flex-shrink:0;}
+  .appbar .title{flex:1;text-align:center;font-size:17px;font-weight:600;margin-right:24px;}
+
+  .content{padding:0 16px;}
+
+  /* 주문 요약 (컨텍스트 최소 표기) */
+  .order-brief{display:flex;align-items:center;gap:10px;padding:14px 0;}
+  .ob-thumb{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#e7c79f,#d9b486);flex-shrink:0;}
+  .ob-txt{flex:1;min-width:0;}
+  .ob-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ob-meta{font-size:12.5px;color:var(--color-text-secondary);margin-top:2px;}
+  .ob-arrow{width:18px;height:18px;color:var(--color-text-tertiary);flex-shrink:0;}
+
+  .divider{height:1px;background:var(--color-divider);margin:0 -16px;}
+
+  /* ===== 결제 수단 ===== */
+  .section-header{font-size:19px;font-weight:600;padding:22px 0 14px;}
+
+  .pay-card{position:relative;border:1.5px solid var(--color-border);border-radius:14px;
+    padding:4px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s ease;background:#fff;}
+  .pay-card.selected{border-color:var(--color-secondary);}
+  .pay-card .benefit-badge{position:absolute;top:-9px;left:14px;background:var(--color-warning);
+    color:var(--color-text-primary);font-size:11.5px;font-weight:700;border-radius:6px;padding:2px 8px;}
+
+  .pay-row{display:flex;align-items:center;gap:10px;min-height:52px;cursor:pointer;}
+  .pay-row + .pay-row{border-top:1px solid var(--color-divider);}
+  .radio{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--color-border);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;transition:all .15s ease;background:#fff;}
+  .pay-row.on .radio{border-color:var(--color-secondary);background:var(--color-secondary);}
+  .pay-row.on .radio::after{content:"";width:8px;height:8px;border-radius:50%;background:#fff;}
+  .pay-name{font-size:15px;font-weight:500;display:flex;align-items:center;gap:7px;}
+  .pay-sub{font-size:12.5px;color:var(--color-text-secondary);margin-top:2px;}
+
+  /* 간편결제 로고 (프로토 표기) */
+  .logo-toss{font-weight:800;font-size:16px;color:#0064FF;letter-spacing:-0.5px;font-style:italic;}
+  .logo-npay{display:inline-flex;align-items:center;gap:3px;font-weight:800;font-size:14.5px;}
+  .logo-npay .n{width:18px;height:18px;border-radius:4px;background:#03C75A;color:#fff;display:inline-flex;
+    align-items:center;justify-content:center;font-size:12px;font-weight:800;}
+
+  /* ===== 혜택 영역 — UI적으로 구분되는 웜 패널 (피드백 01) ===== */
+  .benefit-box{background:var(--color-surface);border-radius:10px;padding:11px 13px;margin:2px 0 12px;}
+  .benefit-box .bt{font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:6px;}
+  .benefit-box .bt .pct{color:var(--color-primary);}
+  .benefit-box .bc{font-size:12.5px;color:var(--color-text-secondary);margin-top:3px;line-height:1.5;}
+
+  /* 가상계좌 선택 시 안내 */
+  .vbank-note{background:var(--color-surface);border-radius:10px;padding:10px 13px;margin:2px 0 12px;
+    font-size:12.5px;color:var(--color-text-secondary);line-height:1.55;display:none;}
+  .pay-card.selected .vbank-note{display:block;}
+
+  /* B안: 접힘 그룹 */
+  .fold-toggle{display:none;align-items:center;justify-content:center;gap:6px;width:100%;
+    border:1px solid var(--color-border);border-radius:14px;padding:14px 0;background:#fff;
+    font-size:14.5px;font-weight:500;color:var(--color-text-secondary);cursor:pointer;font-family:inherit;
+    letter-spacing:-0.3px;margin-bottom:10px;}
+  .fold-toggle svg{width:16px;height:16px;transition:transform .2s ease;}
+  body.layout-b .fold-toggle{display:flex;}
+  body.layout-b .foldable{display:none;}
+  body.layout-b.fold-open .foldable{display:block;}
+  body.layout-b.fold-open .fold-toggle svg{transform:rotate(180deg);}
+
+  /* ===== 다음에도 사용 체크박스 (피드백 04) ===== */
+  .keep-row{display:flex;align-items:center;gap:9px;padding:6px 2px 2px;cursor:pointer;}
+  .checkbox{width:21px;height:21px;border-radius:6px;border:1.5px solid var(--color-border);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;transition:all .15s ease;background:#fff;}
+  .keep-row.on .checkbox{background:var(--color-secondary);border-color:var(--color-secondary);}
+  .keep-row.on .checkbox svg{display:block;}
+  .checkbox svg{display:none;width:13px;height:13px;color:#fff;}
+  .keep-row .kt{font-size:14px;color:var(--color-text-primary);}
+
+  /* ===== 결제 금액 ===== */
+  .amount-row{display:flex;justify-content:space-between;padding:7px 0;font-size:14.5px;}
+  .amount-row .al{color:var(--color-text-secondary);}
+  .amount-row .av{font-weight:500;}
+  .amount-row .av.minus{color:var(--color-primary);}
+  .total-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0 4px;
+    margin-top:8px;border-top:1px solid var(--color-divider);}
+  .total-row .tl{font-size:16px;font-weight:600;}
+  .total-row .tv{font-size:21px;font-weight:700;color:var(--color-primary);}
+  .total-note{font-size:12px;color:var(--color-text-tertiary);text-align:right;padding-bottom:20px;}
+
+  /* ===== 고정 CTA ===== */
+  .cta-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+    background:var(--color-bg);padding:10px 16px calc(12px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--color-divider);z-index:20;}
+  .cta{width:100%;background:var(--color-primary);color:#fff;border:none;border-radius:14px;
+    padding:16px 0;font-size:17px;font-weight:700;font-family:inherit;letter-spacing:-0.3px;cursor:pointer;}
+
+  /* ===== 하단 문서 노트 ===== */
+  .doc{background:#1E1E2E;color:#B8B8CC;font-size:13px;line-height:1.7;padding:28px 20px 60px;margin-top:40px;}
+  .doc-inner{max-width:760px;margin:0 auto;}
+  .doc h2{color:#fff;font-size:16px;margin:22px 0 8px;}
+  .doc b{color:#fff;}
+  .doc .hl{color:#FFC520;}
+  .doc table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0;}
+  .doc th,.doc td{border:1px solid #3A3A4E;padding:6px 9px;text-align:left;vertical-align:top;}
+  .doc th{color:#fff;background:#2A2A4A;}
+</style>
+</head>
+<body>
+
+<!-- ===== PROTO BAR ===== -->
+<div class="proto-bar">
+  <span class="lab">가상계좌 배치</span>
+  <button id="tgA" class="active" onclick="setLayout('a')">A · 플랫 리스트 (추천)</button>
+  <button id="tgB" onclick="setLayout('b')">B · "다른 결제수단" 접힘</button>
+  <span class="ver">jollypot-v2-checkout-payment-v1</span>
+</div>
+
+<div class="phone">
+  <!-- 앱바 -->
+  <div class="appbar">
+    <svg class="back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    <span class="title">주문하기</span>
+  </div>
+
+  <div class="content">
+    <!-- 주문 컨텍스트 (요약 1줄) -->
+    <div class="order-brief">
+      <div class="ob-thumb"></div>
+      <div class="ob-txt">
+        <div class="ob-name">국내산 양배추 1통 외 2건</div>
+        <div class="ob-meta">배송지 · 서울 마포구 ··· <span style="color:var(--color-secondary);font-weight:600;">내일 도착</span></div>
+      </div>
+      <svg class="ob-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="content">
+    <h2 class="section-header">결제 수단</h2>
+
+    <!-- ① 간편결제 — 혜택 배지 + 라디오 (피드백 01·02) -->
+    <div id="cardEasy" class="pay-card selected">
+      <span class="benefit-badge">혜택</span>
+      <div id="rowToss" class="pay-row on" onclick="pick('toss')">
+        <span class="radio"></span>
+        <div>
+          <div class="pay-name"><span class="logo-toss">toss</span> <span>토스페이</span></div>
+        </div>
+      </div>
+      <div id="benefitToss" class="benefit-box">
+        <div class="bt">토스페이 혜택 · <span class="pct">계좌 결제 시 0.5% 즉시 할인</span></div>
+        <div class="bc">할인 금액은 토스 결제창에서 적용돼요 · 1원 이상 결제 시</div>
+      </div>
+      <div id="rowNpay" class="pay-row" onclick="pick('npay')">
+        <span class="radio"></span>
+        <div>
+          <div class="pay-name"><span class="logo-npay"><span class="n">N</span>pay</span> <span>네이버페이</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ② 신용/체크카드 -->
+    <div id="cardCard" class="pay-card">
+      <div class="pay-row" onclick="pick('card')">
+        <span class="radio"></span>
+        <div><div class="pay-name">신용/체크카드</div></div>
+      </div>
+    </div>
+
+    <!-- B안 접힘 토글 (피드백 03 비교용) -->
+    <button class="fold-toggle" onclick="document.body.classList.toggle('fold-open')">
+      다른 결제수단
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+
+    <!-- ③ 실시간 계좌이체 -->
+    <div id="cardBank" class="pay-card foldable">
+      <div class="pay-row" onclick="pick('bank')">
+        <span class="radio"></span>
+        <div><div class="pay-name">실시간 계좌이체</div></div>
+      </div>
+    </div>
+
+    <!-- ④ 가상계좌 (피드백 03) -->
+    <div id="cardVbank" class="pay-card foldable">
+      <div class="pay-row" onclick="pick('vbank')">
+        <span class="radio"></span>
+        <div>
+          <div class="pay-name">가상계좌 (무통장 입금)</div>
+        </div>
+      </div>
+      <div class="vbank-note">주문 후 발급되는 전용 계좌로 입금하면 결제가 완료돼요.<br>입금 기한이 지나면 주문이 자동 취소돼요.</div>
+    </div>
+
+    <!-- 다음에도 사용 (피드백 04) -->
+    <div id="keepRow" class="keep-row on" onclick="this.classList.toggle('on')">
+      <span class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+      <span class="kt">선택한 결제수단을 다음에도 사용할게요</span>
+    </div>
+  </div>
+
+  <div class="divider" style="margin-top:22px;"></div>
+
+  <!-- ===== 결제 금액 ===== -->
+  <div class="content">
+    <h2 class="section-header">결제 금액</h2>
+    <div class="amount-row"><span class="al">총 상품 금액</span><span class="av">36,300원</span></div>
+    <div class="amount-row"><span class="al">총 배송비</span><span class="av">3,000원</span></div>
+    <div class="amount-row"><span class="al">총 할인 금액</span><span class="av minus">-2,700원</span></div>
+    <div class="amount-row"><span class="al">적립 예정</span><span class="av">19원</span></div>
+    <div class="total-row"><span class="tl">총 결제 금액</span><span class="tv">36,600원</span></div>
+    <div class="total-note" id="totalNote">토스페이 계좌 결제 시 약 183원이 추가 할인돼요</div>
+  </div>
+
+  <!-- 고정 CTA -->
+  <div class="cta-wrap">
+    <button class="cta" id="ctaBtn">36,600원 결제하기</button>
+  </div>
+</div>
+
+<!-- ===== 문서 노트 ===== -->
+<div class="doc"><div class="doc-inner">
+  <h2>결제수단 선택 v1 — 설계 근거 (2026-08-13)</h2>
+  <p>토스 목업 피드백 4건 + 베이비빌리 레퍼런스 3종 기반. 디자인 가이드 v2.0.4 준수(피치크림 면 · 뉴트럴 선 · 딥그린 확정 · 오렌지 액션).</p>
+
+  <table>
+    <tr><th>피드백</th><th>반영</th></tr>
+    <tr><td>01 혜택 영역 UI 구분</td><td>간편결제 카드에 <b>노른자 "혜택" 배지</b>(칩 계열 #FFC520) + 선택 수단 아래 <b>피치크림 혜택 패널</b>. 배지=발견, 패널=내용으로 역할 분리. 베이비빌리의 회색 박스 대신 브랜드 웜 톤.</td></tr>
+    <tr><td>02 라디오 · 토스→네페 순 · 토스 기본</td><td>간편결제 카드 안에 라디오 2행(토스페이 기본 선택). <b>토스 선택 시에만</b> "계좌 결제 시 0.5% 즉시 할인" 패널 노출. 네이버페이는 확정된 혜택이 없어 패널 미노출(빈 혜택 문구는 신뢰 손상).</td></tr>
+    <tr><td>03 가상계좌 배치</td><td><b>A안(추천) = 플랫 리스트 최하단.</b> 수단이 4개뿐이라 접기는 절약 효과가 작고, 무통장 고객(선물·현금 구매)은 습관적 사용자라 숨기면 이탈 위험. B안(접힘)은 상단 토글로 비교 가능 — 수단이 6개 이상으로 늘면 B안 전환 권장. 가상계좌 선택 시 입금 안내 인라인 노출.</td></tr>
+    <tr><td>04 다음에도 사용</td><td>수단 목록 하단 체크박스(기본 ON, 딥그린). 문구는 "~할게요"로 졸리팟 보이스 통일.</td></tr>
+  </table>
+
+  <h2>CX 설계 포인트</h2>
+  <p>• <b>선택 상태 = 딥그린</b>(라디오·카드 보더·체크박스) — 가이드의 "확정·분류" 역할. 결제하기 CTA만 오렌지로 남겨 마지막 행동이 화면에서 유일한 액션 컬러가 되게 함.<br>
+  • <b>총 결제 금액 아래 할인 예고 캡션</b>: 토스 계좌 결제 예상 할인(36,600×0.5%≈183원)을 미리 보여줘 혜택 배지→결제 완료까지 기대가 이어지게 함. 수단 변경 시 캡션 자동 갱신.<br>
+  • <b>혜택 금액을 총액에 선반영하지 않음</b> — 할인은 토스 결제창에서 확정되므로 선반영 시 금액 불일치 클레임 위험. "약 ~원 추가 할인" 예고만.<br>
+  • 주문 컨텍스트는 상단 1줄 요약(상품·배송지·도착일)으로 압축 — 결제 단계에서는 결정만 남기고 정보는 걷어냄.</p>
+
+  <h2 class="hl">정책·개발 확정 필요</h2>
+  <p>• 토스페이 0.5% 할인의 정확한 조건·상한(최대 할인액, ID당 횟수) — 토스 계약 조건 확정 후 문구 반영<br>
+  • <b>샵바이 PG에서 토스페이 지원 여부·연동 방식 확인 필수</b>(현재 스킨은 신용카드/실시간이체/가상계좌/네이버페이만 노출)<br>
+  • 가상계좌 입금 기한(현재 문구는 기한 미표기 — 정책 확정 시 "24시간 이내" 등 구체화)<br>
+  • 적립 예정 금액 산식(현 19원은 기존 화면 값 유지)</p>
+</div></div>
+
+<script>
+  var METHODS=['toss','npay','card','bank','vbank'];
+  var CARD_OF={toss:'cardEasy',npay:'cardEasy',card:'cardCard',bank:'cardBank',vbank:'cardVbank'};
+  var current='toss';
+
+  function pick(m){
+    current=m;
+    // 라디오 상태
+    document.getElementById('rowToss').classList.toggle('on', m==='toss');
+    document.getElementById('rowNpay').classList.toggle('on', m==='npay');
+    document.querySelector('#cardCard .pay-row').classList.toggle('on', m==='card');
+    document.querySelector('#cardBank .pay-row').classList.toggle('on', m==='bank');
+    document.querySelector('#cardVbank .pay-row').classList.toggle('on', m==='vbank');
+    // 카드 보더
+    ['cardEasy','cardCard','cardBank','cardVbank'].forEach(function(id){
+      document.getElementById(id).classList.toggle('selected', CARD_OF[m]===id);
+    });
+    // 혜택 패널: 토스일 때만
+    document.getElementById('benefitToss').style.display = (m==='toss') ? 'block' : 'none';
+    // 총액 캡션
+    var note=document.getElementById('totalNote');
+    if(m==='toss'){ note.textContent='토스페이 계좌 결제 시 약 183원이 추가 할인돼요'; note.style.display='block'; }
+    else{ note.style.display='none'; }
+  }
+
+  function setLayout(v){
+    document.body.classList.toggle('layout-b', v==='b');
+    document.body.classList.remove('fold-open');
+    document.getElementById('tgA').classList.toggle('active', v==='a');
+    document.getElementById('tgB').classList.toggle('active', v==='b');
+    // B안에서 접힘 안의 수단이 선택돼 있으면 펼친 상태로 시작
+    if(v==='b' && (current==='bank'||current==='vbank')) document.body.classList.add('fold-open');
+  }
+</script>
+<script src="proto-link.js"></script>
+</body>
+</html>
