@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>졸리팟 V2 · 주문하기 v1</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  :root{
+    --color-brand:#FDB813;
+    --color-primary:#FC642D;
+    --color-secondary:#145F48;
+    --color-bg:#FFFFFF;
+    --color-surface:#FFF5EA;
+    --color-surface-alt:#FFEEDC;
+    --color-text-primary:#212121;
+    --color-text-secondary:#666666;
+    --color-text-tertiary:#9E9E9E;
+    --color-error:#D64545;
+    --color-info:#3276AE;
+    --color-warning:#FFC520;
+    --color-border:#CCCFD4;
+    --color-divider:#E5E7EB;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.3px;background:#EDEEF0;color:var(--color-text-primary);
+    word-break:keep-all;
+  }
+  .proto-bar{background:#1E1E2E;padding:10px 14px;display:flex;align-items:center;gap:8px;}
+  .proto-bar .lab{font-size:12px;color:#CCCCDD;font-weight:600;}
+  .proto-bar .ver{margin-left:auto;font-size:11.5px;color:#8888A0;}
+
+  .phone{max-width:430px;margin:0 auto;background:var(--color-bg);min-height:100vh;position:relative;padding-bottom:92px;}
+  .appbar{display:flex;align-items:center;height:52px;padding:0 16px;position:sticky;top:0;background:var(--color-bg);z-index:10;}
+  .appbar .back{width:24px;height:24px;cursor:pointer;flex-shrink:0;}
+  .appbar .title{flex:1;text-align:center;font-size:17px;font-weight:600;margin-right:24px;}
+  .content{padding:0 16px;}
+  .divider{height:1px;background:var(--color-divider);margin:0 -16px;}
+
+  /* 섹션 헤더 — 에이블리 밀도: 상 16 / 하 10 */
+  .sh{font-size:17px;font-weight:600;padding:16px 0 10px;display:flex;align-items:center;justify-content:space-between;}
+  .sh .fold{width:20px;height:20px;color:var(--color-text-tertiary);cursor:pointer;transition:transform .2s ease;}
+  .sh .fold.up{transform:rotate(180deg);}
+
+  /* ===== 주문 상품 ===== */
+  .prod{display:flex;gap:11px;padding:2px 0 14px;}
+  .prod-thumb{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,#e7c79f,#d9b486);flex-shrink:0;}
+  .prod-info{flex:1;min-width:0;}
+  .prod-name{font-size:14px;font-weight:500;line-height:1.45;}
+  .prod-opt{font-size:12.5px;color:var(--color-text-secondary);margin-top:2px;}
+  .prod-price{font-size:14.5px;font-weight:700;margin-top:4px;}
+  .prod-price .cnt{font-size:12.5px;font-weight:400;color:var(--color-text-secondary);margin-left:6px;}
+  .free-tag{font-size:11.5px;font-weight:600;color:var(--color-secondary);background:rgba(20,95,72,.08);border-radius:6px;padding:2px 7px;flex-shrink:0;align-self:flex-start;}
+
+  /* ===== 배송지 (요약형) ===== */
+  .addr{padding:0 0 14px;}
+  .addr-top{display:flex;align-items:center;gap:8px;}
+  .addr-name{font-size:14.5px;font-weight:600;}
+  .addr-default{font-size:11px;font-weight:600;color:var(--color-secondary);border:1px solid rgba(20,95,72,.35);border-radius:6px;padding:1px 6px;}
+  .addr-change{margin-left:auto;font-size:13px;color:var(--color-text-secondary);border:1px solid var(--color-border);border-radius:8px;padding:5px 11px;background:#fff;cursor:pointer;font-family:inherit;letter-spacing:-0.3px;}
+  .addr-line{font-size:13.5px;color:var(--color-text-secondary);margin-top:5px;line-height:1.55;}
+  .req-select{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--color-border);border-radius:10px;padding:12px 13px;margin-top:11px;font-size:14px;color:var(--color-text-tertiary);cursor:pointer;}
+  .req-select svg{width:16px;height:16px;color:var(--color-text-tertiary);}
+
+  /* ===== 할인 혜택 (에이블리 문법) ===== */
+  .dc-row{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--color-border);border-radius:10px;padding:12px 13px;margin-bottom:8px;cursor:pointer;}
+  .dc-row .l{font-size:14.5px;font-weight:600;}
+  .dc-row .r{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--color-text-secondary);}
+  .dc-row .r svg{width:16px;height:16px;color:var(--color-text-tertiary);}
+  .dc-pair{display:flex;gap:8px;margin-bottom:8px;}
+  .dc-input{flex:1;display:flex;align-items:center;justify-content:space-between;border:1px solid var(--color-border);border-radius:10px;padding:12px 13px;}
+  .dc-input .ph{font-size:14px;color:var(--color-text-tertiary);}
+  .dc-input .l{font-size:14.5px;font-weight:600;}
+  .dc-input .val{font-size:14px;color:var(--color-text-secondary);}
+  .dc-btn{flex-shrink:0;border:1px solid var(--color-border);border-radius:10px;background:#fff;padding:0 15px;
+    font-size:13.5px;font-weight:500;color:var(--color-text-secondary);cursor:pointer;font-family:inherit;letter-spacing:-0.3px;}
+  .dc-cap{font-size:12px;color:var(--color-text-tertiary);text-align:right;padding:0 2px 14px;}
+
+  /* ===== 결제수단 (v10 이식) ===== */
+  .pm{position:relative;width:100%;border:1.5px solid var(--color-border);border-radius:14px;
+    background:#fff;margin-bottom:10px;cursor:pointer;font-family:inherit;letter-spacing:-0.3px;
+    transition:border-color .15s ease;color:var(--color-text-primary);}
+  .pm.selected{border-color:var(--color-secondary);border-width:2px;}
+  .pm.hero{padding:20px 16px 16px;text-align:center;overflow:hidden;}
+  .hero-ic{width:42px;height:42px;border-radius:12px;background:var(--color-surface-alt);margin:0 auto 7px;
+    display:flex;align-items:center;justify-content:center;}
+  .hero-ic svg{width:23px;height:23px;color:var(--color-primary);}
+  .hero-name{display:block;font-size:16px;font-weight:600;}
+  .benefit-strip{display:block;background:var(--color-surface);margin:14px -16px -16px;
+    padding:9px 12px;font-size:13px;font-weight:600;color:var(--color-text-primary);}
+  .benefit-strip .pct{color:var(--color-primary);font-weight:700;}
+  .pm.flat{padding:15px;text-align:center;font-size:15px;font-weight:500;}
+  .pm-row{display:flex;gap:10px;}
+  .pm-row .pm{flex:1;margin-bottom:10px;}
+  .benefit-box{background:var(--color-surface);border-radius:12px;padding:12px 15px;margin:2px 0 12px;display:none;}
+  .benefit-box.show{display:block;}
+  .benefit-box .bt{font-size:13.5px;font-weight:600;}
+  .benefit-box .bc{font-size:12.5px;color:var(--color-text-secondary);margin-top:4px;line-height:1.55;}
+  .easy-detail{display:none;}
+  .easy-detail.show{display:block;}
+  .easy-opt{display:flex;align-items:center;gap:9px;padding:2px 4px 14px 16px;cursor:pointer;}
+  .radio{width:21px;height:21px;border-radius:50%;border:1.5px solid var(--color-border);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;background:#fff;transition:all .15s ease;}
+  .easy-opt.on .radio{border-color:var(--color-secondary);background:var(--color-secondary);}
+  .easy-opt.on .radio::after{content:"";width:7px;height:7px;border-radius:50%;background:#fff;}
+  .easy-name{font-size:15px;font-weight:500;}
+  .keep-row{display:flex;align-items:center;gap:9px;padding:4px 2px 14px;cursor:pointer;}
+  .checkbox{width:21px;height:21px;border-radius:6px;border:1.5px solid var(--color-border);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;transition:all .15s ease;background:#fff;}
+  .keep-row.on .checkbox{background:var(--color-secondary);border-color:var(--color-secondary);}
+  .keep-row.on .checkbox svg{display:block;}
+  .checkbox svg{display:none;width:13px;height:13px;color:#fff;}
+  .keep-row .kt{font-size:14px;}
+
+  /* ===== 결제 금액 ===== */
+  .amount-row{display:flex;justify-content:space-between;padding:5px 0;font-size:14px;}
+  .amount-row .al{color:var(--color-text-secondary);}
+  .amount-row .av{font-weight:500;}
+  .amount-row .av.minus{color:var(--color-primary);}
+  .total-row{display:flex;justify-content:space-between;align-items:center;padding:13px 0 2px;
+    margin-top:7px;border-top:1px solid var(--color-divider);}
+  .total-row .tl{font-size:15.5px;font-weight:600;}
+  .total-row .tv{font-size:20px;font-weight:700;color:var(--color-primary);}
+  .total-caps{text-align:right;padding-bottom:14px;}
+  .total-caps .p-cap{font-size:12px;color:var(--color-text-tertiary);margin-top:2px;}
+
+  /* 절약 스트립 (에이블리 참고 · 크림) */
+  .save-strip{background:var(--color-surface);text-align:center;font-size:13px;font-weight:600;
+    padding:10px 12px;margin:0 -16px;}
+  .save-strip .n{color:var(--color-primary);font-weight:700;}
+
+  /* ===== 동의·사업자 (오늘의집 문법) ===== */
+  .agree{font-size:12.5px;color:var(--color-text-secondary);padding:14px 0 0;line-height:1.6;}
+  .biz{background:#F7F8F9;margin:14px -16px 0;padding:14px 16px 18px;}
+  .biz-links{font-size:12px;color:var(--color-text-secondary);display:flex;gap:12px;margin-bottom:10px;}
+  .biz-links b{font-weight:600;color:var(--color-text-primary);}
+  .biz-toggle{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--color-text-tertiary);cursor:pointer;}
+  .biz-toggle svg{width:13px;height:13px;transition:transform .2s ease;}
+  .biz.open .biz-toggle svg{transform:rotate(180deg);}
+  .biz-detail{display:none;font-size:11.5px;color:var(--color-text-tertiary);line-height:1.7;margin-top:8px;}
+  .biz.open .biz-detail{display:block;}
+  .biz-note{font-size:11.5px;color:var(--color-text-tertiary);line-height:1.65;margin-top:10px;}
+
+  .cta-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+    background:var(--color-bg);padding:10px 16px calc(12px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--color-divider);z-index:20;}
+  .cta{width:100%;background:var(--color-primary);color:#fff;border:none;border-radius:14px;
+    padding:16px 0;font-size:17px;font-weight:700;font-family:inherit;letter-spacing:-0.3px;cursor:pointer;}
+
+  .doc{background:#1E1E2E;color:#B8B8CC;font-size:13px;line-height:1.7;padding:28px 20px 60px;margin-top:40px;}
+  .doc-inner{max-width:760px;margin:0 auto;}
+  .doc h2{color:#fff;font-size:16px;margin:22px 0 8px;}
+  .doc b{color:#fff;}
+  .doc .hl{color:#FFC520;}
+  .doc table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0;}
+  .doc th,.doc td{border:1px solid #3A3A4E;padding:6px 9px;text-align:left;vertical-align:top;}
+  .doc th{color:#fff;background:#2A2A4A;}
+</style>
+</head>
+<body>
+
+<div class="proto-bar">
+  <span class="lab">주문하기 전체 화면 — 디자인 가이드 v2.0.4 · 에이블리 밀도</span>
+  <span class="ver">jollypot-v2-order-checkout-v1</span>
+</div>
+
+<div class="phone">
+  <div class="appbar">
+    <svg class="back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    <span class="title">주문하기</span>
+  </div>
+
+  <!-- ===== 주문 상품 ===== -->
+  <div class="content">
+    <div class="sh">주문 상품 <span style="font-size:13px;font-weight:400;color:var(--color-text-secondary);margin-left:6px;margin-right:auto;">1건</span>
+      <svg id="prodFold" class="fold up" onclick="toggleProd()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div id="prodBody" class="prod">
+      <div class="prod-thumb"></div>
+      <div class="prod-info">
+        <div class="prod-name">마루야마 키친크로스 주방행주</div>
+        <div class="prod-opt">노랑 수건 · 1개</div>
+        <div class="prod-price">9,500원<span class="cnt">1개</span></div>
+      </div>
+      <span class="free-tag">파트너 배송</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== 배송지 (요약형) ===== -->
+  <div class="content">
+    <div class="sh">배송지</div>
+    <div class="addr">
+      <div class="addr-top">
+        <span class="addr-name">조영훈</span>
+        <span class="addr-default">기본</span>
+        <button class="addr-change" onclick="toast('배송지 선택 (프로토타입)')">변경</button>
+      </div>
+      <div class="addr-line">서울 마포구 양화로 120, 12층 · 010-3670-9534</div>
+      <div class="req-select" onclick="toast('요청사항 선택 (프로토타입)')">
+        배송 시 요청사항을 선택해주세요
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== 할인 혜택 (에이블리 문법) ===== -->
+  <div class="content">
+    <div class="sh">할인 혜택</div>
+    <div class="dc-row" onclick="toast('쿠폰 선택 (프로토타입)')">
+      <span class="l">쿠폰</span>
+      <span class="r">사용 가능 0장
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </span>
+    </div>
+    <div class="dc-pair">
+      <div class="dc-input"><span class="ph">쿠폰코드를 입력해주세요</span></div>
+      <button class="dc-btn" onclick="toast('쿠폰코드 등록 (프로토타입)')">코드등록</button>
+    </div>
+    <div class="dc-pair">
+      <div class="dc-input"><span class="l">적립금</span><span class="val">0원</span></div>
+      <button class="dc-btn" onclick="toast('전액 사용 (프로토타입)')">전액사용</button>
+    </div>
+    <div class="dc-cap">사용 가능 적립금 0원</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== 결제수단 (v10 확정 블록) ===== -->
+  <div class="content">
+    <div class="sh">결제수단</div>
+
+    <button id="pmQuick" class="pm hero selected" onclick="pick('quick')">
+      <span class="hero-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/><path d="M13 14l2 2 3.5-3.5" stroke-width="2"/></svg>
+      </span>
+      <span class="hero-name">퀵계좌이체</span>
+      <span class="benefit-strip">결제할 때마다 <span class="pct">0.5% 즉시 할인</span> · 횟수 무제한</span>
+    </button>
+    <div id="bxQuickGuide" class="benefit-box show">
+      <div class="bt">한 번 연결하고 무제한 혜택 받기</div>
+      <div class="bc">처음 한 번만 계좌를 연결하면, 다음부턴 바로 결제돼요</div>
+    </div>
+
+    <button id="pmCard" class="pm flat" onclick="pick('card')">신용/체크카드</button>
+
+    <div class="pm-row">
+      <button id="pmVbank" class="pm flat" onclick="pick('vbank')">가상계좌</button>
+      <button id="pmEasy" class="pm flat" onclick="pick('easy')">간편결제</button>
+    </div>
+    <div id="easyDetail" class="easy-detail">
+      <div class="easy-opt on">
+        <span class="radio"></span><span class="easy-name">네이버페이</span>
+      </div>
+    </div>
+    <div id="bxVbank" class="benefit-box">
+      <div class="bt">법인결제 가능</div>
+      <div class="bc">주문 후 발급되는 전용 계좌로 입금하면 결제가 완료돼요. 입금 기한이 지나면 주문이 자동 취소돼요.</div>
+    </div>
+
+    <div id="keepRow" class="keep-row on" onclick="this.classList.toggle('on')">
+      <span class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+      <span class="kt">선택한 결제수단을 다음에도 사용할게요</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== 결제 금액 ===== -->
+  <div class="content">
+    <div class="sh">결제 금액</div>
+    <div class="amount-row"><span class="al">총 상품 금액</span><span class="av">9,500원</span></div>
+    <div class="amount-row"><span class="al">총 배송비</span><span class="av">3,000원</span></div>
+    <div class="amount-row"><span class="al">쿠폰 할인</span><span class="av minus">-2,700원</span></div>
+    <div class="amount-row"><span class="al">적립금 사용</span><span class="av">0원</span></div>
+    <div class="total-row"><span class="tl">총 결제 금액</span><span class="tv">9,800원</span></div>
+    <div class="total-caps">
+      <div class="p-cap" id="totalNote">퀵계좌이체 결제 시 약 49원이 즉시 할인돼요</div>
+      <div class="p-cap">19P 적립 예정</div>
+    </div>
+  </div>
+
+  <!-- 절약 스트립 (할인 합계 > 0일 때만) -->
+  <div class="save-strip">지금 주문하면 <span class="n">2,700원</span>을 아껴요</div>
+
+  <!-- ===== 동의 · 사업자 (오늘의집 문법) ===== -->
+  <div class="content">
+    <div class="agree">본인은 만 14세 이상이며, 주문 내용을 확인하였습니다.</div>
+  </div>
+  <div id="bizBox" class="biz">
+    <div class="biz-links"><b>이용약관</b><b>개인정보처리방침</b><b>사업자정보확인</b></div>
+    <div class="biz-toggle" onclick="document.getElementById('bizBox').classList.toggle('open')">
+      (주)레몬트리커뮤니케이션 사업자 정보
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="biz-detail">
+      대표이사 조영훈 · 사업자등록번호 565-81-00058 · 통신판매업신고 제2018-서울마포-1198호<br>
+      서울특별시 마포구 양화로 120(서교동), 2층 · 고객센터 1668-3995 (평일 10:00~17:00 · 점심 12:00~13:00) · lemontree@lemontreec.com
+    </div>
+    <div class="biz-note">(주)레몬트리커뮤니케이션은 통신판매중개자로서 통신판매의 당사자가 아니며, 파트너가 등록한 상품·상품정보·거래에 대한 의무와 책임은 판매자에게 있습니다.</div>
+  </div>
+
+  <div class="cta-wrap">
+    <button class="cta">9,800원 결제하기</button>
+  </div>
+</div>
+
+<div class="doc"><div class="doc-inner">
+  <h2>주문하기 전체 화면 v1 — 대표 피드백 5건 + CX 제안 (2026-08-13)</h2>
+  <table>
+    <tr><th>피드백</th><th>반영</th></tr>
+    <tr><td>01 디자인 가이드 적용</td><td>가이드 v2.0.4 전면 — 토큰·Pretendard Variable·헤어라인 구분선·오렌지는 CTA/혜택 숫자만·선택은 딥그린</td></tr>
+    <tr><td>02 "결제수단" 붙여쓰기</td><td>섹션 헤더 "결제수단"으로 표기</td></tr>
+    <tr><td>03 사업자 정보</td><td>오늘의집 문법: 회색 밴드 + 약관 링크 한 줄 + <b>사업자 정보 접힘(▾)</b> + 통신판매중개 고지 소형 회색</td></tr>
+    <tr><td>04 할인 혜택 통합</td><td>에이블리 문법: [쿠폰 · 사용 가능 0장 ▾] / [쿠폰코드 입력 + 코드등록] / [적립금 0원 + 전액사용] + 사용 가능 캡션</td></tr>
+    <tr><td>05 여백 축소</td><td>섹션 헤더 상16/하10 · 행 높이 44~48 · 금액 행 5px 간격 · 결제수단 히어로 패딩 축소 — 스크롤 길이 기존 대비 대폭 단축(아래 CX 제안이 최대 기여)</td></tr>
+  </table>
+
+  <h2>CX 제안 — 적용해둔 것</h2>
+  <p>• <b>주문자 정보 섹션 삭제</b>: 회원 정보(이름·연락처)를 그대로 쓰므로 결제 단계에서 다시 입력받을 이유가 없음. 기존 화면 스크롤의 최대 원인.<br>
+  • <b>배송지 = 요약 카드</b>: 이름+기본 배지+[변경] / 주소·연락처 1줄 / 요청사항 셀렉트만. 주소 입력 폼은 [변경] 진입 시 별도 시트(신규 유저는 첫 주문에만 폼 노출) — <b>개발 요건</b>.<br>
+  • <b>주문 상품 접기</b>: 헤더의 ∧로 접기(재확인 니즈만 대응, 기본 펼침).<br>
+  • <b>절약 스트립</b>(에이블리 참고): CTA 직전 "지금 주문하면 2,700원을 아껴요" — 할인 합계(쿠폰+적립금)가 0원이면 미노출. 색은 핑크가 아니라 크림(가이드 면 문법).<br>
+  • <b>적립 예정 19P</b>: 금액 행에서 빼고 오늘의집처럼 총액 아래 소형 캡션으로 강등 — 소액일 때 행으로 노출하면 "적립이 의미 없다" 신호가 됨.</p>
+
+  <h2>CX 제안 — 결정 필요</h2>
+  <p>• <b>배송비 3,000원의 위치</b>: 결제 직전에 처음 보이면 이탈 요인. 상품 카드의 "파트너 배송" 태그 옆에 "배송비 3,000원"을 미리 표기하거나, 장바구니 단계에서 노출 권장.<br>
+  • <b>현금영수증</b>: 가상계좌 선택 시 현금영수증 신청 UI(오늘의집 참고)가 실결제엔 필요 — 이번 프로토엔 미포함, 개발 범위 판단 필요.<br>
+  • <b>절약 스트립의 계산 범위</b>: 현재는 확정 할인(쿠폰 2,700)만. 퀵계좌 예상 할인(49원)까지 합산할지는 "확정 전 금액을 약속하지 않는다" 원칙과 상충해 미합산 권장.</p>
+
+  <h2 class="hl">개발 요건 요약</h2>
+  <p>결제수단 블록 = checkout-payment v10과 동일(요건서 jollypot-checkout-payment-dev-spec-v1 참조) · 배송지 요약/신규 입력 분기 · 절약 스트립 조건부(할인 합계>0) · 적립 예정 캡션은 정책 확정 후 산식 연결 · 사업자 정보 접힘 기본 닫힘</p>
+</div></div>
+
+<script>
+  var current='quick';
+  function pick(m){
+    current=m;
+    ['pmQuick','pmCard','pmEasy','pmVbank'].forEach(function(id){
+      document.getElementById(id).classList.remove('selected');
+    });
+    document.getElementById({quick:'pmQuick',card:'pmCard',easy:'pmEasy',vbank:'pmVbank'}[m]).classList.add('selected');
+    document.getElementById('bxQuickGuide').classList.toggle('show', m==='quick');
+    document.getElementById('easyDetail').classList.toggle('show', m==='easy');
+    document.getElementById('bxVbank').classList.toggle('show', m==='vbank');
+    var n=document.getElementById('totalNote');
+    n.textContent = (m==='quick') ? '퀵계좌이체 결제 시 약 49원이 즉시 할인돼요'
+                                  : '퀵계좌이체로 결제하면 약 49원이 즉시 할인돼요';
+  }
+  function toggleProd(){
+    var b=document.getElementById('prodBody'), f=document.getElementById('prodFold');
+    var hidden = b.style.display==='none';
+    b.style.display = hidden ? 'flex' : 'none';
+    f.classList.toggle('up', hidden);
+  }
+  function toast(msg){
+    var t=document.createElement('div');
+    t.textContent=msg;
+    t.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#212121;color:#fff;font-size:13px;padding:10px 18px;border-radius:999px;z-index:99;opacity:.95;';
+    document.body.appendChild(t);
+    setTimeout(function(){t.remove();},1400);
+  }
+</script>
+<script src="proto-link.js"></script>
+</body>
+</html>
