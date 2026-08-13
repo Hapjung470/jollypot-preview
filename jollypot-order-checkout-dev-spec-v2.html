@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>졸리팟 — 주문하기 개발 요건 v2</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  :root{--primary:#FC642D;--secondary:#145F48;--surface:#FFF5EA;--ink:#212121;--mid:#666666;
+    --border:#CCCFD4;--divider:#E5E7EB;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;
+    -webkit-font-smoothing:antialiased;letter-spacing:-0.3px;background:#fff;color:var(--ink);
+    line-height:1.7;font-size:15px;padding:36px 20px 80px;word-break:keep-all;}
+  .wrap{max-width:840px;margin:0 auto;}
+  h1{font-size:23px;font-weight:700;letter-spacing:-0.6px;}
+  .sub{color:var(--mid);font-size:13.5px;margin:6px 0 22px;}
+  h2{font-size:18px;font-weight:600;margin:30px 0 10px;padding-top:20px;border-top:1px solid var(--divider);}
+  p{margin:0 0 10px;}
+  ul{margin:0 0 12px 20px;} li{margin-bottom:5px;}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin:10px 0 16px;}
+  th{background:var(--surface);text-align:left;font-weight:600;}
+  th,td{border:1px solid var(--border);padding:8px 11px;vertical-align:top;}
+  .warn{background:#FFF8E8;border:1px solid #E8D9A8;border-radius:12px;padding:14px 16px;margin:12px 0 16px;font-size:14px;}
+  a{color:var(--primary);font-weight:600;text-decoration:none;}
+  code{font-family:ui-monospace,Consolas,monospace;font-size:13px;background:var(--surface);
+    border:1px solid var(--border);border-radius:5px;padding:1px 6px;}
+  .foot{margin-top:36px;padding-top:14px;border-top:1px solid var(--divider);font-size:12.5px;color:var(--mid);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>주문하기 — 개발 요건</h1>
+<div class="sub">졸리팟 V2 · 2026-08-13 · 프로토타입: <a href="https://hapjung470.github.io/jollypot-preview/jollypot-v2-order-checkout-v2.html">jollypot-v2-order-checkout-v2.html</a> · 디자인 가이드 v2.0.4 준수<br>v1(결제수단 단독) → <b>v2에서 주문하기 전체 화면으로 확장</b></div>
+
+<h2>1. 화면 구성 (위 → 아래)</h2>
+<table>
+  <tr><th>#</th><th>섹션</th><th>구성</th></tr>
+  <tr><td>1</td><td>주문 상품</td><td>썸네일 + 상품명 + 옵션 + 금액/수량 · 헤더 우측 <b>접기(∧)</b>, 기본 펼침</td></tr>
+  <tr><td>2</td><td>배송지</td><td><b>요약 카드</b>: 수령인 + [기본] 배지 + [변경] 버튼 / 주소·연락처 1줄 / 요청사항 셀렉트<br><b>주문자 정보 섹션 없음</b> — 회원 정보 사용</td></tr>
+  <tr><td>3</td><td>할인혜택</td><td>[쿠폰 · 사용 가능 N장 ▾] / [쿠폰코드 입력 + 코드등록] / [적립금 N원 + 전액사용] / 사용 가능 적립금 캡션(우측 정렬)</td></tr>
+  <tr><td>4</td><td>결제수단</td><td>퀵계좌이체(히어로·기본 선택) → 신용/체크카드 → [가상계좌 ㅣ 간편결제] 2단 → "다음에도 사용" 체크박스(기본 ON)</td></tr>
+  <tr><td>5</td><td>결제 금액</td><td>총 상품 금액 / 총 배송비 / 쿠폰 할인 / 적립금 사용 → <b>총 결제 금액</b> · 하단 캡션 2줄(할인 예고 · 적립 예정)</td></tr>
+  <tr><td>6</td><td>동의·사업자</td><td>"본인은 만 14세 이상이며, 주문 내용을 확인하였습니다." + 회색 밴드(약관 링크 · 사업자 정보 접힘 · 통신판매중개 고지)</td></tr>
+  <tr><td>7</td><td>하단 고정 바</td><td><b>절약 스트립 + 결제하기 CTA</b>가 한 덩어리로 고정</td></tr>
+</table>
+
+<h2>2. 결제수단 상세 규칙</h2>
+<table>
+  <tr><th>항목</th><th>규칙</th></tr>
+  <tr><td>선택 상태</td><td>보더 <code>#145F48</code> 2px (라디오·체크박스도 딥그린)</td></tr>
+  <tr><td>버튼 높이</td><td>전 수단 동일 <code>52px</code> · 위계는 <b>폭으로만</b> 표현(히어로 전폭 / 카드 전폭 / 보조 2단 하프)</td></tr>
+  <tr><td>퀵계좌이체</td><td>기본 선택 · 카드 하단 크림 스트립 "결제할 때마다 <b>0.5% 즉시 할인</b> · 횟수 무제한"<br>선택 시 카드 아래 크림 박스: <b>"한 번 연결하고 무제한 혜택 받기"</b>(13.5px/600) + "처음 한 번만 계좌를 연결하면, 다음부턴 바로 결제돼요"(12.5px 회색)<br><b>계좌 연결이 완료된 고객에게는 이 박스 미노출</b></td></tr>
+  <tr><td>가상계좌</td><td>선택 시 크림 박스: <b>"법인결제 가능"</b> + "주문 후 발급되는 전용 계좌로 입금하면 결제가 완료돼요. 입금 기한이 지나면 주문이 자동 취소돼요."</td></tr>
+  <tr><td>간편결제</td><td>선택 시 행 아래 전폭으로 <b>네이버페이</b> 라디오 펼침(검정 글씨 · 기본 선택됨)</td></tr>
+  <tr><td>총액 하단 캡션</td><td>퀵계좌이체 선택: "퀵계좌이체 결제 시 약 N원이 즉시 할인돼요"<br>그 외: "퀵계좌이체로 결제하면 약 N원이 즉시 할인돼요"<br>N = 총 결제 금액 × 0.5%(원 단위 반올림) · <b>할인액을 총액에 선반영하지 않는다</b></td></tr>
+  <tr><td>적립 예정</td><td>금액 행이 아니라 총액 아래 소형 회색 캡션("N P 적립 예정")</td></tr>
+</table>
+
+<h2>3. 하단 고정 바 · 절약 스트립</h2>
+<ul>
+  <li>절약 스트립과 CTA는 <b>같은 고정 컨테이너</b>에 넣어 함께 움직인다</li>
+  <li>문구: "지금 주문하면 <b>N원</b>을 아껴요" · N = <b>확정 할인 합계</b>(쿠폰 + 적립금 사용). <b>퀵계좌 예상 할인은 합산하지 않는다</b></li>
+  <li><b>N = 0이면 스트립 미노출</b> · 이때만 바 상단에 1px 구분선(<code>#E5E7EB</code>) 노출. 스트립이 있으면 <b>구분선 없음</b>(크림 면이 경계 전담)</li>
+</ul>
+
+<h2>4. 레이아웃·타이포</h2>
+<ul>
+  <li>섹션 헤더 17px/600 · 여백 <b>상 16 / 하 10</b> · 입력·선택 행 높이 44~48px · 금액 행 간격 5px</li>
+  <li>섹션 구분 = 1px 헤어라인 <code>#E5E7EB</code> 좌우 풀블리드 · <b>음수 마진 사용 시 부모 패딩과 반드시 상쇄되게</b>(그렇지 않으면 화면 밖으로 넘침)</li>
+  <li>할인혜택 라벨·값 전부 <code>#666666</code> 일반체(볼드 금지) · 사업자 정보 영역도 볼드 없음</li>
+  <li>오렌지 <code>#FC642D</code>는 <b>CTA + 혜택 숫자 + 할인 금액</b>에만 · 크림 배경 위 오렌지 본문 금지(명암비 미달)</li>
+  <li>Pretendard Variable 로드 + <code>-webkit-font-smoothing:antialiased</code> + 자간 <code>-0.3px</code> + <code>word-break:keep-all</code></li>
+  <li>섹션 제목 표기: <b>"할인혜택"·"결제수단"</b>은 붙여쓰기</li>
+</ul>
+
+<h2>5. 분기·조건부 렌더링</h2>
+<table>
+  <tr><th>조건</th><th>동작</th></tr>
+  <tr><td>배송지 미등록(신규)</td><td>요약 카드 대신 주소 입력 폼 노출 · 등록 후에는 요약 카드로 전환</td></tr>
+  <tr><td>[변경] 탭</td><td>배송지 목록/입력은 별도 시트로 분리 — 주문 화면에 폼을 펼치지 않는다</td></tr>
+  <tr><td>퀵계좌 연결 완료</td><td>"한 번 연결하고 무제한 혜택 받기" 박스 미노출</td></tr>
+  <tr><td>확정 할인 0원</td><td>절약 스트립 미노출 + 하단 바 상단 구분선 노출</td></tr>
+  <tr><td>쿠폰/적립금 0</td><td>행은 유지하되 값만 "사용 가능 0장" / "0원"</td></tr>
+</table>
+
+<h2>6. 착수 전 확정 필요</h2>
+<div class="warn">
+① 결제 실패/중단 상태 화면<br>
+② 수단별 선택률 추적 이벤트<br>
+③ <b>배송비 첫 노출 시점</b> — 결제 단계에서 처음 보이면 이탈 요인. 상품 카드 또는 장바구니 단계 노출 권장<br>
+④ <b>현금영수증 신청 UI</b>(가상계좌 선택 시) — 이번 프로토 미포함, 개발 범위 판단 필요<br>
+⑤ 적립 예정 P 산식(적립 정책 확정 후 연결)
+</div>
+
+<div class="foot">jollypot-order-checkout-dev-spec-v2 · 2026-08-13 · 판단 근거·버전 이력은 별도 문서(checkout-payment decision-v2) 참조</div>
+
+</div>
+</body>
+</html>
