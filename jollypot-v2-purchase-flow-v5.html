@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>졸리팟 V2 · 구매 플로우 v5</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  :root{
+    --color-brand:#FDB813;
+    --color-primary:#FC642D;
+    --color-secondary:#145F48;
+    --color-bg:#FFFFFF;
+    --color-surface:#FFF5EA;
+    --color-surface-alt:#FFEEDC;
+    --color-text-primary:#212121;
+    --color-text-secondary:#666666;
+    --color-text-tertiary:#9E9E9E;
+    --color-error:#D64545;
+    --color-info:#3276AE;
+    --color-warning:#FFC520;
+    --color-border:#CCCFD4;
+    --color-divider:#E5E7EB;
+    --appbar-h:56px;   /* 시트 상단이 남기는 여백 = 상단바 높이 */
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scrollbar-gutter:stable;}
+  body{overflow-x:hidden;
+    font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.3px;background:#EDEEF0;color:var(--color-text-primary);word-break:keep-all;}
+  body.locked{overflow:hidden;}
+
+  /* PROTO BAR */
+  .proto-bar{background:#1E1E2E;padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .proto-bar .lab{font-size:12px;color:#CCCCDD;font-weight:600;}
+  .proto-bar button{background:#2D2D3D;color:#8888A0;border:none;border-radius:8px;padding:7px 12px;
+    font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;}
+  .proto-bar button.active{background:#5B6ABF;color:#fff;}
+  .proto-bar .ver{margin-left:auto;font-size:11.5px;color:#8888A0;}
+  @media (max-width:560px){ .proto-bar .ver{flex:0 0 100%;margin-left:0;text-align:right;} }
+
+  /* PHONE */
+  .phone{max-width:430px;margin:0 auto;background:var(--color-bg);min-height:100vh;position:relative;padding-bottom:92px;}
+  .appbar{display:flex;align-items:center;height:52px;padding:0 16px;gap:14px;position:sticky;top:0;background:var(--color-bg);z-index:10;}
+  .appbar .ic{width:23px;height:23px;color:var(--color-text-primary);cursor:pointer;flex-shrink:0;}
+  .appbar .sp{flex:1;}
+
+  /* 상품 상세 */
+  .hero{width:100%;aspect-ratio:1/1;background:linear-gradient(135deg,#e7c79f,#d9b486);position:relative;}
+  .hero .dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:5px;}
+  .hero .dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.55);}
+  .hero .dots i.on{background:#fff;}
+  .pinfo{padding:16px;}
+  .brand-row{display:flex;align-items:center;gap:5px;font-size:14px;font-weight:600;padding-bottom:12px;}
+  .brand-row .arr{width:15px;height:15px;color:var(--color-text-tertiary);}
+  .brand-row .like{margin-left:auto;font-size:13px;color:var(--color-text-secondary);font-weight:400;}
+  .p-title{font-size:16px;font-weight:500;line-height:1.5;}
+  .p-badge{display:inline-block;background:rgba(20,95,72,.08);color:var(--color-secondary);
+    font-size:11.5px;font-weight:700;border-radius:6px;padding:2px 7px;margin-bottom:7px;}
+  .price-block{padding-top:12px;}
+  .price-orig-row{font-size:13.5px;color:var(--color-text-tertiary);text-decoration:line-through;}
+  .price-sale-row{display:flex;align-items:baseline;gap:8px;margin-top:2px;}
+  .price-pct{font-size:21px;font-weight:700;color:var(--color-primary);}
+  .price-sale{font-size:21px;font-weight:700;}
+  .price-note{font-size:12px;color:var(--color-text-tertiary);margin-top:5px;}
+  .ship{margin-top:14px;padding:12px 14px;background:var(--color-surface);border-radius:12px;font-size:13.5px;line-height:1.6;}
+  .ship b{font-weight:600;}
+
+  /* 하단 고정바 (상세) — 아이콘 확대 */
+  .pdp-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+    background:var(--color-bg);border-top:1px solid var(--color-divider);z-index:20;
+    display:flex;align-items:center;gap:6px;padding:8px 14px calc(10px + env(safe-area-inset-bottom));}
+  .pdp-ic{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    width:56px;min-height:56px;font-size:11.5px;color:var(--color-text-secondary);cursor:pointer;flex-shrink:0;
+    background:none;border:none;font-family:inherit;letter-spacing:-0.3px;}
+  .pdp-ic svg{width:29px;height:29px;stroke-width:1.6;}
+  .pdp-ic.on{color:var(--color-error);}
+  .pdp-ic.on svg{fill:var(--color-error);stroke:var(--color-error);}
+  .btn-buy{flex:1;margin-left:6px;background:var(--color-primary);color:#fff;border:none;border-radius:14px;
+    padding:16px 0;font-size:16.5px;font-weight:700;font-family:inherit;letter-spacing:-0.3px;cursor:pointer;}
+
+  /* ===== 옵션 바텀시트 — 상단바 아래까지 채우는 높은 패널 ===== */
+  .dim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:none;}
+  body:not(.s-closed) .dim{display:block;}
+  .sheet{position:fixed;top:var(--appbar-h);bottom:0;left:50%;transform:translateX(-50%);
+    width:100%;max-width:430px;background:#fff;border-radius:20px 20px 0 0;z-index:50;
+    display:none;flex-direction:column;overflow:hidden;}
+  body:not(.s-closed) .sheet{display:flex;}
+
+  .sheet-top{display:flex;align-items:center;padding:16px 16px 12px;flex-shrink:0;
+    border-bottom:1px solid var(--color-divider);}
+  .sheet-title{font-size:17px;font-weight:600;flex:1;}
+  .sheet-x{width:24px;height:24px;color:var(--color-text-secondary);cursor:pointer;flex-shrink:0;}
+
+  .sheet-body{overflow-y:auto;flex:1;padding:14px 16px 4px;-webkit-overflow-scrolling:touch;}
+
+  /* 셀렉트 + 목록 = 하나의 테두리 그룹 */
+  .grp{border:1.5px solid var(--color-border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+  .grp.on{border-color:var(--color-secondary);}
+  .grp.dis{background:#F7F8F9;border-color:var(--color-divider);}
+  .sel{display:flex;align-items:center;gap:8px;padding:15px;cursor:pointer;font-size:15px;background:#fff;}
+  .grp.dis .sel{background:#F7F8F9;cursor:default;}
+  .sel .txt{flex:1;}
+  .sel .txt.ph{color:var(--color-text-tertiary);}
+  .sel .cv{width:18px;height:18px;color:var(--color-text-tertiary);transition:transform .2s ease;flex-shrink:0;}
+  .grp.open .sel .cv{transform:rotate(180deg);}
+  .opts{display:none;border-top:1px solid var(--color-divider);}
+  .grp.open .opts{display:block;}
+  .opt{padding:14px 15px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;min-height:56px;}
+  .opt + .opt{border-top:1px solid var(--color-divider);}
+  .opt:active{background:var(--color-surface);}
+  .opt-l{flex:1;min-width:0;}
+  .opt-n{font-size:14.5px;font-weight:500;}
+  .opt-s{font-size:12px;color:var(--color-text-secondary);margin-top:3px;}
+  .opt-s .g{color:var(--color-secondary);font-weight:600;}
+  .opt-r{text-align:right;flex-shrink:0;}
+  .opt-add{font-size:14px;color:var(--color-text-secondary);}
+  .opt-hot{display:inline-block;margin-top:4px;background:var(--color-surface-alt);color:var(--color-primary);
+    font-size:10.5px;font-weight:700;border-radius:5px;padding:2px 6px;}
+  .opt.soldout{opacity:.42;cursor:not-allowed;}
+  .opt.soldout:active{background:none;}
+
+  /* 옵션 축 개수별 표시 */
+  body.o-1 #grp2{display:none;}
+  body.o-0 #grp1,body.o-0 #grp2{display:none;}
+
+  /* 선택된 조합 카드 */
+  .picked{border:1px solid var(--color-border);border-radius:12px;padding:14px;margin-bottom:10px;display:none;}
+  body.s-done .picked{display:block;}
+  .pk-top{display:flex;align-items:flex-start;gap:8px;}
+  .pk-name{flex:1;font-size:14.5px;font-weight:500;line-height:1.45;}
+  .pk-x{width:20px;height:20px;color:var(--color-text-tertiary);cursor:pointer;flex-shrink:0;}
+  .pk-sub{font-size:12px;color:var(--color-text-secondary);margin-top:3px;}
+  .pk-sub .g{color:var(--color-secondary);font-weight:600;}
+  .pk-bot{display:flex;align-items:center;margin-top:12px;}
+  .stepper{display:flex;align-items:center;border:1px solid var(--color-border);border-radius:10px;overflow:hidden;}
+  .stepper button{width:38px;height:36px;border:none;background:#fff;font-size:17px;color:var(--color-text-secondary);cursor:pointer;font-family:inherit;}
+  .stepper button:disabled{color:#D5D7DB;cursor:not-allowed;}
+  .stepper .qty{width:38px;text-align:center;font-size:14.5px;font-weight:600;}
+  .pk-price{margin-left:auto;font-size:16.5px;font-weight:700;}
+
+  /* 시트 하단 요약 */
+  .sum{border-top:1px solid var(--color-divider);padding:13px 16px 0;display:none;flex-shrink:0;}
+  body.s-done .sum{display:block;}
+  .sum-row{display:flex;justify-content:space-between;font-size:13.5px;padding:4px 0;color:var(--color-text-secondary);}
+  .sum-row .v{color:var(--color-text-primary);font-weight:500;}
+  .sum-row .v.minus{color:var(--color-primary);}
+  .sum-total{display:flex;justify-content:space-between;align-items:baseline;padding:11px 0 2px;margin-top:6px;border-top:1px solid var(--color-divider);}
+  .sum-total .l{font-size:15px;font-weight:600;}
+  .sum-total .r{font-size:19px;font-weight:700;color:var(--color-primary);}
+  .sum-ship{text-align:right;font-size:12px;color:var(--color-secondary);font-weight:600;padding-bottom:2px;}
+
+  .sheet-guide{text-align:center;font-size:12.5px;color:var(--color-text-tertiary);padding:8px 16px 0;display:none;flex-shrink:0;}
+  body:not(.s-done) .sheet-guide{display:block;}
+  .sheet-foot{flex-shrink:0;padding:10px 16px calc(14px + env(safe-area-inset-bottom));display:flex;gap:9px;}
+  .btn-cart{flex:1;background:#fff;border:1px solid var(--color-border);border-radius:14px;padding:15px 0;
+    font-size:15.5px;font-weight:600;font-family:inherit;letter-spacing:-0.3px;cursor:pointer;color:var(--color-text-primary);}
+  .btn-order{flex:1.4;background:var(--color-primary);color:#fff;border:none;border-radius:14px;padding:15px 0;
+    font-size:15.5px;font-weight:700;font-family:inherit;letter-spacing:-0.3px;cursor:pointer;}
+  .btn-order.dis,.btn-cart.dis{background:var(--color-divider);color:var(--color-text-tertiary);border-color:var(--color-divider);cursor:not-allowed;}
+
+  /* 문서 노트 */
+  .doc{background:#1E1E2E;color:#B8B8CC;font-size:13px;line-height:1.7;padding:28px 20px 60px;margin-top:40px;}
+  .doc-inner{max-width:760px;margin:0 auto;}
+  .doc h2{color:#fff;font-size:16px;margin:22px 0 8px;}
+  .doc b{color:#fff;} .doc .hl{color:#FFC520;}
+  .doc table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0;}
+  .doc th,.doc td{border:1px solid #3A3A4E;padding:6px 9px;text-align:left;vertical-align:top;}
+  .doc th{color:#fff;background:#2A2A4A;}
+  .doc code{background:#2A2A4A;border-radius:4px;padding:1px 5px;font-size:12px;}
+</style>
+</head>
+<body class="s-closed">
+
+<div class="proto-bar">
+  <span class="lab">단계</span>
+  <button id="st1" class="active" onclick="go('closed')">1 상품상세</button>
+  <button id="st2" onclick="go('opt1')">2 옵션1</button>
+  <button id="st3" onclick="go('opt2')">3 옵션2</button>
+  <button id="st4" onclick="go('done')">4 선택완료</button>
+  <span class="lab" style="margin-left:10px">옵션 축</span>
+  <button id="ax2" class="active" onclick="setAxes(2)">2단</button>
+  <button id="ax1" onclick="setAxes(1)">1단</button>
+  <button id="ax0" onclick="setAxes(0)">없음</button>
+  <span class="ver">jollypot-v2-purchase-flow-v5</span>
+</div>
+
+<div class="phone">
+  <div class="appbar">
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    <span class="sp"></span>
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg>
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg>
+  </div>
+
+  <div class="hero"><div class="dots"><i class="on"></i><i></i><i></i><i></i></div></div>
+
+  <div class="pinfo">
+    <div class="brand-row">마루야마
+      <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      <span class="like">♡ 1.2만</span>
+    </div>
+    <span class="p-badge">파트너 배송</span>
+    <div class="p-title">[국내제작] 마루야마 키친크로스 주방행주</div>
+    <div class="price-block">
+      <div class="price-orig-row">14,000원</div>
+      <div class="price-sale-row"><span class="price-pct">32%</span><span class="price-sale">9,500원</span></div>
+      <div class="price-note">옵션에 따라 금액이 달라져요</div>
+    </div>
+    <div class="ship"><b>배송비 3,000원</b> · 3만원 이상 무료배송<br>결제 후 영업일 기준 <b>1~3일 내 출고</b> · 파트너 배송</div>
+  </div>
+
+  <div class="pdp-bar">
+    <button class="pdp-ic" id="btnLike" onclick="toggleLike()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 000-7.8z"/></svg>
+      <span id="likeCnt">1.2만</span>
+    </button>
+    <button class="pdp-ic" onclick="toast('선물하기 (프로토타입)')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18M12 8v13"/><path d="M12 8S9.5 3 7.5 4.5 9 8 12 8zM12 8s2.5-5 4.5-3.5S15 8 12 8z"/></svg>
+      선물하기
+    </button>
+    <button class="btn-buy" onclick="onBuy()">구매하기</button>
+  </div>
+</div>
+
+<!-- ===== 옵션 선택 바텀시트 ===== -->
+<div class="dim" onclick="go('closed')"></div>
+<div class="sheet">
+  <div class="sheet-top">
+    <span class="sheet-title">옵션 선택</span>
+    <svg class="sheet-x" onclick="go('closed')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </div>
+
+  <div class="sheet-body">
+    <!-- 옵션 1 그룹 -->
+    <div class="grp" id="grp1">
+      <div class="sel" onclick="toggleGrp(1)">
+        <span class="txt ph" id="sel1txt"></span>
+        <svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="opts">
+        <div class="opt" onclick="pick1('1P (단품)', 0)">
+          <div class="opt-l"><div class="opt-n">키친크로스 1P (단품)</div></div>
+          <div class="opt-r"><div class="opt-add">+0원</div></div>
+        </div>
+        <div class="opt" onclick="pick1('2P 세트', 8500)">
+          <div class="opt-l"><div class="opt-n">키친크로스 2P 세트</div></div>
+          <div class="opt-r"><div class="opt-add">+8,500원</div><span class="opt-hot">주문많음</span></div>
+        </div>
+        <div class="opt" onclick="pick1('4P 세트', 24000)">
+          <div class="opt-l"><div class="opt-n">키친크로스 4P 세트</div></div>
+          <div class="opt-r"><div class="opt-add">+24,000원</div></div>
+        </div>
+        <div class="opt soldout">
+          <div class="opt-l"><div class="opt-n">키친크로스 6P 세트</div>
+            <div class="opt-s">품절</div></div>
+          <div class="opt-r"><div class="opt-add">+36,000원</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 옵션 2 그룹 -->
+    <div class="grp dis" id="grp2">
+      <div class="sel" onclick="toggleGrp(2)">
+        <span class="txt ph" id="sel2txt"></span>
+        <svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="opts">
+        <div class="opt" onclick="pick2('노랑')">
+          <div class="opt-l"><div class="opt-n">노랑</div></div>
+        </div>
+        <div class="opt" onclick="pick2('그레이')">
+          <div class="opt-l"><div class="opt-n">그레이</div></div>
+        </div>
+        <div class="opt soldout">
+          <div class="opt-l"><div class="opt-n">화이트</div>
+            <div class="opt-s">품절 · 재입고 미정</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 선택 완료 카드 -->
+    <div class="picked">
+      <div class="pk-top">
+        <div class="pk-name" id="pkName">키친크로스 1P (단품) / 노랑</div>
+        <svg class="pk-x" onclick="go('opt1')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </div>
+      <div class="pk-bot">
+        <div class="stepper">
+          <button id="qMinus" onclick="qty(-1)">−</button><span class="qty" id="qty">1</span><button onclick="qty(1)">＋</button>
+        </div>
+        <span class="pk-price" id="pkPrice">9,500원</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 요약 -->
+  <div class="sum">
+    <div class="sum-row"><span>총 <b id="sumCnt">1</b>개 상품</span><span class="v" id="sumList">14,000원</span></div>
+    <div class="sum-row"><span>상품 할인</span><span class="v minus" id="sumDc">-4,500원</span></div>
+    <div class="sum-row"><span>쿠폰 할인</span><span class="v" style="color:var(--color-text-tertiary)">주문서에서 적용</span></div>
+    <div class="sum-total"><span class="l">예상 결제금액</span><span class="r" id="sumTotal">9,500원</span></div>
+    <div class="sum-ship" id="sumShip">+ 배송비 3,000원</div>
+  </div>
+
+  <div class="sheet-guide">옵션을 모두 선택하면 금액이 계산돼요</div>
+  <div class="sheet-foot">
+    <button class="btn-cart dis" id="btnCart" onclick="addCart()">장바구니</button>
+    <button class="btn-order dis" id="btnOrder" onclick="goOrder()">구매하기</button>
+  </div>
+</div>
+
+<div class="doc"><div class="doc-inner">
+  <h2>v5 — 선택 전 안내 문구 제거 (2026-08-13)</h2>
+  <p>시트 중앙의 안내 문구를 <b>삭제</b>했다. 옵션 축 이름을 넣든 빼든 이 문구는 어색했고, <b>레퍼런스(에이블리)도 옵션 선택 전에는 그냥 빈 여백</b>이다.
+  셀렉트 두 개가 화면 상단에 또렷하게 놓여 있으면 무엇을 해야 하는지는 이미 자명하다.</p>
+  <p>비활성 CTA의 이유 안내는 <b>버튼 바로 위 한 줄</b>("옵션을 모두 선택하면 금액이 계산돼요")로 유지한다 — 이건 장식이 아니라
+  <b>버튼이 왜 눌리지 않는지</b>를 설명하는 기능성 문구라 위치도 버튼 옆이어야 한다. 같은 말을 화면 두 곳에서 하지 않는다.</p>
+
+  <h2>v4 — 옵션 축 이름·개수는 상품마다 다르다 (2026-08-13)</h2>
+  <p><b>지적</b>: 두 번째 축이 "색상"이 아닐 수 있는데 안내 문구에 "구성과 색상"을 박아 두었다. 맞는 지적이다.</p>
+  <p><b>원칙: 옵션 축 이름은 파트너가 상품마다 설정하는 데이터다. 화면 문구에 하드코딩하지 않는다.</b><br>
+  · 셀렉트 문구 = <code>{파트너가 설정한 옵션명} 선택하기</code> (예: 구성 / 색상 / 사이즈 / 맛 / 용량)<br>
+  · <b>옵션명 미설정 시 폴백 = "선택1 선택하기" · "선택2 선택하기"</b> — 에이블리도 동일한 폴백을 쓴다(옵션명이 없는 상품에서 "선택2 선택하기"가 그대로 노출됨)<br>
+  · <b>안내·가이드 문구에는 옵션명을 쓰지 않는다</b> → "옵션을 모두 고르면 금액을 알려드려요"</p>
+
+  <h2>함께 처리한 것 — 옵션 축 개수 3가지</h2>
+  <p>이름만 문제가 아니라 <b>축의 개수도 상품마다 다르다.</b> 상단 [옵션 축] 토글로 세 경우를 전부 확인할 수 있다.</p>
+  <table>
+    <tr><th>축</th><th>동작</th></tr>
+    <tr><td><b>2단</b></td><td>기본. 옵션1 → 옵션2 순서 강제, 옵션2는 옵션1 선택 전까지 비활성</td></tr>
+    <tr><td><b>1단</b></td><td>두 번째 그룹 자체를 렌더링하지 않는다. <b>옵션1 선택 즉시 완료 상태로 전환</b>(빈 셀렉트를 남겨 "뭘 더 골라야 하나" 만들지 않음). 조합명도 값 하나만 표기</td></tr>
+    <tr><td><b>없음</b></td><td>단일 상품. <b>구매하기 탭 시 시트를 열지 않고 바로 주문서로 이동</b> — 고를 것이 없는데 시트를 띄우는 건 순수한 마찰이다</td></tr>
+  </table>
+  <p class="hl"><b>개발 요건</b>: 옵션 축 이름·개수·값은 모두 <b>상품 데이터에서 렌더링</b>한다. 축 개수 0/1/2 세 경우를 모두 처리하고,
+  <b>축 개수는 상품 단위로 판정</b>한다(파트너가 1단으로 등록한 상품에 빈 2번째 셀렉트가 뜨면 구매가 막힌 것처럼 보인다).</p>
+
+  <h2>v3 — 도착일 표기 전면 제거 (2026-08-13)</h2>
+  <p><b>우리는 도착일을 약속할 수 없다.</b> 파트너 배송이라 출고·배송사 리드타임을 우리가 통제하지 못하고, 도착 보장 인프라(마감시간·물류 연동)도 없다.
+  <b>지킬 수 없는 약속은 표기하지 않는 것이 유일하게 옳은 선택</b>이며, 결제 직전 화면에서의 도착일 약속은 미이행 시 <b>CS·환불 클레임으로 직결</b>된다.</p>
+  <table>
+    <tr><th>위치</th><th>변경 전</th><th>변경 후</th></tr>
+    <tr><td>PDP 배지</td><td>내일 도착</td><td><b>파트너 배송</b></td></tr>
+    <tr><td>PDP 배송 박스</td><td>내일(목) 도착 · 오후 2시 전 주문 시</td><td>배송비 3,000원 · 3만원 이상 무료배송 / <b>결제 후 영업일 기준 1~3일 내 출고</b></td></tr>
+    <tr><td>옵션 행(5곳)</td><td>내일 도착 · 오후 2시 전 주문 시</td><td><b>줄 자체 삭제</b> — 옵션마다 달라지는 정보가 아니면 반복할 이유가 없다. 품절 상태만 표기</td></tr>
+    <tr><td>선택완료 카드</td><td>내일 도착 · 오후 2시 전 주문 시</td><td>삭제</td></tr>
+    <tr><td>빈 상태 안내</td><td>금액과 <b>도착일</b>을 알려드려요</td><td>금액을 알려드려요</td></tr>
+  </table>
+  <p><b>대신 말할 수 있는 것만 남겼다</b>: ①배송비와 무료배송 임계(확정값) ②<b>출고 소요일</b>(파트너가 설정하는 값 — 도착이 아니라 출고라 우리가 통제 가능) ③배송 주체(파트너 배송).</p>
+  <p class="hl"><b>개발 요건</b>: 출고 소요일은 <b>파트너별 설정값을 노출</b>한다(하드코딩 금지). 파트너가 미설정한 상품은 <b>출고 문구 자체를 노출하지 않는다</b> — 기본값을 임의로 채우면 그것도 지킬 수 없는 약속이 된다.
+  향후 도착일 표기를 하려면 ①파트너 출고 마감시간 ②택배사 배송 소요일 ③지역별 편차 세 가지 데이터가 선행되어야 한다.</p>
+
+  <h2>구매 플로우 v2 — 대표 피드백 3건 + 전체 감사 (2026-08-13)</h2>
+  <table>
+    <tr><th>#</th><th>지적</th><th>조치</th></tr>
+    <tr><td>01</td><td>찜·선물하기 아이콘이 너무 작음</td><td>아이콘 23px → <b>29px</b>, 탭 영역 56×56px 확보(접근성 44px 상회). 찜은 <b>누르면 채워지는 토글</b>로 동작하고 카운트가 함께 증감.</td></tr>
+    <tr><td>02</td><td>옵션창 높이 — 상단바 살짝 아래까지 높아야 함</td><td><b>시트를 내용 높이가 아니라 고정 높이로</b> 변경: <code>top:56px; bottom:0</code>. 옵션이 2개뿐이어도 시트는 항상 높다(에이블리도 동일 — 옵션 1개인 화면에서도 시트가 화면 끝까지 차 있음). 옵션 목록이 길어도 <b>시트 안에서만 스크롤</b>되고 요약·CTA는 하단 고정.</td></tr>
+    <tr><td>03</td><td>옵션창 테두리가 정리되지 않음</td><td><b>셀렉트 박스와 옵션 목록을 하나의 테두리 그룹으로 통합.</b> 기존에는 셀렉트(테두리)와 목록(테두리)이 각각 있고 −4px 마진으로 붙여 <b>이중 테두리·1px 어긋남</b>이 생겼다. 이제 그룹 1개 테두리 + 내부는 1px 구분선만.</td></tr>
+  </table>
+
+  <h2>전체 감사에서 함께 고친 것</h2>
+  <p>• <b>시트 열림 중 배경 스크롤 잠금 누락</b> — 시트를 열고 스크롤하면 뒤 페이지가 같이 움직였다. <code>body.locked</code> 추가(스크롤바 폭은 <code>scrollbar-gutter:stable</code>로 이미 보정).<br>
+  • <b>시트에 닫기 수단이 딤 탭뿐이었음</b> — 화면을 거의 채우는 높은 패널에서는 딤 영역이 좁아 발견이 어렵다. 상단에 <b>제목 + ✕</b> 헤더 신설.<br>
+  • <b>선택 전 빈 공간 처리</b> — 시트가 높아지면서 생긴 여백에 안내 문구("구성과 색상을 고르면 금액과 도착일을 알려드려요")를 배치. 빈 흰 화면은 오작동처럼 보인다.<br>
+  • <b>장바구니 버튼도 옵션 미선택 시 비활성</b> — 구매하기만 비활성이고 장바구니는 활성이라 상태가 어긋났다.<br>
+  • <b>수량 하한 처리</b> — 1개일 때 − 버튼 비활성(연타로 0 이하 진입 방지).<br>
+  • <b>옵션2에도 품절 케이스 추가</b>(화이트) — 색상 품절은 실제로 흔한데 옵션1에만 있었다.<br>
+  • <b>스테퍼 탭 영역 확대</b> 32×30 → <b>38×36</b>.<br>
+  • <b>PDP 가격 캡션 수정</b> — "온라인 정가 기준"은 개발자 표현이라 <b>"옵션에 따라 금액이 달라져요"</b>로 교체(고객이 알아야 할 것만).</p>
+
+  <h2>남은 판단 — 이번 범위에서 제외</h2>
+  <p>• <b>조합 다중 선택</b>(여러 옵션을 한 번에 담기): 카드 리스트로 확장 가능한 구조로만 설계, 구현은 제외<br>
+  • <b>전체 품절 상품</b>의 상품상세 상태(구매하기 비활성 + 재입고 알림): 별도 화면으로 정의 필요<br>
+  • 옵션별 <b>재고 수량 표기</b>("3개 남음"): 재고 데이터 신뢰도 확보 후 검토</p>
+
+  <h2 class="hl">개발 요건</h2>
+  <p>• 샵바이 <b>선택옵션 2단(multiLevelOptions)</b> · 옵션가 = 본품가 + <code>addPrice</code> · <b>조합별 재고/품절 상태를 목록에 반영</b>(품절은 비활성 표시, 숨기지 않음)<br>
+  • 시트 높이는 <b>내용 기반이 아니라 고정</b>(상단 여백 = 앱바 높이) · 스크롤은 시트 내부에서만<br>
+  • 시트의 "예상 결제금액"과 주문서의 "총 결제 금액"은 산식이 달라 값이 다를 수 있다 — 시트는 <b>예상</b>으로 명시하고 쿠폰은 계산하지 않는다<br>
+  • 배송비는 예상 결제금액에 합산하지 않고 <b>아래 별도 표기</b> · 무료배송 임계 도달 시 문구 자동 전환</p>
+</div></div>
+
+<script>
+  /* 옵션 축 이름은 파트너가 상품마다 설정하는 값이다. 화면 문구에 하드코딩하지 않는다.
+     설정값이 없으면 "선택1 / 선택2"로 폴백한다(에이블리도 동일 폴백을 쓴다). */
+  var OPT_NAMES = ['구성', '색상'];
+  function axisLabel(i){ return (OPT_NAMES[i] || ('선택' + (i + 1))) + ' 선택하기'; }
+
+  var BASE = 9500, LIST = 14000, FREE_SHIP = 30000, addPrice = 0, o1 = '', o2 = '', q = 1, liked = false, AXES = 2;
+
+  function setStep(cls){
+    document.body.className = 's-' + cls + ' o-' + AXES + (cls === 'closed' ? '' : ' locked');
+    ['st1','st2','st3','st4'].forEach(function(id,i){
+      document.getElementById(id).classList.toggle('active', ['closed','opt1','opt2','done'][i] === cls);
+    });
+  }
+  function go(step){
+    if(step === 'closed'){ setStep('closed'); reset(); openGrp(0); return; }
+    if(step === 'opt1'){ reset(); setStep('opt1'); openGrp(1); return; }
+    if(step === 'opt2'){
+      if(AXES < 2){ go('done'); return; }
+      if(!o1) pick1('1P (단품)', 0, true); setStep('opt2'); openGrp(2); return; }
+    if(step === 'done'){
+      if(AXES === 0){ o1 = '단일 상품'; o2 = ''; }
+      else { if(!o1) pick1('1P (단품)', 0, true); if(AXES === 2 && !o2) o2 = '노랑'; else if(AXES === 1) o2 = ''; }
+      setStep('done'); openGrp(0); render(); }
+  }
+  function reset(){
+    addPrice = 0; o1 = ''; o2 = ''; q = 1;
+    setTxt('sel1txt', axisLabel(0), true);
+    setTxt('sel2txt', axisLabel(1), true);
+    document.getElementById('grp1').classList.remove('on');
+    document.getElementById('grp2').classList.remove('on');
+    document.getElementById('grp2').classList.add('dis');
+    document.getElementById('btnOrder').classList.add('dis');
+    document.getElementById('btnCart').classList.add('dis');
+    document.getElementById('qty').textContent = '1';
+  }
+  function setTxt(id, v, ph){
+    var e = document.getElementById(id); e.textContent = v; e.className = ph ? 'txt ph' : 'txt';
+  }
+  function openGrp(n){
+    document.getElementById('grp1').classList.toggle('open', n === 1);
+    document.getElementById('grp2').classList.toggle('open', n === 2);
+  }
+  function toggleGrp(n){
+    if(n === 2 && !o1) return;
+    var open = document.getElementById('grp' + n).classList.contains('open');
+    openGrp(open ? 0 : n);
+  }
+  function pick1(name, add, silent){
+    o1 = name; addPrice = add; o2 = '';
+    setTxt('sel1txt', '키친크로스 ' + name, false);
+    document.getElementById('grp1').classList.add('on');
+    var g2 = document.getElementById('grp2');
+    g2.classList.remove('dis'); g2.classList.remove('on');
+    setTxt('sel2txt', axisLabel(1), true);
+    document.getElementById('btnOrder').classList.add('dis');
+    document.getElementById('btnCart').classList.add('dis');
+    if(AXES === 1){ o2 = ''; if(!silent){ setStep('done'); openGrp(0); render(); } return; }
+    if(silent) return;
+    setStep('opt2'); openGrp(2);
+  }
+  function pick2(name){
+    o2 = name;
+    setTxt('sel2txt', name, false);
+    document.getElementById('grp2').classList.add('on');
+    setStep('done'); openGrp(0); render();
+  }
+  function qty(d){ q = Math.max(1, q + d); render(); }
+  function won(n){ return n.toLocaleString('ko-KR') + '원'; }
+  function render(){
+    document.getElementById('pkName').textContent = '키친크로스 ' + o1 + (o2 ? ' / ' + o2 : '');
+    var sale = (BASE + addPrice) * q, list = (LIST + addPrice) * q;
+    document.getElementById('qty').textContent = q;
+    document.getElementById('qMinus').disabled = (q <= 1);
+    document.getElementById('pkPrice').textContent = won(sale);
+    document.getElementById('sumCnt').textContent = q;
+    document.getElementById('sumList').textContent = won(list);
+    document.getElementById('sumDc').textContent = '-' + won(list - sale);
+    document.getElementById('sumTotal').textContent = won(sale);
+    document.getElementById('sumShip').textContent = sale >= FREE_SHIP ? '무료배송' : '+ 배송비 3,000원';
+    document.getElementById('btnOrder').classList.remove('dis');
+    document.getElementById('btnCart').classList.remove('dis');
+  }
+  function setAxes(n){
+    AXES = n;
+    ['ax2','ax1','ax0'].forEach(function(id,i){
+      document.getElementById(id).classList.toggle('active', [2,1,0][i] === n);
+    });
+    go('closed');
+  }
+  function onBuy(){
+    /* 옵션이 없는 단일 상품은 시트를 열지 않고 바로 주문서로 보낸다 */
+    if(AXES === 0){ goOrder(true); return; }
+    go('opt1');
+  }
+  function toggleLike(){
+    liked = !liked;
+    document.getElementById('btnLike').classList.toggle('on', liked);
+    document.getElementById('likeCnt').textContent = liked ? '1.2만' : '1.2만';
+    toast(liked ? '찜한 상품에 담았어요' : '찜을 해제했어요');
+  }
+  function addCart(){
+    if(document.getElementById('btnCart').classList.contains('dis')) return;
+    toast('장바구니에 담았어요');
+  }
+  function goOrder(force){
+    if(!force && document.getElementById('btnOrder').classList.contains('dis')) return;
+    location.href = 'jollypot-v2-order-checkout-v9.html';
+  }
+  setTxt('sel1txt', axisLabel(0), true);
+  setTxt('sel2txt', axisLabel(1), true);
+  document.body.classList.add('o-2');
+
+  function toast(msg){
+    var t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:#212121;color:#fff;font-size:13px;padding:10px 18px;border-radius:999px;z-index:99;opacity:.95;';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 1400);
+  }
+</script>
+</body>
+</html>
