@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>졸리팟 V2 · 구매 플로우 v1</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  :root{
+    --color-brand:#FDB813;
+    --color-primary:#FC642D;
+    --color-secondary:#145F48;
+    --color-bg:#FFFFFF;
+    --color-surface:#FFF5EA;
+    --color-surface-alt:#FFEEDC;
+    --color-text-primary:#212121;
+    --color-text-secondary:#666666;
+    --color-text-tertiary:#9E9E9E;
+    --color-error:#D64545;
+    --color-info:#3276AE;
+    --color-warning:#FFC520;
+    --color-border:#CCCFD4;
+    --color-divider:#E5E7EB;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scrollbar-gutter:stable;}
+  body{overflow-x:hidden;
+    font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.3px;background:#EDEEF0;color:var(--color-text-primary);word-break:keep-all;}
+
+  /* PROTO BAR */
+  .proto-bar{background:#1E1E2E;padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .proto-bar .lab{font-size:12px;color:#CCCCDD;font-weight:600;}
+  .proto-bar button{background:#2D2D3D;color:#8888A0;border:none;border-radius:8px;padding:7px 12px;
+    font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;}
+  .proto-bar button.active{background:#5B6ABF;color:#fff;}
+  .proto-bar .ver{margin-left:auto;font-size:11.5px;color:#8888A0;}
+  @media (max-width:560px){ .proto-bar .ver{flex:0 0 100%;margin-left:0;text-align:right;} }
+
+  /* PHONE */
+  .phone{max-width:430px;margin:0 auto;background:var(--color-bg);min-height:100vh;position:relative;padding-bottom:84px;}
+  .appbar{display:flex;align-items:center;height:52px;padding:0 16px;gap:14px;position:sticky;top:0;background:var(--color-bg);z-index:10;}
+  .appbar .ic{width:23px;height:23px;color:var(--color-text-primary);cursor:pointer;flex-shrink:0;}
+  .appbar .sp{flex:1;}
+
+  /* 상품 상세 */
+  .hero{width:100%;aspect-ratio:1/1;background:linear-gradient(135deg,#e7c79f,#d9b486);position:relative;}
+  .hero .dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:5px;}
+  .hero .dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.55);}
+  .hero .dots i.on{background:#fff;}
+  .pinfo{padding:16px;}
+  .brand-row{display:flex;align-items:center;gap:5px;font-size:14px;font-weight:600;padding-bottom:12px;}
+  .brand-row .arr{width:15px;height:15px;color:var(--color-text-tertiary);}
+  .brand-row .like{margin-left:auto;font-size:13px;color:var(--color-text-secondary);font-weight:400;}
+  .p-title{font-size:16px;font-weight:500;line-height:1.5;}
+  .p-badge{display:inline-block;background:rgba(20,95,72,.08);color:var(--color-secondary);
+    font-size:11.5px;font-weight:700;border-radius:6px;padding:2px 7px;margin-bottom:7px;}
+  .price-block{padding-top:12px;}
+  .price-orig-row{font-size:13.5px;color:var(--color-text-tertiary);text-decoration:line-through;}
+  .price-sale-row{display:flex;align-items:baseline;gap:8px;margin-top:2px;}
+  .price-pct{font-size:21px;font-weight:700;color:var(--color-primary);}
+  .price-sale{font-size:21px;font-weight:700;}
+  .price-note{font-size:12px;color:var(--color-text-tertiary);margin-top:5px;}
+  .ship{margin-top:14px;padding:12px 14px;background:var(--color-surface);border-radius:12px;font-size:13.5px;line-height:1.6;}
+  .ship b{font-weight:600;}
+
+  /* 하단 고정바 (상세) */
+  .pdp-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+    background:var(--color-bg);border-top:1px solid var(--color-divider);z-index:20;
+    display:flex;align-items:center;gap:12px;padding:10px 16px calc(12px + env(safe-area-inset-bottom));}
+  .pdp-ic{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--color-text-secondary);cursor:pointer;flex-shrink:0;}
+  .pdp-ic svg{width:23px;height:23px;}
+  .btn-buy{flex:1;background:var(--color-primary);color:#fff;border:none;border-radius:14px;
+    padding:15px 0;font-size:16.5px;font-weight:700;font-family:inherit;letter-spacing:-0.3px;cursor:pointer;}
+
+  /* ===== 옵션 바텀시트 ===== */
+  .dim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:none;}
+  body:not(.s-closed) .dim{display:block;}
+  .sheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+    background:#fff;border-radius:20px 20px 0 0;z-index:50;display:none;
+    max-height:88vh;flex-direction:column;}
+  body:not(.s-closed) .sheet{display:flex;}
+  .sheet-head{padding:14px 16px 6px;flex-shrink:0;}
+  .sheet-handle{width:38px;height:4px;border-radius:2px;background:var(--color-divider);margin:0 auto 12px;}
+  .sheet-body{overflow-y:auto;padding:0 16px;flex:1;}
+
+  /* 셀렉트 박스 */
+  .sel{border:1.5px solid var(--color-border);border-radius:12px;padding:14px 15px;margin-bottom:10px;
+    display:flex;align-items:center;gap:8px;cursor:pointer;font-size:15px;}
+  .sel.on{border-color:var(--color-secondary);}
+  .sel .txt{flex:1;}
+  .sel .txt.ph{color:var(--color-text-tertiary);}
+  .sel .cv{width:18px;height:18px;color:var(--color-text-tertiary);transition:transform .2s ease;flex-shrink:0;}
+  .sel.open .cv{transform:rotate(180deg);}
+  .sel.dis{background:#F7F8F9;border-color:var(--color-divider);cursor:default;}
+  .sel.dis .txt{color:var(--color-text-tertiary);}
+
+  /* 옵션 목록 */
+  .opts{border:1px solid var(--color-border);border-radius:12px;margin:-4px 0 10px;overflow:hidden;display:none;}
+  .opts.show{display:block;}
+  .opt{padding:13px 15px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;}
+  .opt + .opt{border-top:1px solid var(--color-divider);}
+  .opt:hover{background:var(--color-surface);}
+  .opt-l{flex:1;min-width:0;}
+  .opt-n{font-size:14.5px;font-weight:500;}
+  .opt-s{font-size:12px;color:var(--color-text-secondary);margin-top:3px;}
+  .opt-s .g{color:var(--color-secondary);font-weight:600;}
+  .opt-r{text-align:right;flex-shrink:0;}
+  .opt-add{font-size:14px;color:var(--color-text-secondary);}
+  .opt-hot{display:inline-block;margin-top:4px;background:var(--color-surface-alt);color:var(--color-primary);
+    font-size:10.5px;font-weight:700;border-radius:5px;padding:2px 6px;}
+  .opt.soldout{opacity:.45;cursor:not-allowed;}
+  .opt.soldout:hover{background:none;}
+
+  /* 선택된 조합 카드 */
+  .picked{border:1px solid var(--color-border);border-radius:12px;padding:13px 14px;margin-bottom:10px;display:none;}
+  body.s-done .picked{display:block;}
+  .pk-top{display:flex;align-items:flex-start;gap:8px;}
+  .pk-name{flex:1;font-size:14px;font-weight:500;line-height:1.45;}
+  .pk-x{width:18px;height:18px;color:var(--color-text-tertiary);cursor:pointer;flex-shrink:0;}
+  .pk-sub{font-size:12px;color:var(--color-text-secondary);margin-top:3px;}
+  .pk-sub .g{color:var(--color-secondary);font-weight:600;}
+  .pk-bot{display:flex;align-items:center;margin-top:11px;}
+  .stepper{display:flex;align-items:center;border:1px solid var(--color-border);border-radius:9px;overflow:hidden;}
+  .stepper button{width:32px;height:30px;border:none;background:#fff;font-size:16px;color:var(--color-text-secondary);cursor:pointer;font-family:inherit;}
+  .stepper .qty{width:34px;text-align:center;font-size:14px;font-weight:600;}
+  .pk-price{margin-left:auto;font-size:16px;font-weight:700;}
+
+  /* 시트 하단 요약 */
+  .sum{border-top:1px solid var(--color-divider);padding:14px 16px 0;margin-top:4px;display:none;}
+  body.s-done .sum{display:block;}
+  .sum-row{display:flex;justify-content:space-between;font-size:13.5px;padding:4px 0;color:var(--color-text-secondary);}
+  .sum-row .v{color:var(--color-text-primary);font-weight:500;}
+  .sum-row .v.minus{color:var(--color-primary);}
+  .sum-total{display:flex;justify-content:space-between;align-items:baseline;padding:11px 0 2px;margin-top:7px;border-top:1px solid var(--color-divider);}
+  .sum-total .l{font-size:15px;font-weight:600;}
+  .sum-total .r{font-size:19px;font-weight:700;color:var(--color-primary);}
+  .sum-ship{text-align:right;font-size:12px;color:var(--color-secondary);font-weight:600;padding-bottom:4px;}
+
+  /* 시트 CTA */
+  .sheet-foot{flex-shrink:0;padding:12px 16px calc(14px + env(safe-area-inset-bottom));display:flex;gap:9px;}
+  .btn-cart{flex:1;background:#fff;border:1px solid var(--color-border);border-radius:14px;padding:15px 0;
+    font-size:15.5px;font-weight:600;font-family:inherit;letter-spacing:-0.3px;cursor:pointer;color:var(--color-text-primary);}
+  .btn-order{flex:1.4;background:var(--color-primary);color:#fff;border:none;border-radius:14px;padding:15px 0;
+    font-size:15.5px;font-weight:700;font-family:inherit;letter-spacing:-0.3px;cursor:pointer;}
+  .btn-order.dis{background:var(--color-divider);color:var(--color-text-tertiary);cursor:not-allowed;}
+  .sheet-guide{text-align:center;font-size:12.5px;color:var(--color-text-tertiary);padding:0 16px 2px;display:none;}
+  body:not(.s-done) .sheet-guide{display:block;}
+
+  /* 문서 노트 */
+  .doc{background:#1E1E2E;color:#B8B8CC;font-size:13px;line-height:1.7;padding:28px 20px 60px;margin-top:40px;}
+  .doc-inner{max-width:760px;margin:0 auto;}
+  .doc h2{color:#fff;font-size:16px;margin:22px 0 8px;}
+  .doc b{color:#fff;} .doc .hl{color:#FFC520;}
+  .doc table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0;}
+  .doc th,.doc td{border:1px solid #3A3A4E;padding:6px 9px;text-align:left;vertical-align:top;}
+  .doc th{color:#fff;background:#2A2A4A;}
+  .doc code{background:#2A2A4A;border-radius:4px;padding:1px 5px;font-size:12px;}
+</style>
+</head>
+<body class="s-closed">
+
+<div class="proto-bar">
+  <span class="lab">단계</span>
+  <button id="st1" class="active" onclick="go('closed')">1 상품상세</button>
+  <button id="st2" onclick="go('opt1')">2 옵션1</button>
+  <button id="st3" onclick="go('opt2')">3 옵션2</button>
+  <button id="st4" onclick="go('done')">4 선택완료</button>
+  <span class="ver">jollypot-v2-purchase-flow-v1</span>
+</div>
+
+<div class="phone">
+  <div class="appbar">
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    <span class="sp"></span>
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg>
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg>
+  </div>
+
+  <div class="hero"><div class="dots"><i class="on"></i><i></i><i></i><i></i></div></div>
+
+  <div class="pinfo">
+    <div class="brand-row">마루야마
+      <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      <span class="like">♡ 1.2만</span>
+    </div>
+    <span class="p-badge">내일 도착</span>
+    <div class="p-title">[국내제작] 마루야마 키친크로스 주방행주</div>
+    <div class="price-block">
+      <div class="price-orig-row">14,000원</div>
+      <div class="price-sale-row"><span class="price-pct">32%</span><span class="price-sale">9,500원</span></div>
+      <div class="price-note">온라인 정가 기준 · 옵션에 따라 금액이 달라져요</div>
+    </div>
+    <div class="ship"><b>내일(목) 도착</b> · 오후 2시 전 주문 시<br>배송비 3,000원 · 3만원 이상 무료배송</div>
+  </div>
+
+  <!-- 하단 고정바 (상품상세) -->
+  <div class="pdp-bar">
+    <span class="pdp-ic" onclick="toast('찜 (프로토타입)')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 000-7.8z"/></svg>
+      찜
+    </span>
+    <span class="pdp-ic" onclick="toast('선물하기 (프로토타입)')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18M12 8v13M12 8S9.5 3 7.5 4.5 9 8 12 8zM12 8s2.5-5 4.5-3.5S15 8 12 8z"/></svg>
+      선물하기
+    </span>
+    <button class="btn-buy" onclick="go('opt1')">구매하기</button>
+  </div>
+</div>
+
+<!-- ===== 옵션 선택 바텀시트 ===== -->
+<div class="dim" onclick="go('closed')"></div>
+<div class="sheet">
+  <div class="sheet-head">
+    <div class="sheet-handle"></div>
+
+    <!-- 옵션 1 -->
+    <div id="sel1" class="sel" onclick="toggleOpts(1)">
+      <span class="txt ph" id="sel1txt">옵션 선택하기</span>
+      <svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+  </div>
+
+  <div class="sheet-body">
+    <div id="opts1" class="opts">
+      <div class="opt" onclick="pick1('1P 단품', 0)">
+        <div class="opt-l"><div class="opt-n">키친크로스 1P (단품)</div>
+          <div class="opt-s"><span class="g">내일 도착</span> · 오후 2시 전 주문 시</div></div>
+        <div class="opt-r"><div class="opt-add">+0원</div></div>
+      </div>
+      <div class="opt" onclick="pick1('2P 세트', 8500)">
+        <div class="opt-l"><div class="opt-n">키친크로스 2P 세트</div>
+          <div class="opt-s"><span class="g">내일 도착</span> · 오후 2시 전 주문 시</div></div>
+        <div class="opt-r"><div class="opt-add">+8,500원</div><span class="opt-hot">주문많음</span></div>
+      </div>
+      <div class="opt" onclick="pick1('4P 세트', 24000)">
+        <div class="opt-l"><div class="opt-n">키친크로스 4P 세트</div>
+          <div class="opt-s"><span class="g">내일 도착</span> · 오후 2시 전 주문 시</div></div>
+        <div class="opt-r"><div class="opt-add">+24,000원</div></div>
+      </div>
+      <div class="opt soldout">
+        <div class="opt-l"><div class="opt-n">키친크로스 6P 세트</div>
+          <div class="opt-s">품절</div></div>
+        <div class="opt-r"><div class="opt-add">+36,000원</div></div>
+      </div>
+    </div>
+
+    <!-- 옵션 2 -->
+    <div id="sel2" class="sel dis" onclick="toggleOpts(2)">
+      <span class="txt ph" id="sel2txt">색상 선택하기</span>
+      <svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div id="opts2" class="opts">
+      <div class="opt" onclick="pick2('노랑')">
+        <div class="opt-l"><div class="opt-n">노랑</div>
+          <div class="opt-s"><span class="g">내일 도착</span> · 오후 2시 전 주문 시</div></div>
+      </div>
+      <div class="opt" onclick="pick2('그레이')">
+        <div class="opt-l"><div class="opt-n">그레이</div>
+          <div class="opt-s"><span class="g">내일 도착</span> · 오후 2시 전 주문 시</div></div>
+      </div>
+      <div class="opt" onclick="pick2('화이트')">
+        <div class="opt-l"><div class="opt-n">화이트</div>
+          <div class="opt-s"><span class="g">내일 도착</span> · 오후 2시 전 주문 시</div></div>
+      </div>
+    </div>
+
+    <!-- 선택 완료 카드 -->
+    <div class="picked">
+      <div class="pk-top">
+        <div class="pk-name" id="pkName">키친크로스 1P (단품) / 노랑</div>
+        <svg class="pk-x" onclick="go('opt1')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </div>
+      <div class="pk-sub"><span class="g">내일 도착</span> · 오후 2시 전 주문 시</div>
+      <div class="pk-bot">
+        <div class="stepper">
+          <button onclick="qty(-1)">−</button><span class="qty" id="qty">1</span><button onclick="qty(1)">＋</button>
+        </div>
+        <span class="pk-price" id="pkPrice">9,500원</span>
+      </div>
+    </div>
+
+    <!-- 요약 -->
+    <div class="sum">
+      <div class="sum-row"><span>총 <b id="sumCnt">1</b>개 상품</span><span class="v" id="sumList">14,000원</span></div>
+      <div class="sum-row"><span>상품 할인</span><span class="v minus" id="sumDc">-4,500원</span></div>
+      <div class="sum-row"><span>쿠폰 할인</span><span class="v" style="color:var(--color-text-tertiary)">주문서에서 적용</span></div>
+      <div class="sum-total"><span class="l">예상 결제금액</span><span class="r" id="sumTotal">9,500원</span></div>
+      <div class="sum-ship" id="sumShip">+ 배송비 3,000원</div>
+    </div>
+  </div>
+
+  <div class="sheet-guide">옵션을 모두 선택하면 금액이 계산돼요</div>
+  <div class="sheet-foot">
+    <button class="btn-cart" onclick="toast('장바구니 담기 (프로토타입)')">장바구니</button>
+    <button class="btn-order dis" id="btnOrder" onclick="goOrder()">구매하기</button>
+  </div>
+</div>
+
+<div class="doc"><div class="doc-inner">
+  <h2>구매 플로우 v1 — 구매하기 → 옵션1 → 옵션2 → 주문하기 (2026-08-13)</h2>
+  <p>에이블리 구조를 참고하되 <b>디자인 가이드 v2.0.4</b> 문법으로 재작성. 선택 상태는 딥그린, 액션(구매하기)만 오렌지, 면은 피치크림, 선은 뉴트럴.</p>
+
+  <h2>단계 정의</h2>
+  <table>
+    <tr><th>단계</th><th>화면</th><th>규칙</th></tr>
+    <tr><td>1</td><td>상품상세</td><td>하단 고정바 [찜][선물하기][<b>구매하기</b>] · 가격은 <b>정가(취소선) → 할인율 + 판매가</b> 3층. "옵션에 따라 금액이 달라져요" 캡션으로 옵션 추가금 예고</td></tr>
+    <tr><td>2</td><td>옵션1 선택</td><td>바텀시트 · 셀렉트 탭 시 목록 펼침 · 항목 = 이름 + <b>도착 안내</b> + 추가금(+N원) + [주문많음] · <b>품절 옵션은 흐리게 표시하되 목록에 남긴다</b>(있는 줄 알고 찾는 유저의 확인 비용 제거)</td></tr>
+    <tr><td>3</td><td>옵션2 선택</td><td>옵션1 선택 전에는 <b>비활성(회색)</b> — 순서를 강제해 잘못된 조합 방지 · 옵션1 선택 시 자동으로 펼침</td></tr>
+    <tr><td>4</td><td>선택 완료</td><td>조합 카드(이름 / 수량 스테퍼 / 금액 / ✕) + 요약 + [장바구니][<b>구매하기</b>] 활성화<br>✕ 또는 조합 카드 탭 시 <b>옵션1부터 다시 선택</b></td></tr>
+  </table>
+
+  <h2>CX 설계 포인트</h2>
+  <p>• <b>구매하기 버튼은 옵션 선택 전까지 비활성</b> — 누르고 나서 "옵션을 선택해주세요" 토스트를 띄우는 방식보다 마찰이 적다. 대신 비활성 이유를 <b>버튼 위 캡션</b>("옵션을 모두 선택하면 금액이 계산돼요")으로 상시 안내.<br>
+  • <b>도착 안내를 옵션 행마다</b> 반복 — 옵션에 따라 배송이 달라지는 경우가 실제로 있고(세트/색상별 재고 위치), 에이블리도 행마다 표기한다.<br>
+  • <b>시트 안에서 쿠폰을 계산하지 않는다</b> — "주문서에서 적용"으로만 표기. 시트와 주문서에서 서로 다른 금액이 보이면 신뢰가 깨진다.<br>
+  • <b>배송비는 예상 결제금액에 합산하지 않고 아래에 별도 표기</b>(+3,000원) — 상품 금액과 배송비를 섞으면 옵션 비교가 어려워진다.</p>
+
+  <h2 class="hl">개발 요건</h2>
+  <p>• 샵바이 <b>선택옵션(multiLevelOptions)</b> 2단 구조 기준 · 옵션가는 본품가 + <code>addPrice</code><br>
+  • 옵션 조합별 <b>재고/품절</b> 상태를 목록에 반영(품절은 비활성 표시, 숨기지 않음)<br>
+  • 조합 다중 선택(여러 옵션을 한 번에 담기)은 <b>이번 범위 제외</b> — 필요 시 카드 리스트로 확장 가능한 구조로만 설계<br>
+  • 시트의 "예상 결제금액"과 주문서의 "총 결제 금액"은 <b>산식이 달라 값이 다를 수 있다</b>(쿠폰·적립금·배송비). 시트는 <b>예상</b>으로 명시</p>
+</div></div>
+
+<script>
+  var BASE = 9500, LIST = 14000, addPrice = 0, o1 = '', o2 = '', q = 1;
+
+  function setBody(cls){
+    document.body.className = 's-' + cls;
+    ['st1','st2','st3','st4'].forEach(function(id,i){
+      document.getElementById(id).classList.toggle('active', ['closed','opt1','opt2','done'][i] === cls);
+    });
+  }
+  function go(step){
+    if(step === 'closed'){ setBody('closed'); reset(); return; }
+    if(step === 'opt1'){ reset(); setBody('opt1'); openList(1); return; }
+    if(step === 'opt2'){ if(!o1) pick1('1P 단품', 0, true); setBody('opt2'); openList(2); return; }
+    if(step === 'done'){ if(!o1) pick1('1P 단품', 0, true); if(!o2) o2 = '노랑'; setBody('done'); openList(0); render(); }
+  }
+  function reset(){ addPrice = 0; o1 = ''; o2 = ''; q = 1;
+    document.getElementById('sel1txt').textContent = '옵션 선택하기';
+    document.getElementById('sel1txt').className = 'txt ph';
+    document.getElementById('sel2txt').textContent = '색상 선택하기';
+    document.getElementById('sel2txt').className = 'txt ph';
+    document.getElementById('sel1').classList.remove('on');
+    document.getElementById('sel2').classList.remove('on');
+    document.getElementById('sel2').classList.add('dis');
+    document.getElementById('btnOrder').classList.add('dis');
+    document.getElementById('qty').textContent = '1';
+  }
+  function openList(n){
+    document.getElementById('opts1').classList.toggle('show', n === 1);
+    document.getElementById('opts2').classList.toggle('show', n === 2);
+    document.getElementById('sel1').classList.toggle('open', n === 1);
+    document.getElementById('sel2').classList.toggle('open', n === 2);
+  }
+  function toggleOpts(n){
+    if(n === 2 && !o1) return;
+    var shown = document.getElementById('opts' + n).classList.contains('show');
+    openList(shown ? 0 : n);
+  }
+  function pick1(name, add, silent){
+    o1 = name; addPrice = add; o2 = '';
+    var t = document.getElementById('sel1txt');
+    t.textContent = '키친크로스 ' + name; t.className = 'txt';
+    document.getElementById('sel1').classList.add('on');
+    document.getElementById('sel2').classList.remove('dis');
+    document.getElementById('sel2').classList.remove('on');
+    document.getElementById('sel2txt').textContent = '색상 선택하기';
+    document.getElementById('sel2txt').className = 'txt ph';
+    document.getElementById('btnOrder').classList.add('dis');
+    if(silent) return;
+    setBody('opt2'); openList(2);
+  }
+  function pick2(name){
+    o2 = name;
+    var t = document.getElementById('sel2txt');
+    t.textContent = name; t.className = 'txt';
+    document.getElementById('sel2').classList.add('on');
+    setBody('done'); openList(0); render();
+  }
+  function qty(d){ q = Math.max(1, q + d); render(); }
+  function won(n){ return n.toLocaleString('ko-KR') + '원'; }
+  function render(){
+    document.getElementById('pkName').textContent = '키친크로스 ' + o1 + ' / ' + o2;
+    var sale = (BASE + addPrice) * q;
+    var list = (LIST + addPrice) * q;
+    document.getElementById('qty').textContent = q;
+    document.getElementById('pkPrice').textContent = won(sale);
+    document.getElementById('sumCnt').textContent = q;
+    document.getElementById('sumList').textContent = won(list);
+    document.getElementById('sumDc').textContent = '-' + won(list - sale);
+    document.getElementById('sumTotal').textContent = won(sale);
+    document.getElementById('sumShip').textContent = sale >= 30000 ? '무료배송' : '+ 배송비 3,000원';
+    document.getElementById('btnOrder').classList.remove('dis');
+  }
+  function goOrder(){
+    if(document.getElementById('btnOrder').classList.contains('dis')) return;
+    location.href = 'jollypot-v2-order-checkout-v9.html';
+  }
+  function toast(msg){
+    var t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:#212121;color:#fff;font-size:13px;padding:10px 18px;border-radius:999px;z-index:99;opacity:.95;';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 1400);
+  }
+</script>
+</body>
+</html>

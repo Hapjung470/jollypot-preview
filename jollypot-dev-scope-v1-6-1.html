@@ -604,11 +604,30 @@
         <span class="tag">커머스 · 주문/결제</span>
         <span class="badge in">이번 범위</span>
       </div>
-      <h2 class="c-title">주문하기 — 주문서 &amp; 결제수단</h2>
-      <p class="c-sub">기존 샵바이 기본 스킨 주문서를 <b>디자인 가이드 v2.0.4 기준으로 전면 재설계</b>했습니다. 결제수단 구조와 결제 실패·중단 상태까지 포함합니다. <b>상세 구현 규칙은 아래 요건서 한 장에 정리</b>되어 있습니다.</p>
+      <h2 class="c-title">주문하기 — 구매 플로우 전체 (옵션 선택 → 주문서 → 결제)</h2>
+      <p class="c-sub">기존 샵바이 기본 스킨을 <b>디자인 가이드 v2.0.4 기준으로 전면 재설계</b>했습니다. <b>구매하기 → 옵션 선택 → 주문서 → 결제수단 → 결제 실패·중단</b>까지 구매 동선 전체가 이번 범위입니다.</p>
 
       <div class="item">
-        <div class="item-h"><b>6-A. 개발 요건서</b><span class="key">order-checkout-dev-spec-v3</span>
+        <div class="item-h"><b>6-A. 구매 플로우</b><span class="key">purchase-flow · v1</span>
+          <a class="open" href="jollypot-v2-purchase-flow-v1.html" target="_blank" rel="noopener">열기 →</a></div>
+        <div class="flow">상품상세 [구매하기]<span class="sep">→</span>옵션1 선택<span class="sep">→</span>옵션2 선택<span class="sep">→</span>선택완료(수량·금액)<span class="sep">→</span>주문하기</div>
+        <div class="chips">
+          <span class="chip hot">바텀시트 2단 옵션</span>
+          <span class="chip">품절 옵션 비활성 노출</span>
+          <span class="chip">구매하기 조건부 활성</span>
+        </div>
+        <div class="pt"><span><b>단계 규칙</b><br>
+        · <b>옵션2는 옵션1 선택 전까지 비활성</b>(회색) — 순서를 강제해 잘못된 조합 방지. 옵션1 선택 시 옵션2 자동 펼침<br>
+        · 옵션 행 구성 = 이름 + <b>도착 안내</b> + 추가금(+N원) + [주문많음] 배지<br>
+        · <b>품절 옵션은 숨기지 않고 흐리게 노출</b> — 있는 줄 알고 찾는 유저의 확인 비용 제거<br>
+        · <b>구매하기는 옵션 미선택 시 비활성</b> + 버튼 위 캡션으로 이유 상시 안내(누른 뒤 토스트 방식보다 마찰 적음)<br>
+        · 선택 완료 카드 = 조합명 / 수량 스테퍼 / 금액 / ✕ · ✕ 또는 카드 탭 시 옵션1부터 재선택</span></div>
+        <div class="pt"><span><b>시트 금액 표기</b>: 쿠폰은 <b>시트에서 계산하지 않는다</b>("주문서에서 적용"만 표기) — 시트와 주문서 금액이 어긋나면 신뢰가 깨진다. 배송비는 예상 결제금액에 <b>합산하지 않고 아래 별도 표기</b>.</span></div>
+        <div class="pt"><span><b>구현</b>: 샵바이 <b>선택옵션 2단(multiLevelOptions)</b> · 옵션가 = 본품가 + <code>addPrice</code> · 조합별 재고/품절 반영 · <b>조합 다중 선택은 이번 범위 제외</b>(카드 리스트로 확장 가능한 구조로만 설계)</span></div>
+      </div>
+
+      <div class="item">
+        <div class="item-h"><b>6-B. 개발 요건서</b><span class="key">order-checkout-dev-spec-v3</span>
           <a class="open" href="jollypot-order-checkout-dev-spec-v3.html" target="_blank" rel="noopener">열기 →</a></div>
         <div class="flow">화면 구성<span class="sep">→</span>결제수단 규칙<span class="sep">→</span>실패 상태 5종<span class="sep">→</span>레이아웃·조건부 렌더링</div>
         <div class="chips">
@@ -629,8 +648,26 @@
       </div>
 
       <div class="item">
-        <div class="item-h"><b>6-B. 프로토타입</b><span class="key">order-checkout · v8</span>
-          <a class="open" href="jollypot-v2-order-checkout-v8.html" target="_blank" rel="noopener">열기 →</a></div>
+        <div class="item-h"><b>6-C. 절약 금액 산식 — 온라인 정가 기준</b><span class="key">확정</span></div>
+        <div class="pt"><span><b>산식</b><br>
+        <code>아껴요 = (온라인 정가 − 판매가) + 쿠폰 할인 + 적립금 사용</code><br>
+        = 상품 할인 + 쿠폰 할인 + 적립금 사용 · <b>배송비는 포함하지 않는다</b><br>
+        <b>예시</b>: 정가 14,000 − 판매가 9,500 = 상품 할인 <b>4,500</b> · 쿠폰 <b>2,700</b> · 적립금 0 → <b>아껴요 7,200원</b><br>
+        총 결제 = 14,000 − 4,500 − 2,700 − 0 + 배송비 3,000 = <b>9,800원</b></span></div>
+        <div class="pt"><span><b>결제 금액 블록 표기 순서(확정)</b>: 총 상품 금액(<b>정가</b>) → 상품 할인(−) → 쿠폰 할인(−) → 적립금 사용(−) → <b>총 배송비(+)</b> → 총 결제 금액.<br>
+        · <b>빼는 항목을 모두 처리한 뒤 더하는 항목을 마지막</b>에 둬야 위에서 아래로 읽으며 계산이 맞아떨어집니다.<br>
+        · 총 상품 금액을 판매가로 시작하면 "아껴요"의 상품 할인분이 화면 어디에도 없어 <b>숫자의 근거가 사라집니다.</b></span></div>
+        <div class="pt"><span><b style="color:var(--later)">가드(필수 구현)</b><br>
+        · 정가 ≤ 판매가 → 상품 할인 = 0 · 정가 미설정 상품 → 판매가를 정가로 간주(할인 0)<br>
+        · <b>아껴요 합계 ≤ 0이면 스트립 미노출</b> + 이때만 하단 바 상단 1px 구분선 노출<br>
+        · 배송비는 절대 합산 금지(무료배송은 별도 배지) — 섞으면 "무료배송 상품이 항상 더 이득"으로 왜곡됩니다</span></div>
+        <div class="pt"><span><b style="color:var(--warn)">⚑ 법무·운영 확인</b>: 정가는 <b>"종전 거래가격"</b>이어야 합니다(표시광고법). 판매 이력 없는 가공 정가로 할인율을 표기하면 부당 표시가 될 수 있습니다.
+        <b>정가는 파트너가 입력하는 값</b>이므로, 그 값으로 "아껴요"를 계산하는 순간 <b>표기 책임이 우리에게 옮겨옵니다</b> — 파트너 어드민의 정가 입력 기준 안내 + 입점계약 표기 책임 조항 확인 필요.</span></div>
+      </div>
+
+      <div class="item">
+        <div class="item-h"><b>6-D. 프로토타입 — 주문하기</b><span class="key">order-checkout · v9</span>
+          <a class="open" href="jollypot-v2-order-checkout-v9.html" target="_blank" rel="noopener">열기 →</a></div>
         <div class="pt"><span>실제로 눌러볼 수 있습니다. <b>상단 검정 바에서 6개 상태</b>(정상 / 수단 거절 / 결제 중단 / 확인 중 / 품절 / 시스템 오류)를 전환해 확인해 주세요.</span></div>
       </div>
 
@@ -707,7 +744,7 @@
       <tr><td class="feat">홈 화면</td><td class="yes">포함</td><td>유저 분기(빈 상태 표) · 데크카드(에디터 픽) · 냉장고 진입점 · <b>코너 고정4+로테이션1</b> · 커머스 ON/OFF(기본 OFF)</td></tr>
       <tr><td class="feat">레시피 상세</td><td class="yes">포함</td><td>Case1/Case2 · 소스 4종 · 상태 3종 · <b>rev 08-11 = 7섹션("알아두면 좋아요" 삭제) · 메타 4종(요리시간·인분·난이도·칼로리)</b> · <b>저신뢰 토글 제외</b>(발행 후 신고로 처리)</td></tr>
       <tr><td class="feat">레시피 만들기</td><td class="yes">포함</td><td>입력→편집→발행 · 에러/예외 6종</td></tr>
-      <tr><td class="feat">주문하기(주문서·결제)</td><td class="yes">포함</td><td>주문서 1화면 전면 재설계 · <b>퀵계좌이체 기본 선택</b> · 네이버페이 단일 · <b>결제 실패/중단 5종</b> · PG 연동 자체는 기존 샵바이 유지</td></tr>
+      <tr><td class="feat">주문하기(구매 동선 전체)</td><td class="yes">포함</td><td><b>구매하기 → 옵션 2단 선택 → 주문서 → 결제수단 → 실패/중단 5종</b> · 퀵계좌이체 기본 선택 · 네이버페이 단일 · <b>절약 금액 = 온라인 정가 기준</b> · PG 연동 자체는 기존 샵바이 유지</td></tr>
       <tr><td class="feat">레시피 퀄리티(추출)</td><td class="yes">포함</td><td>진단 우선 + 검수 게이트 Rule A~H</td></tr>
       <tr><td class="feat">냉장고 관리</td><td class="yes">포함</td><td>수동 담기·양문형 관리·레시피 매칭 <b>+ 📷 ‘보이는 것만’ 사진 보조</b>(precision 우선) — <b>전체 자동 스캔 제외</b></td></tr>
       <tr><td class="feat">어드민 개편</td><td class="yes">포함</td><td>셸 + 7개 메뉴 (대시보드·큐레이션·레시피·에디터노트·신고·회원·운영설정)</td></tr>
@@ -733,10 +770,13 @@
       <a class="file" href="jollypot-v2-recipe-create-v12-2.html" target="_blank" rel="noopener">
         <i class="proto">01 프로토</i><span class="fn">레시피 만들기 · recipe-create-v12</span>
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
+      <a class="file" href="jollypot-v2-purchase-flow-v1.html" target="_blank" rel="noopener">
+        <i class="proto">06 프로토</i><span class="fn">구매 플로우 · purchase-flow-v1</span>
+        <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
       <a class="file" href="jollypot-order-checkout-dev-spec-v3.html" target="_blank" rel="noopener">
         <i class="doc">06 문서</i><span class="fn">주문하기 개발 요건서 · v3</span>
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
-      <a class="file" href="jollypot-v2-order-checkout-v8.html" target="_blank" rel="noopener">
+      <a class="file" href="jollypot-v2-order-checkout-v9.html" target="_blank" rel="noopener">
         <i class="proto">06 프로토</i><span class="fn">주문하기 · order-checkout-v8</span>
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
       <a class="file" href="jollypot-design-guide-v2.html" target="_blank" rel="noopener">
@@ -777,7 +817,7 @@
       <div style="margin-top:9px"><b>결과</b>: 문서 안 모든 링크가 <code>hapjung470.github.io</code> 같은 도메인(동봉 2종은 상대링크)으로 동작합니다. 제3자 렌더러·타 브랜치 의존이 없어 개발사 접근 시 깨지지 않습니다.</div>
     </div>
 
-    <div class="ver">jollypot-dev-scope-v1-6-1 · 개발사 전달용 개발 범위 정의서 · 2026.06.26 · rev 2026.08.11 — <b>만들기 v12-2 반영</b>: 단계 추가 버그 수정(재료 영역 삽입 오류) · 발행 미리보기/발행후 상세를 상세 v1.9-7 결정에 맞춰 최신화(kcal·장보기 섹션 제거 등). 개발사 참조 URL 유지를 위해 v1-6-1에 직접 반영 · <b>rev 08-11 상세</b>: "알아두면 좋아요" 삭제 + 메타 4종(난이도·칼로리 — 소스 정의 포함) · <b>rev 08-12</b>: 연결 화면 전수검사 — 디자인가이드 v2.0.4 미반영 잔재(웜 보더·구팔레트·폰트 미로드) 일괄 정리 · <b>rev 08-13</b>: 06 주문하기(주문서·결제수단·실패상태 5종) 절 신설 — 5개 영역 → 6개 영역</div>
+    <div class="ver">jollypot-dev-scope-v1-6-1 · 개발사 전달용 개발 범위 정의서 · 2026.06.26 · rev 2026.08.11 — <b>만들기 v12-2 반영</b>: 단계 추가 버그 수정(재료 영역 삽입 오류) · 발행 미리보기/발행후 상세를 상세 v1.9-7 결정에 맞춰 최신화(kcal·장보기 섹션 제거 등). 개발사 참조 URL 유지를 위해 v1-6-1에 직접 반영 · <b>rev 08-11 상세</b>: "알아두면 좋아요" 삭제 + 메타 4종(난이도·칼로리 — 소스 정의 포함) · <b>rev 08-12</b>: 연결 화면 전수검사 — 디자인가이드 v2.0.4 미반영 잔재(웜 보더·구팔레트·폰트 미로드) 일괄 정리 · <b>rev 08-13</b>: 06 주문하기 절 신설 — 5개 영역 → 6개 영역 · <b>rev 08-14</b>: 06에 <b>구매 플로우 전체</b>(옵션 2단 선택) 편입 + <b>절약 금액 산식을 온라인 정가 기준</b>으로 확정</div>
   </footer>
 
 </div>
