@@ -247,7 +247,7 @@
     <h1>전체를 한 번에 짓지 않습니다 — <em>린(Lean)하게 한 조각</em>부터</h1>
     <p class="frame">
       이 문서는 졸리팟 전체 기획 중 <b>이번에 개발할 범위만</b> 추려낸 정의서입니다.
-      5개 영역(<b>UIUX 수정 · 레시피 퀄리티 업그레이드 · 냉장고 관리(신규) · 어드민 개편 · 앱 패키징(푸시·딥링크)</b>)을
+      6개 영역(<b>UIUX 수정 · 레시피 퀄리티 업그레이드 · 냉장고 관리(신규) · 어드민 개편 · 앱 패키징(푸시·딥링크) · 주문하기(주문서·결제수단)</b>)을
       각 프로토타입에 직접 연결해, 개발사가 <b>링크를 눌러 세부 화면·상태까지 확인</b>하며 검토할 수 있게 구성했습니다.
     </p>
     <span class="doc-note">아래 모든 <b style="color:var(--text)">‘열기 →’</b> 링크는 실제 프로토타입·문서로 라이브 연결됩니다</span>
@@ -273,7 +273,7 @@
   </section>
 
   <!-- ===== 이번 개발 범위 ===== -->
-  <div class="sec-label"><span class="em">이번 개발 범위</span> · 5개 영역 · 전달 대상</div>
+  <div class="sec-label"><span class="em">이번 개발 범위</span> · 6개 영역 · 전달 대상</div>
   <main class="buckets">
 
     <!-- 00 디자인 시스템 -->
@@ -597,6 +597,53 @@
       <div class="pt"><span><b>받을 것:</b> ①푸시 개별 산정 ②딥링크 개별 산정 — <b>각각 분리</b>, 재패키징 비용은 한쪽에만.</span></div>
     </section>
 
+    <!-- 06 주문하기 (결제) -->
+    <section class="card">
+      <div class="c-top">
+        <span class="num">06</span>
+        <span class="tag">커머스 · 주문/결제</span>
+        <span class="badge in">이번 범위</span>
+      </div>
+      <h2 class="c-title">주문하기 — 주문서 &amp; 결제수단</h2>
+      <p class="c-sub">기존 샵바이 기본 스킨 주문서를 <b>디자인 가이드 v2.0.4 기준으로 전면 재설계</b>했습니다. 결제수단 구조와 결제 실패·중단 상태까지 포함합니다. <b>상세 구현 규칙은 아래 요건서 한 장에 정리</b>되어 있습니다.</p>
+
+      <div class="item">
+        <div class="item-h"><b>6-A. 개발 요건서</b><span class="key">order-checkout-dev-spec-v3</span>
+          <a class="open" href="jollypot-order-checkout-dev-spec-v3.html" target="_blank" rel="noopener">열기 →</a></div>
+        <div class="flow">화면 구성<span class="sep">→</span>결제수단 규칙<span class="sep">→</span>실패 상태 5종<span class="sep">→</span>레이아웃·조건부 렌더링</div>
+        <div class="chips">
+          <span class="chip hot">퀵계좌이체 기본 선택</span>
+          <span class="chip">네이버페이 단일</span>
+          <span class="chip">실패/중단 5종</span>
+          <span class="chip">할인혜택 통합</span>
+        </div>
+        <div class="pt"><span><b>화면 구성(위→아래)</b>: 주문상품(접기) · 배송지(요약 카드) · 할인혜택(쿠폰/쿠폰코드/적립금) · 결제수단 · 결제 금액 · 동의·사업자 · <b>하단 고정바(절약 스트립 + 결제 CTA)</b><br>
+        · <b>주문자 정보 섹션 없음</b> — 회원 정보를 사용합니다(기존 주문서의 재입력 폼 제거).</span></div>
+        <div class="pt"><span><b>결제수단 순서</b>: <b>퀵계좌이체(히어로·기본 선택, 0.5% 즉시 할인)</b> → 신용/체크카드 → [가상계좌 ㅣ 간편결제(네이버페이)] 2단.<br>
+        · 실시간 계좌이체 제외 · 수단 버튼 높이 52px 동일(위계는 <b>폭</b>으로만) · "다음에도 사용" 체크박스 기본 ON</span></div>
+        <div class="pt"><span><b>결제 실패·중단 상태 5종</b>: ①수단 거절(시트) ②결제 중단(시트) ③결과 확인 중(전체화면) ④결제 중 품절(전체화면) ⑤시스템 오류(시트).<br>
+        · <b>③은 재시도 버튼을 제공하지 않습니다</b> — 중복 결제의 주 원인. 폴링+웹훅 병행, <b>동일 주문 재결제 차단(멱등키) 필수</b><br>
+        · PG 응답코드 → 상태 5종 <b>매핑표</b> 필요, 미분류 코드는 ⑤로 폴백</span></div>
+        <div class="pt"><span><b style="color:var(--later)">구현 함정 2가지(실측 반영)</b>: ①화면 어느 요소든 <b>가로로 넘치면</b> <code>position:fixed</code> 하단바·모달 폭까지 함께 틀어집니다(실측 12px) — QA에 <code>scrollWidth === clientWidth</code> 체크 포함 ②모달·바텀시트로 배경 스크롤을 잠글 때 <b>스크롤바 폭 보정</b>을 함께 처리(미보정 시 PC 웹에서 15px 흔들림)</span></div>
+        <div class="pt"><span><b>받을 것:</b> 주문서 1화면 + 결제 실패·중단 5종 구현 범위. 결제 연동 자체(PG)는 기존 샵바이 연동 유지 전제.</span></div>
+      </div>
+
+      <div class="item">
+        <div class="item-h"><b>6-B. 프로토타입</b><span class="key">order-checkout · v8</span>
+          <a class="open" href="jollypot-v2-order-checkout-v8.html" target="_blank" rel="noopener">열기 →</a></div>
+        <div class="pt"><span>실제로 눌러볼 수 있습니다. <b>상단 검정 바에서 6개 상태</b>(정상 / 수단 거절 / 결제 중단 / 확인 중 / 품절 / 시스템 오류)를 전환해 확인해 주세요.</span></div>
+      </div>
+
+      <div class="item">
+        <div class="item-h"><b style="color:var(--warn)">⚑ 결정 필요 — 구현 포인트</b></div>
+        <div class="pt"><span>① <b>퀵계좌이체(오픈뱅킹) 연동 가능 여부</b> — 현재 샵바이 스킨에 없는 수단입니다. <b>이 화면의 전제</b>라 가장 먼저 확인 부탁드립니다.<br>
+        ② 0.5% 할인 재원(PG 제공 vs 자체 프로모션)과 상한 정책<br>
+        ③ 가상계좌 입금 기한 · 법인결제(세금계산서) 프로세스 · 현금영수증 신청 UI 포함 여부<br>
+        ④ 배송비 첫 노출 시점(결제 단계에서 처음 보이면 이탈 요인 — 장바구니/상품 카드 노출 권장)<br>
+        ⑤ 주문서 동의 문구 — <b>연령(만 14세) 문구는 가입 시 확인 전제로 제외</b>했습니다. 비회원 주문을 허용하면 복원 필요(법무 확인)</span></div>
+      </div>
+    </section>
+
   </main>
 
   <!-- ===== 추후 개발 (이번 범위 아님) ===== -->
@@ -660,6 +707,7 @@
       <tr><td class="feat">홈 화면</td><td class="yes">포함</td><td>유저 분기(빈 상태 표) · 데크카드(에디터 픽) · 냉장고 진입점 · <b>코너 고정4+로테이션1</b> · 커머스 ON/OFF(기본 OFF)</td></tr>
       <tr><td class="feat">레시피 상세</td><td class="yes">포함</td><td>Case1/Case2 · 소스 4종 · 상태 3종 · <b>rev 08-11 = 7섹션("알아두면 좋아요" 삭제) · 메타 4종(요리시간·인분·난이도·칼로리)</b> · <b>저신뢰 토글 제외</b>(발행 후 신고로 처리)</td></tr>
       <tr><td class="feat">레시피 만들기</td><td class="yes">포함</td><td>입력→편집→발행 · 에러/예외 6종</td></tr>
+      <tr><td class="feat">주문하기(주문서·결제)</td><td class="yes">포함</td><td>주문서 1화면 전면 재설계 · <b>퀵계좌이체 기본 선택</b> · 네이버페이 단일 · <b>결제 실패/중단 5종</b> · PG 연동 자체는 기존 샵바이 유지</td></tr>
       <tr><td class="feat">레시피 퀄리티(추출)</td><td class="yes">포함</td><td>진단 우선 + 검수 게이트 Rule A~H</td></tr>
       <tr><td class="feat">냉장고 관리</td><td class="yes">포함</td><td>수동 담기·양문형 관리·레시피 매칭 <b>+ 📷 ‘보이는 것만’ 사진 보조</b>(precision 우선) — <b>전체 자동 스캔 제외</b></td></tr>
       <tr><td class="feat">어드민 개편</td><td class="yes">포함</td><td>셸 + 7개 메뉴 (대시보드·큐레이션·레시피·에디터노트·신고·회원·운영설정)</td></tr>
@@ -684,6 +732,12 @@
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
       <a class="file" href="jollypot-v2-recipe-create-v12-2.html" target="_blank" rel="noopener">
         <i class="proto">01 프로토</i><span class="fn">레시피 만들기 · recipe-create-v12</span>
+        <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
+      <a class="file" href="jollypot-order-checkout-dev-spec-v3.html" target="_blank" rel="noopener">
+        <i class="doc">06 문서</i><span class="fn">주문하기 개발 요건서 · v3</span>
+        <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
+      <a class="file" href="jollypot-v2-order-checkout-v8.html" target="_blank" rel="noopener">
+        <i class="proto">06 프로토</i><span class="fn">주문하기 · order-checkout-v8</span>
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
       <a class="file" href="jollypot-design-guide-v2.html" target="_blank" rel="noopener">
         <i class="doc">00 문서</i><span class="fn">디자인 가이드 · v2.0.4 <b>(먼저 읽어주세요)</b></span>
@@ -723,7 +777,7 @@
       <div style="margin-top:9px"><b>결과</b>: 문서 안 모든 링크가 <code>hapjung470.github.io</code> 같은 도메인(동봉 2종은 상대링크)으로 동작합니다. 제3자 렌더러·타 브랜치 의존이 없어 개발사 접근 시 깨지지 않습니다.</div>
     </div>
 
-    <div class="ver">jollypot-dev-scope-v1-6-1 · 개발사 전달용 개발 범위 정의서 · 2026.06.26 · rev 2026.08.11 — <b>만들기 v12-2 반영</b>: 단계 추가 버그 수정(재료 영역 삽입 오류) · 발행 미리보기/발행후 상세를 상세 v1.9-7 결정에 맞춰 최신화(kcal·장보기 섹션 제거 등). 개발사 참조 URL 유지를 위해 v1-6-1에 직접 반영 · <b>rev 08-11 상세</b>: "알아두면 좋아요" 삭제 + 메타 4종(난이도·칼로리 — 소스 정의 포함) · <b>rev 08-12</b>: 연결 화면 전수검사 — 디자인가이드 v2.0.4 미반영 잔재(웜 보더·구팔레트·폰트 미로드) 일괄 정리</div>
+    <div class="ver">jollypot-dev-scope-v1-6-1 · 개발사 전달용 개발 범위 정의서 · 2026.06.26 · rev 2026.08.11 — <b>만들기 v12-2 반영</b>: 단계 추가 버그 수정(재료 영역 삽입 오류) · 발행 미리보기/발행후 상세를 상세 v1.9-7 결정에 맞춰 최신화(kcal·장보기 섹션 제거 등). 개발사 참조 URL 유지를 위해 v1-6-1에 직접 반영 · <b>rev 08-11 상세</b>: "알아두면 좋아요" 삭제 + 메타 4종(난이도·칼로리 — 소스 정의 포함) · <b>rev 08-12</b>: 연결 화면 전수검사 — 디자인가이드 v2.0.4 미반영 잔재(웜 보더·구팔레트·폰트 미로드) 일괄 정리 · <b>rev 08-13</b>: 06 주문하기(주문서·결제수단·실패상태 5종) 절 신설 — 5개 영역 → 6개 영역</div>
   </footer>
 
 </div>
