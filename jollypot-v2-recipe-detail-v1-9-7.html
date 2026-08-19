@@ -748,8 +748,8 @@
   .engage-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
   .engage-btn.active svg { fill: var(--color-primary); stroke: var(--color-primary); }
   .engage-btn.active { color: var(--color-primary); }
-  .engage-btn.saved svg { fill: var(--color-text-primary); stroke: var(--color-text-primary); }
-  .engage-btn.saved { color: var(--color-text-primary); }
+  .engage-btn.saved svg { fill: var(--color-primary); stroke: var(--color-primary); }
+  .engage-btn.saved { color: var(--color-primary); }
 
   /* ===== 펼침 섹션 (없으면 / 주의 / 보관 / FAQ) — 흰 배경, 본문과 자연스럽게 ===== */
   .acc { border-bottom: 1px solid var(--color-line); }
@@ -1623,6 +1623,8 @@ function toggleSave() {
 </h2>
 
 <div style="background:#2a2a4a; border-left:4px solid #FC642D; padding:14px 16px; margin:0 0 24px; border-radius:6px;">
+  <p style="margin:0 0 8px;"><b style="color:#FC642D;">⚡ rev 2026-08-19 — 저장(북마크) 활성색 통일</b></p>
+  <p style="margin:0 0 10px;">엔게이지먼트 바에서 <b style="color:#fff;">좋아요는 오렌지, 저장만 잉크(#212121)</b>로 서로 달랐습니다. 저장 활성색을 <b style="color:#fff;">--color-primary(#FC642D)</b>로 통일합니다. 홈 화면의 저장 상태도 이미 오렌지이며, 상품 찜도 오렌지로 확정되었습니다. <b style="color:#FFC520;">규칙: 에러 레드(#D64545)는 오류에만 쓰고, 저장·찜·좋아요 등 긍정적 상태는 브랜드 오렌지를 쓴다.</b></p>
   <p style="margin:0 0 8px;"><b style="color:#FC642D;">⚡ rev 2026-08-11 — 대표 확정 2건. 아래 모든 블록과 충돌 시 이 배너가 우선.</b></p>
   <p style="margin:0;">
   • <b style="color:#fff;">① "알아두면 좋아요" 섹션 전면 삭제</b> — v1.6~1.8의 접힘 보관함(대체재·주의사항·보관·영양정보·FAQ 5모듈), 데이터 소스 게이트, "데이터 없음" 상태 모두 개발 범위에서 제외. 아래 v1.6~v1.9 관련 블록은 이력 보존용.<br>
