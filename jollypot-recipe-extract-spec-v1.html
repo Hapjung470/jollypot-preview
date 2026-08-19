@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>인스타 레시피 추출 — 개선 방향</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  :root{--primary:#FC642D;--secondary:#145F48;--surface:#FFF5EA;--ink:#212121;--mid:#666666;
+    --border:#CCCFD4;--divider:#E5E7EB;--warn:#FFC520;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;
+    -webkit-font-smoothing:antialiased;letter-spacing:-0.3px;color:var(--ink);
+    line-height:1.75;font-size:15.5px;padding:44px 20px 90px;word-break:keep-all;background:#fff;}
+  .wrap{max-width:780px;margin:0 auto;}
+  h1{font-size:27px;font-weight:700;letter-spacing:-0.8px;line-height:1.35;}
+  .sub{color:var(--mid);font-size:14px;margin:8px 0 34px;}
+  h2{font-size:20px;font-weight:600;margin:44px 0 14px;padding-top:26px;border-top:1px solid var(--divider);}
+  p{margin:0 0 12px;}
+  ul{margin:0 0 14px 20px;} li{margin-bottom:6px;}
+  b{font-weight:600;}
+  .lead{font-size:17px;line-height:1.7;background:var(--surface);border-radius:14px;padding:18px 20px;margin-bottom:8px;}
+  .big{display:flex;gap:12px;margin:18px 0 22px;flex-wrap:wrap;}
+  .stat{flex:1;min-width:150px;border:1px solid var(--border);border-radius:14px;padding:16px 18px;}
+  .stat .n{font-size:30px;font-weight:700;letter-spacing:-1px;line-height:1.2;}
+  .stat .n.o{color:var(--primary);} .stat .n.g{color:var(--secondary);}
+  .stat .l{font-size:13px;color:var(--mid);margin-top:4px;line-height:1.5;}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;margin:12px 0 18px;}
+  th{background:var(--surface);text-align:left;font-weight:600;}
+  th,td{border:1px solid var(--border);padding:10px 12px;vertical-align:top;}
+  .callout{background:var(--surface);border-radius:14px;padding:16px 20px;margin:16px 0;}
+  .callout .t{font-weight:600;display:block;margin-bottom:5px;}
+  .warn{background:#FFF8E8;border:1px solid #E8D9A8;border-radius:14px;padding:16px 20px;margin:16px 0;}
+  .flow{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:16px 0 20px;}
+  .fl{display:flex;align-items:flex-start;gap:14px;padding:15px 18px;}
+  .fl+.fl{border-top:1px solid var(--divider);}
+  .fl .step{flex:0 0 78px;font-weight:700;font-size:14px;color:var(--primary);padding-top:1px;}
+  .fl .body{flex:1;}
+  .fl .body .h{font-weight:600;}
+  .fl .body .d{font-size:14px;color:var(--mid);margin-top:3px;}
+  .fl .tag{flex:0 0 auto;font-size:12.5px;font-weight:600;color:var(--secondary);
+    background:rgba(20,95,72,.08);border-radius:8px;padding:3px 9px;white-space:nowrap;}
+  code{font-family:ui-monospace,Consolas,monospace;font-size:13.5px;background:var(--surface);
+    border:1px solid var(--border);border-radius:5px;padding:1px 6px;}
+  .foot{margin-top:44px;padding-top:16px;border-top:1px solid var(--divider);font-size:13px;color:var(--mid);}
+  .q{font-size:15px;color:var(--mid);border-left:3px solid var(--border);padding-left:14px;margin:14px 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>인스타 레시피 추출, 무엇을 고쳐야 하나</h1>
+<div class="sub">졸리팟 · 2026-08-19 · 실측 근거 — 인스타 릴스 <b>37건</b> 정답지 대조</div>
+
+<div class="lead">
+결론은 하나입니다. <b>지금 문제는 AI 모델이 아니라, 캡션을 제대로 안 쓰고 있다는 것입니다.</b><br>
+캡션만으로도 재료의 <b>74%</b>까지 뽑을 수 있는데, 모델 버전을 올리는 논의가 먼저 나왔습니다.
+</div>
+
+<h2>1. 캡션에 이미 레시피가 들어 있습니다</h2>
+
+<p>한국 요리 릴스는 캡션에 재료를 통째로 적어두는 문화가 있습니다. 실제 캡션 예시입니다.</p>
+
+<div class="callout">
+<span class="t">R001 · 참치오이김밥 캡션 원문</span>
+"✅️ <b>재료</b><br>오이 2개, 양파 반개, 참치 2캔, 햇반 2개, 김밥 김 3장…"
+</div>
+
+<div class="big">
+  <div class="stat"><div class="n o">74%</div><div class="l">캡션만으로 뽑을 수 있는<br>재료 비율(상한)</div></div>
+  <div class="stat"><div class="n">+3%p</div><div class="l">음성 인식을 추가해도<br>이만큼밖에 안 오릅니다</div></div>
+  <div class="stat"><div class="n g">22%</div><div class="l">영상을 봐야만<br>알 수 있는 부분</div></div>
+</div>
+
+<p><b>먼저 확인해 주세요.</b> 현재 인스타 추출의 재료 재현율이 몇 %입니까? <b>74%에 못 미친다면 모델 문제가 아니라 캡션을 제대로 활용하지 못하는 것</b>이고, 모델을 바꿔도 나아지지 않습니다.</p>
+
+<h2>2. 음성 인식은 넣지 마세요 (넣더라도 나중에)</h2>
+
+<p>영상의 음성을 텍스트로 바꿔 쓰면 좋아질 것 같지만, <b>실측하니 3%p밖에 안 올랐습니다.</b> 이유가 있습니다.</p>
+
+<div class="warn">
+<b>릴스 37건 중 7건은 음성 인식 결과가 레시피가 아니라 배경음악 가사였습니다.</b><br>
+내레이션 없이 BGM만 깔린 영상이 많아, 음성 인식기가 <b>영어 팝송 가사를 그대로 받아적습니다.</b>
+이걸 그대로 넣으면 레시피가 오염됩니다. 넣으려면 <b>"한국어 비율이 낮으면 버린다"는 필터가 반드시 함께</b> 가야 합니다.
+</div>
+
+<h2>3. 영상 다운로드는 3분의 1에서만</h2>
+
+<p>영상 분석이 정확하긴 하지만 매번 하면 비용·차단 위험이 큽니다. <b>캡션으로 충분한지 먼저 판정</b>하고, 부족할 때만 영상을 받으면 됩니다.</p>
+
+<p>중요한 건 <b>이 판정이 실제로 가능하다</b>는 점입니다. 정답 없이 캡션 생김새만 보고 판정한 결과:</p>
+
+<table>
+  <tr><th>판정</th><th>건수</th><th>실제 정확도</th></tr>
+  <tr><td><b>충분 — 캡션으로 종료</b></td><td>20건 (67%)</td><td><b>92%</b></td></tr>
+  <tr><td><b>부족 — 영상 분석 필요</b></td><td>10건 (33%)</td><td>30%</td></tr>
+</table>
+
+<p><b>92%와 30%로 확실히 갈립니다.</b> 즉 영상 다운로드를 3분의 1로 줄이면서 품질은 지킬 수 있습니다.</p>
+
+<h2>4. "부족하다"는 이렇게 판정합니다</h2>
+
+<p>두 번 판정합니다. 첫 번째는 <b>AI를 부르기 전</b>, 두 번째는 <b>AI 결과를 받은 뒤</b>입니다.</p>
+
+<div class="flow">
+  <div class="fl">
+    <div class="step">1차</div>
+    <div class="body">
+      <div class="h">캡션 생김새로 판정 — AI 호출 전, 비용 0</div>
+      <div class="d">아래 중 하나라도 걸리면 바로 영상 분석으로 넘깁니다.<br>
+      · 해시태그 뺀 본문이 <b>3줄 미만</b><br>
+      · <b>계량 표기가 하나도 없고</b>(2개·1큰술 등) "재료" 머리말도 없음<br>
+      · 글자 대비 <b>해시태그 비율이 40% 넘음</b><br>
+      · 한국어 비율 40% 미만 → 번역 처리로 분기</div>
+    </div>
+    <span class="tag">10건 걸러짐</span>
+  </div>
+  <div class="fl">
+    <div class="step">2차</div>
+    <div class="body">
+      <div class="h">AI 결과의 앞뒤가 맞는지 판정 — AI 1회 비용만</div>
+      <div class="d">정답을 몰라도 <b>결과 안에서 모순</b>을 찾을 수 있습니다.<br>
+      · <b>조리 순서에 나오는 재료가 재료 목록에 없다</b> ← 가장 확실한 신호<br>
+      · 계량이 붙은 재료가 <b>절반도 안 됨</b><br>
+      · 재료 3개 미만 또는 조리 단계 2개 미만</div>
+    </div>
+    <span class="tag">아래 사례</span>
+  </div>
+  <div class="fl">
+    <div class="step">애매하면</div>
+    <div class="body">
+      <div class="h">유저에게 맡깁니다</div>
+      <div class="d">레시피 화면의 <b>"AI가 정리한 초안이에요"</b> 안내 옆에
+      <b>[영상으로 다시 분석하기]</b> 버튼을 둡니다. 필요한 사람만 누르고, 그 클릭이 곧 "이 레시피는 부정확하다"는 데이터가 됩니다.</div>
+    </div>
+    <span class="tag">유저 선택</span>
+  </div>
+</div>
+
+<div class="callout">
+<span class="t">2차 판정이 왜 필요한가 — 실제 사례</span>
+<b>R020 메밀소바</b> 캡션에는 육수 배합이 완벽하게 적혀 있습니다(물 200ml · 쯔유 50ml · 참치액 1큰술 · 설탕 1/2큰술).
+그런데 <b>정작 재료인 소바면·쪽파·무·김은 계량 없이 문장 속에 흘려져</b> 있습니다.<br><br>
+캡션 생김새만 보면 "계량이 많으니 충분하다"고 판정되지만 실제로는 부족합니다.
+<b>한국 요리 캡션은 양념 배합비는 정확히 적고, 주재료는 흘리는 경향</b>이 있어서 2차 판정이 필요합니다.
+</div>
+
+<h2>5. 유저는 기다리지 않게</h2>
+
+<div class="flow">
+  <div class="fl"><div class="step">즉시</div><div class="body"><div class="h">캡션으로 초안 발행 (1~3초)</div><div class="d">유저는 바로 레시피를 봅니다</div></div></div>
+  <div class="fl"><div class="step">뒤에서</div><div class="body"><div class="h">부족 판정된 것만 영상 분석</div><div class="d">전체의 약 3분의 1</div></div></div>
+  <div class="fl"><div class="step">완료 시</div><div class="body"><div class="h">알림 — "레시피가 더 정확해졌어요"</div><div class="d">유저는 대기 화면을 볼 일이 없습니다</div></div></div>
+</div>
+
+<h2>6. 결정이 필요한 것 하나 — 타임스탬프</h2>
+
+<p class="q">조리 단계를 누르면 영상의 그 지점으로 이동하는 기능</p>
+
+<p>이 기능은 <b>캡션으로는 원리적으로 만들 수 없습니다.</b> 영상을 봐야만 나옵니다.
+<b>이 기능을 넣기로 하면 위의 3분의 1 최적화가 무의미해지고 전량 영상 분석</b>이 됩니다.</p>
+
+<div class="warn">
+<b>먼저 답해야 할 질문</b><br>
+① 타임스탬프를 필수 기능으로 볼 것인가 (넣으면 전량 영상 분석)<br>
+② 서버에서 인스타 영상 다운로드가 실제로 되는가 — <b>100건 연속 시도 시 성공률</b>은?<br>
+　 (사무실 PC에서 되는 것과 서버에서 되는 것은 다릅니다)
+</div>
+
+<h2>7. 개발사에 요청드리는 것</h2>
+
+<table>
+  <tr><th>순서</th><th>요청</th></tr>
+  <tr><td><b>1</b></td><td><b>현재 인스타 추출의 재료 재현율을 측정해 알려주세요.</b> 74% 미만이면 캡션 활용부터 개선합니다</td></tr>
+  <tr><td><b>2</b></td><td>1·2차 판정 게이트 구현 (위 조건 그대로)</td></tr>
+  <tr><td><b>3</b></td><td>서버 환경에서 <b>릴스 다운로드 100건 연속 성공률</b> 측정</td></tr>
+  <tr><td><b>4</b></td><td>음성 인식은 <b>보류</b> — 넣더라도 한국어 필터 필수</td></tr>
+</table>
+
+<p>모델 버전(4.6 등) 비교는 <b>위 1~3이 끝난 뒤</b>에 하는 게 맞습니다.
+지금 모델을 바꿔도 캡션을 못 쓰고 있으면 결과는 그대로입니다.</p>
+
+<div class="foot">
+근거 데이터: 졸리팟 레시피 정답지(인스타 릴스 37건 · 검수 대조 재료 361개) · 측정 2026-08-19<br>
+※ 임계값은 37건 기준이므로 운영 데이터가 쌓이면 재보정이 필요합니다.
+</div>
+
+</div>
+</body>
+</html>
