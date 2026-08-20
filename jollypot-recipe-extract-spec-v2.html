@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>레시피 추출 — 방향과 근거</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  :root{--primary:#FC642D;--secondary:#145F48;--surface:#FFF5EA;--ink:#212121;--mid:#666666;
+    --border:#CCCFD4;--divider:#E5E7EB;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;
+    -webkit-font-smoothing:antialiased;letter-spacing:-0.3px;color:var(--ink);
+    line-height:1.7;font-size:15.5px;padding:44px 20px 80px;word-break:keep-all;background:#fff;}
+  .wrap{max-width:760px;margin:0 auto;}
+  h1{font-size:26px;font-weight:700;letter-spacing:-0.8px;line-height:1.35;}
+  .sub{color:var(--mid);font-size:13.5px;margin:8px 0 30px;}
+  h2{font-size:19px;font-weight:600;margin:40px 0 12px;padding-top:24px;border-top:1px solid var(--divider);}
+  p{margin:0 0 12px;}
+  ul{margin:0 0 12px 20px;} li{margin-bottom:6px;}
+  b{font-weight:600;}
+  .lead{font-size:17px;line-height:1.65;background:var(--surface);border-radius:14px;padding:18px 20px;}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;margin:12px 0 16px;}
+  th{background:var(--surface);text-align:left;font-weight:600;}
+  th,td{border:1px solid var(--border);padding:9px 12px;vertical-align:top;}
+  td.n{text-align:right;white-space:nowrap;}
+  .hi{background:#FFF8E8;}
+  .big{display:flex;gap:10px;margin:16px 0 20px;flex-wrap:wrap;}
+  .stat{flex:1;min-width:140px;border:1px solid var(--border);border-radius:14px;padding:15px 17px;}
+  .stat .n{font-size:28px;font-weight:700;letter-spacing:-1px;line-height:1.2;}
+  .stat .n.o{color:var(--primary);} .stat .n.g{color:var(--secondary);}
+  .stat .l{font-size:12.5px;color:var(--mid);margin-top:4px;line-height:1.5;}
+  .box{background:var(--surface);border-radius:14px;padding:15px 18px;margin:14px 0;font-size:14.5px;}
+  .box .t{font-weight:600;display:block;margin-bottom:4px;}
+  .warn{background:#FFF8E8;border:1px solid #E8D9A8;border-radius:14px;padding:15px 18px;margin:14px 0;font-size:14.5px;}
+  .foot{margin-top:40px;padding-top:14px;border-top:1px solid var(--divider);font-size:12.5px;color:var(--mid);}
+  code{font-family:ui-monospace,Consolas,monospace;font-size:13px;background:var(--surface);
+    border:1px solid var(--border);border-radius:5px;padding:1px 5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>레시피 추출 — 방향과 근거</h1>
+<div class="sub">졸리팟 · 2026-08-20 · 실측 근거: 자체 정답지 <b>릴스 37건 · 유튜브 44건</b> (검수 대조 재료 813개)</div>
+
+<div class="lead">
+<b>모델은 Gemini 단독으로 갑니다.</b> 개발사 의견에 동의합니다.<br>
+다만 <b>비용은 보내주신 표보다 훨씬 작습니다.</b> 그리고 지금 고쳐야 할 것은 모델이 아니라
+<b>캡션·자막을 제대로 쓰고 있는가</b>입니다.
+</div>
+
+<h2>1. 텍스트만으로 이미 대부분 나옵니다</h2>
+
+<p>정답지와 대조해 <b>각 정보원에 재료가 실제로 존재하는 비율</b>을 측정했습니다. 모델 성능과 무관한 상한선입니다.</p>
+
+<table>
+  <tr><th>플랫폼</th><th>정보원</th><th class="n">재료 재현율</th><th>영상 필요</th></tr>
+  <tr><td rowspan="2"><b>인스타 릴스</b></td><td>캡션만</td><td class="n"><b>74%</b></td><td rowspan="2">33%</td></tr>
+  <tr><td>캡션 + 음성</td><td class="n">78% <span style="color:var(--mid)">(+3%p)</span></td></tr>
+  <tr class="hi"><td rowspan="2"><b>유튜브</b></td><td>설명란만</td><td class="n">52%</td><td rowspan="2"><b>20%</b></td></tr>
+  <tr class="hi"><td><b>설명란 + 자동 자막</b></td><td class="n"><b>86%</b></td></tr>
+</table>
+
+<p><b>유튜브는 자동 자막이 제공되므로 영상 없이 86%가 나옵니다.</b> 릴스는 캡션에 레시피를 적는 문화 덕에 74%입니다.
+<b>영상 분석은 릴스 33% · 유튜브 20%에서만 필요합니다.</b></p>
+
+<div class="warn">
+<b>음성 인식(STT)은 보류를 권합니다.</b> 릴스 기준 <b>+3%p</b>에 그칩니다.
+릴스 37건 중 <b>7건은 음성 인식 결과가 레시피가 아니라 배경음악 가사</b>였습니다(내레이션 없이 BGM만 깔린 영상).
+넣으려면 <b>"한국어 비율이 낮으면 버린다"는 필터가 반드시 함께</b> 가야 합니다.
+</div>
+
+<h2>2. 비용 — 보내주신 표의 전제 3가지 보정</h2>
+
+<p>Gemini 3.1 Flash-Lite · 1,000건 기준입니다.</p>
+
+<table>
+  <tr><th>전제</th><th class="n">릴스 1,000건</th><th class="n">유튜브 1,000건</th></tr>
+  <tr><td>보내주신 표 (릴스 75초 · 전량 영상)</td><td class="n">₩5,000~7,000</td><td class="n">₩28,000~45,000</td></tr>
+  <tr><td>① 릴스 실제 평균 길이 <b>31초</b> 반영<br><span style="color:var(--mid);font-size:13.5px">정답지 실측 — 75초는 최댓값입니다</span></td><td class="n">₩2,100~2,900</td><td class="n">—</td></tr>
+  <tr><td>② <b>텍스트 우선 + 필요할 때만 영상</b><br><span style="color:var(--mid);font-size:13.5px">릴스 33% · 유튜브 20%만 영상 투입</span></td><td class="n">—</td><td class="n">₩5,600~9,000</td></tr>
+  <tr class="hi"><td><b>보정 후 실제 예상</b></td><td class="n"><b>₩700~1,000</b></td><td class="n"><b>₩5,600~9,000</b></td></tr>
+</table>
+
+<div class="big">
+  <div class="stat"><div class="n g">10만원↓</div><div class="l">월 1만 건 처리 시<br>총 예상 비용</div></div>
+  <div class="stat"><div class="n o">14~22배</div><div class="l">Grok 4.6이<br>Gemini보다 비쌈</div></div>
+  <div class="stat"><div class="n">0건</div><div class="l">xAI 공식 문서의<br>분석용 영상 입력 지원</div></div>
+</div>
+
+<p><b>비용은 의사결정 변수가 아닙니다.</b> 모델은 <b>정확도로만</b> 고르면 됩니다.</p>
+
+<div class="box">
+<span class="t">Grok은 후보에서 제외합니다</span>
+비용이 <b>14~22배</b>인 데다, <b>xAI 공식 문서에 분석용 영상 입력 지원이 없습니다</b>(이미지 jpg/png만 명시).
+앞선 테스트에서 영상을 <b>어떤 형식으로 전달하셨는지</b>(mp4 업로드 / 프레임 이미지 / URL) 확인 부탁드립니다.
+</div>
+
+<h2>3. 처리 구조 — 텍스트 먼저, 부족할 때만 영상</h2>
+
+<table>
+  <tr><th>단계</th><th>처리</th><th>비중</th></tr>
+  <tr><td><b>1단</b></td><td>릴스 = 캡션 · 유튜브 = 설명란 + 자동 자막<br><span style="color:var(--mid);font-size:13.5px">다운로드 없음 · 비용 거의 0</span></td><td>릴스 67%<br>유튜브 80%</td></tr>
+  <tr><td><b>2단</b></td><td>부족 판정 시에만 영상 분석</td><td>릴스 33%<br>유튜브 20%</td></tr>
+</table>
+
+<p><b>"부족하다"는 두 번 판정합니다.</b></p>
+
+<table>
+  <tr><th>시점</th><th>판정 기준</th></tr>
+  <tr><td><b>AI 호출 전</b><br><span style="color:var(--mid);font-size:13.5px">비용 0</span></td>
+      <td>· 해시태그 뺀 본문이 <b>3줄 미만</b><br>
+          · <b>계량 표기 0개</b>(2개·1큰술 등)이고 "재료" 머리말도 없음<br>
+          · 글자 대비 <b>해시태그 비율 40% 초과</b><br>
+          · 한국어 비율 40% 미만 → 번역 처리로 분기</td></tr>
+  <tr><td><b>AI 결과 검증</b><br><span style="color:var(--mid);font-size:13.5px">호출 1회 비용만</span></td>
+      <td>· <b>조리 순서에 나오는 재료가 재료 목록에 없다</b> ← 가장 확실한 신호<br>
+          · 계량이 붙은 재료가 <b>절반 미만</b><br>
+          · 재료 3개 미만 또는 조리 단계 2개 미만</td></tr>
+</table>
+
+<div class="box">
+<span class="t">2차 판정이 왜 필요한가 — 실제 사례</span>
+<b>메밀소바 릴스</b>의 캡션에는 육수 배합이 완벽히 적혀 있습니다(물 200ml · 쯔유 50ml · 참치액 1큰술 · 설탕 1/2큰술).
+그런데 <b>정작 재료인 소바면·쪽파·무·김은 계량 없이 문장 속에 흘려져</b> 있습니다.<br>
+<b>한국 요리 캡션은 양념 배합비는 정확히 적고 주재료는 흘리는 경향</b>이 있어, 캡션 생김새만으로는 걸러지지 않습니다.
+</div>
+
+<p><b>유저는 기다리지 않게</b> — 1단 결과로 초안을 즉시 발행하고, 2단은 백그라운드에서 처리한 뒤
+<b>"레시피가 더 정확해졌어요" 알림</b>으로 갱신합니다.</p>
+
+<h2>4. 결정이 필요한 것 — 타임스탬프</h2>
+
+<p>조리 단계를 누르면 영상의 해당 지점으로 이동하는 기능입니다.
+<b>캡션·자막에는 이 정보가 없어 영상 분석에서만 나옵니다.</b>
+필수 기능으로 정하면 <b>위의 "필요할 때만 영상" 구조가 무의미해지고 전량 영상 분석</b>이 됩니다.</p>
+
+<h2>5. 요청드리는 것</h2>
+
+<table>
+  <tr><th>#</th><th>요청</th></tr>
+  <tr class="hi"><td><b>1</b></td><td><b>현재 인스타 추출의 재료 재현율을 측정해 알려주세요.</b><br>
+    74%(캡션 상한)에 못 미치면 <b>모델이 아니라 캡션 활용이 문제</b>이고, 모델을 바꿔도 개선되지 않습니다</td></tr>
+  <tr><td><b>2</b></td><td><b>유튜브는 설명란 + 자동 자막을 우선 사용</b>해 주세요 — 영상 없이 86%. 유튜브 비용의 대부분이 사라집니다</td></tr>
+  <tr><td><b>3</b></td><td>1·2차 판정 게이트 구현 (위 조건 그대로)</td></tr>
+  <tr><td><b>4</b></td><td>서버 환경에서 <b>릴스 다운로드 100건 연속 성공률</b> 측정<br>
+    <span style="color:var(--mid);font-size:13.5px">사무실 PC에서 되는 것과 서버(데이터센터 IP)에서 되는 것은 다릅니다</span></td></tr>
+  <tr><td><b>5</b></td><td>앞선 Grok 테스트에서 <b>영상을 어떤 형식으로 전달했는지</b> 확인</td></tr>
+  <tr><td><b>6</b></td><td>음성 인식(STT)은 <b>보류</b> — 넣더라도 한국어 필터 필수</td></tr>
+</table>
+
+<div class="foot">
+근거: 졸리팟 자체 레시피 정답지 — 인스타 릴스 37건 · 유튜브 44건 · 검수 대조 재료 813개 · 측정 2026-08-20<br>
+※ 게이트 임계값은 이 표본 기준이므로 운영 데이터가 쌓이면 재보정이 필요합니다.
+</div>
+
+</div>
+</body>
+</html>
