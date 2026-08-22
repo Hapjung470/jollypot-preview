@@ -1607,12 +1607,12 @@ function toggleLike() {
 }
 
 function toggleSave() {
-  saved = !saved;
+  saveOn = !saveOn;
   var big = document.getElementById('btnSave');
   var ico = document.getElementById('btnSaveIcon');
-  big.classList.toggle('saved', saved);
-  big.querySelector('.bb-save-label').textContent = saved ? '저장됨' : '저장';
-  ico.classList.toggle('saved', saved);
+  big.classList.toggle('saved', saveOn);
+  big.querySelector('.bb-save-label').textContent = saveOn ? '저장됨' : '저장';
+  ico.classList.toggle('saved', saveOn);
 }
 
 /* v1-18: 하단바 3안 전환 */
