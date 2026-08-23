@@ -1151,10 +1151,16 @@
     <button id="togOwner" onclick="setViewpoint('owner')">본인 시점</button>
   </div>
   <div class="proto-toggle-row">
-    <span style="font-size:11.5px;color:#8888A0;display:flex;align-items:center;padding-right:2px;">수치</span>
+    <span style="font-size:11.5px;color:#8888A0;display:flex;align-items:center;padding-right:2px;">저장·공유</span>
     <button id="cnt-new" onclick="setCounts('new')">신규</button>
     <button id="cnt-grow" onclick="setCounts('grow')">성장</button>
     <button id="cnt-hot" class="active fmt" onclick="setCounts('hot')">인기</button>
+  </div>
+  <div class="proto-toggle-row">
+    <span style="font-size:11.5px;color:#8888A0;display:flex;align-items:center;padding-right:2px;">댓글</span>
+    <button id="cm-none" onclick="setCmt('none')">0개</button>
+    <button id="cm-le" onclick="setCmt('le')">3개 이하</button>
+    <button id="cm-gt" class="active fmt" onclick="setCmt('gt')">3개 초과</button>
   </div>
   <div class="proto-toggle-row">
     <button id="togStateNormal" class="active fmt" onclick="setState('normal')">정상</button>
@@ -1845,30 +1851,46 @@ function fmtCount(n) {
   return (Math.floor(n / 1000) / 10) + '만';
 }
 
+/* 저장·공유 전용 — 댓글은 아래 CMT_CASES가 따로 관리한다 */
 var CNT_CASES = {
-  new:  { save: 0,    comment: 0,  share: 0  },   /* 갓 올라온 레시피 — 전부 라벨만 */
-  grow: { save: 7,    comment: 3,  share: 1  },   /* 성장 중 — 댓글만 숫자, 저장·공유는 임계 미달 */
-  hot:  { save: 1240, comment: 86, share: 32 }    /* 인기 — 전부 표기, 저장은 1.2천으로 축약 */
+  new:  { save: 0,    share: 0  },   /* 갓 올라온 레시피 — 임계 미달, 라벨만 */
+  grow: { save: 7,    share: 1  },   /* 성장 중 — 아직 둘 다 임계(10) 미달 */
+  hot:  { save: 1240, share: 32 }    /* 인기 — 전부 표기, 저장은 1.2천으로 축약 */
 };
 
 function setCounts(stage) {
   var d = CNT_CASES[stage];
-  ['save', 'comment', 'share'].forEach(function (k) {
-    var show = d[k] >= COUNT_MIN[k];
-    [].forEach.call(document.querySelectorAll('[data-cnt="' + k + '"]'), function (el) {
-      el.textContent = fmtCount(d[k]);
-      el.style.display = show ? '' : 'none';
-    });
+  ['save', 'share'].forEach(function (k) {
+    setCntSpans(k, d[k]);
   });
-  /* v1-27: 댓글 0건 분기 — 개발 노트에 있던 규칙을 실제로 연결했다.
-     문구는 두 상태 모두 "남기다"로 통일한다:
-       0건  "첫 댓글을 남겨보세요"  ← 비어 있는 자리를 채울 이유를 준다(초대)
-       n건  "댓글 남기기"           ← 이미 대화가 있으니 초대는 불필요, 라벨이면 충분
-     같은 동사를 쓰면 두 상태가 한 문법으로 이어져 시스템이 일관돼 보인다 */
-  renderComments(d.comment, stage);
-
   ['new', 'grow', 'hot'].forEach(function (x) {
     document.getElementById('cnt-' + x).className = (x === stage) ? 'active fmt' : '';
+  });
+}
+
+function setCntSpans(k, n) {
+  var show = n >= COUNT_MIN[k];
+  [].forEach.call(document.querySelectorAll('[data-cnt="' + k + '"]'), function (el) {
+    el.textContent = fmtCount(n);
+    el.style.display = show ? '' : 'none';
+  });
+}
+
+/* ===== 인플레이스 2026-08-23: 댓글 임계 토글 =====
+   경계는 COMMENT_PREVIEW_MAX(=3)이다. 총계가 인라인 노출 블록 수를 넘어야만 [전체보기]가 나온다.
+     0개      미리보기·전체보기 모두 숨김 + 입력칸 "첫 댓글을 남겨보세요"
+     3개 이하 3개 전부 인라인 노출 → 다 보이므로 [전체보기] 없음(경계 케이스)
+     3개 초과 상한 3개 + 대댓 → [86개의 댓글 전체보기 >]
+   저장·공유와 분리한 이유: 댓글은 임계·미리보기·대댓·전체보기까지 규칙이 따로라
+   한 토글에 묶으면 어느 축을 보는지 흐려진다 */
+var CMT_CASES = { none: 0, le: 3, gt: 86 };
+
+function setCmt(mode) {
+  var n = CMT_CASES[mode];
+  setCntSpans('comment', n);
+  renderComments(n, mode === 'le' ? 'grow' : 'hot');
+  ['none', 'le', 'gt'].forEach(function (x) {
+    document.getElementById('cm-' + x).className = (x === mode) ? 'active fmt' : '';
   });
 }
 
@@ -2013,6 +2035,9 @@ function rdToast(msg, action, fn) {
   • "저장됨" 버튼 배경과의 채널차 <b>9 → 17</b>로 벌어져 정보/액션이 분리된다<br>
   • 토큰 <code>--color-surface-info</code>로 신설 — 하드코딩하지 않는다<br><br>
   <b style="color:#fff;">인플레이스 수정 (2026-08-23)</b> — 대표 지시로 <b>버전업 중단</b>, 이후 변경은 v1-30 파일에 직접 반영한다(URL 고정).<br>
+  • <b>상단 토글 분리</b> — <code>저장·공유</code>(신규/성장/인기)와 <code>댓글</code>(0개 / 3개 이하 / 3개 초과)을 나눴다.
+  댓글은 임계·미리보기 상한·대댓·전체보기까지 규칙이 따로라 한 토글에 묶으면 어느 축을 보는지 흐려진다.
+  경계는 <code>COMMENT_PREVIEW_MAX=3</code> — <b>3개 이하면 다 보이므로 [전체보기]가 사라진다</b><br>
   • <b>저장 = 컬렉션 시트를 바로 연다</b> — 기존 토스트(<code>저장했어요 [컬렉션 선택]</code>)는 3초 뒤 사라져
   <b>컬렉션 지정 기회를 대부분 놓쳤다</b>. 이제 저장을 누르면 시트가 즉시 올라온다(핀터레스트 패턴).<br>
   <b style="color:#FFC520;">핵심 — 시트가 열리는 시점에 저장은 이미 끝나 있다</b>(<code>setSave(true)</code>가 먼저).
@@ -2825,6 +2850,7 @@ function rdToast(msg, action, fn) {
 
 /* v1-24: 초기 렌더를 '인기' 케이스로 맞춘다(토글 기본 선택과 동기화) */
 setCounts('hot');
+setCmt('gt');
 updateHeroMini();
 </script>
 <script src="proto-link.js"></script>
