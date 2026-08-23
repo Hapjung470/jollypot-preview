@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>졸리팟 · 레시피 만들기 v12-2</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
@@ -410,50 +410,82 @@
   #e3 .footer .cta{flex:none; width:100%; margin-top:0;}
   #e3 .footer .cnt{font-size:12px; color:var(--text2); text-align:center; margin-bottom:9px;}
   #e3 .footer .cnt b{color:#9A6A12;}
+
+  /* ===== 상단 토글 — 레시피 상세 v1-30 .proto-toggle 문법으로 통일 (2026-08-23) =====
+     문제: 230px 세로 컬럼에 버튼 20개 + 그룹 라벨 9개가 쌓여 토글만 1,032px.
+           1280×900 화면에서 폰 시작이 y=1068이라 프로토가 첫 화면에 아예 안 보였다.
+     해법: ① 축당 1행 가로 배치(버튼 수와 무관하게 1행)
+           ② 그룹 라벨을 블록 → 인라인 접두로(라벨 9줄 소멸)
+           ③ 활성 표시를 오렌지 채움 → 밑줄 + 옅은 배경(상세와 동일 문법, 시각 소음 감소)
+     JS는 그대로 둔다 — .steptab / .segbtn 클래스와 el.parentElement 탐색을 유지했다 */
+  .proto-toggle{width:392px;max-width:100%;display:flex;flex-direction:column;
+    background:#212121;border-radius:14px;overflow:hidden}
+  .proto-toggle-row{display:flex;align-items:stretch}
+  .proto-toggle-row+.proto-toggle-row{border-top:1px solid rgba(255,255,255,.1)}
+  .proto-toggle .ptl{flex:none;min-width:58px;display:flex;align-items:center;
+    padding:0 6px 0 12px;font-size:11px;color:#8888A0;letter-spacing:-0.2px;white-space:nowrap}
+  .proto-toggle .steptab,
+  .proto-toggle .segbtn{flex:1;min-width:0;border:none;background:transparent;
+    padding:9px 2px 7px;font-family:inherit;font-size:11.5px;font-weight:600;
+    color:rgba(255,255,255,.42);text-align:center;white-space:nowrap;cursor:pointer;
+    border-radius:0;border-bottom:2px solid transparent;transition:all .2s}
+  .proto-toggle .steptab:hover,
+  .proto-toggle .segbtn:hover{color:rgba(255,255,255,.72)}
+  .proto-toggle .steptab.active,
+  .proto-toggle .segbtn.active{background:rgba(255,255,255,.1);color:#fff;
+    border-bottom-color:var(--primary)}
+  /* 변형 축(화면 이동이 아닌 상태 토글)은 밑줄색을 달리해 성격을 구분 */
+  .proto-toggle-row.var .segbtn.active{border-bottom-color:#3276AE}
+  .pt-foot{padding:7px 12px 9px;font-size:11.5px;color:#7d7a86;
+    border-top:1px solid rgba(255,255,255,.1)}
+  .pt-foot b{color:#CCCCDD;font-weight:600}
 </style>
 </head>
 <body>
 
-<div class="page-title">졸리팟 V2 · <b>레시피 만들기 v12</b> &nbsp;|&nbsp; 에러/실패 경로(입력에러·못찾음·확인필요) 통합</div>
-
-<div class="steptabs">
-  <span class="grp">입구</span>
-  <button class="steptab active" data-target="p1" onclick="go('p1')">기본</button>
-  <button class="steptab" data-target="p2" onclick="go('p2')">이미 등록</button>
-  <span class="grp">공유 가이드</span>
-  <button class="steptab" data-target="pg" onclick="go('pg')">가이드</button>
-  <span class="grp">직접 작성</span>
-  <button class="steptab" data-target="p3" onclick="go('p3')">순서</button>
-  <button class="steptab" data-target="p4" onclick="go('p4')">드래그</button>
-  <button class="steptab" data-target="p5" onclick="go('p5')">편집</button>
-  <button class="steptab" data-target="p6" onclick="go('p6')">발행</button>
-  <button class="steptab" data-target="pa3" onclick="go('pa3')">발행후 상세</button><span class="grp" style="opacity:.55">v12-2</span>
-  <span class="grp">AI 큐레이션</span>
-  <button class="steptab" data-target="pa1" onclick="go('pa1')">컬렉션 선택</button>
-  <button class="steptab" data-target="pa2" onclick="go('pa2')">스크랩북 착지</button>
-  <span class="grp">에러/예외</span>
-  <button class="steptab" data-target="e1" onclick="go('e1')">입력 에러</button>
-  <button class="steptab" data-target="e2" onclick="go('e2')">못 찾음</button>
-  <button class="steptab" data-target="e3" onclick="go('e3')">확인 필요</button>
-</div>
-
-<div class="prodbar">
-  <span class="grp">상품 연결 (편집 화면 · 재료)</span>
-  <div class="seg">
-    <button class="segbtn active" onclick="prodToggle(false,this)">OFF · P1 기본</button>
+<div class="proto-toggle">
+  <div class="proto-toggle-row">
+    <span class="ptl">입구</span>
+    <button class="steptab active" data-target="p1" onclick="go('p1')">기본</button>
+    <button class="steptab" data-target="p2" onclick="go('p2')">이미 등록</button>
+    <button class="steptab" data-target="pg" onclick="go('pg')">공유 가이드</button>
+  </div>
+  <div class="proto-toggle-row">
+    <span class="ptl">직접 작성</span>
+    <button class="steptab" data-target="p3" onclick="go('p3')">순서</button>
+    <button class="steptab" data-target="p4" onclick="go('p4')">드래그</button>
+    <button class="steptab" data-target="p5" onclick="go('p5')">편집</button>
+    <button class="steptab" data-target="p6" onclick="go('p6')">발행</button>
+    <button class="steptab" data-target="pa3" onclick="go('pa3')">발행후</button>
+  </div>
+  <div class="proto-toggle-row">
+    <span class="ptl">AI 큐레이션</span>
+    <button class="steptab" data-target="pa1" onclick="go('pa1')">컬렉션 선택</button>
+    <button class="steptab" data-target="pa2" onclick="go('pa2')">스크랩북 착지</button>
+  </div>
+  <div class="proto-toggle-row">
+    <span class="ptl">에러</span>
+    <button class="steptab" data-target="e1" onclick="go('e1')">입력 에러</button>
+    <button class="steptab" data-target="e2" onclick="go('e2')">못 찾음</button>
+    <button class="steptab" data-target="e3" onclick="go('e3')">확인 필요</button>
+  </div>
+  <div class="proto-toggle-row var">
+    <span class="ptl">상품 연결</span>
+    <button class="segbtn active" onclick="prodToggle(false,this)">OFF</button>
     <button class="segbtn" onclick="prodToggle(true,this)">ON</button>
   </div>
-  <span class="grp" style="margin-top:4px;">스크랩북 카드 (AI 착지)</span>
-  <div class="seg">
+  <div class="proto-toggle-row var">
+    <span class="ptl">착지 카드</span>
     <button class="segbtn active" onclick="cardState('prep',this)">정리 중</button>
     <button class="segbtn" onclick="cardState('done',this)">완성됨</button>
   </div>
-  <span class="grp" style="margin-top:4px;">입력 에러 종류 (즉시)</span>
-  <div class="seg">
+  <div class="proto-toggle-row var">
+    <span class="ptl">에러 종류</span>
     <button class="segbtn active" onclick="setErr('unsupported',this)">미지원</button>
     <button class="segbtn" onclick="setErr('private',this)">비공개</button>
     <button class="segbtn" onclick="setErr('toolong',this)">길이초과</button>
   </div>
+  <div class="pt-foot">졸리팟 V2 · <b>레시피 만들기 v12-2</b> · 에러/실패 경로 통합</div>
 </div>
 
 <!-- 0. 공유 가이드 -->
