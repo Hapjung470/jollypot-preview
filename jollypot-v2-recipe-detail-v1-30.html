@@ -374,7 +374,8 @@
   .more-menu-item.danger svg { color: var(--color-error); }
 
   /* ===== v1-20: 컬렉션 선택 시트 (저장됨 상태에서 재탭 시) ===== */
-  .coll-title { font-size: 16px; font-weight: 700; padding: 0 20px 12px; letter-spacing: -0.3px; }
+  .coll-title { font-size: 16px; font-weight: 700; padding: 0 20px 2px; letter-spacing: -0.3px; }
+  .coll-sub { font-size: 12.5px; color: var(--color-text-tertiary); padding: 0 20px 12px; letter-spacing: -0.3px; }
   .coll-list { max-height: 258px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
   .coll-item {
     display: flex; align-items: center; gap: 12px; width: 100%;
@@ -1453,7 +1454,7 @@
 <div id="moreMenu" class="more-menu-overlay hidden" onclick="toggleMoreMenu()">
   <div class="more-menu-sheet" onclick="event.stopPropagation()">
     <div class="more-menu-handle"></div>
-    <button class="more-menu-item" onclick="toggleMoreMenu(); if(!saveOn) setSave(true); openColl();">
+    <button class="more-menu-item" onclick="toggleMoreMenu(); var f=!saveOn; if(f) setSave(true); openColl(f?'saved':'edit');">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
       컬렉션에 추가
     </button>
@@ -1474,7 +1475,8 @@
 <div id="collSheet" class="more-menu-overlay hidden" onclick="closeColl()">
   <div class="more-menu-sheet" onclick="event.stopPropagation()">
     <div class="more-menu-handle"></div>
-    <div class="coll-title">컬렉션에 저장</div>
+    <div class="coll-title" id="collTitle">저장했어요</div>
+    <div class="coll-sub" id="collSub">컬렉션을 고르면 나중에 찾기 쉬워요</div>
     <div class="coll-list" id="collList">
       <button class="coll-item selected" onclick="pickColl(this)">
         <div class="coll-thumb" style="background:linear-gradient(135deg,#FFEEDC,#FFD9B8)">🔖</div>
@@ -1907,10 +1909,14 @@ function toggleLike() {
 /* v1-20: 저장 버튼은 더 이상 단순 토글이 아니다.
    미저장 → 탭 = 저장 (+ 토스트로 컬렉션 지정 유도)
    저장됨 → 탭 = 컬렉션 선택 시트 (해제는 시트 안에서만) */
+/* 인플레이스 2026-08-23: 저장 = 토스트가 아니라 컬렉션 시트를 바로 연다.
+   토스트는 3초 뒤 사라져 컬렉션 지정 기회를 대부분 놓쳤다.
+   핵심 — 시트가 열리는 시점에 저장은 이미 끝나 있다(setSave 먼저).
+   시트를 닫거나 바깥을 눌러도 저장은 유지되므로 마찰이 아니라 "선택 기회"다(핀터레스트 패턴) */
 function toggleSave() {
-  if (saveOn) { openColl(); return; }
+  if (saveOn) { openColl('edit'); return; }
   setSave(true);
-  rdToast('저장했어요', '컬렉션 선택', openColl);
+  openColl('saved');
 }
 
 function setSave(v) {
@@ -1920,9 +1926,13 @@ function setSave(v) {
   big.querySelector('.bb-save-label').textContent = saveOn ? '저장됨' : '저장';
 }
 
-function openColl() {
+/* mode: 'saved' = 방금 저장함(완료 고지 겸함) · 'edit' = 이미 저장된 것의 컬렉션 변경 */
+function openColl(mode) {
   var t = document.getElementById('rdToast');
   if (t) t.remove();
+  document.getElementById('collTitle').textContent =
+    (mode === 'saved') ? '저장했어요' : '컬렉션에 저장';
+  document.getElementById('collSub').style.display = (mode === 'saved') ? '' : 'none';
   document.getElementById('collSheet').classList.remove('hidden');
 }
 function closeColl() { document.getElementById('collSheet').classList.add('hidden'); }
@@ -2003,6 +2013,12 @@ function rdToast(msg, action, fn) {
   • "저장됨" 버튼 배경과의 채널차 <b>9 → 17</b>로 벌어져 정보/액션이 분리된다<br>
   • 토큰 <code>--color-surface-info</code>로 신설 — 하드코딩하지 않는다<br><br>
   <b style="color:#fff;">인플레이스 수정 (2026-08-23)</b> — 대표 지시로 <b>버전업 중단</b>, 이후 변경은 v1-30 파일에 직접 반영한다(URL 고정).<br>
+  • <b>저장 = 컬렉션 시트를 바로 연다</b> — 기존 토스트(<code>저장했어요 [컬렉션 선택]</code>)는 3초 뒤 사라져
+  <b>컬렉션 지정 기회를 대부분 놓쳤다</b>. 이제 저장을 누르면 시트가 즉시 올라온다(핀터레스트 패턴).<br>
+  <b style="color:#FFC520;">핵심 — 시트가 열리는 시점에 저장은 이미 끝나 있다</b>(<code>setSave(true)</code>가 먼저).
+  시트를 닫거나 바깥을 눌러도 저장은 유지되므로 <b>마찰이 아니라 선택 기회</b>다.
+  시트 타이틀이 완료 고지를 겸한다 — 방금 저장 <code>저장했어요 / 컬렉션을 고르면 나중에 찾기 쉬워요</code>,
+  이미 저장된 것 재탭 <code>컬렉션에 저장</code><br>
   • <b>댓글 영역 재설계 (오늘의집 문법)</b> — 인라인 상한 <code>COMMENT_PREVIEW_MAX=3</code>(최상위) ·
   <code>REPLY_PREVIEW_MAX=1</code>(최상위당 대댓). 최대 노출 6블록으로 오늘의집 실측(5+1=6)과 같은 분량.
   대댓 초과분은 "답글 N개 더보기", 총계(대댓 포함) &gt; 노출 블록일 때만 <b>[N개의 댓글 전체보기 &gt;]</b> 노출.
