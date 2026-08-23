@@ -474,7 +474,7 @@
 
   /* ===== 소스 링크 (Case 1) ===== */
   .source-link {
-    display: flex; align-items: center; justify-content: center; gap: 6px;
+    display: flex; align-items: center; justify-content: flex-start; gap: 6px;
     padding: 6px 0 0;
   }
   .source-link-text {
@@ -2324,7 +2324,7 @@ function rdToast(msg, action, fn) {
 </tr>
 <tr style="border-bottom:1px solid #2a2a4a;">
   <td style="padding:8px;">제목 아래</td>
-  <td style="padding:8px;">소스 링크 1줄 (중앙정렬)<br>"크리에이터명 · YouTube/Instagram에서 보기 ↗"</td>
+  <td style="padding:8px;">소스 링크 1줄 (<b style="color:#fff;">좌측정렬</b> — 제목과 같은 시작선)<br>"크리에이터명 · YouTube/Instagram에서 보기 ↗"</td>
   <td style="padding:8px;">표시 안 함</td>
 </tr>
 <tr style="border-bottom:1px solid #2a2a4a;">
