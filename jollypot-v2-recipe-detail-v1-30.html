@@ -1090,10 +1090,6 @@
 <!-- ===== PROTO TOGGLE ===== -->
 <div class="proto-toggle">
   <div class="proto-toggle-row">
-    <button id="togC1" class="active c1" onclick="setCase(1)">Case 1 · AI 요약</button>
-    <button id="togC2" onclick="setCase(2)">Case 2 · 오리지널</button>
-  </div>
-  <div class="proto-toggle-row">
     <button id="togLong" class="active fmt" onclick="setFormat('long')">YT 롱폼</button>
     <button id="togShort" onclick="setFormat('short')">YT 숏폼</button>
     <button id="togInsta" onclick="setFormat('insta')">Instagram</button>
@@ -1563,10 +1559,11 @@ function setState(state) {
   render();
 }
 
+/* 인플레이스 2026-08-23: Case 토글 제거(Case 2 오리지널은 다음 버전).
+   setCase는 남겨둔다 — Case 2 마크업(heroC2 · creatorC2)이 그대로 있어
+   다음 버전에서 토글만 되살리면 된다. 토글 버튼 참조는 없앴다 */
 function setCase(n) {
   currentCase = n;
-  document.getElementById('togC1').className = n === 1 ? 'active c1' : '';
-  document.getElementById('togC2').className = n === 2 ? 'active c2' : '';
   render();
 }
 
@@ -1885,6 +1882,10 @@ function rdToast(msg, action, fn) {
   • "저장됨" 버튼 배경과의 채널차 <b>9 → 17</b>로 벌어져 정보/액션이 분리된다<br>
   • 토큰 <code>--color-surface-info</code>로 신설 — 하드코딩하지 않는다<br><br>
   <b style="color:#fff;">인플레이스 수정 (2026-08-23)</b> — 대표 지시로 <b>버전업 중단</b>, 이후 변경은 v1-30 파일에 직접 반영한다(URL 고정).<br>
+  • <b>상단 토글에서 [Case 1 · AI 요약 / Case 2 · 오리지널] 행 제거</b> — Case 2(오리지널)는 <b>다음 버전</b>.
+  화면은 Case 1로 고정된다. <b>Case 2 마크업(heroC2 · creatorC2)과 render() 분기는 그대로 보존</b>했으므로
+  다음 버전에서 토글 행만 되살리면 된다<br>
+  • <b>소스 링크 "김셰프의 간단요리 · YouTube에서 보기" 좌측정렬</b> — 제목·메타와 시작선 일치(left 16px)<br>
   • <b>댓글 좋아요 아이콘 하트 → 따봉(엄지)</b>. 하트는 "애정·찜"이라 저장/찜과 의미가 겹치는데,
   댓글 좋아요는 <b>"이 정보가 유용하다"</b>는 평가다. 따봉이 의미에 맞고 저장 아이콘과도 혼동되지 않는다<br><br>
   <b style="color:#8888A0;">추가 제안(미적용)</b> — TIP이 버튼처럼 보이는 두 번째 원인은 <b>형태</b>다(radius 10 카드 + 전면 배경).
