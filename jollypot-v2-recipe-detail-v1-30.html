@@ -2534,6 +2534,17 @@ function rdToast(msg, action, fn) {
 ⚠ 향후 신고 버튼("정보가 잘못됐나요?") 추가 시 이 영역에 링크 배치.</p>
 
 <!-- ── 2-2. ··· 더보기 메뉴 ── -->
+<h3 style="color:#FC642D; font-size:15px; font-weight:700; margin:24px 0 8px;">2-1-1. 에디터 노트 (만드는 법 하단 · AI Disclaimer 직후) — 신규 2026-08-26</h3>
+<p>• <b style="color:#fff;">위치 고정: AI Disclaimer 바로 아래</b> — "AI가 정리 + 사람이 검수·보증" 서사. 댓글 영역 아님(어드민 저장 구조가 댓글이어도 <b>렌더는 만드는 법 하단</b>)<br>
+• 구성: 📌 + "에디터 노트" 라벨(딥그린 #145F48) · 본문 · <b>에디터 실명 아바타</b>("정혜윤 · 졸리팟 에디터") + 작성일<br>
+• 배경 <code style="background:#2a2a4a; padding:2px 6px; border-radius:4px;">--color-surface-info</code>(#F1F8F3) · radius 12 · padding 14/16</p>
+<p><b style="color:#fff;">개발 필수 요건 4 (SEO 인덱스 게이트의 핵심 장치)</b></p>
+<p>① <b>항상 렌더</b> — 노트가 있으면 무조건 노출. 접힘·더보기·lazy 금지<br>
+② <b>SSR 필수</b> — 초기 HTML에 포함(구글이 못 보면 장치 무효)<br>
+③ <b>댓글 수 카운트 불포함</b> — 에디토리얼이지 대화가 아님. 댓글 0건이어도 노출<br>
+④ <b>에디터 실명 노출</b> — 익명·팀명 대체 불가(E-E-A-T)</p>
+<p style="color:#FFC520;">⚠ 노트 없는 레시피는 블록 자체 미노출(빈 껍데기 금지) · 노트 저장 시 <b>타 레시피와 문장 중복 검사</b> 필요(복붙 감지 — 어드민 요건) · 노트가 달린 레시피는 검색 인덱스 허용(T0) 자동 승격 후보</p>
+
 <h3 style="color:#FC642D; font-size:15px; font-weight:700; margin:24px 0 8px;">2-2. ··· 더보기 메뉴 (바텀시트)</h3>
 <p>• 제목 우측 ··· 아이콘 탭 시 바텀시트 올라옴<br>
 • 오버레이 배경(rgba(0,0,0,0.35)) 탭 시 닫힘<br>
