@@ -671,7 +671,7 @@
   .editor-note {
     background: var(--color-surface-info);
     border-radius: 12px; padding: 14px 16px;
-    margin: 2px 0 12px;
+    margin: 12px 0 2px;
   }
   .en-head { display: flex; align-items: center; gap: 5px; margin-bottom: 7px; }
   .en-head svg { width: 12px; height: 12px; color: var(--color-secondary); flex-shrink: 0; }
@@ -1453,6 +1453,23 @@
     <span class="ai-icon">ⓘ</span>
     졸리팟 AI가 영상을 바탕으로 정리한 레시피입니다.
   </div>
+  <!-- ===== 에디터 노트 (만드는 법 끝 · AI 캡션 직후 · SSR 필수) =====
+       이동 사유(2026-08-26): ①내용이 조리 정보라 읽히는 시점이 만드는 법 안이어야 함(TIP 배치 결론과 동일 논리)
+       ②구글 품질평가의 Main Content 영역 — 댓글(SC/UGC 취급)보다 확실한 자리
+       ③"AI가 정리했습니다" 고지 직후 사람 실명 보증 = 신뢰 서사 완성
+       ④댓글 상단은 유저 공간으로 반환 -->
+  <div class="editor-note" id="editorNote">
+    <div class="en-head">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a1 1 0 0 1 1 1v1.6l2.7 5.4a1 1 0 0 1-.9 1.5H13v6.5a1 1 0 0 1-2 0V12.5H5.2a1 1 0 0 1-.9-1.5L7 5.6V4a1 1 0 0 1 1-1h8z"/></svg>
+      <span class="en-label">에디터 노트</span>
+    </div>
+    <p class="en-text">시판 카스테라는 이미 달아서 생크림에 설탕을 절반만 넣어도 충분해요. 키위 대신 복숭아 통조림을 쓸 땐 물기가 많으니 키친타월로 꾹 눌러 닦고 올리세요 — 안 그러면 굳는 데 1시간이 더 걸립니다.</p>
+    <div class="en-editor">
+      <div class="en-avatar">졸</div>
+      <span class="en-name">정혜윤 · 졸리팟 에디터</span>
+      <span class="en-date">08.22</span>
+    </div>
+  </div>
 
 
 
@@ -1468,19 +1485,6 @@
     </div>
   </div>
 
-  <!-- ===== 에디터 노트 (고정 · 댓글 수 불포함 · SSR 필수) ===== -->
-  <div class="editor-note" id="editorNote">
-    <div class="en-head">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a1 1 0 0 1 1 1v1.6l2.7 5.4a1 1 0 0 1-.9 1.5H13v6.5a1 1 0 0 1-2 0V12.5H5.2a1 1 0 0 1-.9-1.5L7 5.6V4a1 1 0 0 1 1-1h8z"/></svg>
-      <span class="en-label">에디터 노트</span>
-    </div>
-    <p class="en-text">시판 카스테라는 이미 달아서 생크림에 설탕을 절반만 넣어도 충분해요. 키위 대신 복숭아 통조림을 쓸 땐 물기가 많으니 키친타월로 꾹 눌러 닦고 올리세요 — 안 그러면 굳는 데 1시간이 더 걸립니다.</p>
-    <div class="en-editor">
-      <div class="en-avatar">졸</div>
-      <span class="en-name">정혜윤 · 졸리팟 에디터</span>
-      <span class="en-date">08.22</span>
-    </div>
-  </div>
 
   <div class="comment-preview-list" id="cmtPreview"></div>
   <a class="comment-all" id="cmtAll" href="jollypot-v2-comments-v1.html">
@@ -2092,7 +2096,12 @@ function rdToast(msg, action, fn) {
   • "저장됨" 버튼 배경과의 채널차 <b>9 → 17</b>로 벌어져 정보/액션이 분리된다<br>
   • 토큰 <code>--color-surface-info</code>로 신설 — 하드코딩하지 않는다<br><br>
   <b style="color:#fff;">인플레이스 수정 (2026-08-23)</b> — 대표 지시로 <b>버전업 중단</b>, 이후 변경은 v1-30 파일에 직접 반영한다(URL 고정).<br>
-  • <b>에디터 노트 신설 (2026-08-25)</b> — 댓글 섹션 최상단 <b>고정</b> 블록.
+  • <b>에디터 노트 위치 이동 (2026-08-26)</b> — 댓글 상단 → <b>만드는 법 끝(AI 캡션 직후)</b>. 사유 4:
+  ① 노트 내용은 조리 정보("설탕 절반만") — 읽히는 시점이 조리 문맥 안이어야 한다. TIP을 단계 옆에 붙인 결론과 같은 논리
+  ② 구글 품질평가는 Main Content와 Supplementary Content(댓글·UGC 영역)를 구분한다 — 본문 배치가 SEO상 확실
+  ③ "ⓘ AI가 정리했습니다" 고지 바로 아래 에디터 실명 보증 = <b>기계가 정리, 사람이 검수</b> 서사 완성
+  ④ 댓글 최상단을 브랜드가 상시 점유하면 유저 인기 댓글보다 회사가 항상 위 — 댓글 공간은 유저에게 반환<br>
+  • <b>에디터 노트 신설 (2026-08-25)</b> — <s>댓글 섹션 최상단</s> 고정 블록.
   SEO 인덱스 게이트 설계의 핵심 장치: 사람이 쓴 <b>계산 불가능한 고유 텍스트</b>를 페이지에 상시 렌더한다.<br>
   <b style="color:#FFC520;">개발 필수 요건 4</b>:
   ① <b>항상 렌더</b> — 댓글 미리보기 상한(3)과 무관. 밀려나면 구글에 안 보여 장치 전체가 무효
