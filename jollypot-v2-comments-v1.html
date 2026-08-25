@@ -52,6 +52,32 @@
   }
   .c-sort button.on { color: var(--color-text-primary); font-weight: 700; }
 
+
+  /* ===== 인플레이스 2026-08-25: 에디터 노트 =====
+     SEO 설계의 핵심 장치 — 사람이 쓴 "계산 불가능한" 고유 텍스트를 페이지에 상시 렌더한다.
+     · 댓글 미리보기 상한(3개)과 무관하게 항상 고정 노출 — 밀려나면 구글에 안 보여 존재 이유가 사라진다
+     · 댓글 수 카운트에 불포함(에디토리얼이지 대화가 아님)
+     · 배경 = --color-surface-info(정보 면) — TIP과 같은 "정보" 문법, 공간(댓글 영역)과 실명으로 구분
+     · 에디터 실명 노출 = E-E-A-T 신호 */
+  .editor-note {
+    background: var(--color-surface-info);
+    border-radius: 12px; padding: 14px 16px;
+    margin: 2px 0 12px;
+  }
+  .en-head { display: flex; align-items: center; gap: 5px; margin-bottom: 7px; }
+  .en-head svg { width: 12px; height: 12px; color: var(--color-secondary); flex-shrink: 0; }
+  .en-label { font-size: 12px; font-weight: 700; color: var(--color-secondary); letter-spacing: -0.3px; }
+  .en-text { font-size: 13.5px; line-height: 1.55; color: var(--color-text-primary); }
+  .en-editor { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+  .en-avatar {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--color-secondary); color: #fff;
+    font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .en-name { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); letter-spacing: -0.3px; }
+  .en-date { font-size: 11.5px; color: var(--color-text-tertiary); }
+  
   /* ===== 댓글 카드 (레시피 상세와 동일 문법) ===== */
   .c-list { padding: 0 16px; }
   .cmt { display: flex; gap: 10px; padding: 11px 0; }
@@ -137,6 +163,22 @@
 <div class="c-sort">
   <button id="sortNew" class="on" onclick="setSort('new')">최신순</button>
   <button id="sortHot" onclick="setSort('hot')">인기순</button>
+</div>
+
+<div class="c-list">
+  <!-- ===== 에디터 노트 (고정 · 댓글 수 불포함 · SSR 필수) ===== -->
+  <div class="editor-note" id="editorNote">
+    <div class="en-head">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a1 1 0 0 1 1 1v1.6l2.7 5.4a1 1 0 0 1-.9 1.5H13v6.5a1 1 0 0 1-2 0V12.5H5.2a1 1 0 0 1-.9-1.5L7 5.6V4a1 1 0 0 1 1-1h8z"/></svg>
+      <span class="en-label">에디터 노트</span>
+    </div>
+    <p class="en-text">시판 카스테라는 이미 달아서 생크림에 설탕을 절반만 넣어도 충분해요. 키위 대신 복숭아 통조림을 쓸 땐 물기가 많으니 키친타월로 꾹 눌러 닦고 올리세요 — 안 그러면 굳는 데 1시간이 더 걸립니다.</p>
+    <div class="en-editor">
+      <div class="en-avatar">졸</div>
+      <span class="en-name">정혜윤 · 졸리팟 에디터</span>
+      <span class="en-date">08.22</span>
+    </div>
+  </div>
 </div>
 
 <div class="c-list" id="cList"></div>

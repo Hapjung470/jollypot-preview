@@ -661,6 +661,33 @@
   .cook-gallery-photo:active { opacity: 0.8; }
 
   /* ===== 댓글 ===== */
+
+  /* ===== 인플레이스 2026-08-25: 에디터 노트 =====
+     SEO 설계의 핵심 장치 — 사람이 쓴 "계산 불가능한" 고유 텍스트를 페이지에 상시 렌더한다.
+     · 댓글 미리보기 상한(3개)과 무관하게 항상 고정 노출 — 밀려나면 구글에 안 보여 존재 이유가 사라진다
+     · 댓글 수 카운트에 불포함(에디토리얼이지 대화가 아님)
+     · 배경 = --color-surface-info(정보 면) — TIP과 같은 "정보" 문법, 공간(댓글 영역)과 실명으로 구분
+     · 에디터 실명 노출 = E-E-A-T 신호 */
+  .editor-note {
+    background: var(--color-surface-info);
+    border-radius: 12px; padding: 14px 16px;
+    margin: 2px 0 12px;
+  }
+  .en-head { display: flex; align-items: center; gap: 5px; margin-bottom: 7px; }
+  .en-head svg { width: 12px; height: 12px; color: var(--color-secondary); flex-shrink: 0; }
+  .en-label { font-size: 12px; font-weight: 700; color: var(--color-secondary); letter-spacing: -0.3px; }
+  .en-text { font-size: 13.5px; line-height: 1.55; color: var(--color-text-primary); }
+  .en-editor { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+  .en-avatar {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--color-secondary); color: #fff;
+    font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .en-name { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); letter-spacing: -0.3px; }
+  .en-date { font-size: 11.5px; color: var(--color-text-tertiary); }
+  body.note-off .editor-note { display: none; }
+
   .comment-entry {
     display: flex; align-items: baseline; justify-content: space-between;
     padding-bottom: 12px;
@@ -1163,6 +1190,11 @@
     <button id="cm-gt" class="active fmt" onclick="setCmt('gt')">3개 초과</button>
   </div>
   <div class="proto-toggle-row">
+    <span style="font-size:11.5px;color:#8888A0;display:flex;align-items:center;padding-right:2px;">노트</span>
+    <button id="en-on" class="active fmt" onclick="setNote(1)">에디터 노트 있음</button>
+    <button id="en-off" onclick="setNote(0)">없음</button>
+  </div>
+  <div class="proto-toggle-row">
     <button id="togStateNormal" class="active fmt" onclick="setState('normal')">정상</button>
     <button id="togStateDeleted" onclick="setState('deleted')">영상삭제</button>
     <button id="togStateError" onclick="setState('error')">네트워크에러</button>
@@ -1435,6 +1467,21 @@
       <span class="comment-entry-count" data-cnt="comment">3</span>
     </div>
   </div>
+
+  <!-- ===== 에디터 노트 (고정 · 댓글 수 불포함 · SSR 필수) ===== -->
+  <div class="editor-note" id="editorNote">
+    <div class="en-head">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a1 1 0 0 1 1 1v1.6l2.7 5.4a1 1 0 0 1-.9 1.5H13v6.5a1 1 0 0 1-2 0V12.5H5.2a1 1 0 0 1-.9-1.5L7 5.6V4a1 1 0 0 1 1-1h8z"/></svg>
+      <span class="en-label">에디터 노트</span>
+    </div>
+    <p class="en-text">시판 카스테라는 이미 달아서 생크림에 설탕을 절반만 넣어도 충분해요. 키위 대신 복숭아 통조림을 쓸 땐 물기가 많으니 키친타월로 꾹 눌러 닦고 올리세요 — 안 그러면 굳는 데 1시간이 더 걸립니다.</p>
+    <div class="en-editor">
+      <div class="en-avatar">졸</div>
+      <span class="en-name">정혜윤 · 졸리팟 에디터</span>
+      <span class="en-date">08.22</span>
+    </div>
+  </div>
+
   <div class="comment-preview-list" id="cmtPreview"></div>
   <a class="comment-all" id="cmtAll" href="jollypot-v2-comments-v1.html">
     <span id="cmtAllText">86개의 댓글 전체보기</span>
@@ -1885,6 +1932,16 @@ function setCntSpans(k, n) {
    한 토글에 묶으면 어느 축을 보는지 흐려진다 */
 var CMT_CASES = { none: 0, le: 3, gt: 86 };
 
+
+/* 인플레이스 2026-08-25: 에디터 노트 유무 토글(프로토 전용).
+   실서비스에서 노트는 댓글 수 카운트·미리보기 상한과 완전히 독립이다 —
+   댓글 0건이어도 노트는 노출된다(빈 댓글 영역을 에디토리얼이 시딩) */
+function setNote(on) {
+  document.body.classList.toggle('note-off', !on);
+  document.getElementById('en-on').className = on ? 'active fmt' : '';
+  document.getElementById('en-off').className = on ? '' : 'active fmt';
+}
+
 function setCmt(mode) {
   var n = CMT_CASES[mode];
   setCntSpans('comment', n);
@@ -2035,6 +2092,16 @@ function rdToast(msg, action, fn) {
   • "저장됨" 버튼 배경과의 채널차 <b>9 → 17</b>로 벌어져 정보/액션이 분리된다<br>
   • 토큰 <code>--color-surface-info</code>로 신설 — 하드코딩하지 않는다<br><br>
   <b style="color:#fff;">인플레이스 수정 (2026-08-23)</b> — 대표 지시로 <b>버전업 중단</b>, 이후 변경은 v1-30 파일에 직접 반영한다(URL 고정).<br>
+  • <b>에디터 노트 신설 (2026-08-25)</b> — 댓글 섹션 최상단 <b>고정</b> 블록.
+  SEO 인덱스 게이트 설계의 핵심 장치: 사람이 쓴 <b>계산 불가능한 고유 텍스트</b>를 페이지에 상시 렌더한다.<br>
+  <b style="color:#FFC520;">개발 필수 요건 4</b>:
+  ① <b>항상 렌더</b> — 댓글 미리보기 상한(3)과 무관. 밀려나면 구글에 안 보여 장치 전체가 무효
+  ② <b>SSR 포함</b> — 초기 HTML에 있어야 함(lazy-load 금지)
+  ③ <b>댓글 수 불포함</b> — 에디토리얼이지 대화가 아님. 댓글 0건이어도 노트는 노출(빈 영역 시딩)
+  ④ <b>에디터 실명</b> 노출(E-E-A-T)<br>
+  <b>작성 규칙(운영)</b>: 30자 이상 · 해당 레시피 고유 내용(재료·단계 언급) · <b>타 레시피와 문장 복붙 금지</b>(시스템이 중복 검사) ·
+  일반론("맛있게 드세요")은 반려. 노트가 달린 페이지는 인덱스(T0) 자동 승격 후보<br>
+  디자인: 배경 <code>--color-surface-info</code>(정보 면 — TIP과 같은 문법, 위치·실명으로 구분) · 딥그린 라벨 · 핀 아이콘<br>
   • <b>상단 토글 분리</b> — <code>저장·공유</code>(신규/성장/인기)와 <code>댓글</code>(0개 / 3개 이하 / 3개 초과)을 나눴다.
   댓글은 임계·미리보기 상한·대댓·전체보기까지 규칙이 따로라 한 토글에 묶으면 어느 축을 보는지 흐려진다.
   경계는 <code>COMMENT_PREVIEW_MAX=3</code> — <b>3개 이하면 다 보이므로 [전체보기]가 사라진다</b><br>
