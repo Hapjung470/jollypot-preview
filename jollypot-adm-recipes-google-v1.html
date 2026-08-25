@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JollyPot 어드민 · 레시피 목록 — 구글 노출 반영안 v1</title>
+<style>
+  @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+  :root{
+    --accent:#FC642D; --secondary:#145F48; --gold:#FDB813; --accent-soft:#FFF5EA;
+    --ink:#212121; --grey:#666666; --grey-2:#9E9E9E; --line:#CCCFD4; --row-line:#E5E7EB;
+    --bg:#F7F8FA; --side:#ffffff; --radius:14px;
+    --error:#D64545; --success:#145F48; --info:#3276AE; --warning:#FFC520;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.5;letter-spacing:-0.3px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  a{color:inherit;text-decoration:none}
+  .shell{display:flex;min-height:100vh}
+
+  /* ===== 사이드바 ===== */
+  .side{width:236px;flex:none;background:var(--side);border-right:1px solid var(--row-line);padding:20px 0;position:sticky;top:0;height:100vh;overflow:auto}
+  .brand{display:flex;align-items:center;gap:10px;padding:0 22px 18px}
+  .brand .logo{width:34px;height:34px;border-radius:9px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+  .brand .bt b{font-size:16px;font-weight:700;display:block;line-height:1.1}
+  .brand .bt span{font-size:12px;color:var(--grey-2)}
+  .side-sep{height:1px;background:var(--row-line);margin:0 18px 14px}
+  .nav-group{margin-bottom:14px}
+  .nav-group > .gl{font-size:11px;color:var(--grey-2);font-weight:600;padding:0 22px;margin-bottom:6px}
+  .nav-item{display:flex;align-items:center;gap:11px;padding:10px 22px;font-size:14px;color:#3a3f47;cursor:pointer}
+  .nav-item .ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;color:var(--grey)}
+  .nav-item:hover{background:#FAFBFC}
+  .nav-item.active{color:var(--accent);font-weight:700;background:var(--accent-soft);border:1px solid #FCE3D3;border-radius:10px;margin:0 12px;padding:10px 12px}
+  .nav-item.active .ic{color:var(--accent)}
+
+  /* ===== 메인 ===== */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .topbar{height:64px;background:#fff;border-bottom:1px solid var(--row-line);display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:0 26px;position:sticky;top:0;z-index:5}
+  .topbar .adm{font-size:14px;color:var(--ink)}
+  .topbar .av{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center}
+  .content{padding:30px 34px 60px;max-width:none;width:100%}
+  .page-h{font-size:26px;font-weight:700}
+  .page-sub{font-size:14px;color:var(--grey);margin-top:6px}
+
+
+  /* ===== 필터 카드 ===== */
+  .filter-card{background:#fff;border:1px solid var(--row-line);border-radius:16px;padding:22px 24px;margin-top:20px}
+  .frow{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .frow:last-of-type{margin-bottom:0}
+  .flabel{width:78px;flex:none;font-size:14px;color:var(--grey)}
+  .sel{position:relative;display:inline-block}
+  .sel select{appearance:none;-webkit-appearance:none;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 38px 10px 14px;font-size:14px;color:var(--ink);font-family:inherit;cursor:pointer;min-width:150px}
+  .sel::after{content:"▾";position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--grey-2);pointer-events:none;font-size:12px}
+  .fsearch{flex:1;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;color:var(--grey-2)}
+  .fsearch .ic{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;flex:none}
+  .fsearch input{border:none;outline:none;flex:1;font-size:14px;font-family:inherit;color:var(--ink);background:none}
+  .fdiv{height:1px;background:var(--row-line);margin:18px 0 16px}
+  .factions{display:flex;justify-content:flex-end;gap:10px}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 22px;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit}
+  .btn.reset{background:#F1F3F5;border-color:#D7DCE3;color:var(--grey)}
+  .btn.query{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* 조회 수 */
+  .count{font-size:14px;color:var(--grey);margin:22px 2px 10px}
+  .count b{color:var(--accent);font-weight:700}
+
+  /* 테이블 */
+  .card{background:#fff;border:1px solid var(--row-line);border-radius:16px;overflow:hidden}
+  .tscroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;min-width:1380px}
+  thead th{font-size:12.5px;font-weight:600;color:var(--grey);text-align:left;padding:14px 16px;border-bottom:1px solid var(--row-line);background:#FCFCFD;white-space:nowrap}
+  thead th.num{text-align:center}
+  tbody td{padding:14px 16px;border-bottom:1px solid var(--row-line);font-size:14px;vertical-align:middle}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr.clk:hover{background:#FFFaf6}
+  .rc{display:flex;align-items:center;gap:12px}
+  .thumb{width:56px;height:44px;border-radius:8px;background:#EEF0F3;flex:none;background-size:cover;background-position:center}
+  .rtitle{font-size:14px;font-weight:700;color:var(--accent);word-break:keep-all;cursor:pointer}
+  .rtitle:hover{text-decoration:underline;text-underline-offset:3px}
+  .num{text-align:center;color:var(--ink)}
+  .muted{color:var(--grey-2)}
+  .sub-cell{font-size:11.5px;color:var(--grey-2);margin-top:2px}
+  .src{display:inline-block;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .src.yt{background:#FDECEF;color:#D42E52}
+  .src.shorts{background:#FBE9EE;color:#B0143B}
+  .src.ig{background:#FBEAF3;color:#C13584}
+  .src.direct{background:#E9F0EE;color:#145F48}
+  .link{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;color:var(--info);border:1px solid var(--row-line);background:#fff}
+  .link:hover{background:#EAF2F9;border-color:#BBD6EC}
+  .link .ex{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .copies{display:inline-flex;align-items:center;font-weight:700;color:var(--secondary)}
+  .copies .b{background:#E9F0EE;border-radius:999px;padding:2px 10px;font-size:12.5px}
+  .metric{display:inline-flex;align-items:center;gap:5px;color:var(--ink)}
+  .colhint{font-size:11px;color:var(--grey-2);font-weight:400;display:block;margin-top:2px}
+  .date-cell{color:var(--grey);font-size:12.5px;white-space:nowrap}
+
+  /* 페이지네이션 */
+  .pager{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:24px}
+  .pager button{min-width:34px;height:34px;padding:0 8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font-size:13px;cursor:pointer;font-family:inherit}
+  .pager button:hover{background:#FFFaf6}
+  .pager button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+  .pager button.ends{color:var(--grey)}
+
+  /* ===== 필터 바 (v4-19-4 인라인 스타일) ===== */
+  .filterbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    background:#fff;border:1px solid var(--row-line);border-radius:16px;padding:14px 16px;margin-top:20px}
+  .filterbar .sel select{min-width:0;padding:9px 32px 9px 13px;font-size:13.5px;border-radius:10px}
+  .filterbar .sel::after{right:12px;font-size:11px}
+  .fb-gap{flex:1;min-width:0}
+  .filterbar .fsearch{flex:0 1 280px;min-width:180px;padding:9px 13px;border-radius:10px}
+  .filterbar .fsearch input{font-size:13.5px}
+  .fb-btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;
+    padding:9px 16px;font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer;flex:none}
+  .fb-btn:hover{background:#F7F8FA}
+  .fb-btn.query{background:var(--accent);border-color:var(--accent);color:#fff}
+  .fb-btn.query:hover{background:#EA5A26}
+  .fb-btn.reset{background:#F1F3F5;border-color:#D7DCE3;color:var(--grey)}
+
+  /* ===== 페이지 헤더 액션 ===== */
+  .page-head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .btn-primary{background:var(--accent);border:1px solid var(--accent);color:#fff;border-radius:10px;
+    padding:10px 16px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;flex:none}
+  .btn-primary:hover{background:#EA5A26}
+
+  /* ===== 일괄 액션 바 ===== */
+  .actionbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0 12px}
+  .abtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;
+    border-radius:10px;padding:9px 14px;font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit}
+  .abtn:hover{background:#F7F8FA}
+  .abtn.danger{color:var(--error);border-color:#F0C9C9}
+  .abtn.danger:hover{background:#FDF4F4}
+  .abtn.excel{color:var(--secondary);border-color:#BFD6CD}
+  .abtn.excel:hover{background:#F1F7F4}
+  .ab-gap{flex:1;min-width:0}
+  .sel-count{font-size:12.5px;color:var(--grey-2);white-space:nowrap}
+  .sel-count b{color:var(--accent);font-weight:700}
+  .actionbar .sel select{min-width:0;padding:9px 32px 9px 13px;font-size:13.5px;border-radius:10px}
+  .actionbar .sel::after{right:12px;font-size:11px}
+
+  /* ===== 모달 ===== */
+  .modal-dim{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;z-index:100}
+  .modal-dim.open{display:flex}
+  .modal{background:#fff;border-radius:16px;width:430px;max-width:calc(100vw - 40px);padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+  .modal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .modal-h b{font-size:18px;font-weight:700}
+  .modal-h .x{border:none;background:none;font-size:20px;color:var(--grey-2);cursor:pointer;line-height:1}
+  .modal-body{font-size:14px;color:var(--ink);line-height:1.7}
+  .modal-body .sub{font-size:13px;color:var(--ink);margin-top:8px}
+  .modal-foot{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}
+  .mbtn{border-radius:10px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);font-family:inherit}
+  .mbtn.danger{background:var(--error);border-color:var(--error);color:#fff}
+
+  /* 토스트 */
+  .toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(20px);background:#2C2F33;color:#fff;font-size:13.5px;padding:12px 20px;border-radius:10px;opacity:0;pointer-events:none;transition:.22s;z-index:200}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ===== 구글 노출 (2026-08-26 반영안) ===== */
+  .gx{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;
+    padding:3px 10px;border-radius:999px;white-space:nowrap;cursor:pointer;border:1px solid transparent}
+  .gx.on{background:#E9F0EE;color:var(--secondary);border-color:#BFD6CD}
+  .gx.off{background:#F2F4F7;color:var(--grey-2);border-color:#E1E4E9}
+  .gx:hover{filter:brightness(.97)}
+  .gx .dot{width:6px;height:6px;border-radius:50%;flex:none}
+  .gx.on .dot{background:var(--secondary)}
+  .gx.off .dot{background:#C3C9D2}
+  .notechk{font-size:13px;font-weight:700;color:var(--secondary)}
+  .notechk.none{color:#D7DCE3;font-weight:400}
+  .gauge{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--grey);
+    background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 13px;white-space:nowrap}
+  .gauge b{color:var(--secondary);font-variant-numeric:tabular-nums}
+  .gauge .bar{width:64px;height:5px;border-radius:3px;background:#EDEFF2;overflow:hidden}
+  .gauge .bar i{display:block;height:100%;background:var(--secondary);border-radius:3px}
+  .abtn.gxon{color:var(--secondary);border-color:#BFD6CD}
+  .abtn.gxon:hover{background:#F1F7F4}
+  .m-warnrow{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.65;
+    background:#FFF9EC;border:1px solid #F2E3BC;border-radius:10px;padding:10px 13px;margin-top:10px;color:#7A5B12}
+  .m-okrow{display:flex;gap:8px;font-size:13px;line-height:1.65;background:#F1F7F4;border:1px solid #CBDFD5;
+    border-radius:10px;padding:10px 13px;margin-top:10px;color:#1F5B44}
+  .m-sum{font-size:14px;line-height:1.8}
+  .m-sum b{color:var(--secondary)}
+  .wf-note{background:#20242B;color:#D7DEE8;border:1px solid #333B46;border-radius:12px;padding:16px 18px;
+    font-size:12.5px;line-height:1.9;margin-top:26px}
+  .wf-note b{color:#FFD79A}
+  .wf-note .hd{font-size:13.5px;font-weight:700;color:#fff;margin-bottom:6px}
+  .wf-note code{background:#2C323C;border-radius:5px;padding:1px 6px;font-size:11.5px}
+
+  /* 체크박스 컬럼 / 카테고리 칩 */
+  thead th.chk,tbody td.chk{width:46px;text-align:center;padding-left:16px;padding-right:0}
+  .cbx{width:17px;height:17px;accent-color:var(--accent);cursor:pointer;vertical-align:middle}
+  .rno{font-size:13px;color:var(--grey);font-variant-numeric:tabular-nums}
+  .cat{display:inline-block;font-size:12px;padding:3px 9px;border-radius:8px;background:#F2F4F7;color:var(--grey);white-space:nowrap}
+
+  /* ===== [A] 어드민 셸 — 신규 어드민(v4-19-4) 구조 정렬 ===== */
+  .side{width:248px;padding:18px 0 24px;z-index:40}
+  .brand{padding:0 20px 16px}
+  .brand .logo{font-size:19px}
+  .brand .bt b{font-size:15.5px}
+  .nav-item{border-radius:10px;margin:0 12px;padding:9px 12px;gap:10px;line-height:1.35}
+  .nav-item .em{width:20px;flex:none;text-align:center;font-size:15px}
+  .nav-item .nm{flex:1;min-width:0}
+  .nav-item.active{margin:0 12px;padding:9px 12px}
+  .nav-item.disabled{color:var(--grey-2);cursor:default}
+  .nav-item.disabled .em{opacity:.55;filter:grayscale(1)}
+  .nav-item.disabled:hover{background:none}
+  .badge{background:var(--accent);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:1px 7px;flex:none}
+  .badge.g{background:#EDEFF2;color:var(--grey-2)}
+  .nav-sub{margin:2px 12px 10px 42px;display:flex;flex-direction:column;gap:2px}
+  .sub-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--grey);padding:6px 10px;border-radius:8px}
+  a.sub-item{cursor:pointer}
+  a.sub-item:hover{background:#FAFBFC}
+  .sub-item.on{color:var(--accent);font-weight:700;background:var(--accent-soft)}
+  .sub-item.off{color:var(--grey-2)}
+  .side-foot{margin:16px 20px 0;padding-top:14px;border-top:1px solid var(--row-line);font-size:11px;color:var(--grey-2);line-height:1.7}
+  .side-foot .lg{display:flex;align-items:center;gap:6px;margin-top:6px}
+  .side-foot .sw{width:9px;height:9px;border-radius:3px;background:#EDEFF2;flex:none}
+
+  /* 상단바 */
+  .topbar{justify-content:space-between;padding:0 18px 0 14px}
+  .tb-l{display:flex;align-items:center;gap:10px;min-width:0}
+  .tb-r{display:flex;align-items:center;gap:12px;flex:none}
+  .hamb{display:none;width:38px;height:38px;border:1px solid var(--line);background:#fff;border-radius:10px;align-items:center;justify-content:center;font-size:16px;cursor:pointer;flex:none;color:var(--ink)}
+  .tb-title{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tb-title .crumb{color:var(--grey-2);font-weight:500}
+  .scrim{display:none;position:fixed;inset:0;background:rgba(17,20,26,.42);z-index:35}
+  .scrim.on{display:block}
+
+  /* ===== [A] 반응형 — 관리자 모바일 대응 ===== */
+  @media (max-width:1024px){
+    .side{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .22s ease}
+    .side.open{transform:translateX(0);box-shadow:8px 0 28px rgba(17,20,26,.16)}
+    .hamb{display:flex}
+    .content{padding:22px 20px 60px}
+  }
+  @media (max-width:720px){
+    .content{padding:18px 14px 60px}
+    .topbar{height:56px}
+    .page-h{font-size:20px}
+    .page-sub{font-size:13px}
+    .tscroll{-webkit-overflow-scrolling:touch}
+    .filter-card,.panel{padding:16px 14px;border-radius:14px}
+    .filterbar{padding:12px;gap:8px}
+    .fb-gap,.ab-gap{display:none}
+    .filterbar .sel,.filterbar .sel select,.filterbar .fsearch{flex:1 1 100%;width:100%}
+    .fb-btn{flex:1 1 calc(50% - 4px)}
+    .page-head-row{flex-wrap:wrap}
+    .btn-primary{width:100%}
+    .actionbar{gap:6px}
+    .abtn{flex:1 1 calc(50% - 3px);justify-content:center;padding:9px 8px}
+    .actionbar .sel,.actionbar .sel select{width:100%;flex:1 1 100%}
+    .sel-count{width:100%}
+    .frow{flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    .flabel{width:100%}
+    .sel,.sel select,.fsearch{width:100%;min-width:0}
+    .factions{gap:8px}
+    .factions .btn{flex:1;padding:11px 10px}
+    .owner-grid,.ing-grid,.pv-ing-grid{grid-template-columns:1fr;gap:8px}
+    .of .k{min-width:88px}
+    .metrics{gap:14px}
+    .page-head{flex-wrap:wrap}
+    .pager{flex-wrap:wrap;gap:5px}
+    .pager button{min-width:30px;height:30px}
+    .cp-row{flex-wrap:wrap}
+    .rv-bar{gap:6px}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <!-- ===== 사이드바 (v4-19-4 구조) ===== -->
+  <aside class="side" id="side">
+    <div class="brand">
+      <div class="logo">🍳</div>
+      <div class="bt"><b>졸리팟</b><span>Admin · 부분 리뉴얼</span></div>
+    </div>
+    <div class="side-sep"></div>
+
+    <div class="nav-group">
+      <div class="gl">운영</div>
+      <div class="nav-item disabled" title="이번 단계 미작성 — 자리만 유지"><span class="em">▦</span><span class="nm">대시보드</span></div>
+      <div class="nav-item disabled" title="이번 단계 미작성 — 자리만 유지"><span class="em">🏠</span><span class="nm">큐레이션</span></div>
+      <a class="nav-item active" href="#" onclick="event.preventDefault()"><span class="em">🍲</span><span class="nm">레시피</span></a>
+      <div class="nav-sub">
+        <a class="sub-item on" href="#" onclick="event.preventDefault()">레시피 목록</a>
+        <a class="sub-item" href="#" onclick="event.preventDefault()">레시피 대량 등록</a>
+        <a class="sub-item" href="#" onclick="event.preventDefault()">카테고리 관리</a>
+        <a class="sub-item" href="#" onclick="event.preventDefault()">태그 관리</a>
+      </div>
+      <div class="nav-item disabled" title="이번 단계 미작성 — 자리만 유지"><span class="em">📝</span><span class="nm">에디터 노트</span><span class="badge g">5</span></div>
+      <div class="nav-item disabled" title="이번 단계 미작성 — 자리만 유지"><span class="em">🍳</span><span class="nm">요리후기</span><span class="badge g">1</span></div>
+      <div class="nav-item disabled" title="이번 단계 미작성 — 자리만 유지"><span class="em">💬</span><span class="nm">댓글</span><span class="badge g">1</span></div>
+      <div class="nav-item disabled" title="이번 단계 미작성 — 자리만 유지"><span class="em">🚩</span><span class="nm">신고</span><span class="badge g">2</span></div>
+      <div class="nav-item disabled" title="이번 단계 미작성 — 자리만 유지"><span class="em">👤</span><span class="nm">회원</span></div>
+      <div class="nav-item disabled" title="이번 단계 미작성 — 자리만 유지"><span class="em">🔗</span><span class="nm">딥링크 생성기</span></div>
+    </div>
+
+    <div class="nav-group">
+      <div class="gl">시스템</div>
+      <div class="nav-item disabled" title="이번 단계 미작성 — 자리만 유지"><span class="em">⚙</span><span class="nm">운영 설정</span></div>
+    </div>
+
+    <div class="side-foot">
+      JollyPot Admin · 와이어프레임 2026.08<br>메뉴 구조 기준: jollypot-admin-v4-19-4
+      <div class="lg"><span class="sw"></span>회색 메뉴 = 이번 단계 미작성(자리만 유지)</div>
+    </div>
+  </aside>
+
+  <!-- ===== 메인 ===== -->
+  <div class="main">
+    <div class="scrim" id="scrim"></div>
+    <div class="topbar">
+      <div class="tb-l">
+        <button class="hamb" id="hamb" aria-label="메뉴 열기">☰</button>
+        <div class="tb-title">레시피 <span class="crumb">· 레시피 목록</span></div>
+      </div>
+      <div class="tb-r"><span class="adm">관리자</span><div class="av">◍</div></div>
+    </div>
+    <div class="content">
+      <div class="page-head-row">
+        <div>
+          <h1 class="page-h">레시피 관리</h1>
+          <p class="page-sub">레시피(부모) 단위 목록 · <b style="color:#145F48">구글 노출 반영안 v1</b> — 필터 [구글 노출=OFF + 노트=있음] 조합이 승격 후보 대기열입니다.</p>
+        </div>
+        <button class="btn-primary" type="button" onclick="showToast('직접 등록 화면 (이 프로토 범위 외)')">+ 직접 등록</button>
+      </div>
+
+      <!-- ===== 필터 바 (v4-19-4 인라인 스타일) ===== -->
+      <div class="filterbar" id="filterbar">
+        <span class="sel">
+          <select id="fSource">
+            <option>소스: 전체</option>
+            <option>유튜브 영상</option>
+            <option>유튜브 쇼츠</option>
+            <option>인스타그램</option>
+            <option>직접등록</option>
+          </select>
+        </span>
+        <span class="sel">
+          <select id="fCat">
+            <option>카테고리: 전체</option>
+            <option>반찬</option>
+            <option>국/찌개</option>
+            <option>밥/죽</option>
+            <option>면/파스타</option>
+            <option>디저트</option>
+            <option>음료</option>
+            <option>기타</option>
+          </select>
+        </span>
+        <span class="sel">
+          <select id="fGx">
+            <option value="">구글 노출: 전체</option>
+            <option value="on">ON</option>
+            <option value="off">OFF</option>
+          </select>
+        </span>
+        <span class="sel">
+          <select id="fNote">
+            <option value="">에디터 노트: 전체</option>
+            <option value="1">있음</option>
+            <option value="0">없음</option>
+          </select>
+        </span>
+        <span class="fb-gap"></span>
+        <span class="sel">
+          <select id="fTarget">
+            <option>레시피명</option>
+            <option>작성자명</option>
+            <option>레시피 번호</option>
+          </select>
+        </span>
+        <span class="fsearch">
+          <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="fKeyword" placeholder="검색어를 입력해주세요.">
+        </span>
+        <button class="fb-btn query" type="button">조회</button>
+        <button class="fb-btn reset" type="button" onclick="resetFilters()">초기화</button>
+      </div>
+
+      <!-- 조회 수 -->
+      <div class="count">총 <b>96</b>건</div>
+
+      <!-- ===== 일괄 액션 바 ===== -->
+      <div class="actionbar">
+        <button class="abtn gxon" type="button" onclick="gxOpen('on')">구글 노출 ON</button>
+        <button class="abtn" type="button" onclick="gxOpen('off')">구글 노출 OFF</button>
+        <button class="abtn danger" type="button" onclick="openDelModal()">선택 삭제</button>
+        <span class="sel-count">선택 <b id="selCnt">0</b>건</span>
+        <span class="ab-gap"></span>
+        <span class="gauge" title="주간 ON 한도 — 운영 설정값. 서치콘솔 인덱스율을 보고 조정">이번 주 ON <b id="gxUsed">12</b>/<span id="gxCap">50</span><span class="bar"><i id="gxBar" style="width:24%"></i></span></span>
+        <button class="abtn excel" type="button">⬇ 엑셀 다운로드</button>
+        <span class="sel">
+          <select id="sortSel">
+            <option>기본 순</option>
+            <option>저장 많은 순</option>
+            <option>좋아요 많은 순</option>
+            <option>댓글 많은 순</option>
+          </select>
+        </span>
+      </div>
+
+      <!-- 테이블 -->
+      <div class="card">
+        <div class="tscroll">
+        <table>
+          <thead>
+            <tr>
+              <th class="chk"><input type="checkbox" class="cbx" id="chkAll" title="전체 선택/해제"></th>
+              <th class="num">No.</th>
+              <th>레시피명</th>
+              <th>작성자(표시명) <span class="colhint">채널명 · 회원명</span></th>
+              <th>카테고리</th>
+              <th>소스</th>
+              <th>구글 노출 <span class="colhint">기본 OFF · 클릭 전환</span></th>
+              <th class="num">노트 <span class="colhint">에디터</span></th>
+              <th>링크</th>
+              <th class="num">복사본 수 <span class="colhint">원본 포함</span></th>
+              <th class="num">총 저장 수</th>
+              <th class="num">총 좋아요 수</th>
+              <th class="num">총 댓글 수</th>
+              <th>등록일시</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="clk">
+              <td class="chk"><input type="checkbox" class="cbx rowchk" onclick="event.stopPropagation()"></td>
+              <td class="num"><span class="rno">94</span></td>
+              <td><div class="rc"><div class="thumb"></div><a class="rtitle" href="#" onclick="event.preventDefault()">요즘 해외에서 난리 난 신라면 투움바 파스타 레시피</a></div></td>
+              <td>하루한끼 one meal a day</td>
+              <td><span class="cat">면/파스타</span></td>
+              <td><span class="src yt">유튜브 영상</span></td>
+              <td><span class="gx on" data-gx="on" data-note="1" onclick="event.stopPropagation();gxSingle(this)"><span class="dot"></span>ON</span></td><td class="num"><span class="notechk">✓</span></td>
+              <td><a class="link" href="https://www.youtube.com/watch?v=aaaa1111" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg class="ex" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></td>
+              <td class="num"><span class="copies"><span class="b">13</span></span></td>
+              <td class="num"><span class="metric">128</span></td>
+              <td class="num"><span class="metric">64</span></td>
+              <td class="num"><span class="metric">21</span></td>
+              <td class="date-cell">2026.08.12 14:20</td>
+            </tr>
+            <tr class="clk">
+              <td class="chk"><input type="checkbox" class="cbx rowchk" onclick="event.stopPropagation()"></td>
+              <td class="num"><span class="rno">93</span></td>
+              <td><div class="rc"><div class="thumb"></div><a class="rtitle" href="#" onclick="event.preventDefault()">초간단 우삼겹 덮밥</a></div></td>
+              <td>유지만</td>
+              <td><span class="cat">밥/죽</span></td>
+              <td><span class="src shorts">유튜브 쇼츠</span></td>
+              <td><span class="gx off" data-gx="off" data-note="0" onclick="event.stopPropagation();gxSingle(this)"><span class="dot"></span>OFF</span></td><td class="num"><span class="notechk none">–</span></td>
+              <td><a class="link" href="https://www.youtube.com/shorts/bbbb2222" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg class="ex" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></td>
+              <td class="num"><span class="copies"><span class="b">4</span></span></td>
+              <td class="num"><span class="metric">37</span></td>
+              <td class="num"><span class="metric">12</span></td>
+              <td class="num"><span class="metric">3</span></td>
+              <td class="date-cell">2026.08.11 09:05</td>
+            </tr>
+            <tr class="clk">
+              <td class="chk"><input type="checkbox" class="cbx rowchk" onclick="event.stopPropagation()"></td>
+              <td class="num"><span class="rno">92</span></td>
+              <td><div class="rc"><div class="thumb"></div><a class="rtitle" href="#" onclick="event.preventDefault()">주주요리교실의 간장국수 만들기</a></div></td>
+              <td>주주요리교실<div class="sub-cell">회원</div></td>
+              <td><span class="cat">면/파스타</span></td>
+              <td><span class="src direct">직접등록</span></td>
+              <td><span class="gx on" data-gx="on" data-note="1" onclick="event.stopPropagation();gxSingle(this)"><span class="dot"></span>ON</span></td><td class="num"><span class="notechk">✓</span></td>
+              <td class="muted">–</td>
+              <td class="num"><span class="copies"><span class="b">1</span></span></td>
+              <td class="num"><span class="metric">5</span></td>
+              <td class="num"><span class="metric">2</span></td>
+              <td class="num"><span class="metric">0</span></td>
+              <td class="date-cell">2026.08.10 18:42</td>
+            </tr>
+            <tr class="clk">
+              <td class="chk"><input type="checkbox" class="cbx rowchk" onclick="event.stopPropagation()"></td>
+              <td class="num"><span class="rno">91</span></td>
+              <td><div class="rc"><div class="thumb"></div><a class="rtitle" href="#" onclick="event.preventDefault()">알배추 인생 레시피</a></div></td>
+              <td>자취요리신</td>
+              <td><span class="cat">반찬</span></td>
+              <td><span class="src yt">유튜브 영상</span></td>
+              <td><span class="gx off" data-gx="off" data-note="0" onclick="event.stopPropagation();gxSingle(this)"><span class="dot"></span>OFF</span></td><td class="num"><span class="notechk none">–</span></td>
+              <td><a class="link" href="https://www.youtube.com/watch?v=cccc3333" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg class="ex" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></td>
+              <td class="num"><span class="copies"><span class="b">8</span></span></td>
+              <td class="num"><span class="metric">72</span></td>
+              <td class="num"><span class="metric">30</span></td>
+              <td class="num"><span class="metric">9</span></td>
+              <td class="date-cell">2026.08.09 11:15</td>
+            </tr>
+            <tr class="clk">
+              <td class="chk"><input type="checkbox" class="cbx rowchk" onclick="event.stopPropagation()"></td>
+              <td class="num"><span class="rno">90</span></td>
+              <td><div class="rc"><div class="thumb"></div><a class="rtitle" href="#" onclick="event.preventDefault()">3분 완성 마약 계란밥</a></div></td>
+              <td>밥심충전소</td>
+              <td><span class="cat">밥/죽</span></td>
+              <td><span class="src ig">인스타그램</span></td>
+              <td><span class="gx on" data-gx="on" data-note="1" onclick="event.stopPropagation();gxSingle(this)"><span class="dot"></span>ON</span></td><td class="num"><span class="notechk">✓</span></td>
+              <td><a class="link" href="https://www.instagram.com/reel/dddd4444/" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg class="ex" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></td>
+              <td class="num"><span class="copies"><span class="b">6</span></span></td>
+              <td class="num"><span class="metric">54</span></td>
+              <td class="num"><span class="metric">18</span></td>
+              <td class="num"><span class="metric">7</span></td>
+              <td class="date-cell">2026.08.08 20:03</td>
+            </tr>
+            <tr class="clk">
+              <td class="chk"><input type="checkbox" class="cbx rowchk" onclick="event.stopPropagation()"></td>
+              <td class="num"><span class="rno">96</span></td>
+              <td><div class="rc"><div class="thumb"></div><a class="rtitle" href="#" onclick="event.preventDefault()">부서짐 없이 미친 식감! 감자채볶음 황금레시피</a></div></td>
+              <td>요리요정팀장</td>
+              <td><span class="cat">반찬</span></td>
+              <td><span class="src yt">유튜브 영상</span></td>
+              <td><span class="gx off" data-gx="off" data-note="1" onclick="event.stopPropagation();gxSingle(this)"><span class="dot"></span>OFF</span></td><td class="num"><span class="notechk">✓</span></td>
+              <td><a class="link" href="https://www.youtube.com/watch?v=eeee5555" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg class="ex" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></td>
+              <td class="num"><span class="copies"><span class="b">25</span></span></td>
+              <td class="num"><span class="metric">240</span></td>
+              <td class="num"><span class="metric">96</span></td>
+              <td class="num"><span class="metric">33</span></td>
+              <td class="date-cell">2026.08.13 08:30</td>
+            </tr>
+            <tr class="clk">
+              <td class="chk"><input type="checkbox" class="cbx rowchk" onclick="event.stopPropagation()"></td>
+              <td class="num"><span class="rno">95</span></td>
+              <td><div class="rc"><div class="thumb"></div><a class="rtitle" href="#" onclick="event.preventDefault()">편의점 재료로 만드는 로제떡볶이</a></div></td>
+              <td>자취만렙</td>
+              <td><span class="cat">기타</span></td>
+              <td><span class="src shorts">유튜브 쇼츠</span></td>
+              <td><span class="gx off" data-gx="off" data-note="0" onclick="event.stopPropagation();gxSingle(this)"><span class="dot"></span>OFF</span></td><td class="num"><span class="notechk none">–</span></td>
+              <td><a class="link" href="https://www.youtube.com/shorts/ffff6666" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg class="ex" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></td>
+              <td class="num"><span class="copies"><span class="b">10</span></span></td>
+              <td class="num"><span class="metric">88</span></td>
+              <td class="num"><span class="metric">41</span></td>
+              <td class="num"><span class="metric">12</span></td>
+              <td class="date-cell">2026.08.12 22:47</td>
+            </tr>
+            <tr class="clk">
+              <td class="chk"><input type="checkbox" class="cbx rowchk" onclick="event.stopPropagation()"></td>
+              <td class="num"><span class="rno">89</span></td>
+              <td><div class="rc"><div class="thumb"></div><a class="rtitle" href="#" onclick="event.preventDefault()">에어프라이어 닭다리 구이</a></div></td>
+              <td>오늘도한끼</td>
+              <td><span class="cat">반찬</span></td>
+              <td><span class="src ig">인스타그램</span></td>
+              <td><span class="gx off" data-gx="off" data-note="1" onclick="event.stopPropagation();gxSingle(this)"><span class="dot"></span>OFF</span></td><td class="num"><span class="notechk">✓</span></td>
+              <td><a class="link" href="https://www.instagram.com/reel/gggg7777/" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg class="ex" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></td>
+              <td class="num"><span class="copies"><span class="b">1</span></span></td>
+              <td class="num"><span class="metric">6</span></td>
+              <td class="num"><span class="metric">1</span></td>
+              <td class="num"><span class="metric">0</span></td>
+              <td class="date-cell">2026.08.07 16:10</td>
+            </tr>
+            <tr class="clk">
+              <td class="chk"><input type="checkbox" class="cbx rowchk" onclick="event.stopPropagation()"></td>
+              <td class="num"><span class="rno">88</span></td>
+              <td><div class="rc"><div class="thumb"></div><a class="rtitle" href="#" onclick="event.preventDefault()">우리집 김치찌개</a></div></td>
+              <td>키친보이<div class="sub-cell">회원</div></td>
+              <td><span class="cat">국/찌개</span></td>
+              <td><span class="src direct">직접등록</span></td>
+              <td><span class="gx on" data-gx="on" data-note="0" onclick="event.stopPropagation();gxSingle(this)"><span class="dot"></span>ON</span></td><td class="num"><span class="notechk none">–</span></td>
+              <td class="muted">–</td>
+              <td class="num"><span class="copies"><span class="b">2</span></span></td>
+              <td class="num"><span class="metric">14</span></td>
+              <td class="num"><span class="metric">6</span></td>
+              <td class="num"><span class="metric">2</span></td>
+              <td class="date-cell">2026.08.06 12:31</td>
+            </tr>
+            <tr class="clk">
+              <td class="chk"><input type="checkbox" class="cbx rowchk" onclick="event.stopPropagation()"></td>
+              <td class="num"><span class="rno">87</span></td>
+              <td><div class="rc"><div class="thumb"></div><a class="rtitle" href="#" onclick="event.preventDefault()">10분 참치마요 덮밥</a></div></td>
+              <td>한그릇식탁</td>
+              <td><span class="cat">밥/죽</span></td>
+              <td><span class="src yt">유튜브 영상</span></td>
+              <td><span class="gx off" data-gx="off" data-note="0" onclick="event.stopPropagation();gxSingle(this)"><span class="dot"></span>OFF</span></td><td class="num"><span class="notechk none">–</span></td>
+              <td><a class="link" href="https://www.youtube.com/watch?v=hhhh8888" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg class="ex" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></td>
+              <td class="num"><span class="copies"><span class="b">3</span></span></td>
+              <td class="num"><span class="metric">22</span></td>
+              <td class="num"><span class="metric">9</span></td>
+              <td class="num"><span class="metric">1</span></td>
+              <td class="date-cell">2026.08.05 19:58</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- ===== 기획 노트: 구글 노출 ===== -->
+      <div class="wf-note">
+        <div class="hd">📐 구글 노출 — 반영 원칙 (2026-08-26 확정)</div>
+        <b>원칙</b> 레시피는 마음껏 만들고, 구글에는 사람이 고른 것만 보여준다. 모든 레시피는 <b>OFF로 생성</b>(대량등록 포함) · ON은 사람의 명시적 행동으로만<br>
+        <b>ON 조건</b> 에디터 노트 또는 실질 댓글·요리후기가 있을 것 · <b>유튜브 소스는 신중</b>(자막 재탕 위험), 인스타·직접등록 우선 · <b>같은 요리명은 대표 1개만</b><br>
+        <b>속도</b> 주간 한도(기본 50, 운영 설정값) — 서치콘솔 인덱스율 보며 조정 · ON 전환한 날 서치콘솔 색인 요청까지가 한 동작<br>
+        <b>자동 안전장치(개발 요건)</b> ①복사본은 영구 OFF + canonical→원본 ②숨김·삭제·신고 시 자동 OFF ③사이트맵에는 ON만(소스별 파일 분리) ④OFF는 meta noindex로(robots.txt 차단 금지) ⑤댓글·에디터노트는 초기 HTML에 포함(SSR) ⑥URL은 ID 고정·301 통일·삭제 시 410<br>
+        <b>데이터 필드</b> <code>google_exposure</code>(on/off) · <code>changed_by/at</code>(감사 로그) · <code>cohort</code>(소스 자동) · 노출여부(발행/숨김)와는 <b>별개 축</b><br>
+        <b>연동</b> 에디터 노트 저장 화면에 「저장하며 구글 노출 ON」 체크박스(한 동선) · 원본 상세에 구글 노출 카드(상태+판단 참고+이력)<br>
+        <b>이 화면의 워크플로</b> 필터 <code>구글 노출=OFF + 에디터 노트=있음</code> = 승격 후보 대기열(별도 화면 불필요) — 지금 목록에서 감자채볶음·닭다리 구이가 그 상태
+      </div>
+
+      <!-- 페이지네이션 (10행/페이지) -->
+      <div class="pager">
+        <button class="ends" title="맨 처음">&laquo;</button>
+        <button class="ends" title="이전">&lsaquo;</button>
+        <button class="on">1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>4</button>
+        <button>5</button>
+        <button>6</button>
+        <button>7</button>
+        <button>8</button>
+        <button>9</button>
+        <button>10</button>
+        <button class="ends" title="다음">&rsaquo;</button>
+        <button class="ends" title="맨 끝">&raquo;</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var side=document.getElementById('side'),scrim=document.getElementById('scrim'),hamb=document.getElementById('hamb');
+  if(!side||!scrim||!hamb)return;
+  function close(){side.classList.remove('open');scrim.classList.remove('on');}
+  hamb.addEventListener('click',function(){var o=side.classList.toggle('open');scrim.classList.toggle('on',o);});
+  scrim.addEventListener('click',close);
+  side.addEventListener('click',function(e){if(e.target.closest('a'))close();});
+  window.addEventListener('resize',function(){if(window.innerWidth>1024)close();});
+})();
+</script>
+<script>
+(function(){
+  var all=document.getElementById('chkAll'), cnt=document.getElementById('selCnt');
+  if(!all)return;
+  var rows=[].slice.call(document.querySelectorAll('.rowchk'));
+  function sync(){
+    var n=rows.filter(function(c){return c.checked}).length;
+    if(cnt)cnt.textContent=n;
+    all.checked = n===rows.length && n>0;
+    all.indeterminate = n>0 && n<rows.length;
+  }
+  all.addEventListener('click',function(e){e.stopPropagation();rows.forEach(function(c){c.checked=all.checked});sync();});
+  rows.forEach(function(c){c.addEventListener('change',sync)});
+  sync();
+})();
+</script>
+
+<!-- ===== 토스트 ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== 구글 노출 ON 확인 모달 ===== -->
+<div class="modal-dim" id="gxDim" onclick="if(event.target===this)gxClose()">
+  <div class="modal">
+    <div class="modal-h"><b id="gxTitle">구글 노출 ON</b><button class="x" onclick="gxClose()">&times;</button></div>
+    <div class="modal-body">
+      <div class="m-sum" id="gxSum"></div>
+      <div id="gxWarns"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="mbtn" onclick="gxClose()">취소</button>
+      <button class="mbtn" id="gxGo" style="background:var(--secondary);border-color:var(--secondary);color:#fff" onclick="gxApply()">ON 전환</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 일괄 삭제 모달 ===== -->
+<div class="modal-dim" id="dim" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-h"><b>레시피 선택 삭제</b><button class="x" onclick="closeModal()">&times;</button></div>
+    <div class="modal-body">
+      선택한 레시피 <b id="delCnt">0</b>개를 삭제하시겠습니까?
+      <div class="sub">레시피 하위의 원본 및 복사본도 모두 삭제됩니다. 삭제 후 복구할 수 없습니다.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="mbtn" onclick="closeModal()">취소</button>
+      <button class="mbtn danger" onclick="closeModal()">삭제</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* 필터 초기화 — 전체 필터·검색창 Default 복원 */
+  function resetFilters(){
+    ['fSource','fCat','fTarget','sortSel','fGx','fNote'].forEach(function(id){
+      var el=document.getElementById(id); if(el) el.selectedIndex=0;
+    });
+    var kw=document.getElementById('fKeyword'); if(kw) kw.value='';
+    applyGxFilter();
+  }
+  /* 토스트 */
+  var _tt;
+  function showToast(msg){
+    var t=document.getElementById('toast');
+    t.textContent=msg; t.classList.add('on');
+    clearTimeout(_tt); _tt=setTimeout(function(){ t.classList.remove('on'); },2000);
+  }
+  /* 일괄 삭제 모달 */
+  function openDelModal(){
+    var n=document.querySelectorAll('.rowchk:checked').length;
+    if(n===0){ showToast('레시피를 선택해주세요'); return; }
+    document.getElementById('delCnt').textContent=n;
+    document.getElementById('dim').classList.add('open');
+  }
+  function closeModal(){ document.getElementById('dim').classList.remove('open'); }
+
+  /* ===== 구글 노출 (2026-08-26 반영안) ===== */
+  var GX_CAP = 50, gxUsed = 12, gxPending = [];
+
+  function gxBadges(){ return [].slice.call(document.querySelectorAll('.gx')); }
+  function rowOf(el){ return el.closest('tr'); }
+  function rowName(tr){ return tr.querySelector('.rtitle').textContent; }
+  function rowSrc(tr){ var c = tr.querySelector('.src').className; return /yt|shorts/.test(c) ? 'youtube' : (/ig/.test(c) ? 'insta' : 'direct'); }
+
+  function gxSingle(badge){ gxPending = [badge]; gxConfirm(badge.dataset.gx === 'on' ? 'off' : 'on'); }
+
+  function gxOpen(mode){
+    var sel = [].slice.call(document.querySelectorAll('.rowchk:checked'));
+    if(sel.length === 0){ showToast('레시피를 선택해주세요'); return; }
+    gxPending = sel.map(function(c){ return rowOf(c).querySelector('.gx'); })
+                   .filter(function(b){ return b.dataset.gx !== mode; });
+    if(gxPending.length === 0){ showToast(mode === 'on' ? '이미 모두 ON입니다' : '이미 모두 OFF입니다'); return; }
+    gxConfirm(mode);
+  }
+
+  function gxConfirm(mode){
+    var n = gxPending.length;
+    if(mode === 'off'){
+      gxMode = 'off';
+      document.getElementById('gxTitle').textContent = '구글 노출 OFF';
+      document.getElementById('gxSum').innerHTML = '선택한 레시피 <b>' + n + '건</b>을 구글 노출 OFF로 전환합니다.';
+      document.getElementById('gxWarns').innerHTML =
+        '<div class="m-warnrow">⚠ 이미 인덱스된 페이지는 검색 잔상이 수 주 남을 수 있습니다.</div>';
+      document.getElementById('gxGo').textContent = 'OFF 전환';
+      document.getElementById('gxGo').style.background = '#3a3f47';
+      document.getElementById('gxGo').style.borderColor = '#3a3f47';
+      document.getElementById('gxDim').classList.add('open');
+      return;
+    }
+    gxMode = 'on';
+    var noNote = gxPending.filter(function(b){ return b.dataset.note === '0'; }).length;
+    var yt = gxPending.filter(function(b){ return rowSrc(rowOf(b)) === 'youtube'; }).length;
+    var remain = GX_CAP - gxUsed;
+    var over = n > remain;
+    var w = '';
+    if(over) w += '<div class="m-warnrow">⛔ 이번 주 한도 초과 — 잔여 <b>' + remain + '건</b>인데 <b>' + n + '건</b>을 선택했습니다. 한도는 운영 설정에서 조정합니다.</div>';
+    if(noNote) w += '<div class="m-warnrow">⚠ <b>에디터 노트 없음 ' + noNote + '건</b> — ON 조건(사람 손이 닿은 내용) 미충족. 확인 후 진행하세요.</div>';
+    if(yt) w += '<div class="m-warnrow">⚠ <b>유튜브 소스 ' + yt + '건</b> — 자막 재탕으로 판정될 위험이 큰 소스입니다. 노트·댓글 확인 권장.</div>';
+    if(!w) w = '<div class="m-okrow">✓ 전 건 에디터 노트 보유 · 우선 소스(인스타/직접등록) — 권장 조건 충족</div>';
+    document.getElementById('gxTitle').textContent = '구글 노출 ON';
+    document.getElementById('gxSum').innerHTML =
+      '선택한 레시피 <b>' + n + '건</b>을 구글에 노출합니다.<br>전환 후 이번 주 사용량: <b>' + Math.min(gxUsed + n, GX_CAP) + '/' + GX_CAP + '</b>';
+    document.getElementById('gxWarns').innerHTML = w + '<div class="m-okrow" style="background:#F7F8FA;border-color:#E5E7EB;color:#666">🕐 ON 전환 후 서치콘솔에서 <b>색인 요청</b>까지 해주세요(원본 선점).</div>';
+    var go = document.getElementById('gxGo');
+    go.textContent = 'ON 전환'; go.style.background = 'var(--secondary)'; go.style.borderColor = 'var(--secondary)';
+    go.disabled = over;
+    document.getElementById('gxDim').classList.add('open');
+  }
+
+  var gxMode = 'on';
+  function gxApply(){
+    var n = 0;
+    gxPending.forEach(function(b){
+      if(b.dataset.gx === gxMode) return;
+      b.dataset.gx = gxMode;
+      b.className = 'gx ' + gxMode;
+      b.innerHTML = '<span class="dot"></span>' + (gxMode === 'on' ? 'ON' : 'OFF');
+      n++;
+    });
+    if(gxMode === 'on'){ gxUsed = Math.min(gxUsed + n, GX_CAP); gxGauge(); }
+    gxClose();
+    showToast('구글 노출 ' + (gxMode === 'on' ? 'ON' : 'OFF') + ' ' + n + '건 — 사이트맵은 일배치로 반영됩니다');
+  }
+  function gxClose(){ document.getElementById('gxDim').classList.remove('open'); gxPending = []; }
+  function gxGauge(){
+    document.getElementById('gxUsed').textContent = gxUsed;
+    document.getElementById('gxBar').style.width = Math.round(gxUsed / GX_CAP * 100) + '%';
+  }
+
+  /* 필터 — 구글 노출·노트만 실동작(프로토) */
+  function applyGxFilter(){
+    var g = document.getElementById('fGx').value, nt = document.getElementById('fNote').value, shown = 0;
+    [].slice.call(document.querySelectorAll('tbody tr')).forEach(function(tr){
+      var b = tr.querySelector('.gx'); if(!b) return;
+      var ok = (!g || b.dataset.gx === g) && (!nt || b.dataset.note === nt);
+      tr.style.display = ok ? '' : 'none';
+      if(ok) shown++;
+    });
+    document.querySelector('.count').innerHTML = '총 <b>' + shown + '</b>건' + ((g||nt) ? ' <span style="color:#9E9E9E">(필터 적용)</span>' : '');
+  }
+  document.querySelector('.fb-btn.query').addEventListener('click', applyGxFilter);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeModal(); });
+</script>
+</body>
+</html>
