@@ -687,10 +687,11 @@
   .en-name { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); letter-spacing: -0.3px; }
   .en-date { font-size: 11.5px; color: var(--color-text-tertiary); }
   body.note-off .editor-note { display: none; }
-  /* 인플레이스 2026-08-26: 색 비교(프로토 전용) — 회색안 · 액센트안 */
-  body.note-gray .editor-note { background: #F7F8F9; }
-  body.note-gray .en-label, body.note-gray .en-head svg { color: var(--color-text-secondary); }
-  body.note-accent .editor-note { border-left: 3px solid var(--color-secondary); border-radius: 4px 12px 12px 4px; }
+  /* 인플레이스 2026-08-26: 색 비교 — 크림(권장) vs 연초록. 회색·액센트는 기각.
+     크림 = "사람의 목소리" 면: 레시피 정보(연초록)·기계 고지(회색)와 3보이스 문법.
+     TIP의 크림 기각(v1-30)과 다른 결론인 이유 — 그때 문제는 색+버튼형태의 결합.
+     노트는 실명 서명 카드(문서 형태)라 액션 오독 표면이 없다 */
+  body.note-cream .editor-note { background: var(--color-surface); }
 
   .comment-entry {
     display: flex; align-items: baseline; justify-content: space-between;
@@ -1195,9 +1196,8 @@
   </div>
   <div class="proto-toggle-row">
     <span style="font-size:11.5px;color:#8888A0;display:flex;align-items:center;padding-right:2px;">노트</span>
-    <button id="en-on" class="active fmt" onclick="setNote('on')">연초록(현재)</button>
-    <button id="en-gray" onclick="setNote('gray')">회색안</button>
-    <button id="en-accent" onclick="setNote('accent')">연초록+액센트</button>
+    <button id="en-cream" class="active fmt" onclick="setNote('cream')">크림(권장)</button>
+    <button id="en-on" onclick="setNote('on')">연초록</button>
     <button id="en-off" onclick="setNote('off')">없음</button>
   </div>
   <div class="proto-toggle-row">
@@ -1948,9 +1948,8 @@ var CMT_CASES = { none: 0, le: 3, gt: 86 };
    댓글 0건이어도 노트는 노출된다(빈 댓글 영역을 에디토리얼이 시딩) */
 function setNote(mode) {
   document.body.classList.toggle('note-off', mode === 'off');
-  document.body.classList.toggle('note-gray', mode === 'gray');
-  document.body.classList.toggle('note-accent', mode === 'accent');
-  ['on','gray','accent','off'].forEach(function(k){
+  document.body.classList.toggle('note-cream', mode === 'cream');
+  ['cream','on','off'].forEach(function(k){
     document.getElementById('en-' + k).className = (k === mode) ? 'active fmt' : '';
   });
 }
@@ -2947,6 +2946,7 @@ function rdToast(msg, action, fn) {
 /* v1-24: 초기 렌더를 '인기' 케이스로 맞춘다(토글 기본 선택과 동기화) */
 setCounts('hot');
 setCmt('gt');
+setNote('cream');
 updateHeroMini();
 </script>
 <script src="proto-link.js"></script>
