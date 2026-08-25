@@ -687,6 +687,10 @@
   .en-name { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); letter-spacing: -0.3px; }
   .en-date { font-size: 11.5px; color: var(--color-text-tertiary); }
   body.note-off .editor-note { display: none; }
+  /* 인플레이스 2026-08-26: 색 비교(프로토 전용) — 회색안 · 액센트안 */
+  body.note-gray .editor-note { background: #F7F8F9; }
+  body.note-gray .en-label, body.note-gray .en-head svg { color: var(--color-text-secondary); }
+  body.note-accent .editor-note { border-left: 3px solid var(--color-secondary); border-radius: 4px 12px 12px 4px; }
 
   .comment-entry {
     display: flex; align-items: baseline; justify-content: space-between;
@@ -1191,8 +1195,10 @@
   </div>
   <div class="proto-toggle-row">
     <span style="font-size:11.5px;color:#8888A0;display:flex;align-items:center;padding-right:2px;">노트</span>
-    <button id="en-on" class="active fmt" onclick="setNote(1)">에디터 노트 있음</button>
-    <button id="en-off" onclick="setNote(0)">없음</button>
+    <button id="en-on" class="active fmt" onclick="setNote('on')">연초록(현재)</button>
+    <button id="en-gray" onclick="setNote('gray')">회색안</button>
+    <button id="en-accent" onclick="setNote('accent')">연초록+액센트</button>
+    <button id="en-off" onclick="setNote('off')">없음</button>
   </div>
   <div class="proto-toggle-row">
     <button id="togStateNormal" class="active fmt" onclick="setState('normal')">정상</button>
@@ -1940,10 +1946,13 @@ var CMT_CASES = { none: 0, le: 3, gt: 86 };
 /* 인플레이스 2026-08-25: 에디터 노트 유무 토글(프로토 전용).
    실서비스에서 노트는 댓글 수 카운트·미리보기 상한과 완전히 독립이다 —
    댓글 0건이어도 노트는 노출된다(빈 댓글 영역을 에디토리얼이 시딩) */
-function setNote(on) {
-  document.body.classList.toggle('note-off', !on);
-  document.getElementById('en-on').className = on ? 'active fmt' : '';
-  document.getElementById('en-off').className = on ? '' : 'active fmt';
+function setNote(mode) {
+  document.body.classList.toggle('note-off', mode === 'off');
+  document.body.classList.toggle('note-gray', mode === 'gray');
+  document.body.classList.toggle('note-accent', mode === 'accent');
+  ['on','gray','accent','off'].forEach(function(k){
+    document.getElementById('en-' + k).className = (k === mode) ? 'active fmt' : '';
+  });
 }
 
 function setCmt(mode) {
