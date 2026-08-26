@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>졸리팟 · 검색노출 개발 요건 v1</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{--ink:#212121;--grey:#666;--grey2:#9E9E9E;--line:#E5E7EB;--accent:#FC642D;--green:#145F48;--warn:#B45309;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;
+    letter-spacing:-0.3px;word-break:keep-all;color:var(--ink);background:#fff;
+    max-width:760px;margin:0 auto;padding:40px 24px 80px;line-height:1.65}
+  h1{font-size:24px;font-weight:700;margin-bottom:6px}
+  .sub{font-size:14px;color:var(--grey);margin-bottom:28px}
+  h2{font-size:17px;font-weight:700;margin:34px 0 10px;padding-top:22px;border-top:1px solid var(--line)}
+  h2 .n{color:var(--accent);margin-right:6px}
+  p{font-size:14.5px;margin-bottom:8px}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px}
+  th{background:#F9FAFB;font-weight:600;color:var(--grey);text-align:left;padding:9px 12px;border:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 12px;border:1px solid var(--line);vertical-align:top}
+  code{background:#F3F4F6;border-radius:5px;padding:1px 6px;font-size:12.5px;font-family:ui-monospace,Consolas,monospace}
+  .box{background:#FFF9EC;border:1px solid #F2E3BC;border-radius:10px;padding:12px 16px;margin:12px 0;font-size:13.5px;color:var(--warn)}
+  .ok{background:#F1F7F4;border-color:#CBDFD5;color:var(--green)}
+  ul{margin:6px 0 10px 18px}
+  li{font-size:14px;margin-bottom:5px}
+  .chk li{list-style:none;margin-left:-18px}
+  .chk li::before{content:"☐ ";color:var(--grey2)}
+  .foot{margin-top:36px;padding-top:14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--grey2)}
+  a{color:#3276AE}
+</style>
+</head>
+<body>
+
+<h1>검색노출 개발 요건</h1>
+<p class="sub">v1 · 2026-08-26 · 레몬트리커뮤니케이션<br>
+목적: 레시피는 자유롭게 만들되, <b>검색엔진(구글·네이버)에는 운영자가 고른 것만</b> 보이게 합니다.</p>
+
+<div class="box ok">✓ 요약 — 레시피에 <b>검색노출 ON/OFF 필드 하나</b>를 추가하고, OFF는 검색엔진에 숨기고 ON만 사이트맵에 넣습니다. 어드민에서 사람이 켜고 끕니다.</div>
+
+<h2><span class="n">1</span>데이터 필드 (레시피 테이블)</h2>
+<table>
+<tr><th>필드</th><th>내용</th></tr>
+<tr><td><code>search_exposure</code></td><td>ON / OFF · <b>기본값 OFF</b> (대량등록·AI생성·유저생성 전부)</td></tr>
+<tr><td><code>exposure_changed_by / at</code></td><td>바꾼 사람·시각 (변경 이력)</td></tr>
+<tr><td><code>exposure_group</code></td><td>소스 자동 기록: youtube / insta / direct / creator (사이트맵 분리용)</td></tr>
+</table>
+<div class="box">⚠ 기존 <b>노출여부(발행/숨김)와는 완전히 별개 필드</b>입니다. 발행 = 앱·웹에 보임 / 검색노출 = 검색엔진에 보임.</div>
+
+<h2><span class="n">2</span>페이지 동작 규칙</h2>
+<table>
+<tr><th>대상</th><th>규칙</th></tr>
+<tr><td>OFF 레시피</td><td><code>&lt;meta name="robots" content="noindex"&gt;</code> 출력. <b>robots.txt로 막으면 안 됩니다</b> (크롤을 막으면 noindex를 못 읽어 오히려 등재될 수 있음)</td></tr>
+<tr><td>ON 레시피</td><td>noindex 없음 + 사이트맵 포함</td></tr>
+<tr><td>복사본(remix)</td><td><b>항상 noindex</b> + <code>canonical → 원본 URL</code>. 어드민에서도 전환 불가</td></tr>
+<tr><td>사이트맵</td><td><b>ON 레시피만</b> 포함 · <code>exposure_group</code>별 파일 분리(예: <code>sitemap/on-insta.xml</code>) · lastmod는 실제 수정 시각 · 일배치 갱신</td></tr>
+<tr><td>자동 OFF</td><td>레시피가 숨김·삭제·신고 게시중단되면 검색노출도 자동 OFF + 사이트맵 제외</td></tr>
+<tr><td>삭제된 ON 레시피 URL</td><td><b>410</b> 응답 (404보다 검색 제거가 빠름)</td></tr>
+<tr><td>URL</td><td>레시피 ID 기반 고정 — 제목·카테고리를 바꿔도 URL 불변 · 도메인은 www/비www <b>301</b>로 통일</td></tr>
+</table>
+
+<h2><span class="n">3</span>렌더링 요건 — 검색엔진이 봐야 하는 것</h2>
+<ul>
+<li><b>에디터 노트·미리보기 댓글(3개+답글)·요리후기는 초기 HTML에 포함</b>(서버 렌더). 클라이언트에서 나중에 불러오면 검색엔진이 못 봅니다 — 이 요건이 빠지면 검색노출 기능 전체가 무의미해집니다</li>
+<li>메타 description은 레시피마다 고유 문장(에디터 노트 첫 문장 권장) — "졸리팟에서 ○○ 확인하세요" 같은 공통 템플릿 금지</li>
+<li>사이트 내부 검색 결과 페이지(<code>/search…</code>)는 noindex</li>
+<li>모든 페이지 self-canonical (utm 등 파라미터 중복 방지)</li>
+<li>스테이징·개발 서버는 전체 noindex</li>
+</ul>
+
+<h2><span class="n">4</span>어드민 UI</h2>
+<p>동작하는 프로토타입: <a href="jollypot-adm-recipes-google-v1.html">레시피 목록 — 검색노출 반영안 v1</a></p>
+<ul>
+<li>목록: [검색노출] 컬럼(ON/OFF 배지, 클릭 전환) + [노트] 컬럼 + 필터 2종(검색노출·에디터 노트)</li>
+<li>일괄: 선택 ON / 선택 OFF + <b>주간 ON 한도 게이지</b>(기본 50 · 운영 설정값 · 월요일 00시 리셋 · 초과 시 전환 차단)</li>
+<li>ON 확인 모달 경고 4종: 에디터 노트 없음 · 유튜브 소스 · 같은 요리명 이미 ON · 한도 초과 — <b>한도 외에는 경고만, 차단 아님</b></li>
+<li>선택 삭제 모달: ON 포함 시 잔상 경고</li>
+<li>에디터 노트 저장 화면: 「저장하며 검색노출 ON」 체크박스</li>
+<li>원본 상세: 검색노출 카드(상태 + 판단 참고 + 변경 이력)</li>
+<li>대량등록 완료 화면: "검색 비노출로 생성됩니다" 고지 1줄</li>
+</ul>
+
+<h2><span class="n">5</span>이번에 하지 않는 것</h2>
+<ul>
+<li>자동 품질 검사(자막 유사도 등) · 신호 기반 자동 승격 · 서치콘솔 API 연동 — 전부 다음 단계. 지금은 <b>수동 ON/OFF가 전부</b>입니다</li>
+</ul>
+
+<h2><span class="n">6</span>검수 체크리스트 (QA)</h2>
+<ul class="chk">
+<li>OFF 레시피 소스보기에 noindex 메타가 있는가</li>
+<li>robots.txt에 레시피 경로 Disallow가 <b>없는가</b></li>
+<li>사이트맵에 ON 레시피만 있는가 · 소스별 파일로 나뉘는가</li>
+<li>복사본 페이지에 noindex + canonical이 있는가</li>
+<li>숨김 처리 시 검색노출이 자동 OFF되는가</li>
+<li>댓글·에디터 노트가 자바스크립트 끄고 봐도 HTML에 보이는가</li>
+<li>제목 수정 후에도 URL이 그대로인가</li>
+</ul>
+
+<p class="foot">문의: 레몬트리커뮤니케이션 · 이 문서와 어드민 프로토는 같은 스펙입니다 — 충돌 시 이 문서 우선</p>
+
+</body>
+</html>
