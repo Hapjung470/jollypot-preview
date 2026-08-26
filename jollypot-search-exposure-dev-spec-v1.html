@@ -54,8 +54,11 @@
 <tr><td>OFF 레시피</td><td><code>&lt;meta name="robots" content="noindex"&gt;</code> 출력. <b>robots.txt로 막으면 안 됩니다</b> (크롤을 막으면 noindex를 못 읽어 오히려 등재될 수 있음)</td></tr>
 <tr><td>ON 레시피</td><td>noindex 없음 + 사이트맵 포함</td></tr>
 <tr><td>복사본(remix)</td><td><b>항상 noindex</b> + <code>canonical → 원본 URL</code>. 어드민에서도 전환 불가</td></tr>
-<tr><td>사이트맵</td><td><b>ON 레시피만</b> 포함 · <code>exposure_group</code>별 파일 분리(예: <code>sitemap/on-insta.xml</code>) · lastmod는 실제 수정 시각 · 일배치 갱신</td></tr>
+<tr><td>사이트맵</td><td><b>ON 레시피만</b> 포함 · <code>exposure_group</code>별 파일 분리(예: <code>sitemap/on-insta.xml</code>) — 소스별 인덱스율을 서치콘솔에서 바로 비교하기 위함 · lastmod는 실제 수정 시각 · 일배치 갱신</td></tr>
 <tr><td>자동 OFF</td><td>레시피가 숨김·삭제·신고 게시중단되면 검색노출도 자동 OFF + 사이트맵 제외</td></tr>
+<tr><td>카테고리 페이지</td><td>ON 레시피 <b>10개 이상</b>일 때만 인덱스 허용, 미만이면 noindex (거의 빈 목록 방지)</td></tr>
+<tr><td>태그 페이지</td><td><b>전부 noindex로 시작</b> (추후 운영 판단으로 개별 해제)</td></tr>
+<tr><td>홈·기획전 등 정적 페이지</td><td>기본 인덱스 (별도 처리 없음)</td></tr>
 <tr><td>삭제된 ON 레시피 URL</td><td><b>410</b> 응답 (404보다 검색 제거가 빠름)</td></tr>
 <tr><td>URL</td><td>레시피 ID 기반 고정 — 제목·카테고리를 바꿔도 URL 불변 · 도메인은 www/비www <b>301</b>로 통일</td></tr>
 </table>
@@ -67,7 +70,10 @@
 <li>사이트 내부 검색 결과 페이지(<code>/search…</code>)는 noindex</li>
 <li>모든 페이지 self-canonical (utm 등 파라미터 중복 방지)</li>
 <li>스테이징·개발 서버는 전체 noindex</li>
+<li>robots.txt에 AI봇 정책 반영 예정(답변용 봇 허용 · 학습용 봇 차단) — <b>구체 목록은 추후 전달</b>, 지금은 robots.txt를 수정 가능한 구조로만</li>
 </ul>
+
+<p style="font-size:13px;color:#9E9E9E">※ Recipe 구조화 데이터(JSON-LD)·에디터 노트 렌더 위치 등 레시피 페이지 자체의 명세는 <a href="jollypot-v2-recipe-detail-v1-30.html">레시피 상세 개발 지침</a>에 있습니다 — 이 문서는 노출 제어만 다룹니다.</p>
 
 <h2><span class="n">4</span>어드민 UI</h2>
 <p>동작하는 프로토타입: <a href="jollypot-adm-recipes-google-v1.html">레시피 목록 — 검색노출 반영안 v1</a></p>
@@ -80,6 +86,8 @@
 <li>원본 상세: 검색노출 카드(상태 + 판단 참고 + 변경 이력)</li>
 <li>대량등록 완료 화면: "검색 비노출로 생성됩니다" 고지 1줄</li>
 </ul>
+
+<div class="box">❓ <b>확인 요청</b> — 레시피 서비스가 커머스(jollypot.kr)와 <b>같은 도메인/경로 구조인지</b> 회신 부탁드립니다. 검색엔진이 사이트 품질을 도메인 단위로 평가하므로, 구조에 따라 사이트맵·서치콘솔 설정이 달라집니다.</div>
 
 <h2><span class="n">5</span>이번에 하지 않는 것</h2>
 <ul>
@@ -95,6 +103,8 @@
 <li>숨김 처리 시 검색노출이 자동 OFF되는가</li>
 <li>댓글·에디터 노트가 자바스크립트 끄고 봐도 HTML에 보이는가</li>
 <li>제목 수정 후에도 URL이 그대로인가</li>
+<li>삭제된 ON 레시피 URL이 410을 반환하는가</li>
+<li>태그 페이지·10개 미만 카테고리 페이지에 noindex가 있는가</li>
 </ul>
 
 <p class="foot">문의: 레몬트리커뮤니케이션 · 이 문서와 어드민 프로토는 같은 스펙입니다 — 충돌 시 이 문서 우선</p>
