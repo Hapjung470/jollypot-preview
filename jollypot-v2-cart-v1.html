@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>졸리팟 V2 · 장바구니 v1</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  :root{
+    --color-brand:#FDB813; --color-primary:#FC642D; --color-secondary:#145F48;
+    --color-bg:#FFFFFF; --color-surface:#FFF5EA; --color-surface-alt:#FFEEDC;
+    --color-text-primary:#212121; --color-text-secondary:#666666; --color-text-tertiary:#9E9E9E;
+    --color-error:#D64545; --color-info:#3276AE; --color-warning:#FFC520;
+    --color-border:#CCCFD4; --color-divider:#E5E7EB;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scrollbar-gutter:stable;}
+  body{overflow-x:hidden;
+    font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.3px;background:#EDEEF0;color:var(--color-text-primary);word-break:keep-all;}
+  body.locked{overflow:hidden;}
+
+  .proto-bar{background:#1E1E2E;padding:10px 14px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .proto-bar .lab{font-size:12px;color:#CCCCDD;font-weight:600;}
+  .proto-bar button{background:#2D2D3D;color:#8888A0;border:none;border-radius:8px;padding:7px 11px;
+    font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;}
+  .proto-bar button.active{background:#5B6ABF;color:#fff;}
+  .proto-bar .ver{margin-left:auto;font-size:11.5px;color:#8888A0;}
+  @media (max-width:620px){ .proto-bar .ver{flex:0 0 100%;margin-left:0;text-align:right;} }
+
+  .phone{max-width:430px;margin:0 auto;background:#F7F8F9;min-height:100vh;position:relative;padding-bottom:150px;}
+  .appbar{display:flex;align-items:center;height:52px;padding:0 16px;gap:12px;position:sticky;top:0;
+    background:var(--color-bg);z-index:10;border-bottom:1px solid var(--color-divider);}
+  .appbar .ic{width:23px;height:23px;color:var(--color-text-primary);flex-shrink:0;cursor:pointer;}
+  .appbar .ti{font-size:16.5px;font-weight:600;}
+
+  /* ── 선택 바 ── */
+  .selbar{display:flex;align-items:center;gap:9px;padding:13px 16px;background:var(--color-bg);
+    border-bottom:1px solid var(--color-divider);font-size:14px;position:sticky;top:52px;z-index:9;}
+  .selbar .cnt{color:var(--color-text-tertiary);font-weight:400;}
+  .selbar .del{margin-left:auto;background:none;border:none;font-family:inherit;font-size:13px;
+    color:var(--color-text-secondary);cursor:pointer;letter-spacing:-0.3px;padding:4px 0;}
+
+  /* ── 체크박스 ── */
+  .ck{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--color-border);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;background:#fff;cursor:pointer;}
+  .ck svg{display:none;width:13px;height:13px;color:#fff;}
+  .ck.on{background:var(--color-secondary);border-color:var(--color-secondary);}
+  .ck.on svg{display:block;}
+  .ck.dis{background:#F1F2F4;border-color:var(--color-divider);cursor:default;}
+
+  /* ── 배송 그룹 ── */
+  .grp{background:var(--color-bg);margin-bottom:10px;}
+  .grp-h{display:flex;align-items:center;gap:9px;padding:14px 16px 12px;font-size:14.5px;font-weight:600;}
+  .grp-h .pn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  /* 배송비 줄 — 우리 실측(딜 2개면 배송비 2.2배)상 장바구니에서 가장 먼저 읽혀야 하는 정보 */
+  .ship{margin:0 16px 4px;padding:10px 12px;border-radius:10px;background:var(--color-surface);
+    font-size:12.5px;line-height:1.5;display:flex;align-items:center;gap:6px;}
+  .ship.free{background:rgba(20,95,72,.07);color:var(--color-secondary);font-weight:600;}
+  .ship b{font-weight:700;}
+  .ship .more{color:var(--color-primary);font-weight:700;}
+  .gauge{height:4px;border-radius:3px;background:#EDEEF0;margin:7px 16px 0;overflow:hidden;}
+  .gauge i{display:block;height:100%;background:var(--color-primary);border-radius:3px;}
+
+  /* ── 라인 ── */
+  .line{display:flex;gap:11px;padding:14px 16px;position:relative;}
+  .line + .line{border-top:1px solid var(--color-divider);}
+  .line.sub{padding-left:36px;background:var(--color-surface);}
+  .line.sub::before{content:'';position:absolute;left:22px;top:0;bottom:0;width:2px;background:#E7D9C6;}
+  .line.off{opacity:.45;}
+  .th{width:66px;height:66px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#EADFD2,#D9C7B4);}
+  .li{flex:1;min-width:0;}
+  .li .bd{font-size:12px;color:var(--color-text-secondary);}
+  .li .nm{font-size:14.5px;font-weight:500;line-height:1.45;margin-top:1px;}
+  .li .op{font-size:12.5px;color:var(--color-text-secondary);line-height:1.6;margin-top:5px;}
+  .li .op .iv{color:var(--color-secondary);font-weight:600;}
+  .tag{display:inline-block;font-size:10.5px;font-weight:700;border-radius:4px;padding:1px 5px;margin-right:4px;
+    background:var(--color-surface-alt);color:var(--color-text-secondary);vertical-align:1.5px;}
+  .base{font-size:11.5px;color:var(--color-text-tertiary);margin-top:3px;}
+  .bad{display:inline-block;font-size:11px;font-weight:700;border-radius:5px;padding:2px 6px;
+    background:#F1F2F4;color:var(--color-text-secondary);margin-top:6px;}
+  .rm{position:absolute;top:10px;right:10px;width:34px;height:34px;border:none;background:none;
+    color:#9E9E9E;font-size:15px;cursor:pointer;font-family:inherit;line-height:1;}
+  .lb{display:flex;align-items:center;margin-top:10px;}
+  .qty{display:inline-flex;align-items:center;border:1px solid var(--color-border);border-radius:10px;overflow:hidden;}
+  .qty button{width:34px;height:32px;border:none;background:#fff;font-size:16px;color:var(--color-text-secondary);
+    cursor:pointer;font-family:inherit;}
+  .qty button:disabled{color:#D5D7DB;}
+  .qty b{width:34px;text-align:center;font-size:14px;font-weight:600;background:#fff;}
+  .pr{margin-left:auto;font-size:15.5px;font-weight:700;}
+  .pr .was{display:block;font-size:12px;font-weight:400;color:var(--color-text-tertiary);
+    text-decoration:line-through;text-align:right;}
+
+  /* ── 구매 불가 ── */
+  .bad-h{display:flex;align-items:center;padding:14px 16px 10px;background:var(--color-bg);}
+  .bad-h p{font-size:14.5px;font-weight:600;}
+  .bad-h button{margin-left:auto;background:none;border:none;font-family:inherit;font-size:13px;
+    color:var(--color-text-secondary);cursor:pointer;letter-spacing:-0.3px;}
+
+  /* ── 요약 ── */
+  .sum{background:var(--color-bg);padding:16px;margin-bottom:10px;}
+  .sum h2{font-size:15px;font-weight:600;margin-bottom:10px;}
+  .sum-row{display:flex;justify-content:space-between;font-size:13.5px;padding:4px 0;color:var(--color-text-secondary);}
+  .sum-row .v{color:var(--color-text-primary);font-weight:500;}
+  .sum-row .v.minus{color:var(--color-primary);}
+  .sum-row .v.free{color:var(--color-secondary);font-weight:700;}
+  .sum-tot{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 2px;margin-top:7px;
+    border-top:1px solid var(--color-divider);}
+  .sum-tot .l{font-size:15px;font-weight:600;}
+  .sum-tot .r{font-size:20px;font-weight:700;color:var(--color-primary);}
+  .sum-note{font-size:12px;color:var(--color-text-tertiary);margin-top:6px;line-height:1.5;}
+
+  /* ── 빈 상태 ── */
+  .empty{padding:90px 24px;text-align:center;background:var(--color-bg);min-height:60vh;}
+  .empty .ill{width:96px;height:96px;border-radius:24px;margin:0 auto 20px;
+    background:linear-gradient(135deg,#F3ECE3,#E4D6C4);}
+  .empty h3{font-size:16.5px;font-weight:600;}
+  .empty p{font-size:13.5px;color:var(--color-text-secondary);margin-top:7px;}
+  .empty button{margin-top:22px;background:var(--color-primary);color:#fff;border:none;border-radius:12px;
+    padding:14px 28px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:-0.3px;}
+
+  /* ── 하단 CTA ── */
+  .foot{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:20;
+    background:var(--color-bg);border-top:1px solid var(--color-divider);
+    padding:12px 16px calc(14px + env(safe-area-inset-bottom));}
+  .foot .fr{display:flex;align-items:baseline;margin-bottom:10px;}
+  .foot .fr .l{font-size:14px;font-weight:600;}
+  .foot .fr .r{margin-left:auto;font-size:19px;font-weight:700;color:var(--color-primary);}
+  .foot .fr .sh{margin-left:6px;font-size:12px;color:var(--color-text-tertiary);font-weight:400;}
+  .btn-order{width:100%;background:var(--color-primary);color:#fff;border:none;border-radius:14px;
+    padding:16px 0;font-size:16.5px;font-weight:700;font-family:inherit;letter-spacing:-0.3px;cursor:pointer;}
+  .btn-order.dis{background:var(--color-divider);color:var(--color-text-tertiary);}
+
+  /* ── 확인 다이얼로그 · 토스트 ── */
+  .dim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:60;display:none;}
+  body.ask .dim{display:block;}
+  .ask{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 64px);max-width:320px;
+    background:#fff;border-radius:16px;padding:24px 20px 16px;z-index:70;display:none;text-align:center;}
+  body.ask .ask{display:block;}
+  .ask p{font-size:15px;line-height:1.5;}
+  .ask .btns{display:flex;gap:8px;margin-top:20px;}
+  .ask button{flex:1;border-radius:11px;padding:13px 0;font-size:15px;font-weight:600;
+    font-family:inherit;cursor:pointer;letter-spacing:-0.3px;}
+  .ask .no{background:#fff;border:1px solid var(--color-border);color:var(--color-text-primary);}
+  .ask .yes{background:var(--color-primary);border:none;color:#fff;}
+  .toast{position:fixed;bottom:120px;left:50%;transform:translateX(-50%);background:rgba(33,33,33,.92);
+    color:#fff;font-size:13.5px;padding:12px 18px;border-radius:24px;z-index:80;opacity:0;
+    transition:opacity .2s;pointer-events:none;white-space:nowrap;}
+  .toast.on{opacity:1;}
+
+  /* ── 문서 ── */
+  .doc{max-width:860px;margin:26px auto 60px;background:#1E1E2E;color:#B8B8CC;border-radius:14px;
+    padding:26px 28px;font-size:13.5px;line-height:1.75;}
+  .doc h2{color:#fff;font-size:15.5px;margin:22px 0 9px;}
+  .doc h2:first-child{margin-top:0;}
+  .doc h2.hl{color:#FFC520;}
+  .doc b{color:#fff;}
+  .doc p{margin-bottom:5px;}
+  .doc table{width:100%;border-collapse:collapse;margin:9px 0 4px;font-size:12.5px;}
+  .doc th,.doc td{border:1px solid #3A3A5A;padding:7px 9px;text-align:left;vertical-align:top;}
+  .doc th{color:#fff;background:#2A2A4A;white-space:nowrap;}
+  .doc code{background:#2A2A4A;border-radius:4px;padding:1px 5px;font-size:12px;}
+</style>
+</head>
+<body>
+
+<div class="proto-bar">
+  <span class="lab">장바구니 케이스</span>
+  <button data-c="basic" onclick="setCase('basic')">기본 (딜 1개)</button>
+  <button data-c="multi" onclick="setCase('multi')">파트너 2곳</button>
+  <button data-c="extra" onclick="setCase('extra')">추가상품·각인</button>
+  <button data-c="near" onclick="setCase('near')">무료배송 임박</button>
+  <button data-c="invalid" onclick="setCase('invalid')">구매 불가 포함</button>
+  <button data-c="empty" onclick="setCase('empty')">빈 장바구니</button>
+  <span class="ver">jollypot-v2-cart-v1</span>
+</div>
+
+<div class="phone">
+  <div class="appbar">
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    <span class="ti">장바구니</span>
+  </div>
+  <div id="body"></div>
+</div>
+
+<div class="foot" id="foot"></div>
+<div class="dim" onclick="askNo()"></div>
+<div class="ask"><p id="askMsg"></p><div class="btns">
+  <button class="no" onclick="askNo()">취소</button><button class="yes" onclick="askYes()">삭제</button></div></div>
+<div class="toast" id="toast"></div>
+
+<div class="doc">
+  <h2>장바구니 v1 — 실물 졸리팟 장바구니 구조 기준</h2>
+  <p>이 화면은 <b>구매 플로우(옵션 시트) → 장바구니 → 주문서</b> 사이에서 빠져 있던 단계입니다.
+  데이터 구조·문구는 <b>실물 졸리팟 장바구니(2026-09-02 번들 실측)</b>를 그대로 따르고, 배치·색은 V2 문법을 적용했습니다.</p>
+
+  <h2>1. 데이터 구조 (실물 그대로)</h2>
+  <table>
+    <tr><th>계층</th><th>의미</th><th>화면</th></tr>
+    <tr><td><code>deliveryGroups</code></td><td><b>배송 그룹</b> = 파트너 단위</td><td>그룹 카드 · 그룹 전체선택 체크 · <b>파트너명</b></td></tr>
+    <tr><td><code>orderProducts</code></td><td>상품</td><td>—</td></tr>
+    <tr><td><code>orderProductOptions</code></td><td><b>옵션 라인 = <code>cartNo</code></b>(삭제·수량의 최소 단위)</td><td>한 줄 = 한 라인</td></tr>
+    <tr><td><code>optionInputs</code></td><td>입력형 옵션 값(각인·이름)</td><td><code>{라벨}: {값}</code>로 라인에 표기</td></tr>
+    <tr><td><code>isExtraProduct</code><br><code>baseProductName</code></td><td>추가상품 여부 · 본상품명</td><td><b>[추가상품]</b> 배지 + <b>[본상품] ○○</b> 표기</td></tr>
+    <tr><td><code>validInfo.errorCode</code></td><td><code>OUT_OF_STOCK</code>이면 "품절", 그 외는 <code>message</code></td><td><b>구매 불가 상품</b> 섹션으로 분리</td></tr>
+  </table>
+
+  <h2 class="hl">2. ★ 가장 중요한 판단 — 배송비를 그룹 머리에 올린다</h2>
+  <p>실물은 배송비를 <b>하단 요약의 "총 배송비" 한 줄</b>로만 보여줍니다. 우리는 <b>그룹마다</b> 올렸습니다.<br>
+  근거는 우리 주문 실측입니다 — <b>한 주문 = 한 딜이 94.3%</b>이고, <b>딜을 2개 담으면 객단가는 +3.6%인데 배송비는 2.2배</b>가 됩니다.
+  즉 장바구니에서 유저가 가장 먼저 알아야 할 것은 "무엇을 담았나"가 아니라 <b>"배송비가 몇 번 붙나"</b>입니다.
+  파트너가 둘이면 <b>왜 배송비가 두 번인지</b>를 그룹 머리에서 바로 읽히게 하고, 임계까지 남은 금액을 같은 자리에서 안내합니다.</p>
+
+  <h2>3. 규칙</h2>
+  <p>· <b>선택은 3단</b>: 전체 선택 / 그룹 선택 / 라인 선택 — 상위 체크는 하위 전체를 따른다<br>
+  · <b>금액은 "선택된 라인"만 계산</b>한다. 담겨 있어도 체크가 풀리면 배송비 계산에서도 빠진다<br>
+  · <b>배송비는 그룹별로 판정</b>한다(파트너배송 177/180건). 그룹 선택 합계가 임계 미만이면 그룹마다 배송비가 붙는다<br>
+  · <b>추가상품은 독립 라인</b>이지만 본상품 아래에 <b>들여쓰기 + 연결선</b>으로 붙인다 —
+    같은 배송그룹이므로 배송비를 늘리지 않는다는 사실이 시각적으로 읽혀야 한다<br>
+  · <b style="color:#FFC520">본상품을 삭제하면 딸린 추가상품도 함께 삭제</b>한다.
+    추가상품만 남으면 유저는 원하지 않는 물건에 배송비만 물게 된다(실물은 남겨두지만, 이 동작은 바꾸는 것이 맞다)<br>
+  · <b>구매 불가 상품은 지우지 않고 아래로 분리</b>한다 — 체크 불가 · [전체 삭제] 제공.
+    조용히 사라지면 "내가 담았던 게 어디 갔지"가 되고, 위에 섞여 있으면 결제를 막는다<br>
+  · <b>삭제는 확인을 받는다</b>("선택한 상품을 삭제하시겠습니까?") · 완료 토스트로 결과를 알린다<br>
+  · <b>수량 하한은 1</b> — 0으로 내려 삭제되는 방식은 쓰지 않는다(실수 삭제)</p>
+
+  <h2>4. 문구 (실물 그대로 사용)</h2>
+  <p>전체 선택 · 선택 상품 삭제 · 구매 불가 상품 · 전체 삭제 · 품절 · 추가상품 ·
+  총 상품 금액 · 총 할인 금액 · 총 배송비 · 무료 · 예상 결제 금액 · <b>(N개) 주문하기</b> ·
+  "선택한 상품을 삭제하시겠습니까?" · "장바구니에서 삭제되었습니다." · "상품을 선택해주세요." ·
+  빈 상태 "장바구니에 담긴 상품이 없어요 / 장바구니에 새로운 상품을 넣어 보세요! / 쇼핑하러 가기"</p>
+
+  <h2>5. 개발 요건 · 확인 필요</h2>
+  <p>· 화면은 <b>장바구니 응답으로 렌더링</b>한다. 그룹 수·라인 수·옵션 축 이름 하드코딩 금지<br>
+  · <b>수량·삭제·선택은 라인(<code>cartNo</code>) 단위</b>로 서버에 반영한다<br>
+  · <b>적립 예정 금액(<code>accumulationAmtWhenBuyConfirm</code>)</b>은 실물 요약에 있으나 이번 화면에서는 뺐습니다 —
+    현재 졸리팟은 적립 운영을 하지 않습니다. 운영 시작하면 요약에 한 줄 추가<br>
+  · <b>옵션 변경(장바구니에서 옵션 바꾸기)은 이번 범위 밖</b>입니다. 실물에도 없으며, 필요하면 삭제 후 재담기로 처리<br>
+  · 딜 마감으로 판매가 끝난 라인은 <code>validInfo</code>로 내려와야 <b>구매 불가</b>로 분리할 수 있습니다 —
+    딜 종료 시 상품 상태가 어떻게 바뀌는지 확인 필요</p>
+</div>
+
+<script>
+/* ─────────── 장바구니 데이터 (전부 데이터 주도 렌더링) ─────────── */
+var SHIP = 3000, FREE = 30000;
+
+/* 라인: {brand, name, opt:[표기줄], inputs:[[라벨,값]], list, price, qty, extra:true|false, base:'본상품명'} */
+var M_CLOTH = {brand:'마루야마', name:'[국내제작] 키친크로스 주방행주',
+  opt:['구성: 1P (단품)','색상: 노랑'], list:14000, price:9500, qty:1};
+
+var CASES = {
+  /* 실측상 한 주문 = 한 딜이 94.3% — 기본 상태가 곧 대부분의 실제 화면이다 */
+  basic: { groups:[ {partner:'마루야마', lines:[ M_CLOTH ]} ], invalid:[] },
+
+  /* 파트너가 둘이면 배송비가 두 번 — 이 화면이 그것을 설명해야 한다 */
+  multi: { groups:[
+      {partner:'마루야마', lines:[ M_CLOTH ]},
+      {partner:'케미콩', lines:[ {brand:'케미콩', name:'이지컷 네임테이프',
+        opt:['배경컬러선택: 화이트(알록글씨)','폰트: 2.꼬꼬마체','일러스트: 공룡'],
+        inputs:[['네임테이프에 들어갈 이름','김졸리']], list:9000, price:7000, qty:1} ]} ], invalid:[] },
+
+  /* 추가상품은 독립 라인이지만 본상품에 붙여 보여준다(같은 배송그룹) */
+  extra: { groups:[ {partner:'케미콩', lines:[
+      {brand:'케미콩', name:'이지컷 네임테이프',
+       opt:['배경컬러선택: 화이트(알록글씨)','폰트: 2.꼬꼬마체','일러스트: 공룡'],
+       inputs:[['네임테이프에 들어갈 이름','김졸리']], list:9000, price:7000, qty:1},
+      {brand:'케미콩', name:'케미콩 추가상품 고르기', extra:true, base:'이지컷 네임테이프',
+       opt:['테이프: 시간 테이프(이지컷)_아침 +900원'], list:5000, price:5000, qty:2},
+      {brand:'케미콩', name:'이지컷 리필 1롤 (예시)', extra:true, base:'이지컷 네임테이프',
+       opt:[], list:3500, price:3500, qty:1} ]} ], invalid:[] },
+
+  /* 임계까지 남은 금액을 그룹 머리에서 안내 */
+  near: { groups:[ {partner:'마루야마', lines:[
+      {brand:'마루야마', name:'[국내제작] 키친크로스 주방행주',
+       opt:['구성: 2P 세트','색상: 그레이'], list:22500, price:18000, qty:1},
+      {brand:'마루야마', name:'천연수세미 2P', opt:[], list:5900, price:5900, qty:1} ]} ], invalid:[] },
+
+  /* 품절·판매종료는 지우지 않고 아래로 분리 */
+  invalid: { groups:[ {partner:'마루야마', lines:[ M_CLOTH ]} ],
+    invalid:[ {brand:'마루야마', name:'[국내제작] 키친크로스 주방행주',
+                opt:['구성: 6P 세트','색상: 화이트'], list:36000, price:29000, qty:1, err:'품절'},
+              {brand:'케미콩', name:'이지컷 리필 1롤 (예시)', opt:[], list:3500, price:3500, qty:1,
+                err:'판매 종료된 상품입니다'} ] },
+
+  empty: { groups:[], invalid:[] }
+};
+
+var C = 'basic', S = {};   /* S: {off:{lineKey:true} 체크 해제, qty:{lineKey:n}} */
+
+function won(n){ return n.toLocaleString('ko-KR') + '원'; }
+function key(g, i){ return g + '-' + i; }
+function lines(){ var out = []; CASES[C].groups.forEach(function(gr, g){
+  gr.lines.forEach(function(l, i){ out.push({g:g, i:i, k:key(g,i), l:l}); }); }); return out; }
+function on(k){ return !S.off[k]; }
+function qtyOf(k, l){ return S.qty[k] || l.qty; }
+
+function setCase(k){
+  C = k; S = { off:{}, qty:{} };
+  document.querySelectorAll('.proto-bar button').forEach(function(b){
+    b.classList.toggle('active', b.dataset.c === k); });
+  render();
+}
+
+/* ─────────── 계산 ─────────── */
+function calc(){
+  var c = CASES[C], list = 0, sale = 0, ship = 0, cnt = 0;
+  c.groups.forEach(function(gr, g){
+    var gsum = 0, has = false;
+    gr.lines.forEach(function(l, i){
+      var k = key(g, i); if (!on(k)) return;
+      var q = qtyOf(k, l);
+      list += l.list * q; sale += l.price * q; gsum += l.price * q; cnt += q; has = true;
+    });
+    if (has && gsum < FREE) ship += SHIP;   /* 배송비는 그룹(파트너)별 판정 */
+  });
+  return {list:list, sale:sale, ship:ship, cnt:cnt};
+}
+function groupSum(g){
+  var s = 0; CASES[C].groups[g].lines.forEach(function(l, i){
+    var k = key(g, i); if (on(k)) s += l.price * qtyOf(k, l); }); return s;
+}
+function groupOn(g){ return CASES[C].groups[g].lines.every(function(_, i){ return on(key(g, i)); }); }
+function allOn(){ return lines().length > 0 && lines().every(function(x){ return on(x.k); }); }
+
+/* ─────────── 렌더 ─────────── */
+var CHK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+
+function render(){
+  var c = CASES[C], H = '';
+  if (!lines().length && !c.invalid.length){
+    document.getElementById('body').innerHTML =
+      '<div class="empty"><div class="ill"></div><h3>장바구니에 담긴 상품이 없어요</h3>' +
+      '<p>장바구니에 새로운 상품을 넣어 보세요!</p>' +
+      '<button onclick="toast(\'쇼핑 화면으로 이동합니다\')">쇼핑하러 가기</button></div>';
+    document.getElementById('foot').innerHTML = '';
+    return;
+  }
+
+  var sel = lines().filter(function(x){ return on(x.k); }).length;
+  H += '<div class="selbar">' +
+    '<span class="ck' + (allOn() ? ' on' : '') + '" onclick="toggleAll()">' + CHK + '</span>' +
+    '전체 선택 <span class="cnt">(' + sel + '/' + lines().length + ')</span>' +
+    '<button class="del" onclick="askDel(null)">선택 상품 삭제</button></div>';
+
+  c.groups.forEach(function(gr, g){
+    var gsum = groupSum(g), rest = FREE - gsum, free = gsum >= FREE, hasSel = gsum > 0;
+    H += '<div class="grp">' +
+      '<div class="grp-h"><span class="ck' + (groupOn(g) ? ' on' : '') + '" onclick="toggleGroup(' + g + ')">' + CHK + '</span>' +
+        '<span class="pn">' + gr.partner + '</span></div>';
+    /* 배송비 줄 — 그룹 머리에서 "몇 번 붙는지"를 먼저 말한다 */
+    if (!hasSel){
+      H += '<div class="ship"><span>선택된 상품이 없어 배송비가 계산되지 않아요</span></div>';
+    } else if (free){
+      H += '<div class="ship free"><span>이 판매자 상품 무료배송</span></div>';
+    } else {
+      H += '<div class="ship"><span>배송비 <b>' + won(SHIP) + '</b> · ' +
+        '<span class="more">' + won(rest) + '</span> 더 담으면 무료배송</span></div>' +
+        '<div class="gauge"><i style="width:' + Math.min(100, Math.round(gsum / FREE * 100)) + '%"></i></div>';
+    }
+    gr.lines.forEach(function(l, i){ H += lineHTML(l, key(g, i), false); });
+    H += '</div>';
+  });
+
+  if (c.invalid.length){
+    H += '<div class="grp"><div class="bad-h"><p>구매 불가 상품</p>' +
+      '<button onclick="askDel(\'invalid\')">전체 삭제</button></div>';
+    c.invalid.forEach(function(l, i){ H += lineHTML(l, 'x-' + i, true); });
+    H += '</div>';
+  }
+
+  H += sumHTML();
+  document.getElementById('body').innerHTML = H;
+  renderFoot();
+}
+
+function lineHTML(l, k, dead){
+  var q = dead ? l.qty : qtyOf(k, l);
+  var opt = (l.opt || []).map(function(t){ return t; });
+  (l.inputs || []).forEach(function(iv){ opt.push('<span class="iv">' + iv[0] + ': ' + iv[1] + '</span>'); });
+  return '<div class="line' + (l.extra ? ' sub' : '') + (dead || !on(k) ? ' off' : '') + '">' +
+    (dead ? '<span class="ck dis"></span>'
+          : '<span class="ck' + (on(k) ? ' on' : '') + '" onclick="toggleLine(\'' + k + '\')">' + CHK + '</span>') +
+    '<div class="th"></div>' +
+    '<div class="li">' +
+      '<div class="bd">' + l.brand + '</div>' +
+      '<div class="nm">' + (l.extra ? '<span class="tag">추가상품</span>' : '') + l.name + '</div>' +
+      (l.extra ? '<div class="base">[본상품] ' + l.base + '</div>' : '') +
+      (opt.length ? '<div class="op">' + opt.join('<br>') + '</div>' : '') +
+      (dead ? '<div class="bad">' + l.err + '</div>' : '') +
+      '<div class="lb">' +
+        (dead ? '' :
+          '<div class="qty"><button ' + (q <= 1 ? 'disabled' : '') + ' onclick="qty(\'' + k + '\',-1)">−</button>' +
+          '<b>' + q + '</b><button onclick="qty(\'' + k + '\',1)">＋</button></div>') +
+        '<span class="pr">' + (l.list > l.price ? '<span class="was">' + won(l.list * q) + '</span>' : '') +
+          won(l.price * q) + '</span>' +
+      '</div>' +
+    '</div>' +
+    '<button class="rm" onclick="askDel(\'' + k + '\')">✕</button></div>';
+}
+
+function sumHTML(){
+  var t = calc();
+  return '<div class="sum"><h2>결제 예정 금액</h2>' +
+    '<div class="sum-row"><span>총 상품 금액</span><span class="v">' + won(t.list) + '</span></div>' +
+    '<div class="sum-row"><span>총 할인 금액</span><span class="v minus">-' + won(t.list - t.sale) + '</span></div>' +
+    '<div class="sum-row"><span>총 배송비</span><span class="v' + (t.ship ? '' : ' free') + '">' +
+      (t.ship ? '+' + won(t.ship) : '무료') + '</span></div>' +
+    '<div class="sum-tot"><span class="l">예상 결제 금액</span><span class="r">' + won(t.sale + t.ship) + '</span></div>' +
+    '<p class="sum-note">쿠폰 할인은 주문서에서 적용됩니다.</p></div>';
+}
+
+function renderFoot(){
+  var t = calc(), ok = t.cnt > 0;
+  document.getElementById('foot').innerHTML =
+    '<div class="fr"><span class="l">예상 결제 금액</span>' +
+      '<span class="r">' + won(t.sale + t.ship) + '</span>' +
+      '<span class="sh">' + (t.ship ? '배송비 포함' : '무료배송') + '</span></div>' +
+    '<button class="btn-order' + (ok ? '' : ' dis') + '" onclick="order()">' +
+      (ok ? '(' + t.cnt + '개) 주문하기' : '주문하기') + '</button>';
+}
+
+/* ─────────── 조작 ─────────── */
+function toggleLine(k){ if (S.off[k]) delete S.off[k]; else S.off[k] = true; render(); }
+function toggleGroup(g){
+  var v = groupOn(g);
+  CASES[C].groups[g].lines.forEach(function(_, i){
+    var k = key(g, i); if (v) S.off[k] = true; else delete S.off[k]; });
+  render();
+}
+function toggleAll(){
+  var v = allOn();
+  lines().forEach(function(x){ if (v) S.off[x.k] = true; else delete S.off[x.k]; });
+  render();
+}
+function qty(k, d){
+  var x = lines().filter(function(y){ return y.k === k; })[0];
+  S.qty[k] = Math.max(1, qtyOf(k, x.l) + d); render();
+}
+
+/* 삭제 — 실물 문구 그대로 확인을 받는다 */
+var pending = null;
+function askDel(k){
+  if (k === null && !lines().filter(function(x){ return on(x.k); }).length){ toast('상품을 선택해주세요.'); return; }
+  pending = k;
+  document.getElementById('askMsg').textContent =
+    k === 'invalid' ? '구매 불가 상품을 모두 삭제하시겠습니까?' : '선택한 상품을 삭제하시겠습니까?';
+  document.body.classList.add('ask', 'locked');
+}
+function askNo(){ document.body.classList.remove('ask', 'locked'); pending = null; }
+function askYes(){
+  var c = CASES[C];
+  if (pending === 'invalid'){ c.invalid = []; }
+  else if (pending === null){
+    c.groups.forEach(function(gr, g){
+      gr.lines = gr.lines.filter(function(_, i){ return !on(key(g, i)); });
+    });
+  } else if (pending.indexOf('x-') === 0){
+    c.invalid.splice(+pending.slice(2), 1);
+  } else {
+    var p = pending.split('-'), g = +p[0], i = +p[1], tgt = c.groups[g].lines[i];
+    /* ★ 본상품을 지우면 딸린 추가상품도 함께 — 추가상품만 남으면 배송비만 무는 장바구니가 된다 */
+    var withExtra = !tgt.extra && c.groups[g].lines.some(function(l){ return l.extra && l.base && tgt.name.indexOf(l.base) >= 0; });
+    c.groups[g].lines = c.groups[g].lines.filter(function(l, j){
+      if (j === i) return false;
+      if (withExtra && l.extra && tgt.name.indexOf(l.base) >= 0) return false;
+      return true;
+    });
+    if (withExtra) setTimeout(function(){ toast('본상품과 함께 담은 추가상품도 삭제했어요'); }, 420);
+  }
+  c.groups = c.groups.filter(function(gr){ return gr.lines.length; });
+  S = { off:{}, qty:{} };
+  askNo(); render(); toast('장바구니에서 삭제되었습니다.');
+}
+
+function order(){
+  var t = calc();
+  if (!t.cnt){ toast('상품을 선택해주세요.'); return; }
+  toast(t.cnt + '개 · ' + won(t.sale + t.ship) + ' 주문서로 이동');
+}
+
+var tid;
+function toast(m){
+  var el = document.getElementById('toast');
+  el.textContent = m; el.classList.add('on');
+  clearTimeout(tid); tid = setTimeout(function(){ el.classList.remove('on'); }, 1900);
+}
+
+/* 케이스 데이터는 삭제로 변형되므로 원본을 보존했다가 케이스 전환 때 되돌린다 */
+var ORIGIN = JSON.stringify(CASES);
+var _setCase = setCase;
+setCase = function(k){ CASES = JSON.parse(ORIGIN); _setCase(k); };
+
+setCase('basic');
+</script>
+</body>
+</html>

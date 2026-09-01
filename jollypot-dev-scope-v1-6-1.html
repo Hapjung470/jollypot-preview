@@ -605,7 +605,7 @@
         <span class="badge in">이번 범위</span>
       </div>
       <h2 class="c-title">주문하기 — 구매 플로우 전체 (옵션 선택 → 주문서 → 결제)</h2>
-      <p class="c-sub">기존 샵바이 기본 스킨을 <b>디자인 가이드 v2.0.4 기준으로 전면 재설계</b>했습니다. <b>구매하기 → 옵션 선택 → 주문서 → 결제수단 → 결제 실패·중단 → 주문완료(레시피 넛지)</b>까지 구매 동선 전체가 이번 범위입니다. 흐름 순서대로 6-A~6-C가 화면, 6-D~6-E가 요건·산식 문서입니다.</p>
+      <p class="c-sub">기존 샵바이 기본 스킨을 <b>디자인 가이드 v2.0.4 기준으로 전면 재설계</b>했습니다. <b>구매하기 → 옵션 선택 → 장바구니 → 주문서 → 결제수단 → 결제 실패·중단 → 주문완료(레시피 넛지)</b>까지 구매 동선 전체가 이번 범위입니다. 흐름 순서대로 6-A~6-D가 화면, 6-E~6-F가 요건·산식 문서입니다.</p>
 
       <div class="item">
         <div class="item-h"><b>6-A. 구매 플로우</b><span class="key">purchase-flow · v10</span>
@@ -643,13 +643,31 @@
       </div>
 
       <div class="item">
-        <div class="item-h"><b>6-B. 주문서 — 결제수단·실패 상태 포함</b><span class="key">order-checkout · v9</span>
+        <div class="item-h"><b>6-B. 장바구니</b><span class="key">cart · v1</span>
+          <a class="open" href="jollypot-v2-cart-v1.html" target="_blank" rel="noopener">열기 →</a></div>
+        <div class="flow">옵션 시트 [장바구니]<span class="sep">→</span><b>장바구니</b><span class="sep">→</span>선택·수량·삭제<span class="sep">→</span>(N개) 주문하기<span class="sep">→</span>주문서</div>
+        <div class="pt"><span>상단 검정 바에서 <b>6개 상태</b>(기본 딜 1개 / 파트너 2곳 / 추가상품·각인 / 무료배송 임박 / 구매 불가 포함 / 빈 장바구니)를 전환해 볼 수 있습니다.
+        데이터 구조와 문구는 <b>현재 졸리팟 장바구니 실측</b>을 그대로 따릅니다 — <code>deliveryGroups</code>(배송 그룹 = 파트너) &gt; <code>orderProducts</code> &gt; <code>orderProductOptions</code>(<b>라인 = <code>cartNo</code></b>, 수량·삭제의 최소 단위).</span></div>
+        <div class="pt"><span><b style="color:var(--warn)">★ 배송비를 그룹 머리에 올린다</b>: 현재는 하단 "총 배송비" 한 줄뿐입니다. 우리 주문 실측상
+        <b>한 주문 = 한 딜이 94.3%</b>이고 <b>딜 2개를 담으면 객단가는 +3.6%인데 배송비는 2.2배</b>가 됩니다 —
+        장바구니에서 가장 먼저 읽혀야 할 정보는 <b>배송비가 몇 번 붙는가</b>이므로, 파트너 그룹마다 배송비와 무료배송까지 남은 금액을 표시합니다.</span></div>
+        <div class="pt"><span><b>선택은 3단</b>(전체 / 그룹 / 라인) · <b>금액은 선택된 라인만</b> 계산하고 배송비도 그룹별로 판정 ·
+        <b>추가상품은 독립 라인이지만 본상품 아래 들여쓰기 + 연결선</b>(같은 배송그룹이라 배송비가 늘지 않음을 보이게) ·
+        <b style="color:var(--warn)">본상품을 삭제하면 딸린 추가상품도 함께 삭제</b>(추가상품만 남으면 배송비만 무는 장바구니가 된다 — 현재 동작과 다르며, 바꾸는 것이 맞습니다)</span></div>
+        <div class="pt"><span><b>구매 불가 상품은 지우지 않고 아래로 분리</b>(체크 불가 + [전체 삭제]) · 품절은 <code>validInfo.errorCode = OUT_OF_STOCK</code>, 그 외는 <code>message</code> 그대로 ·
+        <b>삭제는 확인 후 실행</b> · <b>수량 하한 1</b>(0으로 내려 삭제되는 방식 금지) · <b>입력형 옵션(각인·이름)은 라인에 <code>{라벨}: {값}</code>으로 표기</b></span></div>
+        <div class="pt"><span><b>확인 필요:</b> ① <b>적립 예정 금액</b>은 현재 응답에 있으나 화면에서 뺐습니다(적립 미운영) — 운영 시작 시 요약에 한 줄 추가
+        ② <b>장바구니에서 옵션 변경은 이번 범위 밖</b>(현재도 없음, 삭제 후 재담기로 처리) ③ <b>딜 마감 시 상품 상태</b>가 <code>validInfo</code>로 내려와야 구매 불가로 분리됩니다</span></div>
+      </div>
+
+      <div class="item">
+        <div class="item-h"><b>6-C. 주문서 — 결제수단·실패 상태 포함</b><span class="key">order-checkout · v9</span>
           <a class="open" href="jollypot-v2-order-checkout-v9.html" target="_blank" rel="noopener">열기 →</a></div>
         <div class="pt"><span>실제로 눌러볼 수 있습니다. <b>상단 검정 바에서 6개 상태</b>(정상 / 수단 거절 / 결제 중단 / 확인 중 / 품절 / 시스템 오류)를 전환해 확인해 주세요.</span></div>
       </div>
 
       <div class="item">
-        <div class="item-h"><b>6-C. 주문완료 + 레시피 넛지</b><span class="key">order-complete · v1</span>
+        <div class="item-h"><b>6-D. 주문완료 + 레시피 넛지</b><span class="key">order-complete · v1</span>
           <a class="open" href="jollypot-v2-order-complete-v1.html" target="_blank" rel="noopener">열기 →</a></div>
         <div class="chips">
           <span class="chip hot">넛지 2단 (시트 1회 + 인라인 상시)</span>
@@ -664,7 +682,7 @@
       </div>
 
       <div class="item">
-        <div class="item-h"><b>6-D. 개발 요건서 — 주문서·결제</b><span class="key">order-checkout-dev-spec-v3</span>
+        <div class="item-h"><b>6-E. 개발 요건서 — 주문서·결제</b><span class="key">order-checkout-dev-spec-v3</span>
           <a class="open" href="jollypot-order-checkout-dev-spec-v3.html" target="_blank" rel="noopener">열기 →</a></div>
         <div class="flow">화면 구성<span class="sep">→</span>결제수단 규칙<span class="sep">→</span>실패 상태 5종<span class="sep">→</span>레이아웃·조건부 렌더링</div>
         <div class="chips">
@@ -685,7 +703,7 @@
       </div>
 
       <div class="item">
-        <div class="item-h"><b>6-E. 절약 금액 산식 — 온라인 정가 기준</b><span class="key">확정</span></div>
+        <div class="item-h"><b>6-F. 절약 금액 산식 — 온라인 정가 기준</b><span class="key">확정</span></div>
         <div class="pt"><span><b>산식</b><br>
         <code>아껴요 = (온라인 정가 − 판매가) + 쿠폰 할인 + 적립금 사용</code><br>
         = 상품 할인 + 쿠폰 할인 + 적립금 사용 · <b>배송비는 포함하지 않는다</b><br>
@@ -908,7 +926,7 @@
       <div style="margin-top:9px"><b>결과</b>: 문서 안 모든 링크가 <code>hapjung470.github.io</code> 같은 도메인(동봉 2종은 상대링크)으로 동작합니다. 제3자 렌더러·타 브랜치 의존이 없어 개발사 접근 시 깨지지 않습니다.</div>
     </div>
 
-    <div class="ver">jollypot-dev-scope-v1-6-1 · 개발사 전달용 개발 범위 정의서 · 2026.06.26 · rev 2026.08.11 — <b>만들기 v12-2 반영</b>: 단계 추가 버그 수정(재료 영역 삽입 오류) · 발행 미리보기/발행후 상세를 상세 v1.9-7 결정에 맞춰 최신화(kcal·장보기 섹션 제거 등). 개발사 참조 URL 유지를 위해 v1-6-1에 직접 반영 · <b>rev 08-11 상세</b>: "알아두면 좋아요" 삭제 + 메타 4종(난이도·칼로리 — 소스 정의 포함) · <b>rev 08-12</b>: 연결 화면 전수검사 — 디자인가이드 v2.0.4 미반영 잔재(웜 보더·구팔레트·폰트 미로드) 일괄 정리 · <b>rev 08-13</b>: 06 주문하기 절 신설 — 5개 영역 → 6개 영역 · <b>rev 08-14</b>: 06에 <b>구매 플로우 전체</b>(옵션 2단 선택) 편입 + <b>절약 금액 산식을 온라인 정가 기준</b>으로 확정 · <b>rev 08-18</b>: 옵션시트 고정 높이·테두리 통합, <b>도착일 표기 전면 제외</b>(출고 소요일로 대체) · <b>옵션 축 이름·개수 데이터화</b>(폴백 선택1/2 · 축 0/1/2단 대응) · <b>rev 09-01b</b>: <b>06 전면 재구성</b>(흐름 순서대로 6-A 옵션 → 6-B 주문서 → 6-C 주문완료 → 6-D 요건서 → 6-E 산식) + 옵션 케이스 <b>9종</b>(추가상품·케미콩 실사용, 자체 옵션·수량) + <b>추가상품 범위 포함 확정</b> · <b>rev 09-01</b>: 06에 <b>주문완료+레시피 넛지</b>(order-complete-v1) 추가 — 넛지 2단·결제수단 분기·가상계좌 입금 카드, 주문서 v9 결제 버튼과 연결 · <b>rev 08-26</b>: <b>07 검색노출 절 신설</b> — 전 레시피 검색 비노출(OFF) 기본 + 어드민 수동 ON, 요건서·어드민 반영안 링크 연결 (6개 영역 → 7개 영역) · <b>rev 08-22</b>: 레시피 상세 <b>v1-19</b>(디자인 1차 피드백 — 추천 핀터레스트식 지그재그·컬렉션 버튼 승격·칼로리 말풍선·댓글 하트·TIP 상한 2개+위계 분리)</div>
+    <div class="ver">jollypot-dev-scope-v1-6-1 · 개발사 전달용 개발 범위 정의서 · 2026.06.26 · rev 2026.08.11 — <b>만들기 v12-2 반영</b>: 단계 추가 버그 수정(재료 영역 삽입 오류) · 발행 미리보기/발행후 상세를 상세 v1.9-7 결정에 맞춰 최신화(kcal·장보기 섹션 제거 등). 개발사 참조 URL 유지를 위해 v1-6-1에 직접 반영 · <b>rev 08-11 상세</b>: "알아두면 좋아요" 삭제 + 메타 4종(난이도·칼로리 — 소스 정의 포함) · <b>rev 08-12</b>: 연결 화면 전수검사 — 디자인가이드 v2.0.4 미반영 잔재(웜 보더·구팔레트·폰트 미로드) 일괄 정리 · <b>rev 08-13</b>: 06 주문하기 절 신설 — 5개 영역 → 6개 영역 · <b>rev 08-14</b>: 06에 <b>구매 플로우 전체</b>(옵션 2단 선택) 편입 + <b>절약 금액 산식을 온라인 정가 기준</b>으로 확정 · <b>rev 08-18</b>: 옵션시트 고정 높이·테두리 통합, <b>도착일 표기 전면 제외</b>(출고 소요일로 대체) · <b>옵션 축 이름·개수 데이터화</b>(폴백 선택1/2 · 축 0/1/2단 대응) · <b>rev 09-01b</b>: <b>06 전면 재구성</b>(흐름 순서대로 6-A 옵션 → 6-B 장바구니 → 6-C 주문서 → 6-D 주문완료 → 6-E 요건서 → 6-F 산식) + 옵션 케이스 <b>9종</b>(추가상품·케미콩 실사용, 자체 옵션·수량) + <b>추가상품 범위 포함 확정</b> · <b>rev 09-01</b>: 06에 <b>주문완료+레시피 넛지</b>(order-complete-v1) 추가 — 넛지 2단·결제수단 분기·가상계좌 입금 카드, 주문서 v9 결제 버튼과 연결 · <b>rev 08-26</b>: <b>07 검색노출 절 신설</b> — 전 레시피 검색 비노출(OFF) 기본 + 어드민 수동 ON, 요건서·어드민 반영안 링크 연결 (6개 영역 → 7개 영역) · <b>rev 08-22</b>: 레시피 상세 <b>v1-19</b>(디자인 1차 피드백 — 추천 핀터레스트식 지그재그·컬렉션 버튼 승격·칼로리 말풍선·댓글 하트·TIP 상한 2개+위계 분리)</div>
   </footer>
 
 </div>
