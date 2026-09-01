@@ -131,7 +131,7 @@
   /* 추가상품 */
   .extra-h{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:600;margin:18px 0 9px;padding-top:16px;border-top:1px solid var(--color-divider);}
   .extra-h .cap{font-size:12px;font-weight:400;color:var(--color-text-tertiary);}
-  .ex{border:1px solid var(--color-border);border-radius:12px;padding:14px 15px;margin-bottom:8px;cursor:pointer;min-height:54px;}
+  .ex{border:1px solid var(--color-border);border-radius:12px;padding:14px 15px;margin-bottom:8px;min-height:54px;}
   /* 실측 개선(2026-09-01): 단가는 상품명 줄 오른쪽, 옵션·수량은 아래 "전폭" —
      옵션명이 길어(실측 "마음을 전하는 테이프(이지컷)_생일축하해") 우측 가격 컬럼에 눌리면 두 줄로 꺾인다 */
   .ex-head{display:flex;align-items:center;gap:11px;}
@@ -157,14 +157,14 @@
      체크박스는 유지해야 해제가 가능(옵션형 카드의 ✕에 대응) */
   .ex.on{background:var(--color-surface);border-color:transparent;}
   .ex.on .ex-qty{background:#fff;}
-  .ex.on .ex-chk{background:var(--color-secondary);border-color:var(--color-secondary);}
   .ex-l{flex:1;min-width:0;}
   .ex-n{font-size:14.5px;font-weight:500;}
-  .ex-p{font-size:14px;font-weight:600;margin-left:auto;flex-shrink:0;color:var(--color-text-primary);}
-  .ex-chk{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--color-border);flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;background:#fff;}
-  .ex.on .ex-chk svg{display:block;}
-  .ex-chk svg{display:none;width:13px;height:13px;color:#fff;}
+  .ex-p{font-size:14px;font-weight:600;margin-top:3px;color:var(--color-text-primary);display:block;}
+  /* 담기 어포던스(2026-09-02): 체크박스 폐기 — 담긴 뒤엔 크림 면이 이미 "담김"을 말하므로 체크 표시가 중복이고,
+     해제 방법이 옵션형 담긴 카드(✕)와 갈라졌다. 미담김 = [담기] 버튼 · 담김 = 우상단 ✕ 로 통일 */
+  .ex-add{border:1px solid var(--color-border);border-radius:8px;background:#fff;flex-shrink:0;
+    min-width:62px;height:38px;font-size:13px;font-weight:600;color:var(--color-secondary);font-family:inherit;cursor:pointer;}
+  .ex.on{position:relative;}
 
   /* 요약 */
   .sum{border-top:1px solid var(--color-divider);padding:13px 16px 0;flex-shrink:0;display:none;}
@@ -326,7 +326,7 @@
   <b>레이아웃(2026-09-01 실측 개선)</b>: 단가는 상품명 줄 오른쪽 · <b>옵션 셀렉트와 수량은 아래 전폭</b> · 합계는 담긴 카드에 —
   실측 옵션명("마음을 전하는 테이프(이지컷)_생일축하해 +900원")이 우측 가격 컬럼에 눌리면 두 줄로 꺾이기 때문입니다(샵바이 기본 스킨의 실패 재현 방지).<br>
   <b>용어 정리(2026-09-01)</b>: 추가구성/추가구성상품/추가상품은 <b>전부 같은 개념</b>(샵바이 additionalProducts)입니다.
-  공식 용어 <b>"추가상품"</b>으로 통일하며, 형태가 두 가지입니다 — <b>단일형</b>(옵션 없음, 체크만 · [추가상품·단일] 케이스) /
+  공식 용어 <b>"추가상품"</b>으로 통일하며, 형태가 두 가지입니다 — <b>단일형</b>(옵션 없음, [담기] 버튼 · [추가상품·단일] 케이스) /
   <b>옵션형</b>(자체 옵션 보유, 셀렉트로 선택 · [추가상품·옵션형] 케이스). 소비자 화면 헤더는 "함께 사면 좋아요"를 유지합니다. 디자인·옵션 세부 구성은 어드민 실값 기준으로 확정하세요.
   화면은 전부 <b>옵션 데이터로부터 렌더링</b>되며, 케이스별 하드코딩이 없습니다.</p>
 
@@ -336,7 +336,7 @@
     <tr><td><b>필수옵션</b><br>(COMBINATION / REQUIRED)</td><td>색상·사이즈 등 변형. 조합 단위로 재고 결정</td><td>셀렉트 그룹 · <b>순차 강제</b>(앞이 정해져야 뒤 열림) · 가격 <b>+N원(증분)</b></td></tr>
     <tr><td><b>선택옵션</b><br>(isRequiredOption=false)</td><td>같은 상품 안 부가 선택지. <b>안 골라도 구매 가능</b></td><td>필수 완료 후 열림 · <b>[선택] 배지</b> · 가격 <b>절대가</b>(아래 ★) · 별도 카드로 추가</td></tr>
     <tr><td><b>입력형</b><br>(<code>inputs</code>)</td><td>각인 문구 등 유저 입력. required 속성 존재</td><td>텍스트 필드 · 글자수 카운터 · <b>옵션 있는 상품은 조합 완성 후 선택 결과 카드 안에 렌더</b>(조합 종속 — 4절) · 옵션 없는 상품만 즉시 노출</td></tr>
-    <tr><td><b>추가상품</b><br>(<code>extraProducts</code>)</td><td><b>별도 등록 상품</b>. 가격 독립</td><td>본품과 <b>구분선으로 분리</b> · 썸네일+체크 · <b>금액 소계 분리</b></td></tr>
+    <tr><td><b>추가상품</b><br>(<code>extraProducts</code>)</td><td><b>별도 등록 상품</b>. 가격 독립</td><td>본품과 <b>구분선으로 분리</b> · 썸네일 + [담기] 버튼 · <b>금액 소계 분리</b></td></tr>
   </table>
 
   <h2 class="hl">2. ★ 가장 중요한 설계 판단 — 선택옵션은 "+N원"이 아니라 절대가로 표기한다</h2>
@@ -369,6 +369,9 @@
   · <b>★ 입력형은 조합(구매 라인) 종속(2026-09-01 실물 실측 — 케미콩)</b>: 옵션 있는 상품은 처음엔 입력칸이 없고,
   <b>필수 옵션 조합이 완성되면 선택 결과 카드 "안"에 입력칸이 나타난다</b>. 이유 — 입력값은 상품이 아니라 구매 라인에 붙는다
   (같은 조합을 2개 담으면 이름도 2개). 옵션 없는 상품만 시트에 즉시 노출 · 조합 카드 삭제(✕) 시 입력값도 함께 소멸<br>
+  · <b>담기·해제 어포던스(2026-09-02)</b>: 단일형 추가상품의 체크박스를 없앴습니다 —
+  담긴 뒤엔 <b>크림 면이 이미 "담김"을 말하므로 체크 표시는 중복</b>이고, 해제 방법이 옵션형 담긴 카드(✕)와 갈라졌습니다.
+  <b>미담김 = [담기] 버튼 · 담김 = 우상단 ✕</b>로 통일했고, <b>담긴 것을 빼는 동작은 시트 전체에서 ✕ 하나</b>가 됩니다<br>
   · <b>추가상품에는 썸네일을 붙입니다</b> — 본품 옵션과 달리 <b>별도 상품</b>이라 이름만으로는 무엇을 담는지 안 잡힙니다(실물 화면도 동일).
   프로토의 색 면은 자리표시자이며 실제로는 상품 대표 이미지를 씁니다<br>
   · <b>추가상품(함께 사면 좋아요)은 처음부터 노출(2026-09-01 실물 실측)</b>: 본품 옵션 선택 여부와 무관 —
@@ -576,11 +579,11 @@ function render(){
           /* 옵션형: 체크박스 없음 — 셀렉트가 곧 담기 동작. 담을 때마다 카드 추가 */
           var axis = e.optName || '옵션';
           var openL = !!S.exOpen[i];
-          H += '<div class="ex" style="cursor:default">' +
+          H += '<div class="ex">' +
             '<div class="ex-head">' +
               '<div class="ex-th"></div>' +
-              '<div class="ex-l"><div class="ex-n">' + e.name + '</div></div>' +
-              '<span class="ex-p">' + won(e.price) + '</span>' +
+              '<div class="ex-l"><div class="ex-n">' + e.name + '</div>' +
+                '<span class="ex-p">' + won(e.price) + '</span></div>' +
             '</div>' +
             '<div class="ex-body">' +
               '<div class="ex-sub">' +
@@ -611,18 +614,19 @@ function render(){
           var qty = S.exQty[i] || 1;
           var body = '';
           if (on){
-            body = '<div class="ex-body" onclick="event.stopPropagation()">' +
+            body = '<div class="ex-body">' +
               '<div class="ex-foot">' +
                 '<div class="ex-qty"><button onclick="exQty(' + i + ',-1)">−</button><b>' + qty + '</b><button onclick="exQty(' + i + ',1)">+</button></div>' +
                 '<span class="ex-total"><span class="cap">합계</span>' + won(e.price * qty) + '</span></div>' +
             '</div>';
           }
-          H += '<div class="ex' + (on ? ' on' : '') + '" onclick="toggleEx(' + i + ')">' +
+          H += '<div class="ex' + (on ? ' on' : '') + '">' +
             '<div class="ex-head">' +
-              '<span class="ex-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>' +
               '<div class="ex-th"></div>' +
-              '<div class="ex-l"><div class="ex-n">' + e.name + '</div></div>' +
-              '<span class="ex-p">' + won(e.price) + '</span>' +
+              '<div class="ex-l"><div class="ex-n">' + e.name + '</div>' +
+                '<span class="ex-p">' + won(e.price) + '</span></div>' +
+              (on ? '<button class="ex-card-x" style="position:static;width:38px;height:38px" onclick="toggleEx(' + i + ')">✕</button>'
+                  : '<button class="ex-add" onclick="toggleEx(' + i + ')">담기</button>') +
             '</div>' + body + '</div>';
         }
       });
