@@ -149,13 +149,16 @@
   .ex-card .ex-qty{background:#fff;}
   .ex-card-p{font-size:14.5px;font-weight:700;}
   .ex-total .cap{font-size:11.5px;font-weight:400;color:var(--color-text-tertiary);margin-right:5px;}
-  .ex.on{border-color:var(--color-secondary);}
+  /* 단일형도 체크되면 "담은 것" — 크림 면으로 통일(2026-09-01). 담긴 카드처럼 보더는 지운다(면이 곧 경계).
+     체크박스는 유지해야 해제가 가능(옵션형 카드의 ✕에 대응) */
+  .ex.on{background:var(--color-surface);border-color:transparent;}
+  .ex.on .ex-qty{background:#fff;}
+  .ex.on .ex-chk{background:var(--color-secondary);border-color:var(--color-secondary);}
   .ex-l{flex:1;min-width:0;}
   .ex-n{font-size:14.5px;font-weight:500;}
   .ex-p{font-size:14px;font-weight:600;margin-left:auto;flex-shrink:0;color:var(--color-text-primary);}
   .ex-chk{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--color-border);flex-shrink:0;
     display:flex;align-items:center;justify-content:center;background:#fff;}
-  .ex.on .ex-chk{background:var(--color-secondary);border-color:var(--color-secondary);}
   .ex.on .ex-chk svg{display:block;}
   .ex-chk svg{display:none;width:13px;height:13px;color:#fff;}
 
@@ -170,8 +173,6 @@
   .sum-total .r{font-size:19px;font-weight:700;color:var(--color-primary);}
   .sum-ship{text-align:right;font-size:12px;color:var(--color-secondary);font-weight:600;padding-bottom:2px;}
 
-  .sheet-guide{text-align:center;font-size:12.5px;color:var(--color-text-tertiary);padding:8px 16px 0;flex-shrink:0;}
-  body.can-buy .sheet-guide{display:none;}
   .sheet-foot{flex-shrink:0;padding:10px 16px calc(14px + env(safe-area-inset-bottom));display:flex;gap:9px;}
   .btn-cart{flex:1;background:#fff;border:1px solid var(--color-border);border-radius:14px;padding:15px 0;
     font-size:15.5px;font-weight:600;font-family:inherit;letter-spacing:-0.3px;cursor:pointer;color:var(--color-text-primary);}
@@ -275,7 +276,6 @@
   </div>
   <div class="sheet-body" id="sheetBody"></div>
   <div class="sum" id="sumBox"></div>
-  <div class="sheet-guide" id="guide">옵션을 선택해주세요</div>
   <div class="sheet-foot">
     <button class="btn-cart dis" id="btnCart" onclick="addCart()">장바구니</button>
     <button class="btn-order dis" id="btnOrder" onclick="goOrder()">구매하기</button>
@@ -347,11 +347,10 @@
   <table>
     <tr><th>케이스</th><th>처리</th></tr>
     <tr><td><b>필수 3개</b></td><td>순차 강제 유지(조합 재고 때문). 대신 <b>선택 완료된 셀렉트는 한 줄로 축소</b>돼 화면을 잡아먹지 않습니다.
-    CTA 캡션은 "옵션을 선택해주세요"가 아니라 <b>"각인 색상을 선택해주세요"</b>처럼 남은 항목을 지목합니다</td></tr>
+    <b>미선택 사유를 알리는 캡션은 두지 않습니다</b> — 순차 강제로 다음에 고를 셀렉트만 열려 있고 [필수] 배지가 남아 있어, 문구 없이도 다음 행동이 자명합니다(옵션 구성마다 문구가 달라져 노이즈만 늘어남)</td></tr>
     <tr><td><b>필수 2 + 선택 1</b></td><td>선택옵션은 <b>[선택] 배지</b>로 구분하고, 필수만 다 고르면 <b>구매하기가 즉시 활성화</b>됩니다(선택옵션은 안 골라도 됨).
     고르면 본품 카드가 아니라 <b>별도 카드</b>로 추가되고 수량도 독립입니다</td></tr>
     <tr><td><b>텍스트 혼합<br>(필수2+선택1)</b></td><td>필수 텍스트는 <b>미입력 시 구매 차단</b>, 선택 텍스트는 비워도 통과(단, 썼으면 유효해야 — 초과 시 차단).
-    필수가 여럿이면 <b>CTA 캡션이 미입력 항목을 등록 순서대로 지목</b>합니다("자수 문구를…" → "각인 날짜를…").
     노출 순서는 <b>파트너 등록 순서 유지</b>(필수 우선 재정렬 금지 — 의미 묶음 보존).
     구성 옵션이 있으므로 입력칸은 <b>구성 선택 후 선택 결과 카드 안</b>에 나타납니다(조합 종속 — 4절). 글자수 초과는 실시간 빨간 카운터 + 결제 차단.
     <b style="color:#B45309">구현 필수: 입력 중 시트 전체 리렌더 금지</b> — 포커스 소실·모바일 키보드 닫힘. 배지·카운터·하단 요약만 부분 갱신</td></tr>
@@ -368,10 +367,11 @@
   (같은 조합을 2개 담으면 이름도 2개). 옵션 없는 상품만 시트에 즉시 노출 · 조합 카드 삭제(✕) 시 입력값도 함께 소멸<br>
   · <b>추가상품(함께 사면 좋아요)은 처음부터 노출(2026-09-01 실물 실측)</b>: 본품 옵션 선택 여부와 무관 —
   추가상품은 별도 상품이라 본품 조합에 종속될 이유가 없고, 옵션 완성 전에 미리 보여야 담을 기회가 생긴다.
-  단 <b>노출과 구매는 분리</b>: 본품 필수 미완성이면 추가상품을 담아도 결제 차단(CTA 캡션은 본품 옵션을 지목)<br>
-  · <b>카드 배경 = 크림(--color-surface)</b>: 선택 결과·선택옵션·담긴 추가상품 카드 공통 — "담은 것"의 면.
+  단 <b>노출과 구매는 분리</b>: 본품 필수 미완성이면 추가상품을 담아도 결제 차단(구매하기 비활성)<br>
+  · <b>카드 배경 = 크림(--color-surface)</b>: 선택 결과·선택옵션·담긴 추가상품 카드 공통 — "담은 것"의 면. <b>단일형 추가상품도 체크되면 크림</b>(예외 없음 — 담겼는지 여부는 면 색 하나로 읽혀야 한다).
   고르는 중인 셀렉트는 흰색 유지(진행중/담김을 면 색으로 구분 — 실물 스킨 동일 문법)<br>
-  · <b>안내 문구의 조사(을/를·이/가)는 받침에 따라 처리</b> — "문구을(를)" 같은 병기 금지<br>
+  · <b>CTA 위 안내 캡션 없음(2026-09-01)</b>: "폰트를 선택해주세요" 같은 문구를 두지 않습니다 —
+  옵션 구성마다 문구가 달라져 변수만 늘고, 미선택 사유는 이미 <b>비활성 구매하기 + 순차 강제 + [필수] 배지 + 글자수 카운터</b>가 말해줍니다<br>
   · <b>품절 옵션은 숨기지 않고 흐리게</b> 노출 — 있는 줄 알고 찾는 확인 비용 제거<br>
   · <b>구매하기는 필수 조건 미충족 시 비활성</b> + 버튼 위에 <b>남은 항목을 지목</b>하는 캡션<br>
   · <b>쿠폰은 시트에서 계산하지 않습니다</b>("주문서에서 적용") — 시트와 주문서 금액이 어긋나면 신뢰가 깨집니다<br>
@@ -393,12 +393,6 @@ var BASE = 9500, LIST = 14000, FREE_SHIP = 30000;
 /* 선택 완료 배지 — 요구(필수/선택)가 해소되면 배지도 확정(딥그린)으로 바뀐다 */
 var DONE_BADGE = '<span class="opt-badge badge-done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>완료</span>';
 
-/* 받침에 따른 조사 처리 — "문구을(를)" 같은 표기 금지 */
-function josa(w, a, b){
-  var c = (w || '').charCodeAt((w || '').length - 1);
-  var bat = c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 > 0;
-  return w + (bat ? a : b);
-}
 
 var CASES = {
   none: { title:'[국내제작] 마루야마 키친크로스 주방행주', req:[], opt:[], txt:[], ex:[] },
@@ -501,17 +495,6 @@ function txtHTML(c){
   }).join('');
 }
 
-function missing(){
-  var c = CASES[C];
-  for (var i = 0; i < c.req.length; i++) if (!S.req[i]) return josa(c.req[i].name || ('선택' + (i+1)), '을', '를') + ' 선택해주세요';
-  for (var j = 0; j < c.txt.length; j++){
-    var t = c.txt[j], v = (S.txt[j] || '').trim();
-    if (t.required && !v) return josa(t.name, '을', '를') + ' 입력해주세요';
-    if (v.length > t.max) return josa(t.name, '이', '가') + ' ' + t.max + '자를 넘었어요';
-  }
-  return '';
-}
-
 /* ── 렌더 ── */
 function render(){
   var c = CASES[C], H = '';
@@ -579,7 +562,7 @@ function render(){
   }
 
   // 추가상품 — 처음부터 노출(2026-09-01 실물 실측: 본품 옵션 미선택 초기 화면에도 보임).
-  // 노출과 구매는 분리 — 담는 건 언제든, 결제는 본품 필수 완성 후(CTA 캡션이 본품 옵션을 지목).
+  // 노출과 구매는 분리 — 담는 건 언제든, 결제는 본품 필수 완성 후(미완성이면 구매하기 비활성).
     if (c.ex.length){
       H += '<div class="extra-h">함께 사면 좋아요 <span class="cap">별도 상품 · 같은 배송</span></div>';
       c.ex.forEach(function(e, i){
@@ -667,7 +650,6 @@ function renderFoot(){
          '<div class="sum-ship">' + (total >= FREE_SHIP ? '무료배송' : '+ 배송비 3,000원') + '</div>';
     document.getElementById('sumBox').innerHTML = R;
   }
-  document.getElementById('guide').textContent = missing() || '';
   document.getElementById('btnOrder').classList.toggle('dis', !ok);
   document.getElementById('btnCart').classList.toggle('dis', !ok);
 }
