@@ -194,7 +194,7 @@
   <button data-c="req2" onclick="setCase('req2')">필수 2</button>
   <button data-c="req3" onclick="setCase('req3')">필수 3</button>
   <button data-c="req2opt1" onclick="setCase('req2opt1')">필수2+선택1</button>
-  <button data-c="text2" onclick="setCase('text2')">텍스트 2</button>
+  <button data-c="text2" onclick="setCase('text2')">텍스트 혼합</button>
   <button data-c="textopt" onclick="setCase('textopt')">텍스트 선택만</button>
   <button data-c="extra" onclick="setCase('extra')">추가구성</button>
   <button data-c="addreal" onclick="setCase('addreal')">추가상품(케미콩)</button>
@@ -311,8 +311,10 @@
     CTA 캡션은 "옵션을 선택해주세요"가 아니라 <b>"각인 색상을 선택해주세요"</b>처럼 남은 항목을 지목합니다</td></tr>
     <tr><td><b>필수 2 + 선택 1</b></td><td>선택옵션은 <b>[선택] 배지</b>로 구분하고, 필수만 다 고르면 <b>구매하기가 즉시 활성화</b>됩니다(선택옵션은 안 골라도 됨).
     고르면 본품 카드가 아니라 <b>별도 카드</b>로 추가되고 수량도 독립입니다</td></tr>
-    <tr><td><b>텍스트 2개</b></td><td>필수 텍스트는 <b>미입력 시 구매 차단</b>, 선택 텍스트는 비워도 통과.
-    글자수 초과는 <b>실시간 빨간 카운터</b>로 표시하고 결제를 막습니다. 재고와 무관하므로 <b>순서 강제 없이 맨 뒤</b>에 둡니다</td></tr>
+    <tr><td><b>텍스트 혼합<br>(필수2+선택1)</b></td><td>필수 텍스트는 <b>미입력 시 구매 차단</b>, 선택 텍스트는 비워도 통과(단, 썼으면 유효해야 — 초과 시 차단).
+    필수가 여럿이면 <b>CTA 캡션이 미입력 항목을 등록 순서대로 지목</b>합니다("자수 문구를…" → "각인 날짜를…").
+    노출 순서는 <b>파트너 등록 순서 유지</b>(필수 우선 재정렬 금지 — 의미 묶음 보존). 글자수 초과는 실시간 빨간 카운터 + 결제 차단.
+    <b style="color:#B45309">구현 필수: 입력 중 시트 전체 리렌더 금지</b> — 포커스 소실·모바일 키보드 닫힘. 배지·카운터·하단 요약만 부분 갱신</td></tr>
     <tr><td><b>추가구성상품</b></td><td><b>본품 옵션을 다 고른 뒤에만 노출</b>됩니다(본품 없이 부가품만 사는 주문 방지).
     금액도 <b>본품 소계 / 추가구성 소계</b>로 분리해 보여줍니다</td></tr>
     <tr><td><b>복합</b></td><td>순서 고정: <b>필수 → 선택 → 텍스트 → 선택결과 → 추가구성 → 요약</b>. 이 순서는 케이스와 무관하게 항상 같습니다</td></tr>
@@ -365,9 +367,12 @@ var CASES = {
     req:[ {name:'구성', items:[['1P (단품)',0],['2P 세트',8500]]},
           {name:'색상', items:[['노랑',0],['그레이',0]]} ],
     opt:[ {name:'전용 세제 추가', items:[['전용 세제 200ml',2500],['전용 세제 500ml',4900]]} ], txt:[], ex:[] },
+  /* 필수 텍스트 2개 + 선택 1개 — 필수가 여럿이면 안내 캡션이 미입력 항목을 순서대로 지목한다.
+     노출 순서는 파트너 등록 순서 유지(필수 우선 재정렬 금지 — 각인 문구·날짜처럼 의미 묶음이 깨진다) */
   text2: { title:'[각인] 마루야마 키친크로스 이름 자수',
     req:[ {name:'구성', items:[['1P (단품)',0],['2P 세트',8500]]} ], opt:[],
     txt:[ {name:'자수 문구', required:true, max:12, ph:'예) 우리집 주방'},
+          {name:'각인 날짜', required:true, max:10, ph:'예) 2026.09.01'},
           {name:'선물 메시지', required:false, max:30, ph:'선택 입력'} ], ex:[] },
   /* 선택 텍스트 단독 — 시트는 열리되 아무것도 강제하지 않는 유일한 케이스(즉시 구매 가능).
      선물 메시지만 있는 상품이 전형. 입력하면 유효해야 하며(초과 시 차단), 비우면 통과 */
@@ -534,8 +539,12 @@ function render(){
     }
   }
   document.getElementById('sheetBody').innerHTML = H;
+  renderFoot();
+}
 
-  // 요약
+/* 요약·안내·CTA만 갱신 — 텍스트 입력 중에는 시트 본문을 다시 그리지 않는다(포커스 보존) */
+function renderFoot(){
+  var c = CASES[C];
   var ok = canBuy();
   document.body.classList.toggle('can-buy', ok);
   if (ok){
@@ -572,7 +581,24 @@ function pickReq(i, k){
 }
 function pickOpt(i, k){ S.opt[i] = CASES[C].opt[i].items[k]; S.open = null; render(); }
 function clearOpt(i){ S.opt[i] = null; render(); }
-function onTxt(i, v){ S.txt[i] = v; render(); }
+/* 입력 중 render() 전체 호출 금지 — innerHTML 재생성으로 매 타이핑마다 포커스가 날아가고
+   모바일에선 키보드가 닫힌다. 해당 입력 박스의 배지·카운터와 하단 요약만 부분 갱신한다 */
+function onTxt(i, v){
+  S.txt[i] = v;
+  var t = CASES[C].txt[i];
+  var box = document.querySelectorAll('#sheetBody .txtopt')[i];
+  if (box && t){
+    var over = v.length > t.max;
+    box.classList.toggle('on', !!v);
+    box.querySelector('.th').innerHTML = t.name + ((v.trim() && !over)
+      ? DONE_BADGE
+      : '<span class="opt-badge ' + (t.required ? 'badge-req">필수' : 'badge-opt">선택') + '</span>');
+    var cnt = box.querySelector('.cnt');
+    cnt.classList.toggle('over', over);
+    cnt.textContent = v.length + ' / ' + t.max + '자';
+  }
+  renderFoot();
+}
 function toggleEx(i){
   var p = S.ex.indexOf(i);
   if (p >= 0) S.ex.splice(p, 1);
