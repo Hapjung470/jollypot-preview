@@ -127,7 +127,14 @@
   /* 추가상품 */
   .extra-h{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:600;margin:18px 0 9px;padding-top:16px;border-top:1px solid var(--color-divider);}
   .extra-h .cap{font-size:12px;font-weight:400;color:var(--color-text-tertiary);}
-  .ex{display:flex;align-items:center;gap:11px;border:1px solid var(--color-border);border-radius:12px;padding:14px 15px;margin-bottom:8px;cursor:pointer;min-height:54px;}
+  .ex{border:1px solid var(--color-border);border-radius:12px;padding:14px 15px;margin-bottom:8px;cursor:pointer;min-height:54px;}
+  /* 실측 개선(2026-09-01): 단가는 상품명 줄 오른쪽, 옵션·수량은 아래 "전폭" —
+     옵션명이 길어(실측 "마음을 전하는 테이프(이지컷)_생일축하해") 우측 가격 컬럼에 눌리면 두 줄로 꺾인다 */
+  .ex-head{display:flex;align-items:center;gap:11px;}
+  .ex-body{margin-top:10px;cursor:default;}
+  .ex-foot{display:flex;align-items:center;justify-content:space-between;margin-top:9px;}
+  .ex-total{font-size:14.5px;font-weight:700;}
+  .ex-total .cap{font-size:11.5px;font-weight:400;color:var(--color-text-tertiary);margin-right:5px;}
   .ex.on{border-color:var(--color-secondary);}
   .ex-l{flex:1;min-width:0;}
   .ex-n{font-size:14.5px;font-weight:500;}
@@ -180,7 +187,7 @@
   .ex-tag{font-size:10px;font-weight:700;color:#3276AE;background:#EAF2F9;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:1px}
   /* 추가상품 옵션 = 본품과 같은 셀렉트-목록 문법 (2026-09-01 개선)
      칩 기각 사유: 옵션명은 파트너 입력값이라 길이 통제 불가 · 본품과 문법 이원화 · 개수 확장 불가 */
-  .ex-sub{margin-top:8px;border:1px solid #CCCFD4;border-radius:10px;overflow:hidden;background:#fff}
+  .ex-sub{border:1px solid #CCCFD4;border-radius:10px;overflow:hidden;background:#fff}
   .ex-sel{display:flex;align-items:center;gap:7px;padding:10px 12px;font-size:13px;cursor:pointer}
   .ex-sel .lb{color:#9E9E9E;flex:none}
   .ex-sel .vv{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -192,7 +199,7 @@
   .ex-optrow span:last-child{flex:none;color:#666}
   .ex-optrow.on{color:var(--color-primary);font-weight:600;background:rgba(252,100,45,.05)}
   .ex-optrow.on span:last-child{color:var(--color-primary)}
-  .ex-qty{display:inline-flex;align-items:center;gap:12px;margin-top:8px;border:1px solid #CCCFD4;border-radius:8px;padding:4px 10px}
+  .ex-qty{display:inline-flex;align-items:center;gap:12px;border:1px solid #CCCFD4;border-radius:8px;padding:4px 10px}
   .ex-qty button{border:none;background:none;font-size:15px;color:#666;cursor:pointer;font-family:inherit;padding:0 2px;line-height:1}
   .ex-qty b{font-size:13px;min-width:14px;text-align:center}
 </style>
@@ -295,7 +302,9 @@
   <h2>구매 플로우 v10 — 옵션 경우의 수 전체 대응 (2026-08-19)</h2>
   <p>샵바이 실측(<code>shopby-option-vs-addproduct-v1.md</code>) 기준으로 <b>10가지 케이스</b>를 상단 토글로 전부 확인할 수 있습니다. <b>[텍스트 선택만]</b>은 시트가 열리되 아무것도 강제하지 않는 유일한 케이스(즉시 구매 가능 · 입력하면 유효해야 함)로, QA에서 놓치기 쉬운 경로입니다.
   <b>[추가상품(케미콩)]</b>은 실사용 상품(케미콩 이지컷 네임테이프 — 샵바이 추가상품 기능 첫 사용)을 반영한 케이스로,
-  <b>추가상품이 자체 옵션과 수량을 갖는 구조</b>까지 다룹니다. 추가상품 옵션은 칩이 아니라 <b>본품과 같은 셀렉트-목록(아래 펼침)</b>으로 처리합니다 — 옵션명은 파트너 입력값이라 길이를 통제할 수 없고, 체크 시 목록이 자동으로 펼쳐집니다.<br>
+  <b>추가상품이 자체 옵션과 수량을 갖는 구조</b>까지 다룹니다. 추가상품 옵션은 칩이 아니라 <b>본품과 같은 셀렉트-목록(아래 펼침)</b>으로 처리합니다 — 옵션명은 파트너 입력값이라 길이를 통제할 수 없고, 체크 시 목록이 자동으로 펼쳐집니다.
+  <b>레이아웃(2026-09-01 실측 개선)</b>: 단가는 상품명 줄 오른쪽 · <b>옵션 셀렉트와 수량은 아래 전폭</b> · 합계는 수량 줄 오른쪽 —
+  실측 옵션명("마음을 전하는 테이프(이지컷)_생일축하해 +900원")이 우측 가격 컬럼에 눌리면 두 줄로 꺾이기 때문입니다(샵바이 기본 스킨의 실패 재현 방지).<br>
   <b>용어 정리(2026-09-01)</b>: 추가구성/추가구성상품/추가상품은 <b>전부 같은 개념</b>(샵바이 additionalProducts)입니다.
   공식 용어 <b>"추가상품"</b>으로 통일하며, 형태가 두 가지입니다 — <b>단일형</b>(옵션 없음, 체크만 · [추가상품·단일] 케이스) /
   <b>옵션형</b>(자체 옵션 보유, 셀렉트로 선택 · [추가상품·옵션형] 케이스). 소비자 화면 헤더는 "함께 사면 좋아요"를 유지합니다. 디자인·옵션 세부 구성은 어드민 실값 기준으로 확정하세요.
@@ -403,9 +412,11 @@ var CASES = {
     req:[ {name:'디자인', items:[['베이직',0],['공룡',0],['유니콘',0],['체리',0]]} ],
     opt:[],
     txt:[ {name:'이름 입력 (주문제작)', required:true, max:10, ph:'예) 김졸리'} ],
-    ex:[ {name:'네임스티커 세트', price:4900, optName:'모양',
-          opts:[['라운드 (반투명 화이트) 20매입',0],['사각 (크라프트) 20매입',500]]},
-         {name:'이지컷 리필 1롤', price:3500} ] },
+    /* 추가상품 = 2026-09-01 어드민 실측(스크린샷) 기준. 옵션 5종만 표기 — 전체 목록은 어드민 확인 */
+    ex:[ {name:'케미콩 추가상품 고르기', price:4100, optName:'테이프',
+          opts:[['시간 테이프(이지컷)_아침',900],['시간 테이프(이지컷)_점심',900],['시간 테이프(이지컷)_저녁',900],
+                ['마음을 전하는 테이프(이지컷)_생일축하해',900],['마음을 전하는 테이프(이지컷)_사랑해',900]]},
+         {name:'이지컷 리필 1롤 (예시)', price:3500} ] },
   all: { title:'[풀세트] 마루야마 키친크로스 각인 + 주방소품',
     req:[ {name:'구성', items:[['1P (단품)',0],['2P 세트',8500]]},
           {name:'색상', items:[['노랑',0],['그레이',0]]} ],
@@ -536,30 +547,36 @@ function render(){
         var qty = S.exQty[i] || 1;
         var sel = (e.opts && S.exSel[i] != null) ? S.exSel[i] : 0;
         var unit = e.price + (e.opts ? e.opts[sel][1] : 0);
-        var inner = '<div class="ex-n">' + e.name + (e.opts ? ' <span class="ex-tag">옵션</span>' : '') + '</div>';
-        if (on && e.opts){
-          var axis = e.optName || '옵션';
-          var openL = !!S.exOpen[i];
-          inner += '<div class="ex-sub" onclick="event.stopPropagation()">' +
-            '<div class="ex-sel" onclick="exToggleList(' + i + ')">' +
-              '<span class="lb">' + axis + '</span>' +
-              '<span class="vv">' + e.opts[sel][0] + (e.opts[sel][1] ? ' (+' + won(e.opts[sel][1]) + ')' : '') + '</span>' +
-              '<svg class="cv2' + (openL ? ' up' : '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>' +
-            '</div>' +
-            (openL ? e.opts.map(function(o, j){
-              return '<div class="ex-optrow' + (j === sel ? ' on' : '') + '" onclick="exOpt(' + i + ',' + j + ')">' +
-                '<span>' + o[0] + '</span><span>' + (o[1] ? '+' + won(o[1]) : '+0원') + '</span></div>';
-            }).join('') : '') +
+        /* 헤드: [체크] 상품명(+옵션 태그) ... 기본 단가 — 단가를 이름 줄로 올려 아래 폭을 확보 */
+        var body = '';
+        if (on){
+          body += '<div class="ex-body" onclick="event.stopPropagation()">';
+          if (e.opts){
+            var axis = e.optName || '옵션';
+            var openL = !!S.exOpen[i];
+            body += '<div class="ex-sub">' +
+              '<div class="ex-sel" onclick="exToggleList(' + i + ')">' +
+                '<span class="lb">' + axis + '</span>' +
+                '<span class="vv">' + e.opts[sel][0] + (e.opts[sel][1] ? ' (+' + won(e.opts[sel][1]) + ')' : '') + '</span>' +
+                '<svg class="cv2' + (openL ? ' up' : '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>' +
+              '</div>' +
+              (openL ? e.opts.map(function(o, j){
+                return '<div class="ex-optrow' + (j === sel ? ' on' : '') + '" onclick="exOpt(' + i + ',' + j + ')">' +
+                  '<span>' + o[0] + '</span><span>' + (o[1] ? '+' + won(o[1]) : '+0원') + '</span></div>';
+              }).join('') : '') +
+            '</div>';
+          }
+          body += '<div class="ex-foot">' +
+            '<div class="ex-qty"><button onclick="exQty(' + i + ',-1)">−</button><b>' + qty + '</b><button onclick="exQty(' + i + ',1)">+</button></div>' +
+            '<span class="ex-total"><span class="cap">합계</span>' + won(unit * qty) + '</span></div>' +
           '</div>';
         }
-        if (on){
-          inner += '<div class="ex-qty" onclick="event.stopPropagation()">' +
-            '<button onclick="exQty(' + i + ',-1)">−</button><b>' + qty + '</b><button onclick="exQty(' + i + ',1)">+</button></div>';
-        }
         H += '<div class="ex' + (on ? ' on' : '') + '" onclick="toggleEx(' + i + ')">' +
-          '<span class="ex-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>' +
-          '<div class="ex-l">' + inner + '</div>' +
-          '<span class="ex-p">' + won(unit * qty) + '</span></div>';
+          '<div class="ex-head">' +
+            '<span class="ex-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>' +
+            '<div class="ex-l"><div class="ex-n">' + e.name + (e.opts ? ' <span class="ex-tag">옵션</span>' : '') + '</div></div>' +
+            '<span class="ex-p">' + won(e.price) + '</span>' +
+          '</div>' + body + '</div>';
       });
     }
   }
