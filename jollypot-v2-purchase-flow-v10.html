@@ -178,9 +178,20 @@
   .opt-badge.badge-done svg{width:10px;height:10px;stroke-width:3.2}
 
   .ex-tag{font-size:10px;font-weight:700;color:#3276AE;background:#EAF2F9;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:1px}
-  .ex-opts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-  .ex-oc{border:1px solid #CCCFD4;background:#fff;border-radius:8px;padding:6px 11px;font-size:12px;font-weight:600;color:#666;font-family:inherit;cursor:pointer}
-  .ex-oc.on{border-color:var(--color-primary);color:var(--color-primary);background:rgba(252,100,45,.06)}
+  /* 추가상품 옵션 = 본품과 같은 셀렉트-목록 문법 (2026-09-01 개선)
+     칩 기각 사유: 옵션명은 파트너 입력값이라 길이 통제 불가 · 본품과 문법 이원화 · 개수 확장 불가 */
+  .ex-sub{margin-top:8px;border:1px solid #CCCFD4;border-radius:10px;overflow:hidden;background:#fff}
+  .ex-sel{display:flex;align-items:center;gap:7px;padding:10px 12px;font-size:13px;cursor:pointer}
+  .ex-sel .lb{color:#9E9E9E;flex:none}
+  .ex-sel .vv{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ex-sel .cv2{width:14px;height:14px;flex:none;color:#9E9E9E;transition:transform .15s}
+  .ex-sel .cv2.up{transform:rotate(180deg)}
+  .ex-optrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;
+    font-size:13px;border-top:1px solid #E5E7EB;cursor:pointer}
+  .ex-optrow span:first-child{min-width:0;line-height:1.45}
+  .ex-optrow span:last-child{flex:none;color:#666}
+  .ex-optrow.on{color:var(--color-primary);font-weight:600;background:rgba(252,100,45,.05)}
+  .ex-optrow.on span:last-child{color:var(--color-primary)}
   .ex-qty{display:inline-flex;align-items:center;gap:12px;margin-top:8px;border:1px solid #CCCFD4;border-radius:8px;padding:4px 10px}
   .ex-qty button{border:none;background:none;font-size:15px;color:#666;cursor:pointer;font-family:inherit;padding:0 2px;line-height:1}
   .ex-qty b{font-size:13px;min-width:14px;text-align:center}
@@ -284,7 +295,7 @@
   <h2>구매 플로우 v10 — 옵션 경우의 수 전체 대응 (2026-08-19)</h2>
   <p>샵바이 실측(<code>shopby-option-vs-addproduct-v1.md</code>) 기준으로 <b>10가지 케이스</b>를 상단 토글로 전부 확인할 수 있습니다. <b>[텍스트 선택만]</b>은 시트가 열리되 아무것도 강제하지 않는 유일한 케이스(즉시 구매 가능 · 입력하면 유효해야 함)로, QA에서 놓치기 쉬운 경로입니다.
   <b>[추가상품(케미콩)]</b>은 실사용 상품(케미콩 이지컷 네임테이프 — 샵바이 추가상품 기능 첫 사용)을 반영한 케이스로,
-  <b>추가상품이 자체 옵션과 수량을 갖는 구조</b>까지 다룹니다. 디자인·옵션 세부 구성은 어드민 실값 기준으로 확정하세요.
+  <b>추가상품이 자체 옵션과 수량을 갖는 구조</b>까지 다룹니다. 추가상품 옵션은 칩이 아니라 <b>본품과 같은 셀렉트-목록(아래 펼침)</b>으로 처리합니다 — 옵션명은 파트너 입력값이라 길이를 통제할 수 없고, 체크 시 목록이 자동으로 펼쳐집니다. 디자인·옵션 세부 구성은 어드민 실값 기준으로 확정하세요.
   화면은 전부 <b>옵션 데이터로부터 렌더링</b>되며, 케이스별 하드코딩이 없습니다.</p>
 
   <h2>1. 샵바이 옵션 4종과 화면 대응</h2>
@@ -389,7 +400,8 @@ var CASES = {
     req:[ {name:'디자인', items:[['베이직',0],['공룡',0],['유니콘',0],['체리',0]]} ],
     opt:[],
     txt:[ {name:'이름 입력 (주문제작)', required:true, max:10, ph:'예) 김졸리'} ],
-    ex:[ {name:'네임스티커 세트', price:4900, opts:[['라운드',0],['사각',0]]},
+    ex:[ {name:'네임스티커 세트', price:4900, optName:'모양',
+          opts:[['라운드 (반투명 화이트) 20매입',0],['사각 (크라프트) 20매입',500]]},
          {name:'이지컷 리필 1롤', price:3500} ] },
   all: { title:'[풀세트] 마루야마 키친크로스 각인 + 주방소품',
     req:[ {name:'구성', items:[['1P (단품)',0],['2P 세트',8500]]},
@@ -402,7 +414,7 @@ var CASES = {
 var C = 'req1', S = {};   // S: 선택 상태
 
 function setCase(k){
-  C = k; S = { req:[], opt:[], txt:[], ex:[], q:1, qOpt:1, exSel:{}, exQty:{} };
+  C = k; S = { req:[], opt:[], txt:[], ex:[], q:1, qOpt:1, exSel:{}, exQty:{}, exOpen:{} };
   document.querySelectorAll('.proto-bar button').forEach(function(b){
     b.classList.toggle('active', b.dataset.c === k);
   });
@@ -523,9 +535,19 @@ function render(){
         var unit = e.price + (e.opts ? e.opts[sel][1] : 0);
         var inner = '<div class="ex-n">' + e.name + (e.opts ? ' <span class="ex-tag">옵션</span>' : '') + '</div>';
         if (on && e.opts){
-          inner += '<div class="ex-opts" onclick="event.stopPropagation()">' + e.opts.map(function(o, j){
-            return '<button class="ex-oc' + (j === sel ? ' on' : '') + '" onclick="exOpt(' + i + ',' + j + ')">' + o[0] + (o[1] ? ' +' + won(o[1]) : '') + '</button>';
-          }).join('') + '</div>';
+          var axis = e.optName || '옵션';
+          var openL = !!S.exOpen[i];
+          inner += '<div class="ex-sub" onclick="event.stopPropagation()">' +
+            '<div class="ex-sel" onclick="exToggleList(' + i + ')">' +
+              '<span class="lb">' + axis + '</span>' +
+              '<span class="vv">' + e.opts[sel][0] + (e.opts[sel][1] ? ' (+' + won(e.opts[sel][1]) + ')' : '') + '</span>' +
+              '<svg class="cv2' + (openL ? ' up' : '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>' +
+            '</div>' +
+            (openL ? e.opts.map(function(o, j){
+              return '<div class="ex-optrow' + (j === sel ? ' on' : '') + '" onclick="exOpt(' + i + ',' + j + ')">' +
+                '<span>' + o[0] + '</span><span>' + (o[1] ? '+' + won(o[1]) : '+0원') + '</span></div>';
+            }).join('') : '') +
+          '</div>';
         }
         if (on){
           inner += '<div class="ex-qty" onclick="event.stopPropagation()">' +
@@ -602,10 +624,17 @@ function onTxt(i, v){
 function toggleEx(i){
   var p = S.ex.indexOf(i);
   if (p >= 0) S.ex.splice(p, 1);
-  else { S.ex.push(i); if (S.exQty[i] == null) S.exQty[i] = 1; if (S.exSel[i] == null) S.exSel[i] = 0; }
+  else {
+    S.ex.push(i);
+    if (S.exQty[i] == null) S.exQty[i] = 1;
+    if (S.exSel[i] == null) S.exSel[i] = 0;
+    /* 옵션 있는 추가상품은 체크 즉시 목록을 펼쳐 옵션 존재를 알린다 */
+    if (CASES[C].ex[i].opts) S.exOpen[i] = true;
+  }
   render();
 }
-function exOpt(i, j){ S.exSel[i] = j; render(); }
+function exToggleList(i){ S.exOpen[i] = !S.exOpen[i]; render(); }
+function exOpt(i, j){ S.exSel[i] = j; S.exOpen[i] = false; render(); }
 function exQty(i, d){ S.exQty[i] = Math.max(1, (S.exQty[i] || 1) + d); render(); }
 function resetPick(){ S.req = []; S.opt = []; S.ex = []; S.q = 1; S.open = 'r0'; render(); }
 function qty(d){ S.q = Math.max(1, S.q + d); render(); }
