@@ -27,7 +27,7 @@
   .proto-bar .ver{margin-left:auto;font-size:11.5px;color:#8888A0}
   @media (max-width:640px){.proto-bar .ver{flex:0 0 100%;margin-left:0;text-align:right}}
 
-  .phone{max-width:430px;margin:0 auto;background:var(--color-bg);min-height:100vh;position:relative;padding-bottom:96px}
+  .phone{max-width:430px;margin:0 auto;background:var(--color-bg);min-height:100vh;position:relative;padding-bottom:78px}
 
   /* ===== 앱바 ===== */
   .appbar{display:flex;align-items:center;height:52px;padding:0 14px;position:sticky;top:0;background:var(--color-bg);z-index:10;border-bottom:1px solid var(--color-divider)}
@@ -110,10 +110,26 @@
   .biz{padding:18px 16px 20px;background:#F7F8F9;font-size:11.5px;color:var(--color-text-tertiary);line-height:1.8}
   .biz b{font-weight:600;color:var(--color-text-secondary)}
 
-  /* ===== 하단 CTA ===== */
-  .cta-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
-    background:var(--color-bg);border-top:1px solid var(--color-divider);display:flex;gap:8px;
-    padding:10px 16px;padding-bottom:max(10px,env(safe-area-inset-bottom));z-index:20}
+  /* ===== CTA (인라인 — 실서비스 구조: 결제정보 아래, 탭바는 글로벌) ===== */
+  .cta-wrap{display:flex;gap:8px;padding:6px 16px 4px}
+  .n-foot .cta{flex:1}
+
+  /* ===== 글로벌 탭바 (홈/쇼핑/+/스크랩북/마이) ===== */
+  .tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+    background:var(--color-bg);border-top:1px solid var(--color-divider);display:flex;align-items:flex-end;
+    padding:6px 8px;padding-bottom:max(8px,env(safe-area-inset-bottom));z-index:20}
+  .tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    font-size:10.5px;color:var(--color-text-secondary);cursor:pointer;position:relative;
+    background:none;border:none;font-family:inherit;letter-spacing:-0.3px;padding:2px 0}
+  .tb svg{width:23px;height:23px;stroke-width:1.7}
+  .tb-plus{flex:1;display:flex;justify-content:center}
+  .tb-plus .fab{width:46px;height:46px;border-radius:50%;background:var(--color-brand);
+    display:flex;align-items:center;justify-content:center;margin-top:-14px;cursor:pointer;
+    box-shadow:0 3px 10px rgba(253,184,19,.4)}
+  .tb-plus .fab svg{width:22px;height:22px;stroke:#fff;stroke-width:2.4}
+  .tb .dot{position:absolute;top:0;right:calc(50% - 15px);width:7px;height:7px;border-radius:50%;
+    background:var(--color-error);opacity:0;transition:opacity .2s}
+  .tb .dot.on{opacity:1}
   .cta{flex:1;border-radius:12px;padding:15px 0;font-size:15.5px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:-0.3px}
   .cta.gh{background:#fff;border:1px solid var(--color-border);color:var(--color-text-primary)}
   .cta.pr{background:var(--color-primary);border:none;color:#fff}
@@ -171,7 +187,7 @@
       <path d="M4 20 8.5 7.5 16.5 15.5z"/><path d="M13 5.5l.6-2M17.5 8.7l1.8-1.2M18.6 13.2l2 .4"/>
     </svg>
     <div class="t"></div>
-    <div class="d">2026.09.01 18:18 주문 · 주문번호 20260901181759</div>
+    <div class="d">2026.09.01 18:18 주문</div>
     <div class="s">아래 계좌로 입금하면 주문이 확정돼요</div>
   </div>
 
@@ -187,6 +203,7 @@
   <!-- 주문 정보 -->
   <div class="sec">
     <div class="st">주문 정보</div>
+    <div class="kv"><span class="k">주문번호</span><span class="v"><b>20260901181759</b><button class="copy" onclick="toast('주문번호를 복사했어요')">복사</button></span></div>
     <div class="kv"><span class="k">결제수단</span><span class="v" id="payLabel">퀵계좌이체</span></div>
     <div class="kv"><span class="k">주문자</span><span class="v">김졸리 · 010-1234-5678</span></div>
     <div class="kv"><span class="k">배송지</span><span class="v">[04024] 서울특별시 마포구 월드컵로 1길 14, 101동 1234호</span></div>
@@ -213,6 +230,11 @@
     <div class="amt-total"><span class="tl">총 결제 금액</span><span class="tv">9,800원</span></div>
   </div>
 
+  <div class="cta-wrap">
+    <button class="cta gh" onclick="toast('주문 상세 (프로토타입)')">주문 상세보기</button>
+    <button class="cta pr" onclick="toast('쇼핑 홈으로 이동 (프로토타입)')">계속 쇼핑하기</button>
+  </div>
+
   <!-- 인라인 레시피 코너 — 넛지 2단(상시). 시트를 닫아도 기회는 남는다 -->
   <div class="reco" id="reco">
     <div class="rh">배송 기다리는 동안,<br><span class="hl">식비 아껴주는 레시피</span> 구경해보세요 🍳</div>
@@ -230,9 +252,13 @@
     서울특별시 마포구 양화로 120(서교동), 2층 · 고객센터 1668-3995
   </div>
 
-  <div class="cta-wrap">
-    <button class="cta gh" onclick="toast('주문 상세 (프로토타입)')">주문 상세보기</button>
-    <button class="cta pr" onclick="toast('쇼핑 홈으로 이동 (프로토타입)')">계속 쇼핑하기</button>
+  <!-- 글로벌 탭바 — 저장 시 스크랩북 탭에 점: 저장의 목적지를 화면에서 학습시킨다 -->
+  <div class="tabbar">
+    <button class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>홈</button>
+    <button class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg>쇼핑</button>
+    <span class="tb-plus"><span class="fab"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></span>
+    <button class="tb"><span class="dot" id="scrapDot"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>스크랩북</button>
+    <button class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5"/></svg>마이</button>
   </div>
 </div>
 
@@ -249,7 +275,7 @@
   </div>
 </div>
 
-<div id="toastBox" style="position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(16px);background:#212121;color:#fff;font-size:13.5px;padding:12px 20px;border-radius:10px;opacity:0;pointer-events:none;transition:.22s;z-index:200;white-space:nowrap"></div>
+<div id="toastBox" style="position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(16px);background:#212121;color:#fff;font-size:13.5px;padding:12px 20px;border-radius:10px;opacity:0;pointer-events:none;transition:.22s;z-index:200;white-space:nowrap"></div>
 
 <script>
 /* ── 레시피 카드 데이터 (에디터 픽 고정 — 추후 주문 상품 연관 추천으로 교체) ── */
@@ -262,7 +288,7 @@ var RECIPES = [
 ];
 function cardHTML(r){
   var g = r[4].split(',');
-  return '<div class="rc">'
+  return '<div class="rc" onclick="location.href=\'jollypot-v2-recipe-detail-v1-30.html\'" style="cursor:pointer">'
     + '<div class="rc-thumb" style="background:linear-gradient(160deg,'+g[0]+' 0%,'+g[1]+' 100%)">'+r[5]
     +   '<span class="rc-time">⏱ '+r[2]+'</span>'
     +   '<span class="rc-save" onclick="event.stopPropagation();rcSave(this)"><svg viewBox="0 0 24 24"><path d="M19 21l-7-4-7 4V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></span>'
@@ -276,7 +302,10 @@ document.getElementById('nudgeCards').innerHTML = RECIPES.map(cardHTML).join('')
 
 function rcSave(el){
   el.classList.toggle('on');
-  if (el.classList.contains('on')) toast('스크랩북에 저장했어요');
+  if (el.classList.contains('on')){
+    toast('스크랩북에 저장했어요');
+    var d = document.getElementById('scrapDot'); if (d) d.classList.add('on');
+  }
 }
 
 var _tt;
@@ -359,12 +388,17 @@ schedule();
 <p>• 시트·인라인 카피는 <b>운영 설정값</b>(하드코딩 금지)<br>
 • <span class="warn">⚠ "식비를 절반으로" 같은 수치 클레임은 근거 자료 없이는 표시광고법 리스크 — "식비 아껴주는"으로 완화해 반영했습니다. 수치를 쓰려면 산출 근거 문서화 필요</span></p>
 
+<h3>5-1. 노출 빈도 (피로 방지)</h3>
+<p>• 시트는 주문당 1회이되 <b>재노출 상한: 최근 7일 내 시트를 본 유저에게는 미노출</b>(반복 구매자 피로 방지 — 운영 설정값)<br>
+• <span class="warn">운영 옵션(Phase 2)</span>: 레시피 활성 유저(저장 ≥N)는 시트 생략 또는 카피 변경("주문한 상품으로 만들 레시피") — 전환이 목적이므로 이미 전환된 유저에게는 다른 메시지<br>
+• 시트는 <b>아래로 스와이프해도 닫혀야 한다</b>(핸들 표준 동작)</p>
+
 <h3>6. 측정 이벤트 (필수)</h3>
 <p><code>nudge_sheet_view</code> · <code>nudge_sheet_close</code> · <code>nudge_card_tap</code> · <code>nudge_more_tap</code> · <code>nudge_card_save</code> · <code>inline_reco_*</code> 동일 세트<br>
-핵심 지표: <b>주문완료 → 레시피 진입 전환율</b> · 주문완료 경유 저장 수. 이 화면의 존재 이유를 측정하는 유일한 수단입니다.</p>
+모든 이벤트에 <b>결제수단 속성</b>(card/vbank) 포함 — 분기 규칙의 효과 검증용<br>핵심 지표: <b>주문완료 → 레시피 진입 전환율</b> · 주문완료 경유 저장 수. 이 화면의 존재 이유를 측정하는 유일한 수단입니다.</p>
 
 <h3>7. 흐름 연결</h3>
-<p>구매 플로우(v10) 구매하기 → 주문서(checkout-v9) 결제하기 → <b>이 화면</b> · 뒤로가기 = 홈(주문서 복귀 방지) · 결제 실패·중단은 checkout-v9의 실패 상태 참조</p>
+<p>구매 플로우(v10) 구매하기 → 주문서(checkout-v9) 결제하기 → <b>이 화면</b> · 하단은 CTA 고정바가 아니라 <b>글로벌 탭바</b>(실서비스 구조) — 저장 시 스크랩북 탭에 점 표시 · 뒤로가기 = 홈(주문서 복귀 방지) · 결제 실패·중단은 checkout-v9의 실패 상태 참조</p>
 </div></div>
 
 </body>
