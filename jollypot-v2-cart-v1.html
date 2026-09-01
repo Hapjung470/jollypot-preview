@@ -67,8 +67,11 @@
   /* ── 라인 ── */
   .line{display:flex;gap:11px;padding:14px 16px;position:relative;}
   .line + .line{border-top:1px solid var(--color-divider);}
-  .line.sub{padding-left:36px;background:var(--color-surface);}
-  .line.sub::before{content:'';position:absolute;left:22px;top:0;bottom:0;width:2px;background:#E7D9C6;}
+  /* 추가상품 라인은 흰 면(2026-09-02). 크림은 옵션 시트에서 "담긴 것"을 뜻하는데,
+     장바구니는 전부 담긴 상태라 크림이 아무 정보도 주지 못한다. 게다가 배송비 안내(크림)와 색이 경쟁한다.
+     종속은 들여쓰기 + 연결선 + [추가상품] 배지 + [본상품] 표기로 이미 네 겹으로 말한다 */
+  .line.sub{padding-left:36px;}
+  .line.sub::before{content:'';position:absolute;left:23px;top:0;bottom:0;width:2px;background:var(--color-divider);}
   .line.off{opacity:.45;}
   .th{width:66px;height:66px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#EADFD2,#D9C7B4);}
   .li{flex:1;min-width:0;}
@@ -217,7 +220,7 @@
   <p>· <b>선택은 3단</b>: 전체 선택 / 그룹 선택 / 라인 선택 — 상위 체크는 하위 전체를 따른다<br>
   · <b>금액은 "선택된 라인"만 계산</b>한다. 담겨 있어도 체크가 풀리면 배송비 계산에서도 빠진다<br>
   · <b>배송비는 그룹별로 판정</b>한다(파트너배송 177/180건). 그룹 선택 합계가 임계 미만이면 그룹마다 배송비가 붙는다<br>
-  · <b>추가상품은 독립 라인</b>이지만 본상품 아래에 <b>들여쓰기 + 연결선</b>으로 붙인다 —
+  · <b>추가상품은 독립 라인</b>이지만 본상품 아래에 <b>들여쓰기 + 연결선 + [추가상품] 배지 + [본상품] 표기</b>로 붙인다(면 색은 쓰지 않는다 — 장바구니는 전부 담긴 상태라 "담김"을 뜻하는 크림이 정보가 되지 못하고, 배송비 안내와 색이 경쟁한다) —
     같은 배송그룹이므로 배송비를 늘리지 않는다는 사실이 시각적으로 읽혀야 한다<br>
   · <b style="color:#FFC520">본상품을 삭제하면 딸린 추가상품도 함께 삭제</b>한다.
     추가상품만 남으면 유저는 원하지 않는 물건에 배송비만 물게 된다(실물은 남겨두지만, 이 동작은 바꾸는 것이 맞다)<br>
