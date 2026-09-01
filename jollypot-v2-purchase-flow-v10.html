@@ -115,11 +115,11 @@
   .pick{background:var(--color-surface);border-radius:12px;padding:13px 14px;margin-bottom:9px;}
   .pick .txtopt{background:#fff;border-width:1px;margin:11px 0 0;}
   .pick .stepper{background:#fff;}
-  .pick.sub{background:#FAFBFC;}
+  .pick.sub{background:var(--color-surface);}   /* 담은 것은 예외 없이 크림 */
   .pk-top{display:flex;align-items:flex-start;gap:8px;}
   .pk-name{flex:1;font-size:14.5px;font-weight:500;line-height:1.45;}
   .pk-tag{font-size:11px;font-weight:700;border-radius:5px;padding:2px 6px;flex-shrink:0;
-    background:var(--color-surface-alt);color:var(--color-text-secondary);}
+    background:#fff;color:var(--color-text-secondary);}   /* 크림 카드 위 — surface-alt는 크림 계열이라 묻힌다 */
   .pk-x{width:20px;height:20px;color:var(--color-text-tertiary);cursor:pointer;flex-shrink:0;}
   .pk-bot{display:flex;align-items:center;margin-top:11px;}
   .stepper{display:flex;align-items:center;border:1px solid var(--color-border);border-radius:10px;overflow:hidden;}
@@ -142,12 +142,13 @@
   /* 옵션형 추가상품 = 다중 담기(샵바이 실동작 2026-09-01 실측):
      옵션을 고를 때마다 카드가 추가되고 셀렉트는 placeholder로 복귀. 카드마다 수량·삭제 독립 */
   .ex-card{position:relative;background:var(--color-surface);border-radius:12px;padding:13px 14px;margin:8px 0 0;}
-  .ex-card-t{font-size:13.5px;font-weight:600;line-height:1.45;padding-right:28px;word-break:break-all;}
+  .ex-card-t{font-size:14.5px;font-weight:500;line-height:1.45;padding-right:28px;word-break:break-all;}
   .ex-card-x{position:absolute;top:9px;right:9px;width:26px;height:26px;border:none;background:none;
     color:#9E9E9E;font-size:15px;cursor:pointer;font-family:inherit;line-height:1;}
   .ex-card-b{display:flex;align-items:center;justify-content:space-between;margin-top:9px;}
   .ex-card .ex-qty{background:#fff;}
   .ex-card-p{font-size:14.5px;font-weight:700;}
+  .ex-card-p .cap{font-size:11.5px;font-weight:400;color:var(--color-text-tertiary);margin-right:5px;}
   .ex-total .cap{font-size:11.5px;font-weight:400;color:var(--color-text-tertiary);margin-right:5px;}
   /* 단일형도 체크되면 "담은 것" — 크림 면으로 통일(2026-09-01). 담긴 카드처럼 보더는 지운다(면이 곧 경계).
      체크박스는 유지해야 해제가 가능(옵션형 카드의 ✕에 대응) */
@@ -199,7 +200,6 @@
   .opt-badge.badge-done{background:#E9F0EE;color:var(--color-secondary);display:inline-flex;align-items:center;gap:3px}
   .opt-badge.badge-done svg{width:10px;height:10px;stroke-width:3.2}
 
-  .ex-tag{font-size:10px;font-weight:700;color:#3276AE;background:#EAF2F9;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:1px}
   /* 추가상품 옵션 = 본품과 같은 셀렉트-목록 문법 (2026-09-01 개선)
      칩 기각 사유: 옵션명은 파트너 입력값이라 길이 통제 불가 · 본품과 문법 이원화 · 개수 확장 불가 */
   .ex-sub{border:1px solid #CCCFD4;border-radius:10px;overflow:hidden;background:#fff}
@@ -214,9 +214,10 @@
   .ex-optrow span:last-child{flex:none;color:#666}
   .ex-optrow.on{color:var(--color-primary);font-weight:600;background:rgba(252,100,45,.05)}
   .ex-optrow.on span:last-child{color:var(--color-primary)}
-  .ex-qty{display:inline-flex;align-items:center;gap:12px;border:1px solid #CCCFD4;border-radius:8px;padding:4px 10px}
-  .ex-qty button{border:none;background:none;font-size:15px;color:#666;cursor:pointer;font-family:inherit;padding:0 2px;line-height:1}
-  .ex-qty b{font-size:13px;min-width:14px;text-align:center}
+  /* 담긴 항목의 수량 조작은 본품 스테퍼와 같은 규격 — 같은 위계의 같은 조작이 두 크기로 보이면 안 된다 */
+  .ex-qty{display:inline-flex;align-items:center;border:1px solid var(--color-border);border-radius:10px;overflow:hidden}
+  .ex-qty button{width:38px;height:36px;border:none;background:#fff;font-size:17px;color:var(--color-text-secondary);cursor:pointer;font-family:inherit;}
+  .ex-qty b{width:38px;text-align:center;font-size:14.5px;font-weight:600;background:#fff}
 </style>
 </head>
 <body>
@@ -373,7 +374,7 @@
   · <b>CTA 위 안내 캡션 없음(2026-09-01)</b>: "폰트를 선택해주세요" 같은 문구를 두지 않습니다 —
   옵션 구성마다 문구가 달라져 변수만 늘고, 미선택 사유는 이미 <b>비활성 구매하기 + 순차 강제 + [필수] 배지 + 글자수 카운터</b>가 말해줍니다<br>
   · <b>품절 옵션은 숨기지 않고 흐리게</b> 노출 — 있는 줄 알고 찾는 확인 비용 제거<br>
-  · <b>구매하기는 필수 조건 미충족 시 비활성</b> + 버튼 위에 <b>남은 항목을 지목</b>하는 캡션<br>
+  · <b>구매하기는 필수 조건 미충족 시 비활성</b>(버튼 위 안내 캡션은 두지 않음 — 위 항목 참조)<br>
   · <b>쿠폰은 시트에서 계산하지 않습니다</b>("주문서에서 적용") — 시트와 주문서 금액이 어긋나면 신뢰가 깨집니다<br>
   · <b>배송비는 예상 결제금액에 합산하지 않고</b> 아래 별도 표기 · 무료배송 임계 도달 시 자동 전환</p>
 
@@ -451,7 +452,7 @@ var CASES = {
 var C = 'req1', S = {};   // S: 선택 상태
 
 function setCase(k){
-  C = k; S = { req:[], opt:[], txt:[], ex:[], q:1, qOpt:1, exQty:{}, exOpen:{}, exPicks:[] };
+  C = k; S = { req:[], opt:[], txt:[], ex:[], q:1, qOpt:{}, exQty:{}, exOpen:{}, exPicks:[] };   /* qOpt: 선택옵션은 항목별 독립 수량 */
   document.querySelectorAll('.proto-bar button').forEach(function(b){
     b.classList.toggle('active', b.dataset.c === k);
   });
@@ -555,9 +556,9 @@ function render(){
       H += '<div class="pick sub"><div class="pk-top"><div class="pk-name">' + S.opt[i][0] + '</div>' +
         '<span class="pk-tag">선택옵션</span>' +
         '<svg class="pk-x" onclick="clearOpt(' + i + ')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div>' +
-        '<div class="pk-bot"><div class="stepper"><button ' + (S.qOpt <= 1 ? 'disabled' : '') + ' onclick="qtyOpt(-1)">−</button>' +
-        '<span class="qty">' + S.qOpt + '</span><button onclick="qtyOpt(1)">＋</button></div>' +
-        '<span class="pk-price">' + won(S.opt[i][1] * S.qOpt) + '</span></div></div>';
+        '<div class="pk-bot"><div class="stepper"><button ' + ((S.qOpt[i] || 1) <= 1 ? 'disabled' : '') + ' onclick="qtyOpt(' + i + ',-1)">−</button>' +
+        '<span class="qty">' + (S.qOpt[i] || 1) + '</span><button onclick="qtyOpt(' + i + ',1)">＋</button></div>' +
+        '<span class="pk-price">' + won(S.opt[i][1] * (S.qOpt[i] || 1)) + '</span></div></div>';
     });
   }
 
@@ -572,7 +573,7 @@ function render(){
           var openL = !!S.exOpen[i];
           H += '<div class="ex" style="cursor:default">' +
             '<div class="ex-head">' +
-              '<div class="ex-l"><div class="ex-n">' + e.name + ' <span class="ex-tag">옵션</span></div></div>' +
+              '<div class="ex-l"><div class="ex-n">' + e.name + '</div></div>' +
               '<span class="ex-p">' + won(e.price) + '</span>' +
             '</div>' +
             '<div class="ex-body">' +
@@ -594,7 +595,7 @@ function render(){
               '<button class="ex-card-x" onclick="exPickRm(' + n + ')">✕</button>' +
               '<div class="ex-card-b">' +
                 '<div class="ex-qty"><button onclick="exPickQty(' + n + ',-1)">−</button><b>' + pk.qty + '</b><button onclick="exPickQty(' + n + ',1)">+</button></div>' +
-                '<span class="ex-card-p">' + won((e.price + e.opts[pk.j][1]) * pk.qty) + '</span>' +
+                '<span class="ex-card-p"><span class="cap">합계</span>' + won((e.price + e.opts[pk.j][1]) * pk.qty) + '</span>' +
               '</div></div>';
           });
           H += '</div></div>';
@@ -631,7 +632,7 @@ function renderFoot(){
   if (ok){
     var addp = c.req.reduce(function(s, _, i){ return s + (S.req[i] ? S.req[i][1] : 0); }, 0);
     var main = (BASE + addp) * S.q, list = (LIST + addp) * S.q;
-    var sub = c.opt.reduce(function(s, _, i){ return s + (S.opt[i] ? S.opt[i][1] * S.qOpt : 0); }, 0);
+    var sub = c.opt.reduce(function(s, _, i){ return s + (S.opt[i] ? S.opt[i][1] * (S.qOpt[i] || 1) : 0); }, 0);
     var exs = S.ex.reduce(function(s, i){
       var e = c.ex[i]; if (e.opts) return s;
       return s + e.price * (S.exQty[i] || 1);
@@ -639,7 +640,8 @@ function renderFoot(){
       var e = c.ex[pk.i];
       return s + (e.price + e.opts[pk.j][1]) * pk.qty;
     }, 0);
-    var exCnt = S.ex.length + S.exPicks.length;
+    var exCnt = S.ex.reduce(function(n, i){ return n + (S.exQty[i] || 1); }, 0)
+              + S.exPicks.reduce(function(n, pk){ return n + pk.qty; }, 0);   /* 라인 수가 아니라 실제 수량 */
     var total = main + sub + exs;
     var R = '<div class="sum-row"><span>상품 금액</span><span class="v">' + won(list) + '</span></div>' +
             '<div class="sum-row"><span>상품 할인</span><span class="v minus">-' + won(list - main) + '</span></div>';
@@ -664,7 +666,7 @@ function pickReq(i, k){
   render();
 }
 function pickOpt(i, k){ S.opt[i] = CASES[C].opt[i].items[k]; S.open = null; render(); }
-function clearOpt(i){ S.opt[i] = null; render(); }
+function clearOpt(i){ S.opt[i] = null; S.qOpt[i] = 1; render(); }   /* 뺐다가 다시 담으면 수량도 1부터 */
 /* 입력 중 render() 전체 호출 금지 — innerHTML 재생성으로 매 타이핑마다 포커스가 날아가고
    모바일에선 키보드가 닫힌다. 해당 입력 박스의 배지·카운터와 하단 요약만 부분 갱신한다 */
 function onTxt(i, v){
@@ -702,9 +704,11 @@ function exPick(i, j){
 function exPickRm(n){ S.exPicks.splice(n, 1); render(); }
 function exPickQty(n, d){ S.exPicks[n].qty = Math.max(1, S.exPicks[n].qty + d); render(); }
 function exQty(i, d){ S.exQty[i] = Math.max(1, (S.exQty[i] || 1) + d); render(); }
-function resetPick(){ S.req = []; S.opt = []; S.ex = []; S.txt = []; S.q = 1; S.open = 'r0'; render(); }   /* 카드 제거 = 조합에 붙은 입력값도 소멸 */
+/* 조합 카드 ✕ = 본품 조합과 거기 붙은 입력값만 소멸. 추가상품(S.ex/S.exPicks)은 별도 상품이라 유지한다
+   — 예전엔 S.ex만 비워서 단일형은 사라지고 옵션형은 남는 비대칭 버그가 있었다 */
+function resetPick(){ S.req = []; S.opt = []; S.qOpt = {}; S.txt = []; S.q = 1; S.open = 'r0'; render(); }
 function qty(d){ S.q = Math.max(1, S.q + d); render(); }
-function qtyOpt(d){ S.qOpt = Math.max(1, S.qOpt + d); render(); }
+function qtyOpt(i, d){ S.qOpt[i] = Math.max(1, (S.qOpt[i] || 1) + d); render(); }
 function addCart(){ if (!canBuy()) return; toast('장바구니에 담았어요'); }
 function goOrder(f){ if (!f && !canBuy()) return; location.href = 'jollypot-v2-order-checkout-v9.html'; }
 function toggleLike(){ document.getElementById('btnLike').classList.toggle('on'); }
