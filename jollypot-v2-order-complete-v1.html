@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>주문완료 — 졸리팟</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{
+    --color-brand:#FDB813; --color-primary:#FC642D; --color-secondary:#145F48;
+    --color-bg:#FFFFFF; --color-surface:#FFF5EA; --color-surface-alt:#FFEEDC; --color-surface-info:#F1F8F3;
+    --color-text-primary:#212121; --color-text-secondary:#666666; --color-text-tertiary:#9E9E9E;
+    --color-border:#CCCFD4; --color-divider:#E5E7EB; --color-error:#D64545; --color-info:#3276AE;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scrollbar-gutter:stable}
+  body{font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;
+    letter-spacing:-0.3px;word-break:keep-all;background:#22222E;color:var(--color-text-primary)}
+
+  /* ===== 프로토 바 ===== */
+  .proto-bar{background:#1E1E2E;padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .proto-bar .lab{font-size:12px;color:#CCCCDD;font-weight:600}
+  .proto-bar button{background:#2D2D3D;color:#8888A0;border:none;border-radius:8px;padding:7px 12px;
+    font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer}
+  .proto-bar button.active{background:#5B6ABF;color:#fff}
+  .proto-bar .ver{margin-left:auto;font-size:11.5px;color:#8888A0}
+  @media (max-width:640px){.proto-bar .ver{flex:0 0 100%;margin-left:0;text-align:right}}
+
+  .phone{max-width:430px;margin:0 auto;background:var(--color-bg);min-height:100vh;position:relative;padding-bottom:96px}
+
+  /* ===== 앱바 ===== */
+  .appbar{display:flex;align-items:center;height:52px;padding:0 14px;position:sticky;top:0;background:var(--color-bg);z-index:10;border-bottom:1px solid var(--color-divider)}
+  .appbar .ic{width:24px;height:24px;color:var(--color-text-primary);cursor:pointer}
+  .appbar .ic+.ic{margin-left:10px}
+  .appbar .tt{position:absolute;left:50%;transform:translateX(-50%);font-size:16.5px;font-weight:600}
+
+  /* ===== 완료 배너 — 확정 = 딥그린 문법 ===== */
+  .done-banner{margin:16px;background:var(--color-surface-info);border-radius:16px;padding:26px 20px;text-align:center}
+  .done-banner .em{width:52px;height:52px;margin:0 auto 12px;color:var(--color-secondary)}
+  .done-banner .t{font-size:17.5px;font-weight:700}
+  .done-banner .d{font-size:12.5px;color:var(--color-text-secondary);margin-top:5px}
+  .done-banner .s{font-size:13px;color:var(--color-secondary);font-weight:600;margin-top:7px;display:none}
+  body.pay-vbank .done-banner .s{display:block}
+  body.pay-vbank .done-banner .t::after{content:"주문이 접수되었습니다!"}
+  body.pay-card  .done-banner .t::after{content:"주문이 완료되었습니다!"}
+
+  /* ===== 가상계좌 입금 카드 ===== */
+  .vbank{display:none;margin:0 16px 8px;border:1.5px solid var(--color-secondary);border-radius:14px;padding:16px}
+  body.pay-vbank .vbank{display:block}
+  .vbank .h{font-size:13.5px;font-weight:700;color:var(--color-secondary);margin-bottom:10px}
+  .vbank .row{display:flex;align-items:center;justify-content:space-between;font-size:14px;padding:5px 0}
+  .vbank .k{color:var(--color-text-secondary);flex:none;margin-right:14px}
+  .vbank .v{font-weight:600;text-align:right}
+  .vbank .v.amt{font-size:16px;font-weight:700}
+  .vbank .v.due{color:var(--color-error);font-weight:700}
+  .copy{display:inline-flex;align-items:center;margin-left:7px;padding:3px 9px;border:1px solid var(--color-border);
+    border-radius:7px;font-size:11.5px;font-weight:600;color:var(--color-text-secondary);cursor:pointer;background:#fff;font-family:inherit}
+  .copy:active{background:var(--color-surface)}
+
+  /* ===== 정보 섹션 ===== */
+  .sec{padding:18px 16px 6px}
+  .sec .st{font-size:16px;font-weight:600;margin-bottom:10px}
+  .kv{display:flex;font-size:13.5px;padding:5px 0}
+  .kv .k{width:84px;flex:none;color:var(--color-text-secondary)}
+  .kv .v{flex:1;line-height:1.5}
+  .kv .v b{font-weight:600}
+  .divider{height:8px;background:#F7F8F9;margin:14px 0 0}
+  .thin{height:1px;background:var(--color-divider);margin:12px 16px}
+
+  /* ===== 결제 정보 ===== */
+  .item-card{display:flex;gap:12px;padding:4px 0 12px}
+  .item-thumb{width:64px;height:64px;border-radius:10px;flex:none;
+    background:linear-gradient(140deg,#F5E6D0,#E0C8A0);display:flex;align-items:center;justify-content:center;font-size:26px}
+  .item-b .bn{font-size:12px;color:var(--color-text-tertiary)}
+  .item-b .tn{font-size:14px;font-weight:600;margin:2px 0}
+  .item-b .op{font-size:12.5px;color:var(--color-text-secondary)}
+  .item-b .qp{font-size:13px;margin-top:4px}
+  .item-b .qp b{font-size:14.5px;font-weight:700}
+  .amt-row{display:flex;justify-content:space-between;font-size:13.5px;padding:4px 0;color:var(--color-text-secondary)}
+  .amt-row .av{color:var(--color-text-primary)}
+  .amt-row.minus .av{color:var(--color-info)}
+  .amt-total{display:flex;justify-content:space-between;align-items:center;padding:12px 0 4px;margin-top:8px;border-top:1px solid var(--color-divider)}
+  .amt-total .tl{font-size:15px;font-weight:700}
+  .amt-total .tv{font-size:18px;font-weight:700;color:var(--color-primary)}
+
+  /* ===== 인라인 레시피 코너 (넛지 2단 — 상시) ===== */
+  .reco{padding:20px 0 8px;background:var(--color-surface);margin-top:16px}
+  .reco .rh{padding:0 16px;font-size:16px;font-weight:600;line-height:1.45}
+  .reco .rh .hl{color:var(--color-primary)}
+  .reco .rs{padding:0 16px;font-size:12.5px;color:var(--color-text-secondary);margin-top:3px}
+  .rc-scroll{display:flex;gap:10px;overflow-x:auto;padding:14px 16px 18px;scrollbar-width:none}
+  .rc-scroll::-webkit-scrollbar{display:none}
+  .rc{flex:0 0 138px}
+  .rc-thumb{width:138px;height:172px;border-radius:12px;position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;font-size:40px}
+  .rc-time{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.55);color:#fff;font-size:10.5px;font-weight:600;border-radius:6px;padding:2px 7px}
+  .rc-save{position:absolute;bottom:5px;right:5px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .rc-save svg{width:17px;height:17px;fill:none;stroke:#fff;stroke-width:2;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+  .rc-save.on svg{fill:var(--color-primary);stroke:var(--color-primary)}
+  .rc-t{font-size:13px;font-weight:500;line-height:1.35;margin-top:7px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .rc-c{font-size:11.5px;color:var(--color-text-tertiary);margin-top:2px}
+  .rc-m{font-size:11.5px;color:var(--color-text-secondary);margin-top:3px}
+  .reco-more{display:flex;align-items:center;justify-content:center;gap:4px;margin:0 16px 16px;height:42px;
+    border:1px solid var(--color-border);border-radius:10px;background:#fff;
+    font-size:13.5px;font-weight:600;color:var(--color-text-primary);cursor:pointer;font-family:inherit;width:calc(100% - 32px)}
+
+  /* ===== 사업자 푸터 ===== */
+  .biz{padding:18px 16px 20px;background:#F7F8F9;font-size:11.5px;color:var(--color-text-tertiary);line-height:1.8}
+  .biz b{font-weight:600;color:var(--color-text-secondary)}
+
+  /* ===== 하단 CTA ===== */
+  .cta-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+    background:var(--color-bg);border-top:1px solid var(--color-divider);display:flex;gap:8px;
+    padding:10px 16px;padding-bottom:max(10px,env(safe-area-inset-bottom));z-index:20}
+  .cta{flex:1;border-radius:12px;padding:15px 0;font-size:15.5px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:-0.3px}
+  .cta.gh{background:#fff;border:1px solid var(--color-border);color:var(--color-text-primary)}
+  .cta.pr{background:var(--color-primary);border:none;color:#fff}
+
+  /* ===== 넛지 바텀시트 =====
+     높이 상한: 완료 배너(안심 메시지)가 시트 위로 보이게 — 확인 순간을 가리지 않는다 */
+  .dim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:none}
+  .dim.on{display:block}
+  .nudge{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(105%);
+    width:100%;max-width:430px;background:#fff;border-radius:20px 20px 0 0;z-index:50;
+    padding:10px 0 0;padding-bottom:max(14px,env(safe-area-inset-bottom));
+    transition:transform .32s cubic-bezier(.2,.8,.25,1);max-height:72vh;display:flex;flex-direction:column}
+  .nudge.on{transform:translateX(-50%) translateY(0)}
+  .n-handle{width:36px;height:4px;border-radius:2px;background:var(--color-border);margin:0 auto 14px;flex:none}
+  .n-copy{padding:0 22px;font-size:18px;font-weight:700;line-height:1.45;text-align:center;flex:none}
+  .n-copy .hl{color:var(--color-primary)}
+  .n-sub{text-align:center;font-size:12.5px;color:var(--color-text-secondary);margin-top:5px;flex:none}
+  .nudge .rc-scroll{padding:16px 20px 6px;flex:1;min-height:0}
+  .nudge .rc{flex:0 0 148px}
+  .nudge .rc-thumb{width:148px;height:184px}
+  .n-foot{display:flex;gap:8px;padding:12px 16px 0;flex:none}
+
+  /* 프로토 노트 */
+  .doc{background:#1A1A2E;color:#C8C8DA;font-size:13px;line-height:1.8;padding:28px 18px 60px}
+  .doc-inner{max-width:760px;margin:0 auto}
+  .doc h3{color:#FC642D;font-size:15px;margin:22px 0 8px}
+  .doc b{color:#fff}
+  .doc .warn{color:#FFC520}
+  .doc code{background:#2a2a4a;padding:2px 6px;border-radius:4px;font-size:12px}
+</style>
+</head>
+<body class="pay-card">
+
+<div class="proto-bar">
+  <span class="lab">결제수단</span>
+  <button id="pc" class="active" onclick="setPay('card')">카드·간편결제</button>
+  <button id="pv" onclick="setPay('vbank')">가상계좌</button>
+  <span class="lab" style="margin-left:8px">넛지</span>
+  <button id="n0" class="active" onclick="setNudge('rule')">기본 규칙(권장)</button>
+  <button id="n1" onclick="setNudge('always')">항상 시트</button>
+  <button id="n2" onclick="setNudge('off')">없음</button>
+  <span class="ver">jollypot-v2-order-complete-v1</span>
+</div>
+
+<div class="phone">
+  <div class="appbar">
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+    <span class="tt">주문완료</span>
+  </div>
+
+  <!-- 완료 배너 -->
+  <div class="done-banner">
+    <svg class="em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 20 8.5 7.5 16.5 15.5z"/><path d="M13 5.5l.6-2M17.5 8.7l1.8-1.2M18.6 13.2l2 .4"/>
+    </svg>
+    <div class="t"></div>
+    <div class="d">2026.09.01 18:18 주문 · 주문번호 20260901181759</div>
+    <div class="s">아래 계좌로 입금하면 주문이 확정돼요</div>
+  </div>
+
+  <!-- 가상계좌 입금 정보 (가상계좌 상태 전용) -->
+  <div class="vbank">
+    <div class="h">입금 정보</div>
+    <div class="row"><span class="k">입금계좌</span><span class="v">우리은행 46519011018992<button class="copy" onclick="copyAcct()">복사</button></span></div>
+    <div class="row"><span class="k">예금주</span><span class="v">레몬트리커뮤니케이션</span></div>
+    <div class="row"><span class="k">입금금액</span><span class="v amt">9,800원</span></div>
+    <div class="row"><span class="k">입금기한</span><span class="v due">2026.09.11 23:59 까지 (D-10)</span></div>
+  </div>
+
+  <!-- 주문 정보 -->
+  <div class="sec">
+    <div class="st">주문 정보</div>
+    <div class="kv"><span class="k">결제수단</span><span class="v" id="payLabel">퀵계좌이체</span></div>
+    <div class="kv"><span class="k">주문자</span><span class="v">김졸리 · 010-1234-5678</span></div>
+    <div class="kv"><span class="k">배송지</span><span class="v">[04024] 서울특별시 마포구 월드컵로 1길 14, 101동 1234호</span></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 결제 정보 (주문서 v9와 동일 산식) -->
+  <div class="sec">
+    <div class="st">결제 정보</div>
+    <div class="item-card">
+      <div class="item-thumb">🧺</div>
+      <div class="item-b">
+        <div class="bn">마루야마</div>
+        <div class="tn">[국내제작] 마루야마 키친크로스 주방행주</div>
+        <div class="op">구성: 3매 세트 · 그레이</div>
+        <div class="qp">수량 1개 · <b>9,500원</b></div>
+      </div>
+    </div>
+    <div class="amt-row"><span>총 상품 금액</span><span class="av">14,000원</span></div>
+    <div class="amt-row minus"><span>상품 할인</span><span class="av">-4,500원</span></div>
+    <div class="amt-row minus"><span>쿠폰 할인</span><span class="av">-2,700원</span></div>
+    <div class="amt-row"><span>총 배송비</span><span class="av">+3,000원</span></div>
+    <div class="amt-total"><span class="tl">총 결제 금액</span><span class="tv">9,800원</span></div>
+  </div>
+
+  <!-- 인라인 레시피 코너 — 넛지 2단(상시). 시트를 닫아도 기회는 남는다 -->
+  <div class="reco" id="reco">
+    <div class="rh">배송 기다리는 동안,<br><span class="hl">식비 아껴주는 레시피</span> 구경해보세요 🍳</div>
+    <div class="rs">저장해두면 스크랩북에서 언제든 볼 수 있어요</div>
+    <div class="rc-scroll" id="recoCards"></div>
+    <button class="reco-more" onclick="toast('레시피 홈으로 이동 (프로토타입)')">레시피 더 보러가기
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+
+  <div class="biz">
+    <b>(주)레몬트리커뮤니케이션</b><br>
+    대표이사: 조영훈 · 사업자등록번호: 585-81-00058<br>
+    통신판매업신고: 제2018-서울마포-1198호<br>
+    서울특별시 마포구 양화로 120(서교동), 2층 · 고객센터 1668-3995
+  </div>
+
+  <div class="cta-wrap">
+    <button class="cta gh" onclick="toast('주문 상세 (프로토타입)')">주문 상세보기</button>
+    <button class="cta pr" onclick="toast('쇼핑 홈으로 이동 (프로토타입)')">계속 쇼핑하기</button>
+  </div>
+</div>
+
+<!-- ===== 넛지 바텀시트 (1단 · 주문당 1회) ===== -->
+<div class="dim" id="dim" onclick="closeNudge()"></div>
+<div class="nudge" id="nudge">
+  <div class="n-handle"></div>
+  <div class="n-copy">배송 기다리는 동안<br><span class="hl">식비 아껴주는 레시피</span> 구경해보세요!</div>
+  <div class="n-sub">방금 산 살림템과 잘 어울리는 인기 레시피예요</div>
+  <div class="rc-scroll" id="nudgeCards"></div>
+  <div class="n-foot">
+    <button class="cta gh" onclick="closeNudge()">닫기</button>
+    <button class="cta pr" onclick="toast('레시피 홈으로 이동 (프로토타입)')">레시피 더 보러가기</button>
+  </div>
+</div>
+
+<div id="toastBox" style="position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(16px);background:#212121;color:#fff;font-size:13.5px;padding:12px 20px;border-radius:10px;opacity:0;pointer-events:none;transition:.22s;z-index:200;white-space:nowrap"></div>
+
+<script>
+/* ── 레시피 카드 데이터 (에디터 픽 고정 — 추후 주문 상품 연관 추천으로 교체) ── */
+var RECIPES = [
+  ['갈비치킨 어남선생 레시피','류수영의 류리류리','21분','2인분','#C24A3E,#8B2E24','🍗'],
+  ['신라면 투움바 파스타','하루한끼','10분','1인분','#B85C3E,#8B3A24','🍝'],
+  ['초간단 우삼겹 덮밥','유지만','10분','1인분','#C2A46B,#8B7442','🍚'],
+  ['전자레인지 계란찜','밥심충전소','5분','1인분','#D9B44A,#A8842E','🥚'],
+  ['두부조림 비법 양념장','유지만','20분','2인분','#7A8B5A,#4C5C2E','🥘']
+];
+function cardHTML(r){
+  var g = r[4].split(',');
+  return '<div class="rc">'
+    + '<div class="rc-thumb" style="background:linear-gradient(160deg,'+g[0]+' 0%,'+g[1]+' 100%)">'+r[5]
+    +   '<span class="rc-time">⏱ '+r[2]+'</span>'
+    +   '<span class="rc-save" onclick="event.stopPropagation();rcSave(this)"><svg viewBox="0 0 24 24"><path d="M19 21l-7-4-7 4V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></span>'
+    + '</div>'
+    + '<div class="rc-t">'+r[0]+'</div>'
+    + '<div class="rc-c">'+r[1]+'</div>'
+    + '<div class="rc-m">⏱ '+r[2]+' · 👥 '+r[3]+'</div></div>';
+}
+document.getElementById('recoCards').innerHTML  = RECIPES.map(cardHTML).join('');
+document.getElementById('nudgeCards').innerHTML = RECIPES.map(cardHTML).join('');
+
+function rcSave(el){
+  el.classList.toggle('on');
+  if (el.classList.contains('on')) toast('스크랩북에 저장했어요');
+}
+
+var _tt;
+function toast(m){
+  var t = document.getElementById('toastBox');
+  t.textContent = m; t.style.opacity = 1; t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(_tt); _tt = setTimeout(function(){ t.style.opacity = 0; t.style.transform = 'translateX(-50%) translateY(16px)'; }, 2000);
+}
+
+/* ── 넛지 시트 ──
+   실서비스 트리거: 주문완료 "최초 진입" 1회만(서버 플래그) · 1.2초 지연 · 재방문/새로고침 미노출
+   기본 규칙: 카드·간편(결제 끝남) = 시트 자동 / 가상계좌(입금 과업 남음) = 시트 없이 인라인만 */
+var payMode = 'card', nudgeMode = 'rule', shown = false, timer = null;
+
+function openNudge(){
+  document.getElementById('dim').classList.add('on');
+  document.getElementById('nudge').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+function closeNudge(){
+  document.getElementById('dim').classList.remove('on');
+  document.getElementById('nudge').classList.remove('on');
+  document.body.style.overflow = '';
+}
+function schedule(){
+  clearTimeout(timer); closeNudge();
+  var fire = (nudgeMode === 'always') || (nudgeMode === 'rule' && payMode === 'card');
+  if (fire) timer = setTimeout(openNudge, 1200);
+}
+function setPay(m){
+  payMode = m;
+  document.body.className = 'pay-' + m;
+  document.getElementById('pc').className = m === 'card' ? 'active' : '';
+  document.getElementById('pv').className = m === 'vbank' ? 'active' : '';
+  document.getElementById('payLabel').textContent = m === 'card' ? '퀵계좌이체' : '가상계좌 (무통장입금)';
+  schedule();
+}
+function setNudge(m){
+  nudgeMode = m;
+  ['0','1','2'].forEach(function(i, idx){
+    document.getElementById('n' + i).className = (['rule','always','off'][idx] === m) ? 'active' : '';
+  });
+  schedule();
+}
+function copyAcct(){ toast('계좌번호를 복사했어요'); }
+
+schedule();
+</script>
+
+<div class="doc"><div class="doc-inner">
+<h3>📋 주문완료 + 레시피 넛지 — 개발 지침 (v1 · 2026-09-01)</h3>
+<p><b>이 화면의 전략적 위치</b> — 커머스 구매자를 레시피 유저로 전환하는 <b>유일한 접점</b>입니다.
+주문 직후는 ①기분이 좋고 ②배송까지 할 일이 없는, 앱 전체에서 넛지 수용성이 가장 높은 순간입니다.
+실측(주문 12,000건)상 재구매율 7% — 구매자를 레시피로 돌려세우는 것이 재방문(킬 지표)의 핵심 경로입니다.</p>
+
+<h3>1. 넛지 2단 구조</h3>
+<p>• <b>1단 바텀시트(강한 넛지)</b>: 주문완료 <b>최초 진입 시 1회만</b> · <b>1.2초 지연</b> 후 슬라이드 업(완료 확인이 먼저 눈에 들어오게) · 새로고침·재방문 시 미노출(<b>서버 플래그</b>, 클라이언트 저장소 아님)<br>
+• <b>2단 인라인 코너(상시)</b>: 결제 정보 아래 가로 스크롤 카드 — <b>시트를 닫아도 기회가 사라지지 않는다</b>. 시트 닫기 = 거절이 아니라 "나중에"<br>
+• 시트 <code>max-height:72vh</code> — <b>완료 배너(안심 메시지)가 시트 위로 보이는 높이</b>. 확인의 순간을 가리지 않는 것이 원칙</p>
+
+<h3>2. 결제수단별 분기 (기본 규칙)</h3>
+<p>• <b>카드·간편결제 = 시트 자동 노출</b> — 결제가 끝났고 유저의 과업이 없다<br>
+• <b>가상계좌 = 시트 미노출, 인라인 코너만</b> — 유저에게 "계좌 확인·입금"이라는 <b>미완료 과업</b>이 남아 있다.
+마케팅 시트가 입금 정보를 가리면 입금 누락 → 주문 자동취소 리스크. 인라인 코너는 동일하게 제공되므로 기회 손실은 제한적<br>
+<span class="warn">⚠ 프로토 상단 [넛지] 토글로 세 가지를 비교할 수 있습니다. "항상 시트"를 채택할 경우에도 가상계좌의 시트 지연은 2.5초 이상 권장</span></p>
+
+<h3>3. 가상계좌 완료 화면</h3>
+<p>• 배너 문구 분기: 카드 "주문이 완료되었습니다!" / 가상계좌 <b>"주문이 접수되었습니다!"</b> + "입금하면 확정" 서브 — 결제가 안 끝났는데 완료라고 하면 입금을 잊는다<br>
+• 입금 정보 카드: 계좌 <b>[복사] 버튼 필수</b>(클립보드 API) · 입금기한은 에러 레드 + <b>D-day 병기</b> · 딥그린 테두리(가이드 "확정·안내" 문법)<br>
+• 입금기한 임박(D-1) 푸시는 앱 패키징(05) 트랙과 연동 — 이번 범위 여부 개발사 협의</p>
+
+<h3>4. 레시피 카드 소스 · 연동</h3>
+<p>• <b>1차: 에디터 픽 고정 리스트</b>(어드민 큐레이션에서 지정, 코드 배포 없이 교체 가능)<br>
+• <span class="warn">2차(추후): 주문 상품 카테고리 연관 추천 · 재료 매칭 — 이번 범위 아님</span><br>
+• 카드 = 레시피 상세 추천 카드와 동일 컴포넌트(썸네일+시간 뱃지+저장 북마크+제목 2줄+계정명+메타)<br>
+• <b>카드의 저장 탭 = 스크랩북 저장</b> — 구매자의 스크랩북을 시딩하는 리스트 장치(S1). 저장 시 토스트 "스크랩북에 저장했어요"<br>
+• [레시피 더 보러가기] = 레시피 홈 딥링크 · 카드 탭 = 해당 레시피 상세</p>
+
+<h3>5. 카피 · 운영</h3>
+<p>• 시트·인라인 카피는 <b>운영 설정값</b>(하드코딩 금지)<br>
+• <span class="warn">⚠ "식비를 절반으로" 같은 수치 클레임은 근거 자료 없이는 표시광고법 리스크 — "식비 아껴주는"으로 완화해 반영했습니다. 수치를 쓰려면 산출 근거 문서화 필요</span></p>
+
+<h3>6. 측정 이벤트 (필수)</h3>
+<p><code>nudge_sheet_view</code> · <code>nudge_sheet_close</code> · <code>nudge_card_tap</code> · <code>nudge_more_tap</code> · <code>nudge_card_save</code> · <code>inline_reco_*</code> 동일 세트<br>
+핵심 지표: <b>주문완료 → 레시피 진입 전환율</b> · 주문완료 경유 저장 수. 이 화면의 존재 이유를 측정하는 유일한 수단입니다.</p>
+
+<h3>7. 흐름 연결</h3>
+<p>구매 플로우(v10) 구매하기 → 주문서(checkout-v9) 결제하기 → <b>이 화면</b> · 뒤로가기 = 홈(주문서 복귀 방지) · 결제 실패·중단은 checkout-v9의 실패 상태 참조</p>
+</div></div>
+
+</body>
+</html>
