@@ -267,7 +267,6 @@
 <div class="nudge" id="nudge">
   <div class="n-handle"></div>
   <div class="n-copy">배송 기다리는 동안<br><span class="hl">식비 아껴주는 레시피</span> 구경해보세요!</div>
-  <div class="n-sub">방금 산 살림템과 잘 어울리는 인기 레시피예요</div>
   <div class="rc-scroll" id="nudgeCards"></div>
   <div class="n-foot">
     <button class="cta gh" onclick="closeNudge()">닫기</button>
@@ -364,6 +363,7 @@ schedule();
 <h3>1. 넛지 2단 구조</h3>
 <p>• <b>1단 바텀시트(강한 넛지)</b>: 주문완료 <b>최초 진입 시 1회만</b> · <b>1.2초 지연</b> 후 슬라이드 업(완료 확인이 먼저 눈에 들어오게) · 새로고침·재방문 시 미노출(<b>서버 플래그</b>, 클라이언트 저장소 아님)<br>
 • <b>2단 인라인 코너(상시)</b>: 결제 정보 아래 가로 스크롤 카드 — <b>시트를 닫아도 기회가 사라지지 않는다</b>. 시트 닫기 = 거절이 아니라 "나중에"<br>
+• 시트는 <b>아래로 스와이프해도 닫혀야 한다</b>(핸들 표준 동작)<br>
 • 시트 <code>max-height:72vh</code> — <b>완료 배너(안심 메시지)가 시트 위로 보이는 높이</b>. 확인의 순간을 가리지 않는 것이 원칙</p>
 
 <h3>2. 결제수단별 분기 (기본 규칙)</h3>
@@ -387,11 +387,6 @@ schedule();
 <h3>5. 카피 · 운영</h3>
 <p>• 시트·인라인 카피는 <b>운영 설정값</b>(하드코딩 금지)<br>
 • <span class="warn">⚠ "식비를 절반으로" 같은 수치 클레임은 근거 자료 없이는 표시광고법 리스크 — "식비 아껴주는"으로 완화해 반영했습니다. 수치를 쓰려면 산출 근거 문서화 필요</span></p>
-
-<h3>5-1. 노출 빈도 (피로 방지)</h3>
-<p>• 시트는 주문당 1회이되 <b>재노출 상한: 최근 7일 내 시트를 본 유저에게는 미노출</b>(반복 구매자 피로 방지 — 운영 설정값)<br>
-• <span class="warn">운영 옵션(Phase 2)</span>: 레시피 활성 유저(저장 ≥N)는 시트 생략 또는 카피 변경("주문한 상품으로 만들 레시피") — 전환이 목적이므로 이미 전환된 유저에게는 다른 메시지<br>
-• 시트는 <b>아래로 스와이프해도 닫혀야 한다</b>(핸들 표준 동작)</p>
 
 <h3>6. 측정 이벤트 (필수)</h3>
 <p><code>nudge_sheet_view</code> · <code>nudge_sheet_close</code> · <code>nudge_card_tap</code> · <code>nudge_more_tap</code> · <code>nudge_card_save</code> · <code>inline_reco_*</code> 동일 세트<br>
