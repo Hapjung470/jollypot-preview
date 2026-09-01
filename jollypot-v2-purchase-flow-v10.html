@@ -167,6 +167,16 @@
   .doc th{color:#fff;background:#2A2A4A;}
   .doc code{background:#2A2A4A;border-radius:4px;padding:1px 5px;font-size:12px;}
   /* 추가상품 자체 옵션·수량 (실사용: 케미콩 이지컷 네임테이프 · 2026-09-01) */
+  /* 선택 완료 상태 강화 (2026-09-01): ①배지 해소(필수→✓완료) ②축 라벨 유지 ③값 강조
+     문제: 선택 후에도 오렌지 [필수]가 남아 요구가 해소되지 않고, 축 이름이 사라져 리뷰가 안 됐다 */
+  .selv{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+  .selv .lbl{font-size:10.5px;font-weight:600;color:var(--color-secondary);letter-spacing:-0.2px}
+  .selv .txt{flex:none}
+  .grp.on .selv .txt{font-weight:600}
+  .txtopt.on .th .opt-badge{}
+  .opt-badge.badge-done{background:#E9F0EE;color:var(--color-secondary);display:inline-flex;align-items:center;gap:3px}
+  .opt-badge.badge-done svg{width:10px;height:10px;stroke-width:3.2}
+
   .ex-tag{font-size:10px;font-weight:700;color:#3276AE;background:#EAF2F9;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:1px}
   .ex-opts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
   .ex-oc{border:1px solid #CCCFD4;background:#fff;border-radius:8px;padding:6px 11px;font-size:12px;font-weight:600;color:#666;font-family:inherit;cursor:pointer}
@@ -309,7 +319,9 @@
   </table>
 
   <h2>4. 공통 규칙</h2>
-  <p>· <b>품절 옵션은 숨기지 않고 흐리게</b> 노출 — 있는 줄 알고 찾는 확인 비용 제거<br>
+  <p>· <b>선택 완료 상태(2026-09-01 개선)</b>: 배지 <b>필수/선택 → ✓완료(딥그린)</b>로 전환 · 축 이름을 <b>작은 라벨로 유지</b>(플로팅 라벨 — "노랑"이 무엇의 노랑인지 셀렉트만 봐도 리뷰 가능) · 값 굵게(600) · 보더 딥그린<br>
+  · <b>안내 문구의 조사(을/를·이/가)는 받침에 따라 처리</b> — "문구을(를)" 같은 병기 금지<br>
+  · <b>품절 옵션은 숨기지 않고 흐리게</b> 노출 — 있는 줄 알고 찾는 확인 비용 제거<br>
   · <b>구매하기는 필수 조건 미충족 시 비활성</b> + 버튼 위에 <b>남은 항목을 지목</b>하는 캡션<br>
   · <b>쿠폰은 시트에서 계산하지 않습니다</b>("주문서에서 적용") — 시트와 주문서 금액이 어긋나면 신뢰가 깨집니다<br>
   · <b>배송비는 예상 결제금액에 합산하지 않고</b> 아래 별도 표기 · 무료배송 임계 도달 시 자동 전환</p>
@@ -326,6 +338,16 @@
 <script>
 /* ─────────── 옵션 데이터 (전부 데이터 주도 렌더링) ─────────── */
 var BASE = 9500, LIST = 14000, FREE_SHIP = 30000;
+
+/* 선택 완료 배지 — 요구(필수/선택)가 해소되면 배지도 확정(딥그린)으로 바뀐다 */
+var DONE_BADGE = '<span class="opt-badge badge-done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>완료</span>';
+
+/* 받침에 따른 조사 처리 — "문구을(를)" 같은 표기 금지 */
+function josa(w, a, b){
+  var c = (w || '').charCodeAt((w || '').length - 1);
+  var bat = c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 > 0;
+  return w + (bat ? a : b);
+}
 
 var CASES = {
   none: { title:'[국내제작] 마루야마 키친크로스 주방행주', req:[], opt:[], txt:[], ex:[] },
@@ -402,11 +424,11 @@ function txtOk(){
 function canBuy(){ return reqDone() && txtOk(); }
 function missing(){
   var c = CASES[C];
-  for (var i = 0; i < c.req.length; i++) if (!S.req[i]) return c.req[i].name + '을(를) 선택해주세요';
+  for (var i = 0; i < c.req.length; i++) if (!S.req[i]) return josa(c.req[i].name || ('선택' + (i+1)), '을', '를') + ' 선택해주세요';
   for (var j = 0; j < c.txt.length; j++){
     var t = c.txt[j], v = (S.txt[j] || '').trim();
-    if (t.required && !v) return t.name + '을(를) 입력해주세요';
-    if (v.length > t.max) return t.name + '이(가) ' + t.max + '자를 넘었어요';
+    if (t.required && !v) return josa(t.name, '을', '를') + ' 입력해주세요';
+    if (v.length > t.max) return josa(t.name, '이', '가') + ' ' + t.max + '자를 넘었어요';
   }
   return '';
 }
@@ -420,8 +442,11 @@ function render(){
     var open = S.open === 'r' + i;
     H += '<div class="grp' + (picked ? ' on' : '') + (prevOk ? '' : ' dis') + (open ? ' open' : '') + '">' +
       '<div class="sel" onclick="' + (prevOk ? 'toggleG(\'r' + i + '\')' : '') + '">' +
-        '<span class="txt' + (picked ? '' : ' ph') + '">' + (picked ? picked[0] : (g.name || ('선택' + (i+1))) + ' 선택하기') + '</span>' +
-        '<span class="opt-badge badge-req">필수</span>' +
+        '<span class="selv">' +
+          (picked ? '<span class="lbl">' + (g.name || ('선택' + (i+1))) + '</span>' : '') +
+          '<span class="txt' + (picked ? '' : ' ph') + '">' + (picked ? picked[0] : (g.name || ('선택' + (i+1))) + ' 선택하기') + '</span>' +
+        '</span>' +
+        (picked ? DONE_BADGE : '<span class="opt-badge badge-req">필수</span>') +
         '<svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>' +
       '</div><div class="opts">' +
       g.items.map(function(it, k){
@@ -436,8 +461,11 @@ function render(){
     var picked = S.opt[i], open = S.open === 'o' + i, able = reqDone();
     H += '<div class="grp' + (picked ? ' on' : '') + (able ? '' : ' dis') + (open ? ' open' : '') + '">' +
       '<div class="sel" onclick="' + (able ? 'toggleG(\'o' + i + '\')' : '') + '">' +
-        '<span class="txt' + (picked ? '' : ' ph') + '">' + (picked ? picked[0] : g.name) + '</span>' +
-        '<span class="opt-badge badge-opt">선택</span>' +
+        '<span class="selv">' +
+          (picked ? '<span class="lbl">' + g.name + '</span>' : '') +
+          '<span class="txt' + (picked ? '' : ' ph') + '">' + (picked ? picked[0] : g.name) + '</span>' +
+        '</span>' +
+        (picked ? DONE_BADGE : '<span class="opt-badge badge-opt">선택</span>') +
         '<svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>' +
       '</div><div class="opts">' +
       g.items.map(function(it, k){
@@ -450,7 +478,9 @@ function render(){
   c.txt.forEach(function(t, i){
     var v = S.txt[i] || '', over = v.length > t.max;
     H += '<div class="txtopt' + (v ? ' on' : '') + '">' +
-      '<div class="th">' + t.name + '<span class="opt-badge ' + (t.required ? 'badge-req">필수' : 'badge-opt">선택') + '</span></div>' +
+      '<div class="th">' + t.name + ((v.trim() && !over)
+        ? DONE_BADGE
+        : '<span class="opt-badge ' + (t.required ? 'badge-req">필수' : 'badge-opt">선택') + '</span>') + '</div>' +
       '<input maxlength="' + (t.max + 10) + '" placeholder="' + t.ph + '" value="' + v.replace(/"/g, '&quot;') + '" oninput="onTxt(' + i + ',this.value)">' +
       '<div class="cnt' + (over ? ' over' : '') + '">' + v.length + ' / ' + t.max + '자</div></div>';
   });
