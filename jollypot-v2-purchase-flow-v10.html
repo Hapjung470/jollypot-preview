@@ -166,6 +166,14 @@
   .doc th,.doc td{border:1px solid #3A3A4E;padding:6px 9px;text-align:left;vertical-align:top;}
   .doc th{color:#fff;background:#2A2A4A;}
   .doc code{background:#2A2A4A;border-radius:4px;padding:1px 5px;font-size:12px;}
+  /* 추가상품 자체 옵션·수량 (실사용: 케미콩 이지컷 네임테이프 · 2026-09-01) */
+  .ex-tag{font-size:10px;font-weight:700;color:#3276AE;background:#EAF2F9;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:1px}
+  .ex-opts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .ex-oc{border:1px solid #CCCFD4;background:#fff;border-radius:8px;padding:6px 11px;font-size:12px;font-weight:600;color:#666;font-family:inherit;cursor:pointer}
+  .ex-oc.on{border-color:var(--color-primary);color:var(--color-primary);background:rgba(252,100,45,.06)}
+  .ex-qty{display:inline-flex;align-items:center;gap:12px;margin-top:8px;border:1px solid #CCCFD4;border-radius:8px;padding:4px 10px}
+  .ex-qty button{border:none;background:none;font-size:15px;color:#666;cursor:pointer;font-family:inherit;padding:0 2px;line-height:1}
+  .ex-qty b{font-size:13px;min-width:14px;text-align:center}
 </style>
 </head>
 <body>
@@ -178,6 +186,7 @@
   <button data-c="req2opt1" onclick="setCase('req2opt1')">필수2+선택1</button>
   <button data-c="text2" onclick="setCase('text2')">텍스트 2</button>
   <button data-c="extra" onclick="setCase('extra')">추가구성</button>
+  <button data-c="addreal" onclick="setCase('addreal')">추가상품(케미콩)</button>
   <button data-c="all" onclick="setCase('all')">복합(전부)</button>
   <button data-c="none" onclick="setCase('none')">옵션 없음</button>
   <span class="ver">jollypot-v2-purchase-flow-v10</span>
@@ -192,7 +201,7 @@
   </div>
   <div class="hero"></div>
   <div class="pinfo">
-    <div class="brand-row">마루야마<span class="like">♡ 1.2만</span></div>
+    <div class="brand-row"><span id="pBrand">마루야마</span><span class="like">♡ 1.2만</span></div>
     <span class="p-badge">파트너 배송</span>
     <div class="p-title" id="pTitle">[국내제작] 마루야마 키친크로스 주방행주</div>
     <div class="price-block">
@@ -262,7 +271,9 @@
   현재 졸리팟 몰의 추가구성상품 보유는 <b>0건</b>이라 판단 근거가 없다.</p>
 
   <h2>구매 플로우 v10 — 옵션 경우의 수 전체 대응 (2026-08-19)</h2>
-  <p>샵바이 실측(<code>shopby-option-vs-addproduct-v1.md</code>) 기준으로 <b>7가지 케이스</b>를 상단 토글로 전부 확인할 수 있습니다.
+  <p>샵바이 실측(<code>shopby-option-vs-addproduct-v1.md</code>) 기준으로 <b>9가지 케이스</b>를 상단 토글로 전부 확인할 수 있습니다.
+  <b>[추가상품(케미콩)]</b>은 실사용 상품(케미콩 이지컷 네임테이프 — 샵바이 추가상품 기능 첫 사용)을 반영한 케이스로,
+  <b>추가상품이 자체 옵션과 수량을 갖는 구조</b>까지 다룹니다. 디자인·옵션 세부 구성은 어드민 실값 기준으로 확정하세요.
   화면은 전부 <b>옵션 데이터로부터 렌더링</b>되며, 케이스별 하드코딩이 없습니다.</p>
 
   <h2>1. 샵바이 옵션 4종과 화면 대응</h2>
@@ -340,6 +351,14 @@ var CASES = {
     ex:[ {name:'스테인리스 행주걸이', price:3900},
          {name:'천연수세미 2P', price:5900},
          {name:'주방 소독 스프레이 300ml', price:7900} ] },
+  /* 실사용 상품 반영(2026-09-01): 케미콩 이지컷 네임테이프 — 샵바이 추가상품 기능 첫 사용 사례.
+     추가상품은 자체 옵션·수량을 가질 수 있다(옵션 세부 구성은 어드민 실값 기준으로 확정 필요) */
+  addreal: { title:'케미콩 이지컷 네임테이프', brand:'케미콩',
+    req:[ {name:'디자인', items:[['베이직',0],['공룡',0],['유니콘',0],['체리',0]]} ],
+    opt:[],
+    txt:[ {name:'이름 입력 (주문제작)', required:true, max:10, ph:'예) 김졸리'} ],
+    ex:[ {name:'네임스티커 세트', price:4900, opts:[['라운드',0],['사각',0]]},
+         {name:'이지컷 리필 1롤', price:3500} ] },
   all: { title:'[풀세트] 마루야마 키친크로스 각인 + 주방소품',
     req:[ {name:'구성', items:[['1P (단품)',0],['2P 세트',8500]]},
           {name:'색상', items:[['노랑',0],['그레이',0]]} ],
@@ -351,11 +370,12 @@ var CASES = {
 var C = 'req1', S = {};   // S: 선택 상태
 
 function setCase(k){
-  C = k; S = { req:[], opt:[], txt:[], ex:[], q:1, qOpt:1, qEx:{} };
+  C = k; S = { req:[], opt:[], txt:[], ex:[], q:1, qOpt:1, exSel:{}, exQty:{} };
   document.querySelectorAll('.proto-bar button').forEach(function(b){
     b.classList.toggle('active', b.dataset.c === k);
   });
   document.getElementById('pTitle').textContent = CASES[k].title;
+  document.getElementById('pBrand').textContent = CASES[k].brand || '마루야마';
   document.getElementById('pNote').style.display = CASES[k].req.length ? 'block' : 'none';
   closeSheet(); render();
 }
@@ -458,10 +478,23 @@ function render(){
       H += '<div class="extra-h">함께 사면 좋아요 <span class="cap">별도 상품 · 같은 배송</span></div>';
       c.ex.forEach(function(e, i){
         var on = S.ex.indexOf(i) >= 0;
+        var qty = S.exQty[i] || 1;
+        var sel = (e.opts && S.exSel[i] != null) ? S.exSel[i] : 0;
+        var unit = e.price + (e.opts ? e.opts[sel][1] : 0);
+        var inner = '<div class="ex-n">' + e.name + (e.opts ? ' <span class="ex-tag">옵션</span>' : '') + '</div>';
+        if (on && e.opts){
+          inner += '<div class="ex-opts" onclick="event.stopPropagation()">' + e.opts.map(function(o, j){
+            return '<button class="ex-oc' + (j === sel ? ' on' : '') + '" onclick="exOpt(' + i + ',' + j + ')">' + o[0] + (o[1] ? ' +' + won(o[1]) : '') + '</button>';
+          }).join('') + '</div>';
+        }
+        if (on){
+          inner += '<div class="ex-qty" onclick="event.stopPropagation()">' +
+            '<button onclick="exQty(' + i + ',-1)">−</button><b>' + qty + '</b><button onclick="exQty(' + i + ',1)">+</button></div>';
+        }
         H += '<div class="ex' + (on ? ' on' : '') + '" onclick="toggleEx(' + i + ')">' +
           '<span class="ex-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>' +
-          '<div class="ex-l"><div class="ex-n">' + e.name + '</div></div>' +
-          '<span class="ex-p">' + won(e.price) + '</span></div>';
+          '<div class="ex-l">' + inner + '</div>' +
+          '<span class="ex-p">' + won(unit * qty) + '</span></div>';
       });
     }
   }
@@ -474,7 +507,10 @@ function render(){
     var addp = c.req.reduce(function(s, _, i){ return s + (S.req[i] ? S.req[i][1] : 0); }, 0);
     var main = (BASE + addp) * S.q, list = (LIST + addp) * S.q;
     var sub = c.opt.reduce(function(s, _, i){ return s + (S.opt[i] ? S.opt[i][1] * S.qOpt : 0); }, 0);
-    var exs = S.ex.reduce(function(s, i){ return s + c.ex[i].price; }, 0);
+    var exs = S.ex.reduce(function(s, i){
+      var e = c.ex[i], u = e.price + (e.opts ? e.opts[S.exSel[i] || 0][1] : 0);
+      return s + u * (S.exQty[i] || 1);
+    }, 0);
     var total = main + sub + exs;
     var R = '<div class="sum-row"><span>상품 금액</span><span class="v">' + won(list) + '</span></div>' +
             '<div class="sum-row"><span>상품 할인</span><span class="v minus">-' + won(list - main) + '</span></div>';
@@ -504,9 +540,12 @@ function clearOpt(i){ S.opt[i] = null; render(); }
 function onTxt(i, v){ S.txt[i] = v; render(); }
 function toggleEx(i){
   var p = S.ex.indexOf(i);
-  if (p >= 0) S.ex.splice(p, 1); else S.ex.push(i);
+  if (p >= 0) S.ex.splice(p, 1);
+  else { S.ex.push(i); if (S.exQty[i] == null) S.exQty[i] = 1; if (S.exSel[i] == null) S.exSel[i] = 0; }
   render();
 }
+function exOpt(i, j){ S.exSel[i] = j; render(); }
+function exQty(i, d){ S.exQty[i] = Math.max(1, (S.exQty[i] || 1) + d); render(); }
 function resetPick(){ S.req = []; S.opt = []; S.ex = []; S.q = 1; S.open = 'r0'; render(); }
 function qty(d){ S.q = Math.max(1, S.q + d); render(); }
 function qtyOpt(d){ S.qOpt = Math.max(1, S.qOpt + d); render(); }
