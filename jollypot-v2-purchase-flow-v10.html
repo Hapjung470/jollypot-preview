@@ -175,7 +175,11 @@
   .sum-total{display:flex;justify-content:space-between;align-items:baseline;padding:11px 0 2px;margin-top:6px;border-top:1px solid var(--color-divider);}
   .sum-total .l{font-size:15px;font-weight:600;}
   .sum-total .r{font-size:19px;font-weight:700;color:var(--color-primary);}
-  .sum-ship{text-align:right;font-size:12px;color:var(--color-secondary);font-weight:600;padding-bottom:2px;}
+  .sum-ship{text-align:right;font-size:12px;color:var(--color-secondary);font-weight:600;padding-bottom:2px;line-height:1.5;}
+  /* 무료배송 안내는 배송비 "사실" 옆에 붙인다 — 새 면을 만들지 않아 하단 스택이 늘지 않고,
+     비용과 그 해소 조건이 한 문장으로 읽힌다. CTA 직전은 절약 스트립(확정 이득) 자리라 비운다 */
+  .sum-ship .more{color:var(--color-primary);font-weight:700;}
+  .sum-ship .sep{color:var(--color-text-tertiary);font-weight:400;margin:0 4px;}
   /* 절약 스트립(주문서 v9에서 이동, 2026-09-02) — CTA 직전 풀블리드 크림.
      시트에는 쿠폰이 없으므로 (정가 − 판매가)만 센다. 배송비는 절대 넣지 않는다 */
   .save-strip{background:var(--color-surface);text-align:center;font-size:13.5px;font-weight:600;
@@ -401,6 +405,14 @@
   우리 실측상 최빈 결제가 <b>1만~2만원(26%)</b>인데 무료배송 임계는 <b>3만·4만·5만으로 파편화</b>되어 있습니다.
   대부분의 유저에게 "2만원 더 담으세요"가 되어 <b>유도가 아니라 배송비를 각인시키는 문구</b>가 됩니다.
   임계 안내는 <b>장바구니</b>에서 다룹니다(담긴 것을 조정하는 화면이고, 수량 조절만으로도 임계에 닿을 수 있음)<br>
+  · <b>무료배송 안내(2026-09-02 재도입 · 위치 변경)</b>: <b>요약의 배송비 줄에 인라인</b>으로 붙입니다 —
+  "+ 배송비 3,000원 · <b>1,500원</b> 더 담으면 무료배송". CTA 직전은 <b>절약 스트립(확정 이득) 자리라 비워둡니다</b>:
+  "지금 사면 이득"과 "더 사야 이득"을 같은 자리에 겹치면 뒤가 앞을 갉아먹습니다.
+  비용(배송비)과 그 해소 조건은 <b>한 문장으로 붙어 있을 때</b> 가장 잘 읽힙니다<br>
+  &nbsp;&nbsp;<b style="color:#FFC520">노출 조건 = "이 화면에서 한 번에 도달 가능한 거리"</b>:
+  남은 금액이 <b>추가상품을 전부 담았을 때의 금액</b>(또는 5,000원) 이내일 때만 유도형을 붙이고, 그보다 멀면 <b>배송비 사실만</b> 말합니다.
+  최빈 결제 1만~2만원에 임계가 3만~5만이라 무조건 띄우면 대부분에게 <b>달성 불가 조건을 보여주며 배송비만 각인</b>시킵니다.
+  수량을 올려 임계에 가까워지면 <b>그 시점에 자동으로 유도형으로 전환</b>됩니다<br>
   · <b>절약 스트립(2026-09-02 · 주문서에서 이동)</b>: CTA 직전에 "지금 주문하면 <b>N원</b>을 아껴요"(크림 풀블리드).
   절약 고지는 <b>사느냐 마느냐를 정하는 이 화면</b>에서 값이 크고, 결제 직전에는 이미 결정이 끝나 장식이 됩니다.<br>
   &nbsp;&nbsp;산식 <code>아껴요 = (온라인 정가 − 판매가) × 수량</code> — <b>쿠폰·적립금은 주문서에서 더해지므로 시트에서는 빼고 셉니다</b>.
@@ -686,12 +698,27 @@ function renderFoot(){
     if (exs) R += '<div class="sum-row"><span>추가상품 ' + exCnt + '개</span><span class="v">+' + won(exs) + '</span></div>';
     R += '<div class="sum-row"><span>쿠폰 할인</span><span class="v" style="color:var(--color-text-tertiary)">주문서에서 적용</span></div>' +
          '<div class="sum-total"><span class="l">예상 결제금액</span><span class="r">' + won(total) + '</span></div>' +
-         '<div class="sum-ship">' + (total >= FREE_SHIP ? '무료배송' : '+ 배송비 3,000원') + '</div>';
+         '<div class="sum-ship">' + shipText(c, total) + '</div>';
     document.getElementById('sumBox').innerHTML = R;
   }
   document.getElementById('btnOrder').classList.toggle('dis', !ok);
   document.getElementById('btnCart').classList.toggle('dis', !ok);
   renderSave(ok);
+}
+
+/* 배송비 줄 — "이 시트에서 한 번에 도달 가능한 거리"일 때만 유도형 문구를 붙인다.
+   도달 수단 = 추가상품을 전부 담는 것(최소 옵션가 기준). 그보다 멀면 배송비 사실만 말한다.
+   수량을 올려 임계에 가까워지면 그 시점에 자동으로 유도형으로 바뀐다 */
+function shipText(c, total){
+  if (total >= FREE_SHIP) return '무료배송';
+  var rest = FREE_SHIP - total;
+  var exMax = (c.ex || []).reduce(function(s, e){
+    var lo = e.opts ? Math.min.apply(null, e.opts.map(function(o){ return o[1]; })) : 0;
+    return s + e.price + lo;
+  }, 0);
+  var reach = rest <= Math.max(5000, exMax);
+  return '+ 배송비 3,000원' + (reach
+    ? '<span class="sep">·</span><span class="more">' + won(rest) + '</span> 더 담으면 무료배송' : '');
 }
 
 /* 아껴요 = (온라인 정가 − 판매가) — 쿠폰·적립금은 주문서에서 더해진다.
