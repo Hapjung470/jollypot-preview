@@ -201,10 +201,6 @@
   .save-strip .n{color:var(--color-primary);font-weight:700;}
   .save-strip.hidden{display:none;}
 
-  /* 조합 카드의 [옵션 변경] — 셀렉트가 위에 남아 있어 기능은 이미 되지만,
-     카드가 생기면 "바꾸려면 지워야 하나?"로 읽힌다. 되돌릴 길을 카드 안에 명시한다 */
-  .pk-edit{background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:600;
-    color:var(--color-secondary);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;}
 
   .sheet-foot{flex-shrink:0;padding:10px 16px calc(14px + env(safe-area-inset-bottom));display:flex;gap:9px;}
   .btn-cart{flex:1;background:#fff;border:1px solid var(--color-border);border-radius:14px;padding:15px 0;
@@ -447,8 +443,14 @@
   결과적으로 주문서의 절약액이 더 커지는데, <b>과대가 아니라 과소 약속</b>이라 안전한 방향입니다.<br>
   &nbsp;&nbsp;<b style="color:#FFC520">배송비는 절대 절약액에 넣지 않습니다</b> — 섞으면 "무료배송 상품이 항상 더 이득"으로 왜곡됩니다(무료배송은 요약의 별도 표기).
   가드: 정가 ≤ 판매가면 0 · 합계 0 이하면 <b>스트립 미노출</b> · 선택옵션·추가상품은 정가 개념이 없어 절약 계산에서 제외<br>
-  · <b>옵션 변경</b>: 조합 카드의 [옵션 변경]을 누르면 첫 필수 옵션이 다시 열립니다.
-  앞 축을 바꾸면 <b>뒤 축은 자동 초기화</b>(조합 재고)되고, <b>입력값(각인 이름)은 조합과 무관하므로 유지</b>됩니다</p>
+  · <b>★ 본품 조합도 다중 담기(2026-09-02)</b>: 조합을 완성하면 <b>카드가 추가되고 셀렉트는 처음으로 복귀</b>합니다
+  (추가상품·실물 샵바이와 같은 문법). 카드마다 수량·입력·삭제(✕) 독립 ·
+  <b>입력형이 없는 상품은 같은 조합 재선택 = 수량 +1</b>(중복 카드 방지) ·
+  <b>입력형이 있는 상품은 항상 새 카드</b> — 같은 조합이라도 각인 이름이 다를 수 있습니다(입력값은 구매 라인에 붙는다)<br>
+  · <b>[옵션 변경]은 시트에서 뺐습니다(2026-09-02)</b>: 셀렉트가 카드 바로 위에 있어
+  "✕ 후 다시 고르기"와 같은 일을 하는 중복 동선이었고(차이는 각인·수량 유지뿐),
+  카드가 여러 장이 되면 무엇을 바꾸는지도 모호해집니다. <b>장바구니의 [옵션 변경]은 유지</b> —
+  그 화면에는 셀렉트가 없어 존재 이유가 명확합니다</p>
 
   <h2 class="hl">5. 개발 요건 · 확인 필요</h2>
   <p>· 화면은 <b>옵션 데이터로 렌더링</b>한다. 축 이름·개수·필수여부·입력형 여부 모두 하드코딩 금지 (옵션명 미설정 시 <b>"선택1/선택2" 폴백</b>)<br>
@@ -524,7 +526,7 @@ var CASES = {
 var C = 'req1', S = {};   // S: 선택 상태
 
 function setCase(k){
-  C = k; S = { req:[], opt:[], txt:[], ex:[], q:1, qOpt:{}, exQty:{}, exOpen:{}, exPicks:[] };   /* qOpt: 선택옵션은 항목별 독립 수량 */
+  C = k; S = { req:[], opt:[], txt:[], picks:[], ex:[], q:1, qOpt:{}, exQty:{}, exOpen:{}, exPicks:[] };   /* picks: 조합 카드 스택 · qOpt: 선택옵션은 항목별 독립 수량 */
   document.querySelectorAll('.proto-bar button').forEach(function(b){
     b.classList.toggle('active', b.dataset.c === k);
   });
@@ -544,26 +546,33 @@ function closeSheet(){ document.body.classList.remove('sheet-open','locked','can
 function won(n){ return n.toLocaleString('ko-KR') + '원'; }
 
 /* ── 상태 판정 ── */
-function reqDone(){ var c = CASES[C]; return c.req.every(function(_, i){ return S.req[i]; }); }
+/* hasMain: 본품이 담겼는가 — 옵션 있는 상품은 조합 카드 1장 이상, 옵션 없는 상품은 항상 담긴 상태 */
+function hasMain(){ var c = CASES[C]; return c.req.length ? S.picks.length > 0 : true; }
+function mainQty(){ var c = CASES[C];
+  if (!c.req.length) return S.q;
+  return S.picks.reduce(function(n, pk){ return n + pk.qty; }, 0); }
+function txtVal(t, v){ v = (v || '').trim(); if (t.required && !v) return false; return v.length <= t.max; }
 function txtOk(){
   var c = CASES[C];
-  return c.txt.every(function(t, i){
-    var v = (S.txt[i] || '').trim();
-    if (t.required && !v) return false;
-    return v.length <= t.max;
+  if (!c.req.length) return c.txt.every(function(t, i){ return txtVal(t, S.txt[i]); });
+  /* 카드마다 각자 검사 — 입력값은 구매 라인(조합)에 붙는다 */
+  return S.picks.every(function(pk){
+    return c.txt.every(function(t, i){ return txtVal(t, pk.txt[i]); });
   });
 }
-function canBuy(){ return reqDone() && txtOk(); }
+function canBuy(){ return hasMain() && txtOk(); }
 /* 텍스트 입력 블록 — 옵션 없는 상품은 시트 본문에, 옵션 있는 상품은 선택 결과 카드 "안"에 렌더.
    입력값은 상품이 아니라 구매 라인(조합)에 붙기 때문 — 같은 조합을 2개 담으면 이름도 2개 필요(실물 실측) */
-function txtHTML(c){
+function txtHTML(c, p){
+  /* p == null: 옵션 없는 상품(시트 본문, S.txt) · p >= 0: 조합 카드 p번의 입력(카드마다 각자) */
+  var vals = (p == null) ? S.txt : S.picks[p].txt;
   return c.txt.map(function(t, i){
-    var v = S.txt[i] || '', over = v.length > t.max;
+    var v = vals[i] || '', over = v.length > t.max;
     return '<div class="txtopt' + (v ? ' on' : '') + '">' +
       '<div class="th">' + t.name + ((v.trim() && !over)
         ? DONE_BADGE
         : '<span class="opt-badge ' + (t.required ? 'badge-req">필수' : 'badge-opt">선택') + '</span>') + '</div>' +
-      '<input maxlength="' + (t.max + 10) + '" placeholder="' + t.ph + '" value="' + v.replace(/"/g, '&quot;') + '" oninput="onTxt(' + i + ',this.value)">' +
+      '<input maxlength="' + (t.max + 10) + '" placeholder="' + t.ph + '" value="' + v.replace(/"/g, '&quot;') + '" oninput="onTxt(' + (p == null ? -1 : p) + ',' + i + ',this.value)">' +
       '<div class="cnt' + (over ? ' over' : '') + '">' + v.length + ' / ' + t.max + '자</div></div>';
   }).join('');
 }
@@ -593,7 +602,7 @@ function render(){
   });
   // 선택옵션 — 필수 완료 후, 절대가 표기
   c.opt.forEach(function(g, i){
-    var picked = S.opt[i], open = S.open === 'o' + i, able = reqDone();
+    var picked = S.opt[i], open = S.open === 'o' + i, able = hasMain();
     H += '<div class="grp' + (picked ? ' on' : '') + (able ? '' : ' dis') + (open ? ' open' : '') + '">' +
       '<div class="sel" onclick="' + (able ? 'toggleG(\'o' + i + '\')' : '') + '">' +
         '<span class="selv">' +
@@ -611,19 +620,29 @@ function render(){
   });
   // 텍스트옵션 — 조합 종속(2026-09-01 실물 실측: 케미콩): 필수옵션이 있는 상품은 처음엔 입력칸이 없고,
   // 조합 완성 후 "선택 결과 카드 안"에서 렌더(아래). 옵션 없는 상품만 여기서 즉시 노출.
-  if (!c.req.length) H += txtHTML(c);
-  // 선택 결과 카드
-  if (reqDone()){
-    var add = c.req.reduce(function(s, _, i){ return s + (S.req[i] ? S.req[i][1] : 0); }, 0);
-    var nm = c.req.map(function(_, i){ return S.req[i][0]; }).join(' / ') || '단일 상품';
-    H += '<div class="pick"><div class="pk-top"><div class="pk-name">' + nm + '</div>' +
+  if (!c.req.length) H += txtHTML(c, null);
+  // 조합 카드 스택 — 조합 완성 = 카드 추가·셀렉트는 placeholder 복귀(실물 샵바이 동일 문법).
+  // 카드마다 수량·입력·삭제(X) 독립. [옵션 변경]은 두지 않는다 — 셀렉트가 카드 바로 위에 있어
+  // "X 후 다시 고르기"와 같은 일이었고, 카드가 여러 장이면 대상마저 모호하다(장바구니에는 유지 — 그곳엔 셀렉트가 없다).
+  if (!c.req.length){
+    /* 옵션 없는 상품: 단일 카드(스택 개념 없음) */
+    H += '<div class="pick"><div class="pk-top"><div class="pk-name">단일 상품</div>' +
       '<svg class="pk-x" onclick="resetPick()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div>' +
-      ((c.req.length && c.txt.length) ? txtHTML(c) : '') +
       '<div class="pk-bot"><div class="stepper"><button ' + (S.q <= 1 ? 'disabled' : '') + ' onclick="qty(-1)">−</button>' +
       '<span class="qty">' + S.q + '</span><button onclick="qty(1)">＋</button></div>' +
-      '<span class="pk-price">' + won((BASE + add) * S.q) + '</span></div>' +
-      (c.req.length ? '<div style="margin-top:10px"><button class="pk-edit" onclick="editPick()">옵션 변경</button></div>' : '') +
-      '</div>';
+      '<span class="pk-price">' + won(BASE * S.q) + '</span></div></div>';
+  }
+  S.picks.forEach(function(pk, pi){
+    var add = pk.sel.reduce(function(s, it){ return s + it[1]; }, 0);
+    H += '<div class="pick" data-p="' + pi + '"><div class="pk-top"><div class="pk-name">' +
+        pk.sel.map(function(it){ return it[0]; }).join(' / ') + '</div>' +
+      '<svg class="pk-x" onclick="pickRm(' + pi + ')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div>' +
+      (c.txt.length ? txtHTML(c, pi) : '') +
+      '<div class="pk-bot"><div class="stepper"><button ' + (pk.qty <= 1 ? 'disabled' : '') + ' onclick="pickQty(' + pi + ',-1)">−</button>' +
+      '<span class="qty">' + pk.qty + '</span><button onclick="pickQty(' + pi + ',1)">＋</button></div>' +
+      '<span class="pk-price">' + won((BASE + add) * pk.qty) + '</span></div></div>';
+  });
+  if (hasMain()){
     // 선택옵션 카드 (별도)
     c.opt.forEach(function(g, i){
       if (!S.opt[i]) return;
@@ -642,7 +661,7 @@ function render(){
      또 옵션 미완성 구간의 과제는 "옵션 고르기"이므로, 그 아래 다른 목표를 띄우면 초점이 갈린다.
      ★ 어투는 거리에 따라 바꾼다 — 같은 문구를 모든 거리에 쓰면 최빈 결제(1만~2만) 고객에게
      달성 불가 조건을 들이대는 꼴이 된다. 아래 추가상품이 곧 "채울 수단"이라 안내 다음에 실행이 이어진다 */
-  if (reqDone()){
+  if (hasMain()){
     var _t = curTotal(), _rest = FREE_SHIP - _t, _done = _t >= FREE_SHIP, _msg;
     if (_done)                     _msg = '<span class="ok">무료배송</span> 적용';
     else if (_rest <= reachAmt(c)) _msg = '<span class="n">' + won(_rest) + '</span>만 더 담으면 <span class="ok">무료배송</span>';
@@ -724,8 +743,12 @@ function renderFoot(){
   var ok = canBuy();
   document.body.classList.toggle('can-buy', ok);
   if (ok){
-    var addp = c.req.reduce(function(s, _, i){ return s + (S.req[i] ? S.req[i][1] : 0); }, 0);
-    var main = (BASE + addp) * S.q, list = (LIST + addp) * S.q;
+    var main = 0, list = 0;
+    if (!c.req.length){ main = BASE * S.q; list = LIST * S.q; }
+    S.picks.forEach(function(pk){
+      var add = pk.sel.reduce(function(s, it){ return s + it[1]; }, 0);
+      main += (BASE + add) * pk.qty; list += (LIST + add) * pk.qty;
+    });
     var sub = c.opt.reduce(function(s, _, i){ return s + (S.opt[i] ? S.opt[i][1] * (S.qOpt[i] || 1) : 0); }, 0);
     var exs = S.ex.reduce(function(s, i){
       var e = c.ex[i]; if (e.opts) return s;
@@ -754,11 +777,12 @@ function renderFoot(){
 /* 현재 예상 결제금액(본품 + 선택옵션 + 추가상품) — 게이지와 요약이 같은 값을 쓴다 */
 function curTotal(){
   var c = CASES[C], main = 0, sub = 0;
-  if (reqDone()){
-    var addp = c.req.reduce(function(s, _, i){ return s + (S.req[i] ? S.req[i][1] : 0); }, 0);
-    main = (BASE + addp) * S.q;
-    sub = c.opt.reduce(function(s, _, i){ return s + (S.opt[i] ? S.opt[i][1] * (S.qOpt[i] || 1) : 0); }, 0);
-  }
+  if (!c.req.length) main = BASE * S.q;
+  S.picks.forEach(function(pk){
+    var add = pk.sel.reduce(function(s, it){ return s + it[1]; }, 0);
+    main += (BASE + add) * pk.qty;
+  });
+  if (hasMain()) sub = c.opt.reduce(function(s, _, i){ return s + (S.opt[i] ? S.opt[i][1] * (S.qOpt[i] || 1) : 0); }, 0);
   var exs = S.ex.reduce(function(s, i){
     var e = c.ex[i]; if (e.opts) return s;
     return s + e.price * (S.exQty[i] || 1);
@@ -790,7 +814,7 @@ function shipText(c, total){
    가드: 정가 ≤ 판매가면 0 · 0 이하면 미노출 · 배송비는 절대 포함하지 않는다(무료배송은 별도 표기) */
 function renderSave(ok){
   var el = document.getElementById('saveStrip');
-  var save = ok ? (LIST - BASE) * S.q : 0;
+  var save = ok ? (LIST - BASE) * mainQty() : 0;
   el.classList.toggle('hidden', save <= 0);
   if (save > 0) el.innerHTML = '지금 주문하면 <span class="n">' + won(save) + '</span>을 아껴요';
 }
@@ -801,17 +825,33 @@ function pickReq(i, k){
   var c = CASES[C];
   S.req[i] = c.req[i].items[k];
   for (var j = i + 1; j < c.req.length; j++) S.req[j] = null;   // 뒤 단계 초기화(조합 재고)
-  S.open = (i + 1 < c.req.length) ? 'r' + (i + 1) : null;
+  if (c.req.every(function(_, x){ return S.req[x]; })){
+    /* 조합 완성 = 담기. 카드가 추가되고 셀렉트는 placeholder로 복귀(실물 샵바이 동일).
+       입력형이 없는 상품은 같은 조합 재선택 시 수량 +1(중복 카드 방지) —
+       입력형이 있는 상품은 항상 새 카드(같은 조합이라도 각인 이름이 다를 수 있다) */
+    var sel = S.req.slice(), hit = null;
+    if (!c.txt.length){
+      S.picks.forEach(function(pk){
+        if (pk.sel.every(function(it, x){ return it[0] === sel[x][0]; })) hit = pk;
+      });
+    }
+    if (hit) hit.qty += 1;
+    else S.picks.push({ sel: sel, txt: c.txt.map(function(){ return ''; }), qty: 1 });
+    S.req = []; S.open = null;
+  } else {
+    S.open = 'r' + (i + 1);
+  }
   render();
 }
 function pickOpt(i, k){ S.opt[i] = CASES[C].opt[i].items[k]; S.open = null; render(); }
 function clearOpt(i){ S.opt[i] = null; S.qOpt[i] = 1; render(); }   /* 뺐다가 다시 담으면 수량도 1부터 */
 /* 입력 중 render() 전체 호출 금지 — innerHTML 재생성으로 매 타이핑마다 포커스가 날아가고
    모바일에선 키보드가 닫힌다. 해당 입력 박스의 배지·카운터와 하단 요약만 부분 갱신한다 */
-function onTxt(i, v){
-  S.txt[i] = v;
-  var t = CASES[C].txt[i];
-  var box = document.querySelectorAll('#sheetBody .txtopt')[i];
+function onTxt(p, i, v){
+  var t = CASES[C].txt[i], scope;
+  if (p < 0){ S.txt[i] = v; scope = document.getElementById('sheetBody'); }
+  else { S.picks[p].txt[i] = v; scope = document.querySelector('#sheetBody .pick[data-p="' + p + '"]'); }
+  var box = scope ? scope.querySelectorAll('.txtopt')[i] : null;
   if (box && t){
     var over = v.length > t.max;
     box.classList.toggle('on', !!v);
@@ -845,14 +885,11 @@ function exPickQty(n, d){ S.exPicks[n].qty = Math.max(1, S.exPicks[n].qty + d); 
 function exQty(i, d){ S.exQty[i] = Math.max(1, (S.exQty[i] || 1) + d); render(); }
 /* 조합 카드 ✕ = 본품 조합과 거기 붙은 입력값만 소멸. 추가상품(S.ex/S.exPicks)은 별도 상품이라 유지한다
    — 예전엔 S.ex만 비워서 단일형은 사라지고 옵션형은 남는 비대칭 버그가 있었다 */
-/* 옵션 변경 = 첫 필수 옵션을 다시 연다. 앞 축을 바꾸면 뒤 축은 자동 초기화된다(조합 재고).
-   입력값(각인 이름)은 조합과 무관하므로 유지한다 */
-function editPick(){
-  S.open = 'r0'; render();
-  var el = document.querySelector('#sheetBody .grp');
-  if (el) el.scrollIntoView({ block:'start', behavior:'smooth' });
-}
-function resetPick(){ S.req = []; S.opt = []; S.qOpt = {}; S.txt = []; S.q = 1; S.open = 'r0'; render(); }
+/* 조합 카드 조작 — 카드별 독립. X는 그 카드만 지우고, 선택옵션·추가상품은 별도 상품이라 유지 */
+function pickRm(p){ S.picks.splice(p, 1); render(); }
+function pickQty(p, d){ S.picks[p].qty = Math.max(1, S.picks[p].qty + d); render(); }
+/* 옵션 없는 상품의 단일 카드 X — 입력값·수량 초기화 */
+function resetPick(){ S.txt = []; S.q = 1; render(); }
 function qty(d){ S.q = Math.max(1, S.q + d); render(); }
 function qtyOpt(i, d){ S.qOpt[i] = Math.max(1, (S.qOpt[i] || 1) + d); render(); }
 function addCart(){ if (!canBuy()) return; toast('장바구니에 담았어요'); }
