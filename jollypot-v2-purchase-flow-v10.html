@@ -176,6 +176,13 @@
   .sum-total .l{font-size:15px;font-weight:600;}
   .sum-total .r{font-size:19px;font-weight:700;color:var(--color-primary);}
   .sum-ship{text-align:right;font-size:12px;color:var(--color-secondary);font-weight:600;padding-bottom:2px;}
+  /* 절약 스트립(주문서 v9에서 이동, 2026-09-02) — CTA 직전 풀블리드 크림.
+     시트에는 쿠폰이 없으므로 (정가 − 판매가)만 센다. 배송비는 절대 넣지 않는다 */
+  .save-strip{background:var(--color-surface);text-align:center;font-size:13.5px;font-weight:600;
+    padding:11px 16px;margin-top:2px;flex-shrink:0;}
+  .save-strip .n{color:var(--color-primary);font-weight:700;}
+  .save-strip.hidden{display:none;}
+
   /* 조합 카드의 [옵션 변경] — 셀렉트가 위에 남아 있어 기능은 이미 되지만,
      카드가 생기면 "바꾸려면 지워야 하나?"로 읽힌다. 되돌릴 길을 카드 안에 명시한다 */
   .pk-edit{background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:600;
@@ -284,6 +291,7 @@
   </div>
   <div class="sheet-body" id="sheetBody"></div>
   <div class="sum" id="sumBox"></div>
+  <div class="save-strip hidden" id="saveStrip"></div>
   <div class="sheet-foot">
     <button class="btn-cart dis" id="btnCart" onclick="addCart()">장바구니</button>
     <button class="btn-order dis" id="btnOrder" onclick="goOrder()">구매하기</button>
@@ -393,6 +401,12 @@
   우리 실측상 최빈 결제가 <b>1만~2만원(26%)</b>인데 무료배송 임계는 <b>3만·4만·5만으로 파편화</b>되어 있습니다.
   대부분의 유저에게 "2만원 더 담으세요"가 되어 <b>유도가 아니라 배송비를 각인시키는 문구</b>가 됩니다.
   임계 안내는 <b>장바구니</b>에서 다룹니다(담긴 것을 조정하는 화면이고, 수량 조절만으로도 임계에 닿을 수 있음)<br>
+  · <b>절약 스트립(2026-09-02 · 주문서에서 이동)</b>: CTA 직전에 "지금 주문하면 <b>N원</b>을 아껴요"(크림 풀블리드).
+  절약 고지는 <b>사느냐 마느냐를 정하는 이 화면</b>에서 값이 크고, 결제 직전에는 이미 결정이 끝나 장식이 됩니다.<br>
+  &nbsp;&nbsp;산식 <code>아껴요 = (온라인 정가 − 판매가) × 수량</code> — <b>쿠폰·적립금은 주문서에서 더해지므로 시트에서는 빼고 셉니다</b>.
+  결과적으로 주문서의 절약액이 더 커지는데, <b>과대가 아니라 과소 약속</b>이라 안전한 방향입니다.<br>
+  &nbsp;&nbsp;<b style="color:#FFC520">배송비는 절대 절약액에 넣지 않습니다</b> — 섞으면 "무료배송 상품이 항상 더 이득"으로 왜곡됩니다(무료배송은 요약의 별도 표기).
+  가드: 정가 ≤ 판매가면 0 · 합계 0 이하면 <b>스트립 미노출</b> · 선택옵션·추가상품은 정가 개념이 없어 절약 계산에서 제외<br>
   · <b>옵션 변경</b>: 조합 카드의 [옵션 변경]을 누르면 첫 필수 옵션이 다시 열립니다.
   앞 축을 바꾸면 <b>뒤 축은 자동 초기화</b>(조합 재고)되고, <b>입력값(각인 이름)은 조합과 무관하므로 유지</b>됩니다</p>
 
@@ -677,6 +691,16 @@ function renderFoot(){
   }
   document.getElementById('btnOrder').classList.toggle('dis', !ok);
   document.getElementById('btnCart').classList.toggle('dis', !ok);
+  renderSave(ok);
+}
+
+/* 아껴요 = (온라인 정가 − 판매가) — 쿠폰·적립금은 주문서에서 더해진다.
+   가드: 정가 ≤ 판매가면 0 · 0 이하면 미노출 · 배송비는 절대 포함하지 않는다(무료배송은 별도 표기) */
+function renderSave(ok){
+  var el = document.getElementById('saveStrip');
+  var save = ok ? (LIST - BASE) * S.q : 0;
+  el.classList.toggle('hidden', save <= 0);
+  if (save > 0) el.innerHTML = '지금 주문하면 <span class="n">' + won(save) + '</span>을 아껴요';
 }
 
 /* ── 조작 ── */
