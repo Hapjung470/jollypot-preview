@@ -14,6 +14,9 @@
     --color-error:#D64545; --color-info:#3276AE; --color-warning:#FFC520;
     --color-border:#CCCFD4; --color-divider:#E5E7EB;
     --appbar-h:56px;
+    /* 옵션 시트 상단 여백(2026-09-02): 화면 끝까지 붙이면 전체 화면 전환처럼 보인다.
+       에이블리 실물 기준 약 15% — 뒤 상품이 비쳐 「올라온 시트」로 읽히고, 배경 탭으로 닫는 길도 생긴다 */
+    --sheet-gap:15vh;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scrollbar-gutter:stable;}
@@ -65,7 +68,7 @@
   /* ===== 시트 ===== */
   .dim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:none;}
   body.sheet-open .dim{display:block;}
-  .sheet{position:fixed;top:var(--appbar-h);bottom:0;left:50%;transform:translateX(-50%);
+  .sheet{position:fixed;top:var(--sheet-gap);bottom:0;left:50%;transform:translateX(-50%);
     width:100%;max-width:430px;background:#fff;border-radius:20px 20px 0 0;z-index:50;
     display:none;flex-direction:column;overflow:hidden;}
   body.sheet-open .sheet{display:flex;}
@@ -443,6 +446,9 @@
   결과적으로 주문서의 절약액이 더 커지는데, <b>과대가 아니라 과소 약속</b>이라 안전한 방향입니다.<br>
   &nbsp;&nbsp;<b style="color:#FFC520">배송비는 절대 절약액에 넣지 않습니다</b> — 섞으면 "무료배송 상품이 항상 더 이득"으로 왜곡됩니다(무료배송은 요약의 별도 표기).
   가드: 정가 ≤ 판매가면 0 · 합계 0 이하면 <b>스트립 미노출</b> · 선택옵션·추가상품은 정가 개념이 없어 절약 계산에서 제외<br>
+  · <b>시트 상단 여백(2026-09-02)</b>: 시트를 화면 끝까지 올리지 않고 <b>상단 15%를 비웁니다</b>(에이블리 실물 기준).
+  끝까지 붙이면 바텀시트가 아니라 <b>화면 전환</b>처럼 보이고, 뒤 상품이 사라져 "무엇을 고르는 중인지" 맥락이 끊깁니다.
+  이미 있던 <b>배경 탭으로 닫기</b>도 여백이 생겨야 실제로 쓸 수 있는 동작이 됩니다(✕와 병행)<br>
   · <b>★ 선택옵션도 다중 담기(2026-09-02)</b>: 한 축에서 <b>여러 항목을 함께 담을 수 있습니다</b>
   — "전용 세제 200ml"를 담고 "500ml"도 담으면 <b>둘 다</b> 카드로 남습니다(필수옵션처럼 교체되면 안 됩니다).
   셀렉트는 고른 뒤에도 placeholder로 되돌아가고, <b>같은 항목 재선택은 수량 +1</b> · 카드별 수량·✕ 독립<br>
@@ -543,7 +549,13 @@ function onBuy(){
   if (!c.req.length && !c.opt.length && !c.txt.length && !c.ex.length){ goOrder(true); return; }
   openSheet();
 }
-function openSheet(){ document.body.classList.add('sheet-open','locked'); render(); }
+/* 시트를 열 때 상품 화면을 맨 위로 — 프로토는 위에 검정 케이스 바가 있어
+   그대로 열면 시트 위 여백에 상품 대신 케이스 바가 비친다(실앱에는 없는 요소) */
+function openSheet(){
+  var ph = document.querySelector('.phone');
+  if (ph) window.scrollTo(0, ph.offsetTop);
+  document.body.classList.add('sheet-open','locked'); render();
+}
 function closeSheet(){ document.body.classList.remove('sheet-open','locked','can-buy'); }
 
 function won(n){ return n.toLocaleString('ko-KR') + '원'; }
