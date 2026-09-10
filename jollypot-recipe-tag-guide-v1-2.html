@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>태그 작성 지침 v1-2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#FFFFFF; --card:#FFFFFF; --surface:#FFF5EA; --surface-alt:#FFEEDC;
+  --ink:#212121; --mid:#666666; --faint:#9E9E9E;
+  --border:#CCCFD4; --divider:#E5E7EB;
+  --accent:#FC642D; --green:#145F48; --warn:#8A6212; --warn-bg:#FFF5C6;
+  --green-bg:#E3F4C7; --shade:#FAF7F2;
+  --code-bg:#F6F3EE; --code-ink:#2B2622;
+  --font:'Pretendard Variable',Pretendard,'IBM Plex Sans KR',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  --mono:'IBM Plex Mono','SFMono-Regular',Consolas,'Liberation Mono',monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#15120E; --card:#1C1814; --surface:#241E17; --surface-alt:#2C241B;
+    --ink:#F2EDE6; --mid:#A79D91; --faint:#7A7066;
+    --border:#3B342B; --divider:#2A241D;
+    --accent:#FF7A47; --green:#5FB994; --warn:#D9B24A; --warn-bg:#332B14;
+    --green-bg:#1E3327; --shade:#1A1611;
+    --code-bg:#221D18; --code-ink:#E8E0D6;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15120E; --card:#1C1814; --surface:#241E17; --surface-alt:#2C241B;
+  --ink:#F2EDE6; --mid:#A79D91; --faint:#7A7066;
+  --border:#3B342B; --divider:#2A241D;
+  --accent:#FF7A47; --green:#5FB994; --warn:#D9B24A; --warn-bg:#332B14;
+  --green-bg:#1E3327; --shade:#1A1611;
+  --code-bg:#221D18; --code-ink:#E8E0D6;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font); letter-spacing:-.3px;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  font-size:15px; line-height:1.72;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 22px 100px}
+
+header{padding:56px 0 30px;border-bottom:1px solid var(--divider)}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.9px;color:var(--accent);text-transform:uppercase}
+h1{font-size:34px;font-weight:700;line-height:1.28;margin:12px 0 14px;text-wrap:balance}
+.lede{font-size:16px;color:var(--mid);max-width:62ch;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.meta span{font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;
+  background:var(--surface);border:1px solid var(--border);color:var(--mid)}
+
+section{padding-top:46px}
+h2{font-size:22px;font-weight:600;margin:0 0 6px;line-height:1.4}
+h2 .num{color:var(--faint);font-weight:600;margin-right:9px;font-variant-numeric:tabular-nums}
+.sub{color:var(--mid);font-size:14px;margin:0 0 20px;max-width:64ch}
+h3{font-size:17px;font-weight:600;margin:32px 0 8px}
+h4{font-size:14.5px;font-weight:600;margin:20px 0 5px}
+p{margin:0 0 14px;max-width:66ch}
+b{font-weight:600}
+.num-hl{color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums}
+
+/* 표 */
+.tw{overflow-x:auto;margin:16px 0 10px;border:1px solid var(--border);border-radius:14px;background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px}
+th{text-align:left;font-weight:600;font-size:11.5px;color:var(--mid);letter-spacing:.4px;
+  padding:11px 14px;background:var(--surface);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:10px 14px;border-bottom:1px solid var(--divider);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.key{font-weight:600;white-space:nowrap}
+.bad{color:var(--accent);font-weight:700}
+
+/* 배지 */
+.b{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.b.go{background:var(--green-bg);color:var(--green)}
+.b.wait{background:var(--warn-bg);color:var(--warn)}
+.b.none{background:var(--shade);color:var(--faint);border:1px solid var(--border)}
+
+/* 원칙 카드 */
+.principles{display:grid;gap:12px;margin:20px 0}
+@media(min-width:760px){.principles{grid-template-columns:1fr 1fr}}
+.pr{border:1px solid var(--border);border-radius:14px;padding:18px 20px;background:var(--card)}
+.pr .pn{font-size:11px;font-weight:700;letter-spacing:.7px;color:var(--accent);margin-bottom:5px}
+.pr h4{margin:0 0 6px;font-size:15.5px}
+.pr p{font-size:13.5px;color:var(--mid);margin:0;max-width:none}
+
+/* 규칙 순서 */
+ol.rules{counter-reset:r;list-style:none;padding:0;margin:16px 0}
+ol.rules li{counter-increment:r;position:relative;padding:0 0 16px 42px;margin:0}
+ol.rules li::before{content:counter(r);position:absolute;left:0;top:1px;
+  width:26px;height:26px;border-radius:50%;background:var(--surface);border:1px solid var(--border);
+  display:grid;place-items:center;font-size:12.5px;font-weight:700;color:var(--accent)}
+ol.rules li b{display:block;margin-bottom:2px}
+ol.rules li span{font-size:14px;color:var(--mid)}
+ol.rules li code{font-size:12.5px}
+
+ul.plain{margin:12px 0;padding-left:20px}
+ul.plain li{margin-bottom:7px;color:var(--mid);font-size:14px}
+ul.plain li b{color:var(--ink)}
+
+/* 콜아웃 */
+.note{background:var(--surface);border-radius:12px;padding:14px 18px;margin:18px 0;
+  border-left:3px solid var(--accent)}
+.note p{margin:0;font-size:14px;color:var(--mid);max-width:none}
+.note p+p{margin-top:8px}
+.note strong{color:var(--ink);font-weight:600}
+.note.g{border-left-color:var(--green)}
+
+/* 코드 */
+pre{background:var(--code-bg);color:var(--code-ink);border:1px solid var(--border);
+  border-radius:12px;padding:16px 18px;overflow-x:auto;margin:14px 0;
+  font-family:var(--mono);font-size:12.5px;line-height:1.7;letter-spacing:0}
+code{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);
+  padding:1px 5px;border-radius:5px;letter-spacing:0}
+pre code{background:none;padding:0}
+.cap{font-size:12px;color:var(--faint);margin:-6px 0 18px}
+
+/* 예시 짝 */
+.pair{display:grid;gap:0;margin:14px 0;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+@media(min-width:700px){.pair{grid-template-columns:1fr 1fr}}
+.pair>div{padding:14px 17px}
+.pair .no{background:var(--shade);border-right:1px solid var(--border)}
+.pair .yes{background:var(--card)}
+.pair .t{font-size:11.5px;font-weight:700;letter-spacing:.5px;margin-bottom:6px}
+.pair .no .t{color:var(--faint)}
+.pair .yes .t{color:var(--green)}
+.pair p{margin:0;font-size:13.5px;color:var(--mid);max-width:none}
+.pair p+p{margin-top:5px}
+
+hr{border:none;border-top:1px solid var(--divider);margin:44px 0 0}
+footer{padding-top:36px;font-size:13px;color:var(--faint)}
+footer b{color:var(--mid)}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:600px){h1{font-size:27px} header{padding-top:38px}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">졸리팟 레시피 · 태그 작성 지침 v1-2</div>
+  <h1>AI가 태그를 붙일 때 지키는 규칙</h1>
+  <p class="lede">v1의 빠진 것 12가지를 채우고(v1-1), 그 문서를 다시 대조해 <b>숫자 오류 5건과 시험지 오답 3건</b>을 잡은 판입니다. 규칙마다 레시피 158건에서 실제로 틀린 사례를 근거로 붙였습니다.</p>
+  <div class="meta">
+    <span>v1 대비 보강 12건</span>
+    <span>v1-1 대비 정정 8건</span>
+    <span>논리 결함 3건 수정</span>
+    <span>함정 14개 실측</span>
+    <span>고정 시험지 23건</span>
+    <span>2026-09-11</span>
+  </div>
+</header>
+
+<!-- ═══════ v1에서 바뀐 것 ═══════ -->
+<section>
+  <h2><span class="num">00</span>v1에서 바뀐 것</h2>
+  <p class="sub">v1을 158건에 다시 돌려보고 찾은 것들입니다. 위 셋은 고치지 않으면 태그 체계가 멈춥니다.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>등급</th><th>빠져 있던 것</th><th>어떻게 됐나</th><th>어디에</th></tr></thead>
+      <tbody>
+        <tr><td><span class="b none">멈춤</span></td><td class="key">후보함에 레시피 번호가 없음</td><td>사전에 새 태그를 넣어도 그 레시피들에 안 붙어 <b>페이지가 영영 안 열림</b></td><td>06</td></tr>
+        <tr><td><span class="b none">멈춤</span></td><td class="key">판정 순서가 규칙과 어긋남</td><td>「종류가 디저트면 방법을 비운다」인데 종류를 나중에 정함 — <b>22건이 계속 틀림</b></td><td>04</td></tr>
+        <tr><td><span class="b none">멈춤</span></td><td class="key">사람이 고친 태그를 지킬 방법이 없음</td><td>다시 태깅할 때 <b>검수한 내용이 날아감</b></td><td>07</td></tr>
+        <tr><td><span class="b wait">정확도</span></td><td class="key">「아이」가 낱말 안에 숨는 걸 놓침</td><td>「누가 먹나」 5건 중 <b>4건이 가짜</b>였음</td><td>05</td></tr>
+        <tr><td><span class="b wait">정확도</span></td><td class="key">칸끼리 간섭</td><td>「아이유」가 사람 이름인데 <b>「누가 먹나」로 감</b></td><td>04·05</td></tr>
+        <tr><td><span class="b wait">정확도</span></td><td class="key">제목이 요리명이 아닌 경우</td><td>「남편을 위한 아침 27일차 - 오므라이스」 <b>10건</b></td><td>05</td></tr>
+        <tr><td><span class="b go">운영</span></td><td class="key">안전 규칙 없음</td><td>아기 태그에 꿀·견과가 붙어도 그냥 나감</td><td>08</td></tr>
+        <tr><td><span class="b go">운영</span></td><td class="key">정확도를 재는 법이 없음</td><td>「검수해서 정한다」고만 적혀 있었음</td><td>09</td></tr>
+        <tr><td><span class="b go">운영</span></td><td class="key">고정 시험지 없음</td><td>규칙을 고쳤을 때 나아졌는지 확인할 방법이 없음</td><td>10</td></tr>
+        <tr><td><span class="b go">운영</span></td><td class="key">언제 태깅하는지 안 정함</td><td>등록이 느려지면 사람이 떠남</td><td>11</td></tr>
+        <tr><td><span class="b go">운영</span></td><td class="key">태그 표시 개수 없음</td><td>재료가 <b>10개</b>까지 붙는데 카드에 다 안 들어감</td><td>11</td></tr>
+        <tr><td><span class="b go">운영</span></td><td class="key">페이지가 닫히는 규칙 없음</td><td>3건이 2건 되면 페이지가 사라졌다 나타남</td><td>11</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>v1-1을 원본 데이터와 다시 대조해서 잡은 것 <span class="b wait">v1-2</span></h3>
+  <p>문서에 적은 숫자를 레시피 158건에 하나씩 대조했습니다. <b>여덟 군데가 틀렸습니다.</b></p>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>어디</th><th>v1-1에 적힌 것</th><th>실제</th></tr></thead>
+      <tbody>
+        <tr><td class="key">시험지 18번</td><td>김치즈구이 → 재료 <b>김치</b>·치즈</td><td><b>김 + 치즈</b> (재료란이 조미김·피자치즈)</td></tr>
+        <tr><td class="key">시험지 14번</td><td>감바스 → 대표 새우 <b>또는 비움</b></td><td>재료란에 새우가 있음 → <b>대표는 새우</b></td></tr>
+        <tr><td class="key">시험지 12번</td><td>김치찌개 → 대표 <b>김치</b></td><td>제목에 재료가 둘 — 규칙이 없었음(아래 신설)</td></tr>
+        <tr><td class="key">과장어 등장</td><td>29번</td><td><b>30번</b></td></tr>
+        <tr><td class="key">조합 검색량 합</td><td>월 200만</td><td><b>월 181만</b> (중복 3건을 두 번 셌음)</td></tr>
+        <tr><td class="key">레시피 0건 조합</td><td>37개</td><td><b>34개</b></td></tr>
+        <tr><td class="key">0건 조합의 몫</td><td>70%</td><td><b>67%</b></td></tr>
+        <tr><td class="key">2건 더 필요</td><td>6개 · 12건으로 월 41만</td><td><b>7개 · 14건으로 월 44만</b> (김치볶음 누락)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>대조하다 새로 찾은 규칙 구멍 셋 <span class="b wait">v1-2</span></h3>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>구멍</th><th>지금 무슨 일이 나나</th><th class="n">해당</th><th>어디에</th></tr></thead>
+      <tbody>
+        <tr><td class="key">제목에 재료가 없을 때 고르는 순서</td><td>마늘·양파가 대표가 됨 (감바스→마늘, 된장찌개→양파)</td><td class="n">16건</td><td>04</td></tr>
+        <tr><td class="key">제목에 재료가 둘 이상일 때</td><td>둘 다 대표가 되거나 아무거나 골라짐</td><td class="n">—</td><td>04</td></tr>
+        <tr><td class="key">종류가 이미 완성 요리명일 때</td><td><b>「떡조림」·「면무침」·「빵구이」</b> 같은 없는 조합이 만들어짐</td><td class="n">19건</td><td>05</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════ 태그가 하는 일 ═══════ -->
+<section>
+  <h2><span class="num">01</span>태그는 무엇을 하려고 붙이나</h2>
+  <p class="sub">이걸 먼저 정해야 「좋은 태그」를 판단할 수 있습니다. 태그는 예쁘게 붙이는 게 아니라 셋 중 하나를 하려고 붙입니다.</p>
+
+  <div class="principles">
+    <div class="pr">
+      <div class="pn">쓰임 1</div>
+      <h4>밖에서 사람을 데려온다</h4>
+      <p>「두부조림」을 찾는 월 80,740명에게 우리 페이지가 걸립니다. 태그 이름이 곧 페이지 제목이 되므로, 태그는 <b>사람들이 실제로 치는 말</b>이어야 합니다.</p>
+    </div>
+    <div class="pr">
+      <div class="pn">쓰임 2</div>
+      <h4>안에서 다음 레시피로 넘긴다</h4>
+      <p>두부조림을 본 사람에게 다른 두부 요리를 보여줍니다. 이때 필요한 건 정확한 분류지 많은 태그가 아닙니다.</p>
+    </div>
+    <div class="pr">
+      <div class="pn">쓰임 3</div>
+      <h4>냉장고와 맞춰본다</h4>
+      <p>보관 중인 재료로 만들 수 있는 레시피를 찾습니다. 이름이 통일돼 있지 않으면 냉장고의 「계란」이 레시피의 「달걀」을 못 찾습니다.</p>
+    </div>
+    <div class="pr">
+      <div class="pn">쓰임이 아닌 것</div>
+      <h4>많이 붙이는 것</h4>
+      <p>태그 수는 성과가 아닙니다. 158건 중 99건에 붙는 「간단요리」는 아무것도 구분해주지 못합니다. <b>모두에게 붙는 태그는 없는 것과 같습니다.</b></p>
+    </div>
+  </div>
+
+  <div class="note">
+    <p><strong>그래서 판단 기준은 하나입니다.</strong> 이 태그를 붙였을 때 <b>①검색에서 걸리거나 ②다음 레시피로 넘겨주거나 ③냉장고에서 찾아지거나</b> 셋 중 하나가 되는가. 아니면 붙이지 않습니다.</p>
+  </div>
+</section>
+
+<!-- ═══════ 원칙 ═══════ -->
+<section>
+  <h2><span class="num">02</span>원칙 일곱 개</h2>
+  <p class="sub">아래 모든 규칙이 여기서 나옵니다. 판단이 갈릴 때는 이리로 돌아옵니다.</p>
+
+  <ol class="rules">
+    <li><b>사전에 있는 말만 붙인다</b>
+      <span>AI는 새 태그를 만들 수 없습니다. 사전이 곧 쓸 수 있는 말의 전부입니다. 자유롭게 붙이면 「존맛」·「우리집레시피」·「두부요리」가 뒤섞여 한 달이면 못 씁니다.</span></li>
+    <li><b>없는 말은 버리지 말고 쌓는다</b>
+      <span>사전에 없다고 무시하면 사전이 영영 안 자랍니다. 못 붙인 말은 후보함에 기록합니다. 같은 말이 3건 모이면 사람이 판단합니다.</span></li>
+    <li><b>확실하지 않으면 비운다</b>
+      <span>빈 칸은 나중에 채울 수 있지만, 잘못 붙은 태그는 사용자가 먼저 발견합니다. 「바나나구이」 같은 태그가 한 번 보이면 신뢰를 잃습니다.</span></li>
+    <li><b>어디서 봤는지 함께 적는다</b>
+      <span>태그마다 근거 위치를 남깁니다 — 제목에서 봤나, 재료란에서 봤나, 조리 순서에서 짐작했나. 이게 검수의 기준이 됩니다(03번).</span></li>
+    <li><b>지우지 말고 넘겨보낸다</b>
+      <span>태그를 합치거나 이름을 바꿔도 옛 이름을 지우지 않습니다. 사전에 「옛 이름 → 새 이름」을 남기고, 옛 주소로 들어오면 새 페이지로 보냅니다.</span></li>
+    <li><b>짐작해서 채우지 않는다</b>
+      <span class="b wait" style="margin-left:0">v1-2 신설</span>
+      <span style="display:block;margin-top:4px">재료란에 「호박」만 있으면 애호박인지 단호박인지 <b>찍지 않습니다.</b> 비우고 후보함으로 보냅니다. 찍어서 맞히면 아무 이득이 없고, 틀리면 단호박 레시피가 애호박 페이지에 섞입니다.</span></li>
+    <li><b>사람이 손댄 것은 기계가 덮어쓰지 않는다</b>
+      <span class="b wait" style="margin-left:0">v1-1 신설</span>
+      <span style="display:block;margin-top:4px">사전이 바뀌면 기존 레시피를 다시 태깅합니다. 이때 <b>운영자가 검수해서 고친 태그는 그대로 둡니다.</b> 안 그러면 검수한 만큼 매번 날아갑니다(07번).</span></li>
+  </ol>
+</section>
+
+<!-- ═══════ 입출력 ═══════ -->
+<section>
+  <h2><span class="num">03</span>AI에게 주는 것과 받는 것</h2>
+
+  <h3>주는 것</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>항목</th><th>필드</th><th>쓰임</th><th class="n">158건 보유</th></tr></thead>
+      <tbody>
+        <tr><td class="key">제목</td><td><code>title</code></td><td><b>가장 중요합니다.</b> 대표 재료·방법·종류·원작자가 대부분 여기 있습니다</td><td class="n">158</td></tr>
+        <tr><td class="key">재료 목록</td><td><code>ingredients[].name</code></td><td>재료 칸의 원천. 이름 통일 대상</td><td class="n">158</td></tr>
+        <tr><td class="key">조리 순서</td><td><code>steps[].description</code></td><td>방법 칸 판정. <b>마지막 두 단계만</b> 봅니다 (단계 수 중앙값 7, 최소 4)</td><td class="n">158</td></tr>
+        <tr><td class="key">설명</td><td><code>description</code></td><td>「누가 먹나」 단서. 조리 순서 합본이라 방법 판정엔 쓰지 않습니다</td><td class="n">158</td></tr>
+        <tr><td class="key">조리 시간</td><td><code>durationSeconds</code></td><td>태그 아님 — 필터로 처리</td><td class="n">158</td></tr>
+        <tr><td class="key">인분</td><td><code>servings</code></td><td>태그 아님 — 필터로 처리</td><td class="n">158</td></tr>
+        <tr><td class="key">썸네일</td><td><code>thumbnailUrl</code></td><td><b>주지 않습니다</b> — 재료·방법은 글로 다 나와 있어 사진이 더 알려주는 게 없습니다</td><td class="n">157</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>여기에 <b>태그 사전 전체</b>를 함께 줍니다. 사전 없이 태그를 요청하면 원칙 1이 깨집니다.</p>
+
+  <h3>받는 것</h3>
+  <p>칸마다 <b>값과 근거를 짝으로</b> 받습니다. 근거가 이 설계의 핵심입니다.</p>
+  <pre><code>{
+  "ingredients": [
+    { "tag": "두부", "from": "title" },
+    { "tag": "대파", "from": "ingredients" }
+  ],
+  "mainIngredient": { "tag": "두부", "from": "title" },
+  "method":  { "tag": "조림", "from": "title" },
+  "kind":    { "tag": "밑반찬", "from": "title" },
+  "situation": [{ "tag": "저녁", "from": "title" }],
+  "eater":   null,
+  "author":  null,
+  "candidates": [
+    { "word": "유부", "where": "ingredients", "why": "재료란에 있으나 사전에 없음" }
+  ]
+}</code></pre>
+  <p class="cap"><code>from</code>은 <code>title</code> · <code>ingredients</code> · <code>steps</code> 셋 중 하나. 어디서도 못 찾으면 그 칸은 <code>null</code>.</p>
+
+  <div class="note g">
+    <p><strong>확신도를 숫자로 받지 않는 이유.</strong> 「0.82」 같은 점수는 사람이 검증할 수 없습니다. 반면 <b>「제목에서 봤다」는 열어서 바로 확인됩니다.</b> 그리고 근거 위치가 곧 정확도입니다 — 제목에서 온 태그는 거의 맞고, 조리 순서에서 짐작한 태그가 틀립니다.</p>
+    <p>그래서 검수 큐를 이렇게 만듭니다. <b>「근거가 조리 순서인 것만 보기」</b>.</p>
+  </div>
+
+  <h3>저장할 때 두 가지를 더 붙입니다 <span class="b wait">v1-1 신설</span></h3>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>필드</th><th>값</th><th>왜 필요한가</th></tr></thead>
+      <tbody>
+        <tr><td class="key"><code>by</code></td><td><code>ai</code> / <code>human</code></td><td>다시 태깅할 때 <b>사람이 고친 것을 건너뛰기</b> 위해. 없으면 검수한 만큼 매번 날아갑니다</td></tr>
+        <tr><td class="key"><code>dictVersion</code></td><td>사전 판번호</td><td>어떤 사전으로 붙였는지. 사전이 바뀌면 <b>다시 태깅할 대상을 골라내는</b> 기준</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════ 칸별 판정 ═══════ -->
+<section>
+  <h2><span class="num">04</span>칸을 정하는 순서</h2>
+  <p class="sub"><b>v1-1에서 순서를 바꿨습니다.</b> 뒤 칸이 앞 칸을 참조하기 때문입니다.</p>
+
+  <div class="note">
+    <p><strong>왜 순서가 중요한가.</strong> 방법 규칙에 「종류가 디저트면 방법을 비운다」가 있습니다. 그런데 v1은 <b>방법을 먼저 정하고 종류를 나중에</b> 정했습니다. 종류를 모르는 상태에서 종류를 참조하니 규칙이 돌지 않았습니다. 실측하니 <b>이 규칙에 걸리는 게 22건</b>입니다.</p>
+    <p>같은 이유로 <b>원작자를 「누가 먹나」보다 먼저</b> 정합니다. 「아이유」의 「아이」가 먹는 사람으로 잡히는 걸 막기 위해서입니다.</p>
+  </div>
+
+  <div class="tw compact">
+    <table>
+      <thead><tr><th class="n">순서</th><th>칸</th><th>앞 칸에서 무엇을 받나</th></tr></thead>
+      <tbody>
+        <tr><td class="n">1</td><td class="key">재료</td><td>—</td></tr>
+        <tr><td class="n">2</td><td class="key">대표 재료</td><td>재료 목록</td></tr>
+        <tr><td class="n">3</td><td class="key">종류</td><td>—</td></tr>
+        <tr><td class="n">4</td><td class="key">방법</td><td><b>종류</b> — 디저트·샌드위치·면요리·만두면 비움</td></tr>
+        <tr><td class="n">5</td><td class="key">누구 레시피</td><td>—</td></tr>
+        <tr><td class="n">6</td><td class="key">누가 먹나</td><td><b>누구 레시피</b> — 사람 이름으로 쓰인 부분은 빼고 봄</td></tr>
+        <tr><td class="n">7</td><td class="key">상황</td><td>종류</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>1·2. 재료와 대표 재료</h3>
+  <ol class="rules">
+    <li><b>재료란을 한 줄씩 사전에 맞춥니다</b><span>「다진마늘」 → 마늘. 이름 통일표를 씁니다.</span></li>
+    <li><b>양념층은 건너뜁니다</b><span>소금·간장·설탕·식용유 등 약 40종. 158건 중 소금이 49건에 있습니다.</span></li>
+    <li><b>한 칸에 여러 재료가 들어있으면 나눕니다</b><span>실제 사례: <code>"고춧가루, 후추, 오레가노, 마늘가루"</code>가 재료 한 칸에 들어와 있습니다. 「A 또는 B」는 앞의 것만 씁니다.</span></li>
+    <li><b>대표는 제목에 있는 재료입니다</b><span>실측: 제목 등장률이 떡·가지·순두부 100%, 두부·애호박 62%인 반면 계란 11%·양파 3%입니다. <b>제목에 있으면 그것으로 끝냅니다</b> — 아래 순위와 상관없이.</span></li>
+    <li><b>제목에 재료가 둘 이상이면 앞에 나온 것</b><span class="b wait" style="margin-left:0">v1-2 신설</span><span style="display:block;margin-top:4px">「돼지고기 김치찌개」는 <b>돼지고기</b>. 「우삼겹 오이 비빔밥」은 <b>소고기</b>. 앞에 쓴 것이 그 사람이 생각한 주인공입니다.</span></li>
+    <li><b>제목에 재료가 없을 때만 재료란에서 고릅니다 — 거드는 재료는 뒤로</b><span class="b wait" style="margin-left:0">v1-2 신설</span><span style="display:block;margin-top:4px">아래 <b>거드는 재료 13개</b>는 재료란에서 고를 때 건너뜁니다. 이 규칙 하나로 <b>16건</b>이 고쳐집니다 — 「감바스」가 마늘 대신 <b>새우</b>, 「된장찌개」가 양파 대신 <b>두부</b>가 됩니다.</span></li>
+    <li><b>주인공이 사전에 없으면 대표를 비웁니다</b><span>실제 오류: 「유부된장국」→대파, 「명란 모짜렐라」→치즈. 엉뚱한 대표를 세우는 것보다 비는 게 낫습니다.</span></li>
+  </ol>
+
+  <h4>거드는 재료 13개 <span class="b wait">v1-2 신설</span></h4>
+  <p>제목에 잘 안 나오는 재료입니다. 요리 이름이 「마늘볶음」·「양파조림」이 되는 일은 거의 없습니다. 158건에서 제목 등장률을 재서 갈랐습니다.</p>
+  <div class="chips">
+    <span class="chip dim">양파 <span class="c">3%</span></span><span class="chip dim">당근 <span class="c">7%</span></span><span class="chip dim">대파 <span class="c">8%</span></span><span class="chip dim">레몬 <span class="c">8%</span></span><span class="chip dim">마늘 <span class="c">9%</span></span><span class="chip dim">계란 <span class="c">11%</span></span><span class="chip dim">고추 <span class="c">0%</span></span><span class="chip dim">우유 <span class="c">0%</span></span><span class="chip dim">상추 <span class="c">0%</span></span><span class="chip dim">파프리카 <span class="c">0%</span></span><span class="chip dim">어묵 <span class="c">0%</span></span><span class="chip dim">생강 <span class="c">0%</span></span><span class="chip dim">깻잎 <span class="c">0%</span></span>
+  </div>
+  <div class="note">
+    <p><strong>⚠ 이 목록은 「대표가 못 된다」가 아니라 「재료란에서 고를 때 뒤로 미룬다」입니다.</strong> 처음엔 등장률이 낮으면 대표에서 아예 빼려 했는데, 그러면 <b>「당근 버거」의 대표가 햄</b>이 되고 <b>「한국 파전」이 옥수수</b>가 됩니다. 오히려 나빠집니다.</p>
+    <p>제목에 쓰였다는 건 그 사람이 주인공으로 여겼다는 뜻입니다. <b>제목이 언제나 먼저입니다.</b> 「계란 조림」의 대표는 계란이고 「레몬 케이크」의 대표는 레몬입니다.</p>
+  </div>
+
+  <h3>3. 종류</h3>
+  <ol class="rules">
+    <li><b>제목의 마지막 명사가 대개 종류입니다</b><span>「스테이크 샌드위치」는 샌드위치이지 스테이크가 아닙니다. 「짜장 떡볶이」는 떡볶이입니다.</span></li>
+    <li><b>구분자 뒤를 봅니다</b><span class="b wait" style="margin-left:0">v1-1 신설</span><span style="display:block;margin-top:4px">「남편을 위한 아침 27일차 - 오므라이스」에서 요리명은 <b>하이픈 뒤</b>입니다. 앞은 연재 번호일 뿐입니다. 158건 중 이런 제목이 <b>10건</b>입니다.</span></li>
+    <li><b>하나만 고릅니다</b><span>158건에서 둘 이상 붙은 게 16건이었고 대부분 하나가 틀렸습니다.</span></li>
+  </ol>
+
+  <h3>4. 방법</h3>
+  <ol class="rules">
+    <li><b>종류가 디저트·샌드위치·면요리·만두·파스타면 비웁니다</b><span>케이크도 굽고 베이글도 굽고 국수도 끓입니다. 하지만 구이나 국물이 아닙니다. <b>이 규칙 하나가 22건을 고칩니다.</b></span></li>
+    <li><b>제목에 방법이 있으면 그것으로 끝</b><span>「애호박볶음」이면 볶음. 더 볼 것 없습니다.</span></li>
+    <li><b>제목에 없으면 마지막 두 단계만 봅니다</b><span>실측: 방법 동사가 조리 순서 앞뒤 모두에 나오는 레시피가 <b>47건</b>입니다. <b>마지막이 결론입니다.</b></span></li>
+    <li><b>하나만 고릅니다</b><span>둘 이상 걸리면 조림 → 무침 → 볶음 → 찜 → 튀김 → 전 → 국물 → 구이 순으로 앞선 것을 씁니다. 구이가 가장 뒤인 이유는 「굽다」가 가장 흔해서입니다.</span></li>
+  </ol>
+
+  <h3>5·6. 누구 레시피와 누가 먹나 <span class="b wait">순서 중요</span></h3>
+  <ol class="rules">
+    <li><b>먼저 사람 이름·프로그램 이름을 찾습니다</b><span>제목에 있을 때만. <b>채널명은 근거가 아닙니다</b> — 158건에서 유명인 레시피 3건 중 2건이 채널명 ≠ 원작자였습니다.</span></li>
+    <li><b>그 이름을 뺀 나머지에서 「누가 먹나」를 봅니다</b><span>「아이유가 야식으로 즐겨 먹는」에서 「아이유」를 먼저 이름으로 처리하면 「아이」가 먹는 사람으로 잡히지 않습니다.</span></li>
+    <li><b>「아기·아이·이유식」이 낱말로 쓰였을 때만</b><span>실측: v1 규칙으로 붙은 5건 중 <b>4건이 가짜</b>였습니다(05번 함정 참고). 재료가 순하다고 아기용으로 짐작하지 않습니다.</span></li>
+    <li><b>없으면 비웁니다</b><span>기본값은 온가족이고 태그를 붙이지 않습니다. 158건 중 153건이 여기 해당합니다.</span></li>
+  </ol>
+
+  <h3>7. 상황</h3>
+  <p>제목에 드러난 것만 붙입니다. 조리 시간이 짧다고 「간단요리」를 붙이지 않습니다 — 이 태그는 사전에서 뺐습니다.</p>
+</section>
+
+<!-- ═══════ 함정 ═══════ -->
+<section>
+  <h2><span class="num">05</span>함정 — 실제로 틀린 곳</h2>
+  <p class="sub">사전을 158건에 붙여보고 오류를 전부 모았습니다. 아래는 AI에게 그대로 알려줘야 하는 목록입니다.</p>
+
+  <h3>함정 1 — 짧은 태그가 다른 낱말 안에 숨어 있습니다</h3>
+  <p>가장 많이 틀린 곳입니다. 글자만 맞춰보면 이렇게 됩니다.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>태그</th><th class="n">제목에 등장</th><th class="n">그중 가짜</th><th>가짜 사례</th></tr></thead>
+      <tbody>
+        <tr><td class="key">아이 <span class="b wait">v1-1 추가</span></td><td class="n">5</td><td class="n bad">4</td><td><b>아이</b>올리 소스 · <b>아이</b>바르 소스 · <b>아가</b>베 시럽 · <b>아이유</b>(사람 이름)</td></tr>
+        <tr><td class="key">밥</td><td class="n">21</td><td class="n bad">18</td><td>덮<b>밥</b> · 비빔<b>밥</b> · 볶음<b>밥</b> · 유부초<b>밥</b></td></tr>
+        <tr><td class="key">떡</td><td class="n">10</td><td class="n bad">7</td><td><b>떡</b>볶이 · <b>떡</b>국</td></tr>
+        <tr><td class="key">파</td><td class="n">10</td><td class="n bad">7</td><td><b>파</b>스타 · <b>파</b>프리카 · <b>파</b>슬리 · <b>파</b>인애플</td></tr>
+        <tr><td class="key">국</td><td class="n">13</td><td class="n bad">8</td><td>한<b>국</b> 파전 · 콩<b>국</b>수 · 비빔<b>국</b>수 · 중<b>국</b>식</td></tr>
+        <tr><td class="key">김</td><td class="n">6</td><td class="n bad">4</td><td><b>김</b>치찌개 · <b>김</b>치볶음밥 · <b>김</b>치즈구이</td></tr>
+        <tr><td class="key">차</td><td class="n">5</td><td class="n bad">5</td><td>27일<b>차</b> · <b>차</b>돌박이</td></tr>
+        <tr><td class="key">가지</td><td class="n">7</td><td class="n bad">2</td><td>3<b>가지</b> 재료 · 3<b>가지</b> 메뉴</td></tr>
+        <tr><td class="key">죽</td><td class="n">1</td><td class="n bad">1</td><td>그린 반<b>죽</b> 팬케이크</td></tr>
+        <tr><td class="key">무</td><td class="n">3</td><td class="n bad">1</td><td>오이<b>무</b>침</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pair">
+    <div class="no">
+      <div class="t">이렇게 되면 안 됩니다</div>
+      <p>「스시 케이크」(<b>아이</b>올리) → 누가 먹나: 아이</p>
+      <p>「<b>아이유</b>가 야식으로…」 → 누가 먹나: 아이</p>
+      <p>「<b>한국</b> 파전」 → 종류: 국</p>
+      <p>「그린 반<b>죽</b> 팬케이크」 → 종류: 죽</p>
+      <p>「초간단 우삼겹 덮<b>밥</b>」 → 재료: 밥</p>
+    </div>
+    <div class="yes">
+      <div class="t">이렇게 되어야 합니다</div>
+      <p>「스시 케이크」 → 누가 먹나: 없음</p>
+      <p>「아이유가 야식으로…」 → <b>누구 레시피: 아이유</b> · 상황: 야식</p>
+      <p>「한국 파전」 → 종류: 전 · 재료: 대파</p>
+      <p>「그린 반죽 팬케이크」 → 종류: 전</p>
+      <p>「초간단 우삼겹 덮밥」 → 종류: 덮밥 · 재료: 소고기</p>
+    </div>
+  </div>
+
+  <p><b>규칙: 낱말 단위로 봅니다.</b> 글자가 들어있는지가 아니라, 그 낱말이 재료나 음식이나 사람으로 쓰였는지를 봅니다. 판단이 안 서면 비웁니다.</p>
+
+  <h3>함정 2 — 굽는다고 다 구이가 아닙니다</h3>
+  <p>「구워」·「구운」은 조리 순서에서 가장 흔한 말입니다. 그대로 믿으면 <b>158건 중 12건</b>이 잘못 분류됩니다.</p>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>레시피</th><th>잘못된 태그</th><th>맞는 태그</th></tr></thead>
+      <tbody>
+        <tr><td>바나나 딸기 팬케이크</td><td><span class="b none">구이</span></td><td><span class="b go">종류: 디저트 · 방법: 없음</span></td></tr>
+        <tr><td>초콜릿 딸기 머핀</td><td><span class="b none">구이</span></td><td><span class="b go">종류: 디저트 · 방법: 없음</span></td></tr>
+        <tr><td>갈릭허니버터베이글</td><td><span class="b none">구이</span></td><td><span class="b go">종류: 샌드위치 · 방법: 없음</span></td></tr>
+        <tr><td>추억의 간장국수</td><td><span class="b none">국물</span></td><td><span class="b go">종류: 면요리 · 방법: 없음</span></td></tr>
+        <tr><td>당면 계란 만두</td><td><span class="b none">구이</span></td><td><span class="b go">종류: 만두 · 방법: 없음</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>함정 3 — 조리 순서 중간에 속습니다</h3>
+  <p>거의 모든 레시피가 중간에 뭔가를 볶고 굽습니다. 실측하니 <b>방법 동사가 앞뒤 모두에 나오는 레시피가 47건</b>이었습니다.</p>
+  <div class="pair">
+    <div class="no">
+      <div class="t">전체를 보면</div>
+      <p>「돼지고기 김치찌개」 → 볶음 + 국물 + 구이가 전부 걸립니다. 처음에 고기를 볶고, 중간에 굽고, 마지막에 끓이기 때문입니다.</p>
+    </div>
+    <div class="yes">
+      <div class="t">마지막 두 단계만 보면</div>
+      <p>「돼지고기 김치찌개」 → <b>국물</b> 하나만 남습니다. 끓여서 완성하는 요리이기 때문입니다.</p>
+    </div>
+  </div>
+
+  <h3>함정 4 — 주인공이 사전에 없을 때</h3>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>레시피</th><th>대표로 잡힌 것</th><th>진짜 주인공</th></tr></thead>
+      <tbody>
+        <tr><td>특별한 재료 한 스푼 감바스</td><td><span class="b none">마늘</span></td><td>새우 (제목에 없음)</td></tr>
+        <tr><td>유부된장국</td><td><span class="b none">대파</span></td><td><b>유부</b> — 사전에 없음</td></tr>
+        <tr><td>파인애플 소세지 야채볶음</td><td><span class="b none">마늘</span></td><td><b>파인애플</b> — 사전에 없음</td></tr>
+        <tr><td>명란 모짜렐라 안주</td><td><span class="b none">치즈</span></td><td><b>명란</b> — 사전에 없음</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><b>규칙: 제목의 맨 앞 낱말이 사전에 없으면, 대표 재료를 비우고 후보함에 넣습니다.</b></p>
+
+  <h3>함정 5 — 재료란이 애초에 부실합니다</h3>
+  <p>재료 원문 422개 중 <b>274개(64%)가 딱 한 번만</b> 나옵니다.</p>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>실제로 들어온 재료란</th><th>문제</th><th>처리</th></tr></thead>
+      <tbody>
+        <tr><td><code>고춧가루, 후추, 오레가노, 마늘가루</code></td><td>한 칸에 네 개</td><td>쉼표로 나눔 → 전부 양념층</td></tr>
+        <tr><td><code>그린 반죽</code></td><td>정체 불명 · 이게 유일한 재료</td><td>재료 칸 비움 + 후보함</td></tr>
+        <tr><td><code>우삼겹 또는 차돌박이</code></td><td>선택지 표기</td><td>앞의 것으로 → 소고기</td></tr>
+        <tr><td><code>흰색 랩 재료</code> · <code>풀비버</code></td><td>번역 오류 의심</td><td>건너뜀 + 후보함</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>함정 6 — 붙여 쓴 말은 재료란으로 확인합니다 <span class="b wait">v1-2 신설</span></h3>
+  <p>한국어는 띄어쓰기 없이 붙여 씁니다. 어디서 자르느냐로 답이 갈립니다. <b>제목만 보고 자르지 말고 재료란을 봅니다.</b></p>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>제목</th><th>이렇게 자르면 틀림</th><th>재료란이 알려주는 답</th></tr></thead>
+      <tbody>
+        <tr><td>맥주 안주, <b>김치즈</b>구이</td><td><span class="b none">김치 + 즈</span></td><td><span class="b go">김 + 치즈</span> — 재료란이 조미김·피자치즈</td></tr>
+        <tr><td><b>마늘쫑</b>비빔밥</td><td><span class="b none">마늘 + 쫑</span></td><td><span class="b go">마늘쫑</span> — 재료란에 「마늘쫑」이 그대로</td></tr>
+        <tr><td>로제<b>떡볶이</b></td><td><span class="b none">떡 + 볶이</span></td><td><span class="b go">떡볶이(종류)</span> — 재료란이 떡국떡·어묵</td></tr>
+        <tr><td>갈릭허니<b>버터베이글</b></td><td><span class="b none">버터 + 베이글 따로</span></td><td><span class="b go">빵(대표) + 버터</span> — 재료란이 베이글·가염버터</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>함정 7 — 재료란이 사전보다 뭉뚱그려져 있을 때 <span class="b wait">v1-2 신설</span></h3>
+  <p>사전에는 「애호박」과 「단호박」이 있는데 재료란에 <b>「호박」</b>만 적혀 있으면 어느 쪽인지 알 수 없습니다.</p>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>재료란에 이렇게</th><th class="n">건수</th><th>처리</th></tr></thead>
+      <tbody>
+        <tr><td class="key">호박</td><td class="n">1</td><td>애호박·단호박 판단 불가 → <b>비우고 후보함</b></td></tr>
+        <tr><td class="key">채소 · 야채 믹스 · 짜투리 채소</td><td class="n">3</td><td>뭉뚱그린 말 → <b>건너뜀</b> (후보함에도 안 넣음)</td></tr>
+        <tr><td class="key">버섯 · 김 · 빵</td><td class="n">11</td><td>사전에 그 이름이 있음 → <b>그대로 씀</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><b>짐작해서 채우지 않습니다.</b> 「호박」을 애호박으로 찍으면 단호박 레시피가 애호박 페이지에 섞입니다.</p>
+
+  <h3>함정 8 — 제목이 요리명이 아닐 때 <span class="b wait">v1-1 신설</span></h3>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>제목</th><th>어디를 봐야 하나</th></tr></thead>
+      <tbody>
+        <tr><td>남편을 위한 아침 27일차 - 오므라이스</td><td>하이픈 <b>뒤</b>가 요리명. 앞은 연재 번호</td></tr>
+        <tr><td>이거 먹을래?</td><td>제목에 근거 없음 → <b>재료란과 조리 순서만</b>으로 판정</td></tr>
+        <tr><td>1만명이 저장한 역대급 크림치킨 레시피 2탄</td><td>과장어(역대급·2탄)를 빼고 「크림치킨」</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>158건 중 이런 제목이 <b>10건</b>입니다. 그리고 제목에 흔한 과장어는 <b>초간단 14건 · 황금레시피 5건 · 인생 4건</b>으로 모두 합쳐 <b>30번</b> 나옵니다 — 태그로도, 후보함으로도 넣지 않습니다.</p>
+
+  <h3>함정 9 — 이미 완성된 요리에 방법을 붙이면 없는 말이 생깁니다 <span class="b wait">v1-2 신설</span></h3>
+  <p>조합 랜딩은 <b>대표 재료 + 방법</b>으로 만듭니다(두부+조림 → 두부조림). 그런데 종류가 이미 완성된 요리명이면 이상한 말이 만들어집니다.</p>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>레시피</th><th>만들어지는 조합</th><th>문제</th></tr></thead>
+      <tbody>
+        <tr><td>류수영의 평생떡볶이</td><td><span class="b none">떡조림</span></td><td>그런 말은 없습니다. 떡볶이입니다</td></tr>
+        <tr><td>원팬 마늘 새우 파스타</td><td><span class="b none">면국물</span></td><td>파스타입니다</td></tr>
+        <tr><td>갈릭허니버터베이글</td><td><span class="b none">빵구이</span></td><td>샌드위치입니다</td></tr>
+        <tr><td>오이 참치 그릭요거트 샌드위치</td><td><span class="b none">요거트무침</span></td><td>샌드위치입니다</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><b>규칙: 종류가 완성 요리명이면 조합 랜딩을 만들지 않습니다.</b> 태그는 그대로 붙이되(재료·방법 모두 검색과 냉장고에 쓰임) <b>조합 페이지만 안 만듭니다.</b>
+  해당 종류: 떡볶이 · 김밥 · 비빔밥 · 볶음밥 · 오므라이스 · 카레 · 파스타 · 샌드위치 · 덮밥. 158건 중 <b>19건</b>이 여기 걸립니다.</p>
+</section>
+
+<!-- ═══════ 후보함 ═══════ -->
+<section>
+  <h2><span class="num">06</span>후보함 — 여기에 결함이 있었습니다</h2>
+
+  <div class="note">
+    <p><strong>v1의 결함.</strong> 후보함에 「유부」가 3건 쌓여 사전에 넣었다고 합시다. 그런데 <b>그 3건의 레시피에는 여전히 유부 태그가 없습니다</b> — 태깅할 때 사전에 없었으니까요. 태그가 0건이니 노출 게이트(3건)를 못 넘고, <b>페이지는 영영 안 열립니다.</b></p>
+    <p>원인은 단순합니다. v1의 후보함 기록에 <b>어느 레시피에서 나온 말인지가 없었습니다.</b></p>
+  </div>
+
+  <h3>고친 출력 형식</h3>
+  <pre><code>"candidates": [
+  {
+    "word": "유부",
+    "where": "ingredients",
+    "why": "재료란에 있으나 사전에 없음",
+    "recipeSno": 476,          // ← v1-1 신설: 어느 레시피에서 나왔나
+    "wouldBe": "ingredient"    // ← v1-1 신설: 어느 칸에 들어갈 말인가
+  }
+]</code></pre>
+
+  <h3>승격 절차</h3>
+  <ol class="rules">
+    <li><b>같은 말이 3건 모이면 운영자 화면에 뜹니다</b><span>후보함 화면에 그 말이 나온 레시피 목록이 함께 보입니다.</span></li>
+    <li><b>사람이 셋 중 하나를 고릅니다</b><span>사전에 넣기 / 기존 태그로 묶기 / 버리기.</span></li>
+    <li><b>「사전에 넣기」를 고르면 그 레시피들을 곧바로 다시 태깅합니다</b><span class="b wait" style="margin-left:0">v1-1 신설</span><span style="display:block;margin-top:4px">후보함에 적힌 레시피 번호를 쓰면 됩니다. 전체를 다시 돌릴 필요가 없습니다. 이 단계가 있어야 3건이 채워지고 페이지가 열립니다.</span></li>
+  </ol>
+
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>판단</th><th>언제</th><th>예시</th></tr></thead>
+      <tbody>
+        <tr><td class="key"><span class="b go">사전에 넣기</span></td><td>검색량이 있고 앞으로도 나올 재료·음식</td><td>유부 · 명란 · 마라탕</td></tr>
+        <tr><td class="key"><span class="b wait">기존 태그로 묶기</span></td><td>이미 있는 태그의 다른 이름</td><td>「달걀」 → 계란 · 「간마늘」 → 마늘</td></tr>
+        <tr><td class="key"><span class="b none">버리기</span></td><td>번역 오류 · 일회성 · 태그로 쓸모없음</td><td>「그린 반죽」 · 「풀비버」 · 「흰색 랩 재료」</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>후보함에 넣지 않는 것 <span class="b wait">v1-1 신설</span></h3>
+  <p>다 쌓으면 후보함이 쓰레기통이 됩니다. 아래는 기록조차 하지 않습니다.</p>
+  <ul class="plain">
+    <li><b>양념·조미료</b> — 이미 태그를 안 붙이기로 한 것들</li>
+    <li><b>과장·감정어</b> — 초간단 · 황금레시피 · 인생 · 대박 · 역대급 · 존맛 (158건에 이미 <b>29번</b> 나옵니다)</li>
+    <li><b>상품 브랜드</b> — 「청정원 카레」의 청정원, 「신라면」의 신라면</li>
+    <li><b>양·단위</b> — 1큰술 · 100g · 한 줌</li>
+  </ul>
+
+  <h3>지금 158건에서 실제로 나올 후보</h3>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>후보</th><th class="n">건수</th><th>어느 칸</th><th>판정 예상</th></tr></thead>
+      <tbody>
+        <tr><td class="key">오트 · 명란</td><td class="n">각 2</td><td>재료</td><td><span class="b wait">1건 더 모이면 판단</span></td></tr>
+        <tr><td class="key">유부 · 파인애플 · 샤인머스캣 · 오리고기 · 꽃게 · 쑥갓 · 숙주</td><td class="n">각 1</td><td>재료</td><td><span class="b none">대기</span></td></tr>
+        <tr><td class="key">규동 · 크로크마담 · 오니기리 · 타코 · 파피요트</td><td class="n">각 1</td><td>종류</td><td><span class="b none">대기</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════ 다시 태깅 ═══════ -->
+<section>
+  <h2><span class="num">07</span>다시 태깅할 때 <span class="b wait">v1-1 신설</span></h2>
+  <p class="sub">사전은 반드시 바뀝니다. 바뀔 때마다 무엇을 다시 돌릴지, 무엇을 지킬지 정합니다.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>바뀐 것</th><th>다시 돌릴 대상</th><th>지킬 것</th></tr></thead>
+      <tbody>
+        <tr><td class="key">새 태그 추가 (후보함 승격)</td><td><b>후보함에 적힌 레시피만</b></td><td>나머지 태그 전부</td></tr>
+        <tr><td class="key">이름 통일표 추가</td><td>그 표기가 들어간 레시피만</td><td>나머지 태그 전부</td></tr>
+        <tr><td class="key">함정·규칙 수정</td><td>해당 칸만 전체 다시</td><td><b>사람이 고친 태그</b>(<code>by:human</code>)</td></tr>
+        <tr><td class="key">태그 이름 변경·합치기</td><td>다시 안 돌림 — <b>넘겨보내기 표</b>로 처리</td><td>전부</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note g">
+    <p><strong>사람이 고친 것은 절대 덮어쓰지 않습니다.</strong> 운영자가 검수해서 바로잡은 태그에는 <code>by:human</code>이 붙습니다. 다시 태깅할 때 이 태그는 건너뜁니다. 안 지키면 <b>검수한 만큼 매번 날아가고, 같은 오류를 계속 고치게 됩니다.</b></p>
+    <p>사람이 고쳤다는 사실 자체가 정보입니다 — 어떤 규칙이 자꾸 틀리는지 알려줍니다. 검수 이력을 모아 두면 다음 규칙 수정의 근거가 됩니다.</p>
+  </div>
+</section>
+
+<!-- ═══════ 안전 ═══════ -->
+<section>
+  <h2><span class="num">08</span>안전 규칙 <span class="b wait">v1-1 신설</span></h2>
+  <p class="sub">태그 문제가 아니라 사람 문제입니다. 지금은 해당 콘텐츠가 거의 없어서 안 터졌을 뿐입니다.</p>
+
+  <p><b>「아기」·「이유식」 태그가 붙은 레시피는 자동으로 내보내지 않습니다.</b> 사람이 확인한 뒤에 노출합니다.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>재료</th><th class="n">158건 중</th><th>왜 확인해야 하나</th></tr></thead>
+      <tbody>
+        <tr><td class="key">꿀</td><td class="n">5건</td><td><b>돌 미만 영아에게 먹이면 안 됩니다</b> (보툴리누스)</td></tr>
+        <tr><td class="key">견과</td><td class="n">5건</td><td>알레르기 — 아몬드 · 땅콩 · 호두 · 캐슈</td></tr>
+        <tr><td class="key">매운맛</td><td class="n">47건 (29%)</td><td>고추장 · 고춧가루 · 청양고추</td></tr>
+        <tr><td class="key">술</td><td class="n">19건 (12%)</td><td>맛술 · 미림 · 청주 — 조리 중 날아가지만 표기가 필요</td></tr>
+        <tr><td class="key">갑각류</td><td class="n">9건</td><td>알레르기 — 새우 · 게</td></tr>
+        <tr><td class="key">우유·계란</td><td class="n">59 · 57건</td><td>알레르기 — 흔해서 태그는 안 붙이지만 확인 대상</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>이 재료들은 <b>태그로 만들지 않습니다.</b> 우유가 37%에 들어있어 태그로서 쓸모가 없습니다. 대신 <b>「아기·이유식 태그 + 이 재료」 조합일 때 검수 큐로 보냅니다.</b></p>
+
+  <div class="note">
+    <p><strong>지금 실제로 걸리는 건 1건뿐입니다.</strong> v1 규칙으로 「누가 먹나」가 붙은 5건 중 4건이 오분류였고, 남은 1건은 위험 재료가 없습니다. 하지만 아기·아이 콘텐츠를 수급하기 시작하면 바로 필요해집니다.</p>
+  </div>
+</section>
+
+<!-- ═══════ 정확도 ═══════ -->
+<section>
+  <h2><span class="num">09</span>정확도를 재는 법 <span class="b wait">v1-1 신설</span></h2>
+  <p class="sub">v1에는 「검수해서 정한다」고만 적혀 있었습니다. 무엇을 어떻게 재는지 정합니다.</p>
+
+  <h3>두 숫자를 칸마다 잽니다</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>숫자</th><th>뜻</th><th>이게 나쁘면</th></tr></thead>
+      <tbody>
+        <tr><td class="key">잘못 붙은 비율</td><td>붙인 태그 100개 중 틀린 게 몇 개인가</td><td><b>사용자가 먼저 발견합니다.</b> 「바나나구이」가 화면에 뜹니다</td></tr>
+        <tr><td class="key">놓친 비율</td><td>붙어야 할 태그 100개 중 안 붙은 게 몇 개인가</td><td>검색·냉장고에서 안 찾아집니다. 조용히 손해를 봅니다</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><b>둘 중 「잘못 붙은 비율」이 먼저입니다.</b> 원칙 3(확실하지 않으면 비운다)이 여기서 나옵니다. 놓친 것은 나중에 다시 태깅해서 채울 수 있지만, 잘못 붙은 것은 신뢰를 잃습니다.</p>
+
+  <h3>기준선</h3>
+  <p>지금 규칙만으로 158건에 돌린 결과가 출발점입니다. 규칙을 고친 뒤 이보다 나빠지면 되돌립니다.</p>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>칸</th><th class="n">붙은 비율</th><th>알려진 오류</th></tr></thead>
+      <tbody>
+        <tr><td class="key">재료</td><td class="n">98%</td><td>대표 재료 오류 <b>16건</b> (거드는 재료가 대표로 — v1-2에서 규칙 신설)</td></tr>
+        <tr><td class="key">상황</td><td class="n">81%</td><td>—</td></tr>
+        <tr><td class="key">종류</td><td class="n">63%</td><td>둘 이상 붙음 16건</td></tr>
+        <tr><td class="key">방법</td><td class="n">57%</td><td><b>22건</b> (종류가 디저트·면인데 방법이 붙음)</td></tr>
+        <tr><td class="key">누가 먹나</td><td class="n">3%</td><td><b>5건 중 4건 가짜</b> — 실제로는 1건</td></tr>
+        <tr><td class="key">누구 레시피</td><td class="n">1%</td><td>아이유 1건 누락(누가 먹나로 감)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>언제 재나</h3>
+  <ul class="plain">
+    <li><b>첫 백필</b> — 158건 전수 검수. 여기서 기준선이 확정됩니다</li>
+    <li><b>규칙·프롬프트를 고칠 때마다</b> — 아래 고정 시험지 20건으로</li>
+    <li><b>월 1회</b> — 새로 들어온 것 중 30건 표본</li>
+  </ul>
+</section>
+
+<!-- ═══════ 시험지 ═══════ -->
+<section>
+  <h2><span class="num">10</span>고정 시험지 20건 <span class="b wait">v1-1 신설</span></h2>
+  <p class="sub">규칙이나 프롬프트를 바꿀 때마다 이 20건을 돌려봅니다. 전부 실제 레시피이고, 전부 v1이 틀렸던 것입니다.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th class="n">#</th><th>레시피 제목</th><th>맞는 답</th><th>무엇을 시험하나</th></tr></thead>
+      <tbody>
+        <tr><td class="n">1</td><td>한국 파전</td><td>종류 전 · 재료 대파</td><td>한<b>국</b>의 국</td></tr>
+        <tr><td class="n">2</td><td>그린 반죽 팬케이크 굽기</td><td>종류 전 · 방법 없음</td><td>반<b>죽</b>의 죽 + 굽다 함정</td></tr>
+        <tr><td class="n">3</td><td>아이유가 야식으로 즐겨 먹는 연두부 치즈전</td><td>누구 아이유 · 상황 야식 · 재료 연두부</td><td><b>아이</b>유 + 칸 순서</td></tr>
+        <tr><td class="n">4</td><td>스시 케이크</td><td>누가먹나 없음</td><td><b>아이</b>올리 소스</td></tr>
+        <tr><td class="n">5</td><td>남편을 위한 아침 27일차 - 오므라이스</td><td>종류 오므라이스 · 상황 아침</td><td>27일<b>차</b> + 하이픈 뒤</td></tr>
+        <tr><td class="n">6</td><td>초간단 우삼겹 덮밥</td><td>종류 덮밥 · 대표 소고기</td><td>덮<b>밥</b>의 밥</td></tr>
+        <tr><td class="n">7</td><td>3분 짜장으로 만드는 초간단 짜장 떡볶이</td><td>종류 떡볶이 · 대표 떡</td><td>짜장→면요리 오분류</td></tr>
+        <tr><td class="n">8</td><td>원팬 마늘 새우 파스타</td><td>종류 파스타 · 대표 새우 · 방법 없음</td><td><b>파</b>스타의 파 + 방법 비우기</td></tr>
+        <tr><td class="n">9</td><td>바나나 딸기 팬케이크</td><td>종류 디저트 · 방법 없음</td><td>굽다 함정</td></tr>
+        <tr><td class="n">10</td><td>추억의 간장국수 만들기</td><td>종류 면요리 · 방법 없음</td><td>국<b>수</b>의 국</td></tr>
+        <tr><td class="n">11</td><td>스테이크 샌드위치</td><td>종류 샌드위치</td><td>종류 둘 중 고르기</td></tr>
+        <tr><td class="n">12</td><td>대박집 레시피! 돼지고기 김치찌개</td><td>종류 찌개 · 방법 국물 · <b>대표 돼지고기</b></td><td>제목에 재료 둘 → 앞의 것 · 중간 동사 무시</td></tr>
+        <tr><td class="n">13</td><td>유부된장국</td><td>대표 비움 · 후보함 「유부」</td><td>주인공이 사전에 없음</td></tr>
+        <tr><td class="n">14</td><td>특별한 재료 한 스푼 감바스</td><td><b>대표 새우</b> (재료란에 있음)</td><td>거드는 재료(마늘)를 뒤로</td></tr>
+        <tr><td class="n">15</td><td>3가지 재료 치즈 감자 스매시</td><td>대표 감자 · 가지 태그 없음</td><td>3<b>가지</b>의 가지</td></tr>
+        <tr><td class="n">16</td><td>이자카야 스타일 아코디언 오이무침</td><td>방법 무침 · 대표 오이</td><td>오이<b>무</b>침의 무</td></tr>
+        <tr><td class="n">17</td><td>이거 먹을래?</td><td>제목 근거 없음 → 재료란만</td><td>제목이 요리명이 아님</td></tr>
+        <tr><td class="n">18</td><td>3분 만에 만드는 초간단 맥주 안주, 김치즈구이</td><td><b>재료 김·치즈</b> · 상황 술안주</td><td>붙여 쓴 말 자르기 — 김치가 아니라 <b>김+치즈</b></td></tr>
+        <tr><td class="n">19</td><td>남편을 위한 아침 - 비빔밥 4일차</td><td>누가먹나 없음 · 종류 비빔밥</td><td><b>아가</b>베 시럽</td></tr>
+        <tr><td class="n">20</td><td>어남선생 류수영 갈비치킨 레시피</td><td>누구 류수영 · 대표 닭</td><td>제목 인물 인식</td></tr>
+        <tr><td class="n">21</td><td>당근 버거</td><td>대표 <b>당근</b></td><td>거드는 재료도 <b>제목에 있으면 대표</b></td></tr>
+        <tr><td class="n">22</td><td>고깃집 스타일 된장찌개 황금레시피</td><td>대표 <b>두부</b> · 종류 찌개</td><td>제목에 재료 없음 → 양파를 건너뜀</td></tr>
+        <tr><td class="n">23</td><td>남은 떡국떡으로 만드는 초간단 로제떡볶이</td><td>종류 떡볶이 · 대표 떡 · <b>조합 랜딩 안 만듦</b></td><td>완성 요리명에 방법 조합 금지</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><b>합격선: 23건 중 21건.</b> 두 건까지는 비어 있어도 되지만, <b>틀리게 붙은 것은 하나도 없어야 합니다.</b></p>
+</section>
+
+<!-- ═══════ 언제·어떻게 ═══════ -->
+<section>
+  <h2><span class="num">11</span>언제 태깅하고 얼마나 보여주나 <span class="b wait">v1-1 신설</span></h2>
+
+  <h3>등록을 기다리게 하지 않습니다</h3>
+  <p>레시피를 저장하는 것과 태그를 붙이는 것을 나눕니다. <b>저장은 즉시, 태깅은 뒤에서</b> 합니다. 태그가 아직 없으면 그 칸을 비워 두면 됩니다 — 어차피 3건이 차기 전에는 화면에 안 나옵니다.</p>
+
+  <h3>사전이 프롬프트의 대부분입니다</h3>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>항목</th><th class="n">크기</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td class="key">레시피 하나</td><td class="n">약 800토큰</td><td>제목·설명·재료·조리순서 합쳐 중앙값 534자</td></tr>
+        <tr><td class="key">사전</td><td class="n">약 2,200토큰</td><td><b>입력의 73%</b> — 매번 같은 내용</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>사전은 레시피마다 바뀌지 않으므로 <b>프롬프트 캐싱</b>을 씁니다. 사전을 앞에 두고 레시피를 뒤에 붙이는 순서로 짜야 캐시가 걸립니다.</p>
+
+  <h3>태그를 몇 개까지 보여주나</h3>
+  <p>재료 태그가 <b>최대 10개</b>까지 붙습니다(6개 이상이 27건). 카드에 다 넣을 수 없습니다.</p>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>어디에</th><th>몇 개</th><th>무엇을</th></tr></thead>
+      <tbody>
+        <tr><td class="key">카드</td><td>2~3개</td><td>대표 재료 + 종류 + 방법</td></tr>
+        <tr><td class="key">상세</td><td>전부</td><td>칸별로 묶어서</td></tr>
+        <tr><td class="key">검색·냉장고</td><td>전부</td><td>화면에 안 보여도 저장은 다 합니다</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>조합 랜딩을 만들지 않는 경우 <span class="b wait">v1-2 신설</span></h3>
+  <p>종류가 <b>떡볶이 · 김밥 · 비빔밥 · 볶음밥 · 오므라이스 · 카레 · 파스타 · 샌드위치 · 덮밥</b>이면 대표 재료와 방법을 조합한 페이지를 만들지 않습니다. 「떡조림」·「면국물」 같은 없는 말이 생깁니다(158건 중 19건). 태그는 그대로 붙입니다 — 검색과 냉장고에서 쓰이기 때문입니다.</p>
+
+  <h3>페이지가 열리고 닫히는 기준</h3>
+  <p>레시피가 3건이 되면 페이지가 열립니다. 그런데 <b>1건이 삭제되면 2건이 되어 페이지가 사라집니다.</b> 열렸다 닫혔다 하면 검색엔진과 사용자 모두 혼란스럽습니다.</p>
+  <div class="pair">
+    <div class="no">
+      <div class="t">이러면 깜빡거립니다</div>
+      <p>열림 3건 · 닫힘 3건 미만<br>→ 2건과 3건 사이를 오가면 페이지가 계속 나타났다 사라집니다</p>
+    </div>
+    <div class="yes">
+      <div class="t">이렇게 합니다</div>
+      <p><b>열림 3건 · 닫힘 1건</b><br>→ 한 번 열린 페이지는 거의 안 닫힙니다. 다 사라져야 닫힙니다</p>
+    </div>
+  </div>
+  <p>세는 대상은 <b>검색노출이 켜진 레시피</b>만입니다(스코프 07 연동).</p>
+</section>
+
+<!-- ═══════ 프롬프트 ═══════ -->
+<section>
+  <h2><span class="num">12</span>프롬프트 초안</h2>
+  <p class="sub">위 규칙을 그대로 옮긴 것입니다. 사전은 어드민에서 읽어와 앞부분에 끼워 넣습니다.</p>
+
+  <pre><code>당신은 요리 레시피에 분류 태그를 붙입니다.
+아래 사전에 있는 말만 쓸 수 있습니다. 새 태그를 만들지 마세요.
+
+[사전]
+재료: (60개 목록 + 이름 통일표)
+양념(태그 붙이지 않음): (약 40종)
+방법: 볶음 조림 무침 찜 구이 튀김 전 국물
+종류: (28개 목록)
+상황: (12개 목록)
+누가 먹나: 아기 아이 이유식
+누구 레시피: (인물·프로그램 목록)
+
+[가장 중요한 규칙]
+1. 확실하지 않으면 비웁니다. 빈 칸은 괜찮지만 틀린 태그는 안 됩니다.
+2. 태그마다 어디서 봤는지 적습니다: title / ingredients / steps
+3. 사전에 없는 말은 candidates에 기록합니다. 버리지 마세요.
+
+[순서 — 이 순서대로 정하세요. 뒤 칸이 앞 칸을 참조합니다]
+재료 → 대표 재료 → 종류 → 방법 → 누구 레시피 → 누가 먹나 → 상황
+
+[재료]
+- 재료란을 한 줄씩 보고 사전 이름으로 바꿉니다 (다진마늘 → 마늘)
+- 양념 목록에 있는 것은 건너뜁니다
+- 한 칸에 쉼표로 여러 개가 있으면 나눠서 봅니다
+- "A 또는 B"는 앞의 것만 씁니다
+
+[대표 재료 — 하나만]
+- 제목에 나오는 재료가 대표입니다 (아래 "거드는 재료"여도 제목에 있으면 대표)
+- 제목에 재료가 둘 이상이면 앞에 나온 것
+  "돼지고기 김치찌개" -> 돼지고기, "우삼겹 오이 비빔밥" -> 소고기
+- 제목에 재료가 없을 때만 재료란에서 고릅니다. 이때 양념과
+  아래 "거드는 재료"는 건너뜁니다
+  거드는 재료: 양파 당근 대파 레몬 마늘 계란 고추 우유 상추 파프리카 어묵 생강 깻잎
+  "감바스" 재료란이 [올리브오일, 마늘, 새우...] -> 새우
+- 제목의 주인공이 사전에 없으면 비우고 candidates에 넣습니다
+
+[종류 — 하나만]
+- 제목의 마지막 명사가 대개 종류입니다
+  "스테이크 샌드위치" → 샌드위치, "짜장 떡볶이" → 떡볶이
+- 제목에 " - " 나 " | " 가 있으면 뒤쪽이 요리명입니다
+  "남편을 위한 아침 27일차 - 오므라이스" → 오므라이스
+
+[방법 — 하나만. 종류를 먼저 정한 뒤에 봅니다]
+- 종류가 디저트·샌드위치·만두·면요리·파스타이면 방법을 비웁니다
+  (케이크도 굽고 국수도 끓이지만 구이나 국물이 아닙니다)
+- 제목에 방법이 있으면 그것으로 끝냅니다
+- 제목에 없으면 조리 순서의 마지막 두 단계만 봅니다
+  (중간에 볶는다고 볶음이 아닙니다. 마지막이 결론입니다)
+- 둘 이상 걸리면 이 순서로: 조림 무침 볶음 찜 튀김 전 국물 구이
+
+[누구 레시피 — 누가 먹나보다 먼저]
+- 제목에 사람 이름이나 프로그램 이름이 있을 때만
+- 채널 이름은 근거가 아닙니다 (올린 사람과 원작자가 다를 수 있습니다)
+
+[누가 먹나 — 사람 이름을 뺀 나머지에서 봅니다]
+- 제목이나 설명에 "아기·아이·이유식"이 낱말로 쓰였을 때만
+- 재료가 순하다고 아기용으로 짐작하지 마세요
+- 없으면 null (기본값은 온가족이며 태그를 붙이지 않습니다)
+
+[붙여 쓴 말은 재료란으로 확인합니다]
+- "김치즈구이"는 김치+즈가 아니라 김+치즈입니다 (재료란: 조미김, 피자치즈)
+- "마늘쫑비빔밥"의 마늘쫑은 마늘+쫑이 아니라 하나의 재료입니다
+- 제목만 보고 자르지 말고 재료란에 같은 말이 있는지 보세요
+
+[재료란이 사전보다 뭉뚱그려져 있으면]
+- "호박"만 적혀 있으면 애호박인지 단호박인지 모릅니다 -> 비우고 candidates
+- "채소" "야채 믹스" "짜투리 채소" -> 건너뜁니다 (candidates에도 넣지 않음)
+- 짐작해서 채우지 마세요
+
+[함정 — 글자만 맞추면 틀립니다]
+낱말 안에 숨은 글자에 속지 마세요. 낱말 단위로 보세요.
+  아이 → 아이올리·아이바르·아가베·아이유는 먹는 사람이 아닙니다
+  밥   → 덮밥·비빔밥·볶음밥·유부초밥의 밥은 재료가 아닙니다
+  국   → 한국·중국식·콩국수·비빔국수의 국은 국물이 아닙니다
+  파   → 파스타·파프리카·파슬리·파인애플의 파는 대파가 아닙니다
+  떡   → 떡볶이·떡국은 종류이지 재료 떡이 아닙니다
+  김   → 김치·김밥의 김은 재료 김이 아닙니다
+  차   → 27일차·차돌박이의 차는 음료가 아닙니다
+  죽   → 반죽의 죽은 죽이 아닙니다
+  가지 → "3가지 재료"의 가지는 채소가 아닙니다
+  무   → 무침의 무는 채소가 아닙니다
+판단이 안 서면 비우세요.
+
+[후보함에 넣지 않는 것]
+- 양념·조미료 / 과장어(초간단·황금레시피·인생·대박) / 상품 브랜드 / 양·단위
+- 뭉뚱그린 말(채소, 야채, 고기, 해물)
+
+[출력]
+JSON만 출력합니다. 설명을 붙이지 마세요.
+{
+  "ingredients": [{"tag":"", "from":""}],
+  "mainIngredient": {"tag":"", "from":""} 또는 null,
+  "kind": {"tag":"", "from":""} 또는 null,
+  "method": {"tag":"", "from":""} 또는 null,
+  "author": {"tag":"", "from":""} 또는 null,
+  "eater": {"tag":"", "from":""} 또는 null,
+  "situation": [{"tag":"", "from":""}],
+  "candidates": [{"word":"", "where":"", "why":"", "wouldBe":""}]
+}</code></pre>
+
+  <div class="note">
+    <p><strong>사전을 프롬프트에 매번 넣습니다.</strong> 사전이 바뀌면 프롬프트도 자동으로 따라가야 하므로, 사전은 코드에 박지 말고 <b>어드민 테이블에서 읽어와 조립</b>합니다. 사전이 늘어나도 프롬프트를 손대지 않습니다.</p>
+    <p><code>recipeSno</code>는 AI가 채우지 않습니다 — 부르는 쪽에서 붙입니다.</p>
+  </div>
+</section>
+
+<!-- ═══════ 사람이 하는 일 ═══════ -->
+<section>
+  <h2><span class="num">13</span>사람이 하는 일</h2>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>단계</th><th>무엇을</th><th>얼마나</th></tr></thead>
+      <tbody>
+        <tr><td class="key">첫 백필</td><td>기존 158건 일괄 태깅 후 <b>전수 검수</b></td><td>1회 · 여기서 기준선 확정</td></tr>
+        <tr><td class="key">상시 검수</td><td>근거가 <b>조리 순서</b>인 태그만</td><td>추정 전체의 2~3할</td></tr>
+        <tr><td class="key">안전 검수</td><td>「아기」·「이유식」이 붙은 것 전부</td><td>건별 · <b>통과 전 노출 금지</b></td></tr>
+        <tr><td class="key">후보함</td><td>3건 모인 말 판단 + <b>승격 시 재태깅 실행</b></td><td>주 1회</td></tr>
+        <tr><td class="key">시험지</td><td>규칙·프롬프트 고칠 때 20건 돌리기</td><td>변경할 때마다</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>검수할 때 보는 것</h3>
+  <ul class="plain">
+    <li>대표 재료가 <b>제목의 주인공과 같은가</b></li>
+    <li>방법이 <b>완성 방식</b>인가, 중간 과정인가</li>
+    <li>종류가 <b>하나</b>인가</li>
+    <li>「누가 먹나」가 <b>낱말</b>로 쓰인 근거가 있나 (아이올리·아가베가 아닌가)</li>
+    <li>사람 이름이 <b>「누구 레시피」로 갔는가</b> (「누가 먹나」로 새지 않았는가)</li>
+    <li>함정표 낱말이 <b>진짜</b>인가</li>
+  </ul>
+</section>
+
+<!-- ═══════ 사전 변경 ═══════ -->
+<section>
+  <h2><span class="num">14</span>사전을 바꿀 때</h2>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>바꾸는 일</th><th>해야 하는 것</th><th>예시</th></tr></thead>
+      <tbody>
+        <tr><td class="key">태그 추가</td><td>추가 + <b>후보함에 적힌 레시피 재태깅</b></td><td>「유부」 신설</td></tr>
+        <tr><td class="key">이름 바꾸기</td><td>옛 이름을 <b>넘겨보내기 표</b>에 남깁니다</td><td>「유아식」 → 「아기」</td></tr>
+        <tr><td class="key">두 태그 합치기</td><td>합쳐지는 쪽을 표에 남기고 레시피를 옮깁니다</td><td>「아이반찬」 + 「아기반찬」</td></tr>
+        <tr><td class="key">태그 삭제</td><td><b>하지 않습니다.</b> 숨김으로 두고 넘겨보냅니다</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><b>태그 이름이 곧 페이지 주소입니다.</b> 지우면 그 주소로 들어오던 사람이 빈 화면을 봅니다.</p>
+
+  <h3>사전에 새 태그를 넣는 조건</h3>
+  <ol class="rules">
+    <li><b>후보함에 3건 이상 쌓였다</b><span>사람이 임의로 추가하지 않습니다. 콘텐츠가 신호를 줄 때만.</span></li>
+    <li><b>검색량을 확인했다</b><span>사람들이 쓰는 말인지 봅니다. 실측 방법은 태그 사전 v1 문서에 있습니다.</span></li>
+    <li><b>기존 태그와 겹치지 않는다</b><span>겹치면 신설이 아니라 이름 통일표에 넣습니다. 「간마늘」은 새 태그가 아니라 마늘입니다.</span></li>
+  </ol>
+</section>
+
+<!-- ═══════ 점검 ═══════ -->
+<section>
+  <h2><span class="num">15</span>내보내기 전 점검</h2>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>확인</th><th>기준</th></tr></thead>
+      <tbody>
+        <tr><td>사전에 있는 말인가</td><td>없으면 후보함으로 (레시피 번호와 함께)</td></tr>
+        <tr><td>레시피가 3건 이상인가</td><td>미만이면 어드민에서만 보임</td></tr>
+        <tr><td>대표 재료가 제목의 주인공인가</td><td>아니면 비움</td></tr>
+        <tr><td>종류를 먼저 정하고 방법을 봤는가</td><td>순서가 바뀌면 22건이 틀립니다</td></tr>
+        <tr><td>방법이 완성 방식인가</td><td>중간 과정이면 비움</td></tr>
+        <tr><td>함정표 낱말에 걸렸는가</td><td>걸렸으면 낱말 단위로 다시 봄</td></tr>
+        <tr><td>사람 이름이 「누가 먹나」로 새지 않았는가</td><td>아이유 · 아이올리 · 아가베</td></tr>
+        <tr><td>「아기」·「이유식」이면 안전 검수를 거쳤는가</td><td>꿀 · 견과 · 매운맛 확인</td></tr>
+        <tr><td>사람이 고친 태그를 덮어쓰지 않았는가</td><td><code>by:human</code>은 건너뜀</td></tr>
+        <tr><td>원작자를 채널명으로 판단하지 않았는가</td><td>제목 근거만 인정</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr>
+<footer>
+  <p><b>졸리팟 레시피 태그 작성 지침 v1-2</b> · 2026-09-11<br>
+  v1 대비: 논리 결함 3건 수정(후보함 레시피 번호 · 판정 순서 · 사람 수정 보존), 신설 5절(재태깅 · 안전 · 정확도 · 시험지 · 태깅 시점)<br>
+  v1-1 대비: 원본 대조로 <b>숫자 오류 5건 · 시험지 오답 3건</b> 정정, 규칙 3건 신설(제목에 재료 둘이면 앞의 것 · 거드는 재료 13개 · 완성 요리명엔 조합 랜딩 금지), 함정 3개 추가(붙여 쓴 말 · 뭉뚱그린 재료 · 없는 조합), 시험지 20 → 23건<br>
+  근거: 공개 레시피 158건에 사전을 실제 적용해 수집한 오류 사례 · 함정은 제목 전수 대조로 실측<br>
+  함께 보는 문서: <b>태그 사전 v1</b>(무엇을 붙이나 — 6칸 값 확정) · 개발 스코프 v1-6-1 (04 어드민)</p>
+</footer>
+
+</div>
+
+</body>
+</html>
