@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>졸리팟 태그 사전</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#FFFFFF; --card:#FFFFFF; --surface:#FFF5EA; --surface-alt:#FFEEDC;
+  --ink:#212121; --mid:#666666; --faint:#9E9E9E;
+  --border:#CCCFD4; --divider:#E5E7EB;
+  --accent:#FC642D; --green:#145F48; --warn:#8A6212; --warn-bg:#FFF5C6;
+  --green-bg:#E3F4C7; --shade:#FAF7F2;
+  --font:'Pretendard Variable',Pretendard,'IBM Plex Sans KR',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#15120E; --card:#1C1814; --surface:#241E17; --surface-alt:#2C241B;
+    --ink:#F2EDE6; --mid:#A79D91; --faint:#7A7066;
+    --border:#3B342B; --divider:#2A241D;
+    --accent:#FF7A47; --green:#5FB994; --warn:#D9B24A; --warn-bg:#332B14;
+    --green-bg:#1E3327; --shade:#1A1611;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15120E; --card:#1C1814; --surface:#241E17; --surface-alt:#2C241B;
+  --ink:#F2EDE6; --mid:#A79D91; --faint:#7A7066;
+  --border:#3B342B; --divider:#2A241D;
+  --accent:#FF7A47; --green:#5FB994; --warn:#D9B24A; --warn-bg:#332B14;
+  --green-bg:#1E3327; --shade:#1A1611;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font); letter-spacing:-.3px;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  font-size:15px; line-height:1.72;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 22px 100px}
+
+/* ── 머리 ── */
+header{padding:56px 0 30px;border-bottom:1px solid var(--divider)}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.9px;color:var(--accent);text-transform:uppercase}
+h1{font-size:34px;font-weight:700;line-height:1.28;margin:12px 0 14px;text-wrap:balance}
+.lede{font-size:16px;color:var(--mid);max-width:62ch;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.meta span{font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;
+  background:var(--surface);border:1px solid var(--border);color:var(--mid)}
+
+/* ── 섹션 ── */
+section{padding-top:46px}
+h2{font-size:22px;font-weight:600;margin:0 0 6px;line-height:1.4}
+h2 .num{color:var(--faint);font-weight:600;margin-right:9px;font-variant-numeric:tabular-nums}
+.sub{color:var(--mid);font-size:14px;margin:0 0 20px;max-width:64ch}
+h3{font-size:17px;font-weight:600;margin:32px 0 8px}
+h4{font-size:15px;font-weight:600;margin:22px 0 6px}
+p{margin:0 0 14px;max-width:66ch}
+b{font-weight:600}
+.num-hl{color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums}
+
+/* ── 핵심 발견 카드 ── */
+.finds{display:grid;gap:14px;margin:22px 0 0}
+.find{border:1px solid var(--border);border-radius:16px;padding:20px 22px;background:var(--card);
+  display:grid;grid-template-columns:44px 1fr;gap:18px;align-items:start}
+.find .mark{font-size:26px;font-weight:700;color:var(--accent);line-height:1;
+  font-variant-numeric:tabular-nums;padding-top:2px}
+.find h3{margin:0 0 6px;font-size:17px}
+.find p{margin:0;font-size:14px;color:var(--mid);max-width:none}
+.find .proof{margin-top:12px;display:flex;flex-wrap:wrap;gap:0;
+  border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.find .proof div{flex:1 1 130px;padding:9px 13px;background:var(--surface);
+  border-right:1px solid var(--border)}
+.find .proof div:last-child{border-right:none}
+.find .proof dt{font-size:11.5px;color:var(--mid);font-weight:600;margin:0 0 1px}
+.find .proof dd{margin:0;font-size:16px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* ── 표 ── */
+.tw{overflow-x:auto;margin:16px 0 10px;border:1px solid var(--border);border-radius:14px;background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:480px}
+th{text-align:left;font-weight:600;font-size:11.5px;color:var(--mid);letter-spacing:.4px;
+  padding:11px 14px;background:var(--surface);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:10px 14px;border-bottom:1px solid var(--divider);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tw.compact table{font-size:13px}
+.tw.compact td,.tw.compact th{padding:8px 12px}
+td.key{font-weight:600;white-space:nowrap}
+
+/* ── 배지 ── */
+.b{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.b.go{background:var(--green-bg);color:var(--green)}
+.b.wait{background:var(--warn-bg);color:var(--warn)}
+.b.none{background:var(--shade);color:var(--faint);border:1px solid var(--border)}
+
+/* ── 칩 목록 ── */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 6px}
+.chip{font-size:13px;font-weight:500;padding:5px 12px;border-radius:999px;
+  background:var(--surface);border:1px solid var(--border)}
+.chip.dim{background:transparent;color:var(--faint)}
+.chip .c{color:var(--faint);font-size:11.5px;margin-left:5px;font-variant-numeric:tabular-nums}
+.group{margin:16px 0}
+.group .gl{font-size:11.5px;font-weight:600;color:var(--mid);letter-spacing:.5px;margin-bottom:2px}
+
+/* ── 콜아웃 ── */
+.note{background:var(--surface);border-radius:12px;padding:14px 18px;margin:18px 0;
+  border-left:3px solid var(--accent)}
+.note p{margin:0;font-size:14px;color:var(--mid);max-width:none}
+.note p+p{margin-top:8px}
+.note strong{color:var(--ink);font-weight:600}
+.note.g{border-left-color:var(--green)}
+
+/* ── 규칙 목록 ── */
+ol.rules{counter-reset:r;list-style:none;padding:0;margin:18px 0}
+ol.rules li{counter-increment:r;position:relative;padding:0 0 18px 42px;margin:0}
+ol.rules li::before{content:counter(r);position:absolute;left:0;top:1px;
+  width:26px;height:26px;border-radius:50%;background:var(--surface);border:1px solid var(--border);
+  display:grid;place-items:center;font-size:12.5px;font-weight:700;color:var(--accent)}
+ol.rules li b{display:block;margin-bottom:2px}
+ol.rules li span{font-size:14px;color:var(--mid)}
+
+ul.plain{margin:12px 0;padding-left:20px}
+ul.plain li{margin-bottom:7px;color:var(--mid);font-size:14px}
+ul.plain li b{color:var(--ink)}
+
+/* ── 층 다이어그램 ── */
+.layers{display:grid;gap:10px;margin:18px 0}
+.layer{border:1px solid var(--border);border-radius:14px;padding:16px 18px;background:var(--card)}
+.layer .lh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.layer .lt{font-size:15px;font-weight:600}
+.layer .ls{font-size:12.5px;color:var(--mid)}
+.layer p{font-size:13.5px;color:var(--mid);margin:0 0 8px;max-width:none}
+.layer.off{background:var(--shade)}
+
+/* ── 나눠보기 ── */
+.two{display:grid;gap:14px;margin:16px 0}
+@media(min-width:720px){.two{grid-template-columns:1fr 1fr}}
+.two>div{border:1px solid var(--border);border-radius:14px;padding:16px 18px;background:var(--card)}
+.two h4{margin:0 0 6px}
+.two p{font-size:13.5px;color:var(--mid);margin:0;max-width:none}
+
+hr{border:none;border-top:1px solid var(--divider);margin:44px 0 0}
+footer{padding-top:36px;font-size:13px;color:var(--faint)}
+footer b{color:var(--mid)}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:600px){
+  h1{font-size:27px} header{padding-top:38px}
+  .find{grid-template-columns:1fr;gap:8px}
+}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">졸리팟 레시피 · 태그 사전 v1</div>
+  <h1>레시피에 붙일 첫 태그를 정합니다</h1>
+  <p class="lede">태그 6칸에 들어갈 값을 확정한 문서입니다. 값 하나하나를 네이버 월 검색량과 공개 레시피 158건 실측으로 판정했고, 사전을 158건에 실제로 붙여 작동을 확인했습니다.</p>
+  <div class="meta">
+    <span>레시피 158건 전수</span>
+    <span>재료 원문 422개</span>
+    <span>검색어 697개 실측</span>
+    <span>2026-09-10</span>
+  </div>
+</header>
+
+<!-- ═══════ 실측으로 뒤집힌 것 ═══════ -->
+<section>
+  <h2><span class="num">01</span>실측으로 뒤집힌 것 세 가지</h2>
+  <p class="sub">사전을 짜기 전에 세 가지를 확인했고, 셋 다 처음 생각과 달랐습니다. 아래 설계는 전부 이 셋에서 나옵니다.</p>
+
+  <div class="finds">
+
+    <div class="find">
+      <div class="mark">1</div>
+      <div>
+        <h3>「방법」은 혼자서는 아무도 안 찾습니다</h3>
+        <p>볶음·조림·무침을 그 자체로 검색하는 사람은 사실상 없습니다. 그런데 재료와 붙는 순간 수요가 수백 배로 뜁니다. <b>방법 칸은 랜딩을 만드는 칸이 아니라, 재료와 붙여 쓰는 부품입니다.</b></p>
+        <div class="proof">
+          <div><dt>"조림요리" 단독</dt><dd>90</dd></div>
+          <div><dt>"두부조림"</dt><dd>80,740</dd></div>
+          <div><dt>차이</dt><dd>897배</dd></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="mark">2</div>
+      <div>
+        <h3>재료의 주인공은 제목이 정합니다</h3>
+        <p>어떤 재료가 그 요리의 주인공인지 가리는 방법을 찾았습니다. <b>제목에 나오면 주인공입니다.</b> 158건에서 재료별로 세어보니 갈림이 뚜렷했습니다. 고정 목록으로 「주재료·부재료」를 나눌 필요가 없습니다 — 레시피마다 판정하면 됩니다.</p>
+        <div class="proof">
+          <div><dt>떡 · 가지 · 순두부</dt><dd>100%</dd></div>
+          <div><dt>두부 · 애호박</dt><dd>62%</dd></div>
+          <div><dt>계란</dt><dd>11%</dd></div>
+          <div><dt>양파</dt><dd>3%</dd></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="mark">3</div>
+      <div>
+        <h3>사전이 가리키는 곳에 레시피가 없습니다</h3>
+        <p>월 1만 이상 찾는 재료×방법 조합이 <b>44개</b>, 검색량을 합치면 월 <b>200만</b>입니다. 그런데 이 중 지금 페이지를 열 수 있는 조합(레시피 3건 이상)은 <b>하나도 없습니다.</b> 37개는 레시피가 0건입니다.</p>
+        <div class="proof">
+          <div><dt>조합 후보</dt><dd>44개</dd></div>
+          <div><dt>월 검색량 합</dt><dd>200만</dd></div>
+          <div><dt>지금 열 수 있음</dt><dd>0개</dd></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note">
+    <p><strong>세 번째가 이 문서의 결론을 바꿉니다.</strong> 태그 사전은 분류 도구로 만들기 시작했는데, 실제로는 <b>어떤 레시피를 채워야 하는지 알려주는 목록</b>이 됐습니다. 사전의 빈칸이 곧 콘텐츠 기획서입니다. 11번 항목에서 그 목록을 그대로 드립니다.</p>
+  </div>
+</section>
+
+<!-- ═══════ 6칸 ═══════ -->
+<section>
+  <h2><span class="num">02</span>태그는 여섯 칸입니다</h2>
+  <p class="sub">한 레시피는 여러 칸에 동시에 들어갑니다. 「두부조림」은 재료가 두부이고 방법이 조림이고 종류가 밑반찬입니다. 그래서 하나의 나무가 아니라 여섯 칸입니다.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr>
+        <th>칸</th><th>무엇을 담나</th><th>값</th><th class="n">158건 적용</th><th>이 칸이 하는 일</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="key">재료</td><td>이 요리에 들어가는 것</td><td class="n">60</td><td class="n">98%</td><td>랜딩 · 냉장고 매칭 · 검색</td></tr>
+        <tr><td class="key">방법</td><td>어떻게 익히나</td><td class="n">8</td><td class="n">57%</td><td>재료와 붙여 조합 랜딩</td></tr>
+        <tr><td class="key">종류</td><td>완성된 음식이 무엇인가</td><td class="n">28</td><td class="n">63%</td><td>랜딩 · 탐색 칩</td></tr>
+        <tr><td class="key">상황</td><td>언제 · 왜 만드나</td><td class="n">12</td><td class="n">81%</td><td>탐색 칩 · 추천</td></tr>
+        <tr><td class="key">누가 먹나</td><td>아기 · 아이 · 온가족</td><td class="n">3</td><td class="n">3%</td><td>타깃 랜딩 <span class="b wait">콘텐츠 부족</span></td></tr>
+        <tr><td class="key">누구 레시피</td><td>원작자 · 방송</td><td class="n">열림</td><td class="n">1%</td><td>인물 랜딩 <span class="b wait">콘텐츠 부족</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>마지막 두 칸의 적용률이 낮은 것은 사전 문제가 아니라 콘텐츠 문제입니다. 158건 중 아이 관련이 5건, 유명인 이름이 붙은 것이 3건뿐입니다.</p>
+
+  <h3>왜 「누구 레시피」가 채널명과 별개인가</h3>
+  <p>우리 데이터에서 직접 확인했습니다. 유명인 레시피를 올린 계정이 그 유명인 본인이 아닌 경우가 대부분입니다.</p>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>레시피 제목</th><th>올린 채널</th><th>같은 사람인가</th></tr></thead>
+      <tbody>
+        <tr><td>어남선생 류수영 갈비치킨</td><td>류수영의 류리류리</td><td><span class="b go">같음</span></td></tr>
+        <tr><td>류수영의 평생떡볶이</td><td>뚝딱이형</td><td><span class="b none">다름</span></td></tr>
+        <tr><td>류수영 오징어볶음</td><td>오늘뭐먹지?</td><td><span class="b none">다름</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>3건 중 2건이 다릅니다. <b>채널명으로는 3분의 1만 잡힙니다.</b> 그래서 원작자는 별도 칸이어야 합니다.</p>
+</section>
+
+<!-- ═══════ 재료 ═══════ -->
+<section>
+  <h2><span class="num">03</span>재료 칸 — 60개</h2>
+  <p class="sub">가장 많이 쓰이는 칸이고, 레시피 태그·냉장고 매칭·검색 세 곳이 같이 씁니다. 그래서 여기부터 확정합니다.</p>
+
+  <h3>먼저: 지금 재료가 어떻게 들어와 있나</h3>
+  <p>레시피 158건의 재료란을 전부 세었더니 <b class="num-hl">서로 다른 이름이 422개</b> 나왔습니다. 그중 <b class="num-hl">274개(64%)가 딱 한 번만</b> 등장합니다.</p>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>대표 재료</th><th>실제로 들어온 표기</th><th class="n">갈래</th></tr></thead>
+      <tbody>
+        <tr><td class="key">마늘</td><td>다진 마늘 21 · 마늘 15 · 다진마늘 10 · 마늘 가루 4 · 마늘쫑 3 · 간마늘 1 · 마늘분태 1</td><td class="n">13</td></tr>
+        <tr><td class="key">계란</td><td>계란 39 · 달걀 7 · 계란 노른자 3 · 삶은 계란 2 · 완숙 계란 1</td><td class="n">8</td></tr>
+        <tr><td class="key">간장</td><td>간장 34 · 진간장 10 · 양조간장 2 · 국간장 2 · 간장(구이용) 1</td><td class="n">5</td></tr>
+        <tr><td class="key">두부</td><td>두부 8 · 순두부 4 · 연두부 1 <span class="b wait">나눠야 함</span></td><td class="n">3</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>정리하지 않으면 「계란」으로 찾은 사람이 「달걀」 레시피를 못 봅니다. 냉장고 기능에서는 더 직접적인 문제가 됩니다.</p>
+
+  <h3>재료를 두 층으로 나눕니다</h3>
+  <div class="layers">
+    <div class="layer off">
+      <div class="lh"><span class="lt">양념층</span><span class="ls">태그를 붙이지 않습니다 · 약 40종</span></div>
+      <p>거의 모든 레시피에 들어가서 분류에 쓸모가 없습니다. 158건 중 소금 49건·후추 35건·간장 34건입니다. 지금 검색창에 「소금」을 치면 <b>158건 중 60건</b>이 나옵니다.</p>
+      <div class="chips">
+        <span class="chip dim">소금</span><span class="chip dim">후추</span><span class="chip dim">설탕</span><span class="chip dim">간장</span><span class="chip dim">물</span><span class="chip dim">식용유</span><span class="chip dim">참기름</span><span class="chip dim">식초</span><span class="chip dim">고춧가루</span><span class="chip dim">고추장</span><span class="chip dim">된장</span><span class="chip dim">굴소스</span><span class="chip dim">맛술</span><span class="chip dim">알룰로스</span><span class="chip dim">올리고당</span><span class="chip dim">물엿</span><span class="chip dim">꿀</span><span class="chip dim">통깨</span><span class="chip dim">마요네즈</span><span class="chip dim">케첩</span><span class="chip dim">전분</span><span class="chip dim">밀가루</span><span class="chip dim">참치액</span><span class="chip dim">허브류</span>
+      </div>
+    </div>
+    <div class="layer">
+      <div class="lh"><span class="lt">재료층</span><span class="ls">태그를 붙입니다 · 60개</span></div>
+      <p>레시피에 태그로 붙고, 냉장고에서 고르는 버튼이 되고, 검색이 읽습니다. 이 60개가 세 기능이 공유하는 하나의 목록입니다.</p>
+    </div>
+  </div>
+
+  <div class="note g">
+    <p><strong>주재료·부재료를 목록으로 고정하지 않습니다.</strong> 계란은 계란찜에서 주인공이고 볶음밥에서는 거들 뿐입니다. 고정 목록으로는 이걸 못 담습니다. 대신 레시피마다 <b>제목에 나오는 재료를 대표로 잡습니다</b>(실측 근거는 01-2번). 제목에 재료가 없으면 재료란 맨 앞 하나를 씁니다.</p>
+  </div>
+
+  <h3>재료 60개</h3>
+
+  <div class="group">
+    <div class="gl">채소 · 나물 — 24</div>
+    <div class="chips">
+      <span class="chip">양파<span class="c">35</span></span><span class="chip">대파<span class="c">36</span></span><span class="chip">마늘<span class="c">57</span></span><span class="chip">생강<span class="c">4</span></span><span class="chip">고추<span class="c">21</span></span><span class="chip">당근<span class="c">15</span></span><span class="chip">오이<span class="c">16</span></span><span class="chip">애호박<span class="c">8</span></span><span class="chip">단호박<span class="c">1</span></span><span class="chip">가지<span class="c">5</span></span><span class="chip">감자<span class="c">13</span></span><span class="chip">고구마<span class="c">1</span></span><span class="chip">무<span class="c">1</span></span><span class="chip">연근<span class="c">0</span></span><span class="chip">우엉<span class="c">0</span></span><span class="chip">옥수수<span class="c">5</span></span><span class="chip">양배추<span class="c">10</span></span><span class="chip">배추<span class="c">4</span></span><span class="chip">브로콜리<span class="c">5</span></span><span class="chip">시금치<span class="c">2</span></span><span class="chip">부추<span class="c">3</span></span><span class="chip">깻잎<span class="c">4</span></span><span class="chip">상추<span class="c">10</span></span><span class="chip">콩나물<span class="c">3</span></span>
+    </div>
+  </div>
+  <div class="group">
+    <div class="gl">버섯 · 열매 · 해조 — 5</div>
+    <div class="chips">
+      <span class="chip">버섯<span class="c">12</span></span><span class="chip">토마토<span class="c">18</span></span><span class="chip">파프리카<span class="c">9</span></span><span class="chip">아보카도<span class="c">13</span></span><span class="chip">미역<span class="c">5</span></span>
+    </div>
+  </div>
+  <div class="group">
+    <div class="gl">고기 · 가공육 — 4</div>
+    <div class="chips">
+      <span class="chip">돼지고기<span class="c">12</span></span><span class="chip">소고기<span class="c">21</span></span><span class="chip">닭<span class="c">12</span></span><span class="chip">햄<span class="c">13</span></span>
+    </div>
+  </div>
+  <div class="group">
+    <div class="gl">해산물 — 7</div>
+    <div class="chips">
+      <span class="chip">새우<span class="c">8</span></span><span class="chip">오징어<span class="c">1</span></span><span class="chip">연어<span class="c">3</span></span><span class="chip">참치<span class="c">10</span></span><span class="chip">어묵<span class="c">8</span></span><span class="chip">멸치<span class="c">2</span></span><span class="chip">진미채<span class="c">0</span></span>
+    </div>
+  </div>
+  <div class="group">
+    <div class="gl">달걀 · 콩 — 5</div>
+    <div class="chips">
+      <span class="chip">계란<span class="c">57</span></span><span class="chip">메추리알<span class="c">0</span></span><span class="chip">두부<span class="c">8</span></span><span class="chip">순두부<span class="c">4</span></span><span class="chip">연두부<span class="c">1</span></span>
+    </div>
+  </div>
+  <div class="group">
+    <div class="gl">유제품 — 4</div>
+    <div class="chips">
+      <span class="chip">치즈<span class="c">41</span></span><span class="chip">우유<span class="c">11</span></span><span class="chip">요거트<span class="c">9</span></span><span class="chip">버터<span class="c">9</span></span>
+    </div>
+  </div>
+  <div class="group">
+    <div class="gl">밥 · 면 · 빵 — 5</div>
+    <div class="chips">
+      <span class="chip">밥<span class="c">20</span></span><span class="chip">면<span class="c">16</span></span><span class="chip">떡<span class="c">9</span></span><span class="chip">빵<span class="c">19</span></span><span class="chip">김<span class="c">11</span></span>
+    </div>
+  </div>
+  <div class="group">
+    <div class="gl">과일 — 5 · 절임 — 1</div>
+    <div class="chips">
+      <span class="chip">딸기<span class="c">7</span></span><span class="chip">바나나<span class="c">6</span></span><span class="chip">사과<span class="c">1</span></span><span class="chip">레몬<span class="c">12</span></span><span class="chip">블루베리<span class="c">2</span></span><span class="chip">김치<span class="c">3</span></span>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--mid)">회색 숫자는 지금 레시피 158건 중 몇 건에 들어있는지입니다.</p>
+
+  <h3>같은 것으로 묶는 표</h3>
+  <p>왼쪽이 사전에 남는 이름, 오른쪽은 만나면 왼쪽으로 바꿔 저장할 표기입니다. 화면에는 작성자가 쓴 말이 그대로 보이고, 안쪽 태그만 통일합니다.</p>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>사전 이름</th><th>이렇게 들어오면 같은 것으로</th></tr></thead>
+      <tbody>
+        <tr><td class="key">계란</td><td>달걀 · 계란 노른자 · 노른자 · 삶은 계란 · 완숙 계란 · 반숙</td></tr>
+        <tr><td class="key">마늘</td><td>다진 마늘 · 다진마늘 · 간마늘 · 편마늘 · 통마늘 · 마늘가루 · 마늘분태</td></tr>
+        <tr><td class="key">대파</td><td>쪽파 · 실파 · 잔파 · 대파 흰부분</td></tr>
+        <tr><td class="key">고추</td><td>청양고추 · 홍고추 · 페퍼론치노 · 크러쉬드페퍼 · 레드페퍼</td></tr>
+        <tr><td class="key">돼지고기</td><td>삼겹살 · 통삼겹 · 대패삼겹살 · 목살 · 앞다리살 · 다짐육</td></tr>
+        <tr><td class="key">소고기</td><td>우삼겹 · 차돌박이 · 아롱사태 · 다짐육 · 등심 · 안심</td></tr>
+        <tr><td class="key">닭</td><td>닭다리살 · 닭다리 · 닭가슴살 · 훈제 가슴살 · 닭고기</td></tr>
+        <tr><td class="key">치즈</td><td>모짜렐라 · 체다 · 크림치즈 · 파마산 · 까망베르 · 피자치즈 · 슬라이스 치즈</td></tr>
+        <tr><td class="key">버섯</td><td>새송이 · 팽이 · 양송이 · 표고 · 느타리</td></tr>
+        <tr><td class="key">토마토</td><td>방울토마토 · 체리 토마토</td></tr>
+        <tr><td class="key">햄</td><td>스팸 · 소시지 · 비엔나 · 베이컨</td></tr>
+        <tr><td class="key">요거트</td><td>그릭 요거트 · 플레인 요구르트 · 사워크림</td></tr>
+        <tr><td class="key">면</td><td>소면 · 중면 · 당면 · 파스타 면 · 우동 면 · 라면</td></tr>
+        <tr><td class="key">빵</td><td>식빵 · 베이글 · 토르티야 · 사워도우 · 라이스페이퍼</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <p><strong>묶지 않고 나누는 것도 있습니다.</strong> 순두부는 두부와 다릅니다 — 순두부찌개를 찾는 사람이 월 97,140명인데 두부찌개를 찾는 사람은 25,650명입니다. 다른 요리입니다. 연두부도 마찬가지로 따로 둡니다.</p>
+  </div>
+</section>
+
+<!-- ═══════ 방법 ═══════ -->
+<section>
+  <h2><span class="num">04</span>방법 칸 — 8개</h2>
+  <p class="sub">이 칸은 랜딩을 만들지 않습니다. 재료와 붙어야 의미가 생깁니다.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr>
+        <th>방법</th><th class="n">단독 검색</th><th>가장 큰 조합</th><th class="n">조합 검색</th><th class="n">차이</th><th class="n">지금 건수</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="key">볶음</td><td class="n">560</td><td>오징어볶음</td><td class="n">117,590</td><td class="n">209배</td><td class="n">14</td></tr>
+        <tr><td class="key">무침</td><td class="n">150</td><td>콩나물무침</td><td class="n">104,530</td><td class="n">696배</td><td class="n">9</td></tr>
+        <tr><td class="key">조림</td><td class="n">90</td><td>두부조림</td><td class="n">80,740</td><td class="n">897배</td><td class="n">11</td></tr>
+        <tr><td class="key">국물</td><td class="n">0</td><td>콩나물국</td><td class="n">65,250</td><td class="n">—</td><td class="n">25</td></tr>
+        <tr><td class="key">찜</td><td class="n">870</td><td>계란찜</td><td class="n">48,260</td><td class="n">55배</td><td class="n">1</td></tr>
+        <tr><td class="key">튀김</td><td class="n">540</td><td>가지튀김</td><td class="n">37,520</td><td class="n">69배</td><td class="n">2</td></tr>
+        <tr><td class="key">전</td><td class="n">0</td><td>감자전</td><td class="n">30,830</td><td class="n">—</td><td class="n">0</td></tr>
+        <tr><td class="key">구이</td><td class="n">45</td><td>새우구이</td><td class="n">22,030</td><td class="n">489배</td><td class="n">29</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>방법을 정하는 순서</h3>
+  <ol class="rules">
+    <li><b>제목에 방법이 있으면 그것으로 끝냅니다.</b><span>「애호박볶음」이면 볶음입니다. 더 볼 것 없습니다.</span></li>
+    <li><b>없으면 마지막 두 단계만 봅니다.</b><span>중간에 「볶아」가 나와도 마지막에 끓이면 국물입니다. 조리 순서 전체를 보면 거의 모든 레시피에 「볶아」와 「구워」가 나옵니다.</span></li>
+    <li><b>그래도 안 잡히면 비워둡니다.</b><span>158건 중 57%에만 붙었습니다. 억지로 채우면 「바나나구이」 같은 태그가 생깁니다.</span></li>
+  </ol>
+
+  <div class="note">
+    <p><strong>양식에는 방법 칸이 잘 안 맞습니다.</strong> 158건에 붙여보니 구이 29건·국물 25건이 나왔는데, 상당수가 빵을 굽거나 파스타를 삶는 것이었습니다. 방법 칸은 한식 반찬에서 제 역할을 합니다. 억지로 100%를 채우지 않는 이유입니다.</p>
+  </div>
+</section>
+
+<!-- ═══════ 종류 ═══════ -->
+<section>
+  <h2><span class="num">05</span>종류 칸 — 28개</h2>
+  <p class="sub">재료와 방법을 조합해도 안 나오는 음식 이름입니다. 「콩나물무침」은 조합으로 만들어지지만 「김밥」은 안 됩니다.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>종류</th><th class="n">월 검색량</th><th class="n">지금 건수</th><th>판정</th></tr></thead>
+      <tbody>
+        <tr><td class="key">김밥</td><td class="n">256,500</td><td class="n">1</td><td><span class="b wait">사전 등재 · 노출 대기</span></td></tr>
+        <tr><td class="key">샤브샤브</td><td class="n">211,200</td><td class="n">0</td><td><span class="b none">사전만</span></td></tr>
+        <tr><td class="key">마라탕</td><td class="n">169,200</td><td class="n">0</td><td><span class="b none">사전만</span></td></tr>
+        <tr><td class="key">칼국수</td><td class="n">167,160</td><td class="n">0</td><td><span class="b none">사전만</span></td></tr>
+        <tr><td class="key">국밥</td><td class="n">160,460</td><td class="n">0</td><td><span class="b none">사전만</span></td></tr>
+        <tr><td class="key">부대찌개</td><td class="n">117,680</td><td class="n">0</td><td><span class="b none">사전만</span></td></tr>
+        <tr><td class="key">떡볶이</td><td class="n">104,610</td><td class="n">9</td><td><span class="b go">즉시 노출</span></td></tr>
+        <tr><td class="key">김치찌개</td><td class="n">79,010</td><td class="n">0</td><td><span class="b none">사전만</span></td></tr>
+        <tr><td class="key">파스타</td><td class="n">75,740</td><td class="n">5</td><td><span class="b go">즉시 노출</span></td></tr>
+        <tr><td class="key">샌드위치</td><td class="n">74,830</td><td class="n">13</td><td><span class="b go">즉시 노출</span></td></tr>
+        <tr><td class="key">샐러드</td><td class="n">67,980</td><td class="n">6</td><td><span class="b go">즉시 노출</span></td></tr>
+        <tr><td class="key">포케</td><td class="n">63,220</td><td class="n">0</td><td><span class="b none">사전만</span></td></tr>
+        <tr><td class="key">제육볶음</td><td class="n">45,050</td><td class="n">0</td><td><span class="b none">사전만</span></td></tr>
+        <tr><td class="key">디저트</td><td class="n">38,870</td><td class="n">13</td><td><span class="b go">즉시 노출</span></td></tr>
+        <tr><td class="key">된장찌개</td><td class="n">38,190</td><td class="n">0</td><td><span class="b none">사전만</span></td></tr>
+        <tr><td class="key">미역국</td><td class="n">31,020</td><td class="n">0</td><td><span class="b none">사전만</span></td></tr>
+        <tr><td class="key">스테이크</td><td class="n">29,410</td><td class="n">3</td><td><span class="b go">즉시 노출</span></td></tr>
+        <tr><td class="key">비빔밥</td><td class="n">29,040</td><td class="n">7</td><td><span class="b go">즉시 노출</span></td></tr>
+        <tr><td class="key">잡채</td><td class="n">28,800</td><td class="n">0</td><td><span class="b none">사전만</span></td></tr>
+        <tr><td class="key">카레</td><td class="n">28,050</td><td class="n">3</td><td><span class="b go">즉시 노출</span></td></tr>
+        <tr><td class="key">죽</td><td class="n">24,540</td><td class="n">2</td><td><span class="b wait">1건 더</span></td></tr>
+        <tr><td class="key">유부초밥</td><td class="n">23,880</td><td class="n">0</td><td><span class="b none">사전만</span></td></tr>
+        <tr><td class="key">볶음밥</td><td class="n">20,180</td><td class="n">2</td><td><span class="b wait">1건 더</span></td></tr>
+        <tr><td class="key">오므라이스</td><td class="n">19,720</td><td class="n">7</td><td><span class="b go">즉시 노출</span></td></tr>
+        <tr><td class="key">덮밥</td><td class="n">19,070</td><td class="n">10</td><td><span class="b go">즉시 노출</span></td></tr>
+        <tr><td class="key">밑반찬</td><td class="n">17,300</td><td class="n">1</td><td><span class="b wait">2건 더</span></td></tr>
+        <tr><td class="key">불고기</td><td class="n">16,970</td><td class="n">0</td><td><span class="b none">사전만</span></td></tr>
+        <tr><td class="key">계란말이</td><td class="n">15,790</td><td class="n">0</td><td><span class="b none">사전만</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <p><strong>마라탕을 지금 넣는 이유.</strong> 사전에는 넣되 화면에는 안 보입니다. 사전에 있어야 AI가 마라탕 레시피를 만났을 때 「마라탕」이라고 제대로 붙입니다. 레시피가 3건 쌓이면 그때 페이지가 저절로 열립니다. 미리 화면에 내보내면 빈 페이지가 됩니다.</p>
+    <p>여기 없는 새 음식이 나오면 AI가 후보함에 넣습니다(09번 참고). 지금 목록에 없는 이름이 사고가 아니라 신호가 되도록 만드는 장치입니다.</p>
+  </div>
+</section>
+
+<!-- ═══════ 상황 ═══════ -->
+<section>
+  <h2><span class="num">06</span>상황 칸 — 12개</h2>
+  <p class="sub">이 칸에서 실측이 특히 아프게 나왔습니다. <b>우리가 붙이기 쉬운 태그와 사람들이 찾는 태그가 정반대</b>입니다.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>상황</th><th>랜딩에 쓸 이름</th><th class="n">월 검색량</th><th class="n">지금 건수</th></tr></thead>
+      <tbody>
+        <tr><td class="key">아침</td><td>브런치</td><td class="n">70,400</td><td class="n">7</td></tr>
+        <tr><td class="key">다이어트</td><td>다이어트 식단</td><td class="n">66,300</td><td class="n">2</td></tr>
+        <tr><td class="key">제철</td><td>제철 음식</td><td class="n">55,570</td><td class="n">0</td></tr>
+        <tr><td class="key">도시락</td><td>도시락</td><td class="n">52,600</td><td class="n">1</td></tr>
+        <tr><td class="key">저녁</td><td>저녁 메뉴</td><td class="n">38,010</td><td class="n">0</td></tr>
+        <tr><td class="key">간식</td><td>간식</td><td class="n">21,420</td><td class="n">14</td></tr>
+        <tr><td class="key">야식</td><td>야식</td><td class="n">9,380</td><td class="n">1</td></tr>
+        <tr><td class="key">혼밥</td><td>혼밥</td><td class="n">9,350</td><td class="n">0</td></tr>
+        <tr><td class="key">캠핑</td><td>캠핑 요리</td><td class="n">8,920</td><td class="n">0</td></tr>
+        <tr><td class="key">술안주</td><td>술안주</td><td class="n">5,810</td><td class="n">4</td></tr>
+        <tr><td class="key">명절</td><td>명절 음식</td><td class="n">4,930</td><td class="n">0</td></tr>
+        <tr><td class="key">에어프라이어</td><td>에어프라이어 요리</td><td class="n">3,400</td><td class="n">2</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>여기서 뺀 것들</h3>
+  <div class="two">
+    <div>
+      <h4>간단요리 — 뺍니다</h4>
+      <p>158건 중 99건에 붙습니다. 붙이기는 제일 쉬운데 찾는 사람은 월 1,740명입니다. 거의 모든 레시피에 붙는 태그는 아무것도 구분해주지 못합니다.</p>
+    </div>
+    <div>
+      <h4>15분요리 · 30분요리 — 뺍니다</h4>
+      <p>각각 월 15명, 10명입니다. 기획할 때 쓰는 말이지 검색하는 말이 아닙니다. <b>빠른 요리는 태그가 아니라 시간 필터로</b> 거릅니다 — 조리 시간은 158건 전부 들어 있고, 15분 이하가 99건입니다.</p>
+    </div>
+    <div>
+      <h4>전자레인지 — 뺍니다</h4>
+      <p>15건에 붙는데 검색은 월 960명입니다. 도구는 검색어가 아닙니다.</p>
+    </div>
+    <div>
+      <h4>손님상 · 여럿이 — 뺍니다</h4>
+      <p>월 610명. 인분 수가 이미 데이터에 있으니(4인분 이상 17건) 필터로 처리합니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ 누가 먹나 ═══════ -->
+<section>
+  <h2><span class="num">07</span>누가 먹나 칸 — 3개</h2>
+  <p class="sub">졸리팟이 겨냥한 자리인데, 지금 콘텐츠가 가장 비어 있는 칸입니다.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>태그</th><th>랜딩 이름</th><th class="n">월 검색량</th><th class="n">지금 건수</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td class="key">이유식</td><td>이유식</td><td class="n">22,890</td><td class="n">0</td><td>초기 7,020 · 중기 4,300 · 후기 3,230으로 다시 나뉨</td></tr>
+        <tr><td class="key">아기</td><td>아기 반찬</td><td class="n">9,020</td><td class="n">1</td><td>「유아식」 7,380 · 「아이반찬」 4,610보다 큼</td></tr>
+        <tr><td class="key">아이</td><td>아이 간식</td><td class="n">3,570</td><td class="n">4</td><td>「아기간식」 3,570 · 「아이간식」 1,060</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>같은 뜻인데 이름에 따라 수요가 <b>두 배</b> 차이납니다. 아기반찬 9,020 대 아이반찬 4,610. 사전에는 「아기」로 두고 랜딩 제목을 「아기 반찬」으로 씁니다.</p>
+  <p><b>기본값은 온가족이고, 태그를 붙이지 않습니다.</b> 158건 중 153건이 여기 해당합니다. 모두에게 붙는 태그는 만들지 않는다는 원칙과 같습니다.</p>
+
+  <div class="note">
+    <p><strong>이 칸만 사람에게 물어봅니다.</strong> 재료·방법·종류는 레시피 본문에서 읽어낼 수 있는데, 「누가 먹나」는 본문에 안 나옵니다. 「우리 아기 이유식」이라고 쓰지 않으면 알 방법이 없습니다.</p>
+    <p>그래서 유저가 레시피를 쓸 때 <b>등록 버튼 옆에 칩 하나</b>를 둡니다 — 「온가족 · 아기 · 아이」. 안 고르면 온가족입니다. 필수로 만들지 않습니다.</p>
+  </div>
+</section>
+
+<!-- ═══════ 누구 레시피 ═══════ -->
+<section>
+  <h2><span class="num">08</span>누구 레시피 칸 — 열린 칸</h2>
+  <p class="sub">유일하게 값을 미리 정하지 않는 칸입니다. 새 인물과 새 프로그램이 계속 생기기 때문입니다.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>이름</th><th class="n">월 검색량</th><th>구분</th><th>확인 상태</th></tr></thead>
+      <tbody>
+        <tr><td class="key">냉장고를 부탁해</td><td class="n">72,830</td><td>프로그램</td><td><span class="b wait">상표 확인 필요</span></td></tr>
+        <tr><td class="key">백종원</td><td class="n">56,600</td><td>인물</td><td><span class="b go">사용 가능</span></td></tr>
+        <tr><td class="key">이연복</td><td class="n">52,480</td><td>인물</td><td><span class="b go">사용 가능</span></td></tr>
+        <tr><td class="key">편스토랑</td><td class="n">47,740</td><td>프로그램</td><td><span class="b wait">상표 확인 필요</span></td></tr>
+        <tr><td class="key">이영자</td><td class="n">39,980</td><td>인물</td><td><span class="b go">사용 가능</span></td></tr>
+        <tr><td class="key">최현석</td><td class="n">32,080</td><td>인물</td><td><span class="b go">사용 가능</span></td></tr>
+        <tr><td class="key">강레오</td><td class="n">28,730</td><td>인물</td><td><span class="b go">사용 가능</span></td></tr>
+        <tr><td class="key">류수영</td><td class="n">25,390</td><td>인물</td><td><span class="b go">사용 가능</span></td></tr>
+        <tr><td class="key">나폴리맛피아</td><td class="n">18,970</td><td>인물</td><td><span class="b go">사용 가능</span></td></tr>
+        <tr><td class="key">정지선</td><td class="n">15,360</td><td>인물</td><td><span class="b go">사용 가능</span></td></tr>
+        <tr><td class="key">흑백요리사</td><td class="n">14,830</td><td>프로그램</td><td><span class="b wait">상표 확인 필요</span></td></tr>
+        <tr><td class="key">안성재</td><td class="n">13,800</td><td>인물</td><td><span class="b go">사용 가능</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <p><strong>이름만 씁니다. 「○○레시피」로 쓰지 않습니다.</strong> 백종원 56,600인데 백종원레시피는 350입니다. 160배 차이입니다. 랜딩 제목은 「백종원 레시피」로 쓰되 태그 이름은 「백종원」입니다.</p>
+    <p><strong>인물은 변호사 확인을 마쳤습니다. 프로그램 이름은 아직입니다.</strong> 편스토랑·흑백요리사·냉장고를부탁해는 방송사 상표일 수 있어 따로 확인이 필요합니다. 확인 전까지는 사전에 두되 화면에 내보내지 않습니다.</p>
+  </div>
+
+  <h3>새 이름이 생기면</h3>
+  <p>이 칸은 값을 미리 채워둘 수 없습니다. 다음 시즌에 새 요리사가 뜨면 그때 생깁니다. 그래서 <b>후보함이 이 칸에서 가장 중요하게 작동합니다.</b> AI가 제목에서 사람 이름 같은 것을 만나면 후보함에 넣고, 3건 넘으면 운영자에게 알립니다.</p>
+</section>
+
+<!-- ═══════ 붙이는 규칙 ═══════ -->
+<section>
+  <h2><span class="num">09</span>태그를 붙이는 규칙</h2>
+  <p class="sub">AI가 레시피를 읽고 6칸을 채웁니다. 유저에게 태그를 고르라고 하지 않습니다.</p>
+
+  <ol class="rules">
+    <li><b>사전에 있는 말만 붙입니다</b><span>AI가 새 태그를 만들지 못합니다. 「연두부」가 사전에 있으면 붙이고, 「유부」가 없으면 못 붙입니다.</span></li>
+    <li><b>없는 말은 후보함에 쌓습니다</b><span>붙이지는 못해도 버리지는 않습니다. 「유부」를 만나면 후보함에 기록합니다. 같은 말이 <b>3건</b> 모이면 운영자 화면에 뜹니다. 넣을지 말지는 사람이 정합니다.</span></li>
+    <li><b>레시피 3건이 모여야 화면에 나옵니다</b><span>사전에 있어도 레시피가 2건이면 칩·랜딩에 안 보입니다. 3건째가 등록되는 순간 저절로 열립니다. 상품 카테고리에서 소분류 140개 중 112개(80%)가 상품 0개인 상태를 봤습니다. 같은 실수를 안 하기 위한 장치입니다.</span></li>
+    <li><b>대표 재료를 하나 정합니다</b><span>제목에 나오는 재료가 대표입니다. 없으면 재료란 맨 앞. 대표만 조합 랜딩(두부조림)에 들어가고, 나머지 재료는 냉장고 매칭과 검색에만 쓰입니다.</span></li>
+    <li><b>이름을 통일해서 저장합니다</b><span>「다진마늘」이 들어오면 태그는 「마늘」로 붙입니다. 화면에는 작성자가 쓴 「다진마늘」이 그대로 보입니다.</span></li>
+    <li><b>확신이 낮으면 비웁니다</b><span>억지로 채우지 않습니다. 비어 있는 칸은 나중에 채울 수 있지만, 잘못 붙은 태그는 사용자가 먼저 발견합니다.</span></li>
+    <li><b>태그를 지우지 않고 넘겨보냅니다</b><span>「유아식」을 「아기」로 합치더라도 옛 이름을 지우지 않습니다. 사전에 「유아식 → 아기」를 남기고, 옛 주소로 들어오면 새 페이지로 보냅니다. 안 그러면 검색에 걸려 있던 페이지가 끊깁니다.</span></li>
+  </ol>
+
+  <div class="note g">
+    <p><strong>유저가 직접 쓴 레시피도 같습니다.</strong> 지금 레시피 작성 화면에는 태그 입력칸이 없습니다(이미지·제목·설명·시간·인분·칼로리·재료·조리순서). 여기에 태그 칸을 새로 만들지 않습니다. 재료와 조리 순서를 이미 입력했으니 AI가 읽을 재료는 충분합니다. 예외는 07번의 「누가 먹나」 칩 하나뿐입니다.</p>
+  </div>
+</section>
+
+<!-- ═══════ 158건 적용 결과 ═══════ -->
+<section>
+  <h2><span class="num">10</span>158건에 붙여본 결과</h2>
+  <p class="sub">사전을 종이 위에서 끝내지 않고 실제로 돌렸습니다. 아래가 그 결과입니다.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>칸</th><th class="n">태그가 붙은 레시피</th><th class="n">쓰인 값</th><th>판정</th></tr></thead>
+      <tbody>
+        <tr><td class="key">재료</td><td class="n">156건 (98%)</td><td class="n">56 / 60</td><td><span class="b go">작동함</span> 레시피당 평균 4.1개</td></tr>
+        <tr><td class="key">상황</td><td class="n">128건 (81%)</td><td class="n">10 / 12</td><td><span class="b go">작동함</span></td></tr>
+        <tr><td class="key">종류</td><td class="n">101건 (63%)</td><td class="n">21 / 28</td><td><span class="b go">작동함</span></td></tr>
+        <tr><td class="key">방법</td><td class="n">91건 (57%)</td><td class="n">7 / 8</td><td><span class="b wait">한식에서만 잘 붙음</span></td></tr>
+        <tr><td class="key">누가 먹나</td><td class="n">5건 (3%)</td><td class="n">2 / 3</td><td><span class="b none">콘텐츠 없음</span></td></tr>
+        <tr><td class="key">누구 레시피</td><td class="n">3건 (1%)</td><td class="n">2 / 12</td><td><span class="b none">콘텐츠 없음</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>사전이 지금 콘텐츠와 어긋난 지점</h3>
+  <p>158건에서 가장 많이 쓰인 재료가 이렇습니다.</p>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>우리 콘텐츠 최다 재료</th><th class="n">건수</th><th class="n">그 재료 월 검색량</th></tr></thead>
+      <tbody>
+        <tr><td class="key">치즈</td><td class="n">41</td><td class="n">970</td></tr>
+        <tr><td class="key">빵</td><td class="n">19</td><td class="n">0</td></tr>
+        <tr><td class="key">면</td><td class="n">16</td><td class="n">1,420</td></tr>
+        <tr><td class="key">아보카도</td><td class="n">13</td><td class="n">29,990</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>가장 많이 만든 재료가 가장 안 찾는 재료입니다. 공개 레시피 158건은 인스타그램 119건·유튜브 39건에서 왔고, 대부분 1~2인분(127건) 양식·간편식입니다. <b>검색 수요는 4인 가족 한식 반찬에 있는데 콘텐츠는 1인 양식에 있습니다.</b></p>
+  <p>이건 사전을 고쳐서 풀 문제가 아닙니다. 사전은 제 역할을 하고 있고, 어디를 채워야 하는지 알려주고 있습니다.</p>
+</section>
+
+<!-- ═══════ 조합 랜딩 ═══════ -->
+<section>
+  <h2><span class="num">11</span>빈칸이 곧 콘텐츠 목록입니다</h2>
+  <p class="sub">월 1만 이상 찾는 재료×방법 조합 44개 전부입니다. 「지금 건수」가 3이 되는 순간 그 페이지가 열립니다.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>조합</th><th class="n">월 검색량</th><th class="n">지금</th><th class="n">더 필요</th></tr></thead>
+      <tbody>
+        <tr><td class="key">오징어볶음</td><td class="n">117,590</td><td class="n">1</td><td class="n">2</td></tr>
+        <tr><td class="key">가지볶음</td><td class="n">107,700</td><td class="n">1</td><td class="n">2</td></tr>
+        <tr><td class="key">콩나물무침</td><td class="n">104,530</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">순두부찌개</td><td class="n">97,140</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">오이무침</td><td class="n">94,720</td><td class="n">2</td><td class="n">1</td></tr>
+        <tr><td class="key">두부조림</td><td class="n">80,740</td><td class="n">1</td><td class="n">2</td></tr>
+        <tr><td class="key">김치찌개</td><td class="n">79,010</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">진미채볶음</td><td class="n">72,720</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">가지무침</td><td class="n">70,230</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">콩나물국</td><td class="n">65,250</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">감자조림</td><td class="n">65,240</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">연근조림</td><td class="n">54,030</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">애호박볶음</td><td class="n">52,060</td><td class="n">1</td><td class="n">2</td></tr>
+        <tr><td class="key">계란찜</td><td class="n">48,260</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">멸치볶음</td><td class="n">44,060</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">김치찜</td><td class="n">37,690</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">가지튀김</td><td class="n">37,520</td><td class="n">1</td><td class="n">2</td></tr>
+        <tr><td class="key">감자볶음</td><td class="n">35,870</td><td class="n">2</td><td class="n">1</td></tr>
+        <tr><td class="key">애호박찌개</td><td class="n">35,270</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">부추무침</td><td class="n">34,740</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">미역국</td><td class="n">31,020</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">감자전</td><td class="n">30,830</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">우엉조림</td><td class="n">26,450</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">단호박샐러드</td><td class="n">26,190</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">두부찌개</td><td class="n">25,650</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">애호박전</td><td class="n">24,180</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">양배추볶음</td><td class="n">22,700</td><td class="n">2</td><td class="n">1</td></tr>
+        <tr><td class="key">양배추샐러드</td><td class="n">22,520</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">깻잎무침</td><td class="n">22,440</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">새우구이</td><td class="n">22,030</td><td class="n">1</td><td class="n">2</td></tr>
+        <tr><td class="key">부추전</td><td class="n">21,640</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">어묵볶음</td><td class="n">20,810</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">버섯볶음</td><td class="n">19,950</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">감자샐러드</td><td class="n">19,530</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">김치볶음</td><td class="n">19,130</td><td class="n">1</td><td class="n">2</td></tr>
+        <tr><td class="key">계란국</td><td class="n">17,030</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">진미채무침</td><td class="n">16,710</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">김치전</td><td class="n">16,200</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">시금치무침</td><td class="n">14,440</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">깻잎찜</td><td class="n">13,730</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">감자국</td><td class="n">13,580</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">가지전</td><td class="n">13,040</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">감자튀김</td><td class="n">10,170</td><td class="n">0</td><td class="n">3</td></tr>
+        <tr><td class="key">오징어국</td><td class="n">10,120</td><td class="n">0</td><td class="n">3</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <p><strong>가장 적은 힘으로 가장 많이 여는 순서</strong> — 지금 1건만 더 있으면 열리는 곳이 셋입니다. <b>오이무침(94,720) · 감자볶음(35,870) · 양배추볶음(22,700)</b>. 세 건을 채우면 월 15만 명이 찾는 페이지 셋이 동시에 열립니다.</p>
+    <p>그다음이 2건씩 필요한 여섯 곳입니다. 오징어볶음·가지볶음·두부조림·애호박볶음·가지튀김·새우구이 — 12건으로 월 41만이 열립니다.</p>
+  </div>
+</section>
+
+<!-- ═══════ 개발 요건 ═══════ -->
+<section>
+  <h2><span class="num">12</span>개발에 필요한 것</h2>
+
+  <h3>이 사전을 쓰는 곳이 네 군데입니다</h3>
+  <div class="tw compact">
+    <table>
+      <thead><tr><th>쓰는 곳</th><th>무엇을 쓰나</th><th>지금 상태</th></tr></thead>
+      <tbody>
+        <tr><td class="key">레시피 추출</td><td>6칸 자동 부여 · 이름 통일</td><td>태그 필드 자체가 없음</td></tr>
+        <tr><td class="key">유저 레시피 등록</td><td>같은 자동 부여 + 「누가 먹나」 칩</td><td>태그 입력 항목 0개</td></tr>
+        <tr><td class="key">냉장고</td><td>재료 60개 = 「자주 넣는 재료」 버튼</td><td>스코프 03에 <b>결정 필요</b>로 남아 있음</td></tr>
+        <tr><td class="key">검색</td><td>태그를 읽게 하기</td><td>제목·재료·설명만 읽는 것으로 보임</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><b>냉장고 기능이 이 사전을 그대로 씁니다.</b> 스코프 03의 「이 재료로 만들 수 있어요」는 보유 재료와 레시피 재료를 맞춰봐야 하는데, 이름이 통일돼 있지 않으면 냉장고의 「계란」이 레시피의 「달걀」을 못 찾습니다. 재료 사전을 따로 만들면 두 벌을 계속 맞춰야 합니다.</p>
+
+  <h3>지금 막혀 있는 것</h3>
+  <ul class="plain">
+    <li><b>「다 있어요」 판정이 불가능합니다.</b> 레시피 158건 전부 재료가 「필수」로 표시돼 있습니다(158/158). 소금·후추까지 냉장고에 있어야 통과합니다. 추출 단계에서 필수·선택을 갈라야 합니다.</li>
+    <li><b>난이도가 변별력이 없습니다.</b> 158건 전부 「보통」입니다. 필터로 쓸 수 없습니다.</li>
+    <li><b>채널 주소가 비어 있습니다.</b> 채널명은 135건 있는데 주소는 0건입니다. 「누구 레시피」 랜딩에서 원작자로 보내줄 곳이 없습니다.</li>
+    <li><b>검색이 양념까지 읽습니다.</b> 「소금」을 치면 158건 중 60건이 나옵니다. 「조림」을 치면 4건뿐입니다 — 제목에 그 글자가 든 것만 나옵니다.</li>
+  </ul>
+
+  <h3>확인이 필요한 것</h3>
+  <ul class="plain">
+    <li><b>백엔드(긱)</b> — 태그 테이블·후보함·검수 큐 추가 견적. 데이터 모델 변경이라 별도 산정이 필요합니다.</li>
+    <li><b>백엔드(긱)</b> — 재료 필수·선택 구분을 추출 단계에서 넣을 수 있는지.</li>
+    <li><b>법무</b> — 프로그램 이름(편스토랑·흑백요리사·냉장고를부탁해) 상표. 인물 이름은 확인 완료.</li>
+    <li><b>기획</b> — 158건 일괄 태깅 후 전수 검수 일정. 자동 태깅 정확도는 이 검수 결과로 정합니다.</li>
+  </ul>
+
+  <h3>단계</h3>
+  <ol class="rules">
+    <li><b>사전 등록 + 158건 일괄 태깅</b><span>6칸 값을 어드민에 넣고, 기존 158건에 붙인 뒤 전수 검수합니다. 이 단계에서 이름 통일 표가 완성됩니다.</span></li>
+    <li><b>발견 탭 칩 필터</b><span>3건 이상인 값만 칩으로 보입니다. 트리 메뉴는 만들지 않습니다.</span></li>
+    <li><b>랜딩 + 검색 연동</b><span>조합 랜딩(11번 목록)을 열고, 검색이 태그를 읽게 합니다. 여기서부터 검색 유입이 시작됩니다.</span></li>
+    <li><b>냉장고 매칭</b><span>재료 60개를 냉장고 버튼으로 쓰고, 부족분 계산을 붙입니다.</span></li>
+  </ol>
+</section>
+
+<hr>
+<footer>
+  <p><b>졸리팟 레시피 태그 사전 v1</b> · 2026-09-10<br>
+  근거: 공개 레시피 158건 전수(재료·조리순서 포함) · 네이버 검색광고 월 검색량 697개 실측 · 재료 원문 422개 분류<br>
+  관련 문서: 레시피 카테고리·태그 스펙 v1 · 개발 스코프 v1-6-1 (04 어드민 · 03 냉장고)</p>
+</footer>
+
+</div>
+
+</body>
+</html>

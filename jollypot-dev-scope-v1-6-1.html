@@ -543,8 +543,16 @@
 · <b>알고리즘 섹션 4행(v4-19-3 추가)</b>: 지금 이 시간엔 · 인기 급상승 · 새로 올라온 · 냉장고 추천 — 전부 기본 OFF 등재. 정의는 추천 알고리즘 정의서 v1</span></div>
 
       <div class="item">
-        <div class="item-h"><b>레시피 카테고리(태그) 편성·운영</b><span class="key">recipe-category-tag-spec · v1</span>
-          <a class="open" href="jollypot-recipe-category-tag-spec-v1.html" target="_blank" rel="noopener">열기 →</a></div>
+        <div class="item-h"><b>레시피 카테고리(태그) 편성·운영</b><span class="key">recipe-tag-dictionary · v1</span>
+          <a class="open doc" href="jollypot-recipe-tag-dictionary-v1.html" target="_blank" rel="noopener">태그 사전 v1 열기 →</a>
+          <a class="open" href="jollypot-recipe-category-tag-spec-v1.html" target="_blank" rel="noopener">편성 스펙 v1 열기 →</a></div>
+        <div class="pt"><span><b>★★ 태그 사전 v1 확정 (2026-09-10, 위 첫 링크)</b> — 6칸에 들어갈 <b>첫 값을 전부 확정</b>한 문서입니다. 아래 편성 스펙(09-05)에서 세 가지가 바뀌었습니다.
+        ① <b>축이 5개 → 6칸</b>: 「누구 레시피」 칸 신설. 근거는 우리 데이터 실측 — 유명인 레시피 3건 중 <b>2건이 채널명 ≠ 원작자</b>(「류수영의 평생떡볶이」를 올린 채널은 뚝딱이형). 채널명(<code>authorName</code>)으로는 3분의 1만 잡히므로 원작자는 별도 태그여야 합니다. 기존 「대상」은 <b>「누가 먹나」로 개명</b>.
+        ② <b>재료를 2층으로</b>: 양념층(소금·간장 등 약 40종)은 태그를 붙이지 않고, 재료층 <b>60개</b>만 태그·냉장고·검색이 공유합니다. 주재료/부재료를 목록으로 고정하지 않고 <b>레시피마다 「제목에 나오는 재료」를 대표로 판정</b>합니다(실측: 떡·가지·순두부 100% vs 양파 3%).
+        ③ <b>사전을 158건에 실제로 붙여 검증</b>: 재료 98%·상황 81%·종류 63%·방법 57% 부착. 「누가 먹나」 3%·「누구 레시피」 1%는 사전이 아니라 <b>콘텐츠가 없어서</b>입니다.</span></div>
+        <div class="pt"><span><b>★ 사전이 콘텐츠 기획서가 됩니다</b> — 월 1만 이상 찾는 재료×방법 조합이 <b>44개(합계 월 200만)</b>인데 지금 3건 이상 확보된 조합은 <b>0개</b>, 37개는 레시피 0건입니다.
+        가장 적은 힘으로 여는 순서: <b>1건씩만 더 있으면 되는 오이무침(94,720)·감자볶음(35,870)·양배추볶음(22,700)</b> → 2건씩 필요한 오징어볶음·가지볶음·두부조림·애호박볶음·가지튀김·새우구이(12건으로 월 41만).
+        <b>수요와 콘텐츠가 어긋나 있습니다</b> — 우리 최다 재료는 치즈 41건(월검색 970)·빵 19건(0)인데, 검색 본진은 한식 반찬입니다.</span></div>
         <div class="pt"><span><b>★ 확정 스펙 v1(2026-09-05, 위 링크)</b> — 아래 요약을 통합·개정한 문서입니다. 개정점:
         ① <b>방법 축 부활(5축 46값)</b> — 조합어 수요 실측이 근거: <b>두부조림 78,440 &gt; 두부요리 48,210</b> · 애호박볶음 55,970(축 이름의 2.7배) · 콩나물무침 101,250(조회 최대)
         ② <b>랜딩 3계층</b>: 상세(메뉴명 — 수요 1층) → 조합(재료×방법, 게이트: 레시피 3건+ &amp; 검색량 1,000+) → 축 허브
@@ -567,7 +575,7 @@
         ③ <b>노출 게이트</b> — 레시피 3건 미만 태그값은 프론트 자동 숨김(어드민에서만 보임) ·
         ④ <b>개념 분리</b>: 태그=분류 / 그룹=운영 노출 묶음 / 컬렉션=유저 저장 — 그룹·컬렉션을 분류 대용으로 쓰지 않는다 ·
         ⑤ <b>검색노출(07절) 연동</b>: 태그 랜딩에는 검색노출 ON 레시피만 수록, 태그명이 곧 페이지 제목·URL slug.</span></div>
-        <div class="pt"><span><b>태그 상세 사전(동의어 정규화 포함)은 별도 문서로 확정</b>(2026-09-05 「레시피 태그 사전」 — 실측: 계란 39건 vs 달걀 7건 등 동의어 흩어짐, 보조 태그 8값, 셀럽·브랜드 태그 금지) · <b>단계</b>: P1 태그 스키마+자동 태깅+158건 백필 → P2 발견 탭 칩 필터+태그 랜딩(트리 메뉴 없음) → P3 SEO 랜딩 개방+대상 축 콘텐츠 수급.
+        <div class="pt"><span><b>태그 상세 사전은 위 「태그 사전 v1」로 확정</b>(2026-09-10) — 재료 60개·방법 8·종류 28·상황 12·누가먹나 3·누구레시피(열린 칸), 이름 통일표 14묶음(계란=달걀, 마늘 13갈래 등), 붙이는 규칙 7개. <b>셀럽 태그는 금지 해제</b>(인물 이름은 법무 확인 완료 — 다만 <b>프로그램 이름(편스토랑·흑백요리사·냉장고를부탁해)은 상표 확인 필요</b>). · <b>단계</b>: P1 태그 스키마+자동 태깅+158건 백필 → P2 발견 탭 칩 필터+태그 랜딩(트리 메뉴 없음) → P3 SEO 랜딩 개방+대상 축 콘텐츠 수급.
         <b>확인 필요</b>: 레시피 백엔드(긱)에 태그 테이블·검수 큐 추가 견적(데이터 모델 변경, 별도 산정) · 자동 태깅 정확도 임계(백필 검수 결과로 확정).</span></div>
       </div>
     </section>
@@ -938,6 +946,12 @@
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
       <a class="file" href="jollypot-admin-v4-19-4.html" target="_blank" rel="noopener">
         <i class="adm">04 어드민</i><span class="fn">어드민 · jollypot-admin-v4-19-4</span>
+        <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
+      <a class="file" href="jollypot-recipe-tag-dictionary-v1.html" target="_blank" rel="noopener">
+        <i class="doc">04 문서</i><span class="fn">레시피 태그 사전 · recipe-tag-dictionary-v1 <b>(신규)</b></span>
+        <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
+      <a class="file" href="jollypot-recipe-category-tag-spec-v1.html" target="_blank" rel="noopener">
+        <i class="doc">04 문서</i><span class="fn">레시피 카테고리·태그 편성 스펙 · v1</span>
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
       <div class="file-nolink">
         <i class="later">추후</i><span class="fn">스크랩북 SNS · scrapbook (이름·설명만)</span>
