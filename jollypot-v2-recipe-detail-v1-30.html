@@ -693,6 +693,28 @@
      노트는 실명 서명 카드(문서 형태)라 액션 오독 표면이 없다 */
   body.note-cream .editor-note { background: var(--color-surface); }
 
+  /* ===== 인플레이스 2026-09-26: 태그 줄 (글 끝 해시태그) =====
+     위치 = 레시피 본문의 끝(에디터 노트 뒤 · 노트 없으면 AI 라벨 뒤) · 댓글 구분선 위.
+     AI 라벨은 계속 "만드는 법 블록의 마지막"(대표 확정) — 태그는 그 뒤, 본문 꼬리에 붙는다.
+     · 누를 수 있게 보여야 한다 — 알약 + 1px 보더 + 높이 36(손가락 크기)
+     · '#'만 딥그린(가이드 §5.2 "이건 분류다"), 글자는 잉크. 오렌지 금지(누르세요=행동색, 저장 버튼과 경쟁)
+     · 개수 표시 금지 — 초기엔 태그당 3~5건이라 숫자가 "적다"로 읽힌다(신규 레시피 0 숨김과 같은 원칙) */
+  .tag-row {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: 16px 0 4px;
+  }
+  .tag-row.hidden { display: none; }
+  .tag-chip {
+    display: inline-flex; align-items: center;
+    height: 36px; padding: 0 14px;
+    background: #FFFFFF; border: 1px solid var(--color-border); border-radius: 999px;
+    font-size: 14px; font-weight: 500; color: var(--color-text-primary);
+    letter-spacing: -0.3px; text-decoration: none; white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tag-chip:active { background: var(--color-surface); }
+  .tag-chip .tag-hash { color: var(--color-secondary); font-weight: 600; margin-right: 1px; }
+
   .comment-entry {
     display: flex; align-items: baseline; justify-content: space-between;
     padding-bottom: 12px;
@@ -1119,7 +1141,7 @@
       "recipeYield": "1인분",
       "recipeCategory": "디저트",
       "recipeCuisine": "한식",
-      "keywords": "노오븐 케이크, 키위 케이크, 노오븐 디저트, 냉장고 케이크",
+      "keywords": "아이간식, 디저트",
       "recipeIngredient": [
         "카스테라 50g", "키위 100g", "생크림 50g", "식용유 200ml",
         "설탕 30g", "바닐라 에센스 2ml", "우유 100ml", "소금 1g"
@@ -1199,6 +1221,12 @@
     <button id="en-cream" class="active fmt" onclick="setNote('cream')">크림(권장)</button>
     <button id="en-on" onclick="setNote('on')">연초록</button>
     <button id="en-off" onclick="setNote('off')">없음</button>
+  </div>
+  <div class="proto-toggle-row">
+    <span style="font-size:11.5px;color:#8888A0;display:flex;align-items:center;padding-right:2px;">태그</span>
+    <button id="tg-real" class="active fmt" onclick="setTags('real')">이 레시피(2)</button>
+    <button id="tg-max" onclick="setTags('max')">최대(4)</button>
+    <button id="tg-none" onclick="setTags('none')">없음</button>
   </div>
   <div class="proto-toggle-row">
     <button id="togStateNormal" class="active fmt" onclick="setState('normal')">정상</button>
@@ -1476,6 +1504,13 @@
       <span class="en-date">08.22</span>
     </div>
   </div>
+
+  <!-- ===== 태그 줄 (인플레이스 2026-09-26) — 레시피 본문의 꼬리 · 댓글 위 =====
+       · 값은 태그 사전 v1(6칸)에서 AI/운영자가 붙인 것만. 유저 자유 입력 없음
+       · 노출 게이트: 태그 페이지에 레시피 3건 이상 모인 태그만(누르면 항상 볼 게 있어야 한다)
+       · 최대 4개, 0개면 줄 자체를 그리지 않는다
+       · 실제 <a href> 링크(SSR) → 태그 페이지(= 검색 결과에 태그 필터). 칩 글자 = 도착 페이지 제목 -->
+  <nav class="tag-row" id="tagRow" aria-label="관련 태그"></nav>
 
 
 
@@ -1954,6 +1989,31 @@ function setNote(mode) {
   });
 }
 
+/* 인플레이스 2026-09-26: 태그 줄.
+   real = 이 레시피에 사전 규칙을 실제로 적용한 결과. 대표 재료 「키위」는 사전(과일 5종: 딸기·바나나·사과·레몬·블루베리)에
+          없어 태그가 아니라 후보함으로 간다 → 남는 것은 누가 먹나(아이→「아이간식」)와 종류(디저트)뿐.
+          상황 「간식」도 붙지만 「아이간식」과 낱말이 겹쳐 좁은 쪽만 남긴다.
+   max  = 줄바꿈·배치 확인용 최대 4개 예시(카스테라→빵 매핑·상황 아침→브런치 가정).
+   none = 게이트를 넘은 태그가 0개 → 줄 자체를 그리지 않는다(빈 자리 없음) */
+var TAG_CASES = {
+  real: ['아이간식', '디저트'],
+  max:  ['빵요리', '아이간식', '브런치', '디저트'],
+  none: []
+};
+function setTags(mode) {
+  var row = document.getElementById('tagRow');
+  var tags = TAG_CASES[mode];
+  row.innerHTML = tags.map(function (t) {
+    return '<a class="tag-chip" href="jollypot-v2-search-v2-3.html?tag=' + encodeURIComponent(t) + '">' +
+           '<span class="tag-hash">#</span>' + t + '</a>';
+  }).join('');
+  row.classList.toggle('hidden', tags.length === 0);
+  ['real', 'max', 'none'].forEach(function (k) {
+    document.getElementById('tg-' + k).className = (k === mode) ? 'active fmt' : '';
+  });
+}
+document.addEventListener('DOMContentLoaded', function () { setTags('real'); });
+
 function setCmt(mode) {
   var n = CMT_CASES[mode];
   setCntSpans('comment', n);
@@ -2104,6 +2164,9 @@ function rdToast(msg, action, fn) {
   • "저장됨" 버튼 배경과의 채널차 <b>9 → 17</b>로 벌어져 정보/액션이 분리된다<br>
   • 토큰 <code>--color-surface-info</code>로 신설 — 하드코딩하지 않는다<br><br>
   <b style="color:#fff;">인플레이스 수정 (2026-08-23)</b> — 대표 지시로 <b>버전업 중단</b>, 이후 변경은 v1-30 파일에 직접 반영한다(URL 고정).<br>
+  • <b style="color:#FFC520;">태그 줄 신설 (2026-09-26)</b> — 에디터 노트 뒤 · 댓글 위(= 레시피 본문의 꼬리). 상세 규칙은 아래 <b>2-1-2</b>.
+  디자인 시안(3차 p.42)의 해시태그는 ① 누를 수 있어 보이지 않고(검정 글자) ② AI 라벨 앞에 끼어 "AI 라벨 = 만드는 법의 마지막" 확정과 충돌하고
+  ③ 사전에서 뺀 말(#10분요리)이 들어가 있어 다시 설계했다. 누르면 태그 페이지(검색 결과에 태그 필터)로 이동 — 개발사 질의 확인 사항<br>
   • <b>에디터 노트 위치 이동 (2026-08-26)</b> — 댓글 상단 → <b>만드는 법 끝(AI 캡션 직후)</b>. 사유 4:
   ① 노트 내용은 조리 정보("설탕 절반만") — 읽히는 시점이 조리 문맥 안이어야 한다. TIP을 단계 옆에 붙인 결론과 같은 논리
   ② 구글 품질평가는 Main Content와 Supplementary Content(댓글·UGC 영역)를 구분한다 — 본문 배치가 SEO상 확실
@@ -2552,6 +2615,22 @@ function rdToast(msg, action, fn) {
 ③ <b>댓글 수 카운트 불포함</b> — 에디토리얼이지 대화가 아님. 댓글 0건이어도 노출<br>
 ④ <b>에디터 실명 노출</b> — 익명·팀명 대체 불가(E-E-A-T)</p>
 <p style="color:#FFC520;">⚠ 노트 없는 레시피는 블록 자체 미노출(빈 껍데기 금지) · 노트 저장 시 <b>타 레시피와 문장 중복 검사</b> 필요(복붙 감지 — 어드민 요건) · 노트가 달린 레시피는 검색 인덱스 허용(T0) 자동 승격 후보</p>
+
+<h3 style="color:#FC642D; font-size:15px; font-weight:700; margin:24px 0 8px;">2-1-2. 태그 줄 (레시피 본문 꼬리 · 에디터 노트 뒤) — 신규 2026-09-26</h3>
+<p>• <b style="color:#fff;">위치</b>: 에디터 노트 바로 아래(노트 없으면 AI 라벨 바로 아래) · 댓글 구분선 위. <b>AI 라벨은 계속 만드는 법 블록의 마지막</b> — 태그를 그 앞에 넣지 않는다<br>
+• <b style="color:#fff;">왜 여기인가</b>: 인스타·블로그 글이 끝나는 자리에 해시태그가 붙는 습관 그대로 — 레시피를 다 읽은 순간 "이런 거 더"로 이어진다.
+  제목 아래(첫 화면)는 재료까지의 거리를 늘려 v1.4에서 뺀 자리이고, 추천 그리드 위는 칩이 "그리드 필터"로 오독된다(누르면 페이지가 바뀌는데 그리드가 바뀔 걸로 기대)<br>
+• <b style="color:#fff;">값의 출처</b>: 태그 사전 v1 6칸에서 AI·운영자가 붙인 값만. <b>유저 자유 입력 없음</b>(만들기 화면의 태그 입력칸 삭제와 한 쌍) · 사람이 고친 태그(by:human)는 재태깅에서 보호</p>
+<p><b style="color:#fff;">노출 규칙 6</b></p>
+<p>① <b>노출 게이트</b> — 태그 페이지에 레시피가 <b>3건 이상</b> 모인 태그만. 누르면 항상 볼 게 있어야 한다(1건짜리 페이지 = 막다른 길)<br>
+② <b>최대 4개</b> · 0개면 줄 자체를 그리지 않는다(빈 자리 금지)<br>
+③ <b>순서</b>: 누구 레시피(인물·방송) → 대표 재료(재료×방법 조합 페이지가 열렸으면 조합명, 예 「두부조림」) → 누가 먹나(온가족은 기본값이라 제외) → 상황 → 종류<br>
+④ <b>겹치면 좁은 쪽만</b> — 「아이간식」이 있으면 「간식」은 뺀다<br>
+⑤ <b>금지</b>: 방법 단독(「조림」 — 검색이 거의 없음) · 양념층(소금·간장 등) · 사전에서 뺀 말(간단요리·10분요리 등 — 시간은 필터로)<br>
+⑥ <b>글자 = 도착 페이지 제목</b>: 재료는 「○○요리」, 인물은 이름만, 누가 먹나는 랜딩 이름(「아이간식」·「아기반찬」) · 앞에 '#'</p>
+<p><b style="color:#fff;">동작</b>: 실제 <code style="background:#2a2a4a; padding:2px 6px; border-radius:4px;">&lt;a href&gt;</code> 링크 · <b>SSR 필수</b>(구글이 태그 간 연결을 읽는다) → 태그 페이지(= 검색 결과에 태그 필터 적용, 태그명이 URL slug) · 태그 페이지는 noindex로 시작(07절) · 뒤로가기 시 원래 스크롤 위치 복귀<br>
+<b style="color:#fff;">디자인</b>: 흰 배경 · 1px #CCCFD4 · radius 999 · 높이 36 · 좌우 14 · 14px/500 잉크 #212121 · <b>'#'만 딥그린 #145F48/600</b>(가이드 §5.2 "분류") · 간격 8 · 줄바꿈 허용 · 눌림 배경 #FFF5EA<br>
+<span style="color:#FFC520;">⚠ 오렌지 금지(행동색 — 저장 버튼과 경쟁) · 태그별 레시피 개수 표시 금지(초기 3~5건이 "적다"로 읽힘) · JSON-LD keywords = 화면에 보이는 태그와 동일(화면-스키마 일치)</span></p>
 
 <h3 style="color:#FC642D; font-size:15px; font-weight:700; margin:24px 0 8px;">2-2. ··· 더보기 메뉴 (바텀시트)</h3>
 <p>• 제목 우측 ··· 아이콘 탭 시 바텀시트 올라옴<br>
