@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>졸리팟 저장 화면 v1-4</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
+<style>
+/* 레이아웃: 인스타 「저장됨」 구조 — 칩 필터 + 「모두」는 섹션(컬렉션 가로줄 → 레시피 3열 → 상품 가로줄). 앱은 디자인 가이드 v2.0 토큰, 라이트 단일 테마 */
+:root{
+  --color-brand:#FDB813; --color-primary:#FC642D; --color-primary-soft:#FFF0EA; --color-secondary:#145F48;
+  --color-bg:#FFFFFF; --color-surface:#FFF5EA; --color-surface-alt:#FFEEDC;
+  --color-text-primary:#212121; --color-text-secondary:#666666; --color-text-tertiary:#9E9E9E;
+  --color-border:#CCCFD4; --color-divider:#E5E7EB; --chip-time:#FFF5C6; --chip-off:#F3F4F6; --page:#ECECEC;
+  --proto-bar-bg:#1E1E2E; --proto-on:#5B6ABF; --proto-off:#2D2D3D; --proto-off-text:#8888A0; --proto-label:#CCCCDD;
+  --font:"Pretendard Variable",Pretendard,"Noto Sans KR",-apple-system,"Apple SD Gothic Neo",sans-serif;
+  color-scheme:light;
+}
+[hidden]{display:none!important} /* v1-3-1: 시트·토스트가 첫 화면에 떠 있던 버그 수정 */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font);-webkit-font-smoothing:antialiased;background:var(--page);color:var(--color-text-primary);letter-spacing:-0.3px;
+  display:flex;flex-direction:column;align-items:center;gap:20px;padding-block:28px 60px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;text-align:left}
+button:focus-visible,input:focus-visible{outline:2px solid var(--proto-on);outline-offset:2px}
+
+/* 프로토타입 컨트롤 */
+.proto-bar{width:min(390px,100%);background:var(--proto-bar-bg);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.proto-label{font-size:11px;font-weight:600;color:var(--proto-label);margin-bottom:8px;letter-spacing:.3px}
+.proto-toggles{display:flex;gap:8px}
+.proto-toggle{flex:1;padding:9px 6px;border-radius:9px;background:var(--proto-off);color:var(--proto-off-text);font-size:12px;font-weight:600;text-align:center}
+.proto-toggle.active{background:var(--proto-on);color:#fff}
+.proto-note{font-size:11px;line-height:1.6;color:var(--proto-off-text);border-top:1px solid #3A3A4E;padding-top:10px}
+.proto-version{font-size:12px;color:var(--proto-label)}
+
+/* 폰 */
+.phone{width:min(390px,100%);height:844px;max-height:calc(100vh - 40px);min-height:640px;background:var(--color-bg);border-radius:28px;overflow:hidden;position:relative;box-shadow:0 10px 40px rgba(0,0,0,.12);display:flex;flex-direction:column}
+.app-header{height:54px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 16px}
+.app-header h1{font-size:22px;font-weight:800}
+.hdr-r{display:flex;align-items:center;gap:6px}
+.icon-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;color:var(--color-text-primary)}
+.icon-btn svg{width:22px;height:22px}
+.newcol-btn{height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--color-border);font-size:13px;font-weight:600;display:flex;align-items:center;gap:4px}
+.newcol-btn .p{font-size:17px;line-height:1;color:var(--color-primary)}
+.chips{flex:none;display:flex;gap:8px;padding:4px 16px 12px;overflow-x:auto}
+.chips::-webkit-scrollbar{height:0}
+.chip{flex:none;height:36px;padding:0 16px;border-radius:999px;border:1px solid var(--color-border);font-size:14px;font-weight:500;display:flex;align-items:center}
+.chip.active{background:var(--color-text-primary);border-color:var(--color-text-primary);color:#fff;font-weight:600}
+.scroll{flex:1;overflow-y:auto;padding-bottom:96px}
+.scroll::-webkit-scrollbar{width:0}
+
+.sec{display:flex;flex-direction:column;gap:12px;padding-top:14px}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;padding:0 16px}
+.sec-h h2{font-size:17px;font-weight:700}
+.sec-h h2 .n{font-size:14px;font-weight:500;color:var(--color-text-tertiary);margin-left:4px}
+.link{font-size:14px;font-weight:600;color:var(--color-secondary)}
+.sort{font-size:13px;font-weight:500;color:var(--color-text-secondary)}
+.row{display:flex;gap:12px;overflow-x:auto;padding:0 16px 4px}
+.row::-webkit-scrollbar{height:0}
+
+/* 정리 중 배너 */
+.banner{display:flex;align-items:center;gap:8px;background:var(--color-surface);padding:11px 16px;font-size:13px}
+.banner b{font-weight:700}
+.spin{width:14px;height:14px;border-radius:50%;border:2px solid var(--color-surface-alt);border-top-color:var(--color-primary);animation:spin 1s linear infinite;flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* 레시피 표지 그리드 (릴스 표지 그대로) */
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.rgrid.titled{gap:14px 6px;padding:0 10px}
+.rtile{display:flex;flex-direction:column;gap:5px;min-width:0}
+.cover{aspect-ratio:3/4;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:28px 8px 0;max-width:100%}
+.rgrid.titled .cover{border-radius:8px}
+.hook{font-size:15px;font-weight:800;line-height:1.25;text-align:center;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55);word-break:keep-all}
+.hook.y{color:#FFE14D}
+.dish{position:absolute;bottom:22%;font-size:40px}
+.play{position:absolute;top:6px;right:6px;width:18px;height:18px;border-radius:5px;background:rgba(255,255,255,.9);font-size:9px;display:flex;align-items:center;justify-content:center;color:var(--color-text-primary)}
+.chip-time{position:absolute;left:6px;bottom:6px;background:var(--chip-time);color:var(--color-text-primary);font-size:11px;font-weight:600;padding:2px 7px;border-radius:999px}
+.rtitle{font-size:13px;font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rtile.pending .cover{filter:saturate(.15) brightness(1.2)}
+.pend{position:absolute;inset:0;background:rgba(255,255,255,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:600;color:var(--color-primary)}
+.pend .spin{width:22px;height:22px;border-width:3px}
+.more{margin:14px 16px 0;height:44px;border-radius:10px;border:1px solid var(--color-border);font-size:14px;font-weight:600;text-align:center;width:calc(100% - 32px)}
+.g1{background:linear-gradient(160deg,#8C6A4A,#3E2A1C)} .g2{background:linear-gradient(160deg,#C4532B,#5A1E0E)}
+.g3{background:linear-gradient(160deg,#B8A77A,#5C5034)} .g4{background:linear-gradient(160deg,#D19A2A,#6E4B0E)}
+.g5{background:linear-gradient(160deg,#6E9A55,#2C4520)} .g6{background:linear-gradient(160deg,#B5674A,#4E2416)}
+.g7{background:linear-gradient(160deg,#8E85B5,#3A3459)} .g8{background:linear-gradient(160deg,#B9905E,#56391C)}
+.g9{background:linear-gradient(160deg,#5E8FA8,#1F3A48)}
+
+/* 컬렉션 카드 */
+.ccard{flex:none;width:132px;display:flex;flex-direction:column;gap:6px}
+.ccover{width:132px;height:132px;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;background:var(--color-surface)}
+.ccover span{display:flex;align-items:center;justify-content:center;font-size:26px}
+.ccover.one{display:flex;align-items:center;justify-content:center;font-size:44px}
+.ccover.empty{display:flex;align-items:center;justify-content:center}
+.ccard .n{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ccard .m{font-size:12px;color:var(--color-text-secondary);margin-top:-4px}
+.ccard.add .ccover{border:1.5px dashed var(--color-primary);background:var(--color-primary-soft);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--color-primary);font-size:13px;font-weight:700}
+.ccard.add .ccover .p{font-size:30px;line-height:1}
+.ccard.add .ccover{text-align:center;line-height:1.35}
+.newcol-wide{margin:8px 16px 4px;width:calc(100% - 32px);height:52px;border-radius:12px;border:1.5px dashed var(--color-primary);background:var(--color-primary-soft);color:var(--color-primary);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px}
+.newcol-wide .p{font-size:20px;line-height:1}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px 12px;padding:0 16px}
+.cgrid .ccard,.cgrid .ccover{width:100%}
+.cgrid .ccover{height:auto;aspect-ratio:1/1}
+.yolk{width:40px;height:40px;border-radius:50%;background:var(--color-brand);position:relative;box-shadow:inset -4px -4px 0 rgba(0,0,0,.06)}
+.yolk::before,.yolk::after{content:"";position:absolute;top:15px;width:5px;height:6px;border-radius:50%;background:var(--color-text-primary)}
+.yolk::before{left:12px}.yolk::after{right:12px}
+
+/* 상품 */
+.pcard{flex:none;width:132px;display:flex;flex-direction:column;gap:4px}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px 12px;padding:0 16px}
+.pgrid .pcard{width:100%}
+.pthumb{aspect-ratio:1/1;border-radius:12px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;font-size:44px;background:var(--color-surface);max-width:100%}
+.brand{font-size:12px;color:var(--color-text-secondary);margin-top:4px}
+.pname{font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.orig{font-size:12px;color:var(--color-text-tertiary);text-decoration:line-through}
+.price{font-size:14px;font-weight:700}
+.price .rate{color:var(--color-primary);margin-right:4px}
+.pcard.ended .pthumb{filter:grayscale(1);opacity:.55}
+.ended-chip{position:absolute;right:8px;bottom:8px;background:var(--color-text-primary);color:#fff;font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px}
+.pcard.ended .price,.pcard.ended .pname,.pcard.ended .rate{color:var(--color-text-tertiary)}
+
+/* 빈 상태 */
+.empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:56px 32px 32px}
+.empty .yolk{width:64px;height:64px}
+.empty .yolk::before,.empty .yolk::after{top:24px;width:7px;height:9px}
+.empty .yolk::before{left:20px}.empty .yolk::after{right:20px}
+.empty h2{font-size:17px;font-weight:700;margin-top:6px}
+.empty p{font-size:14px;line-height:1.6;color:var(--color-text-secondary)}
+.btn-sm{margin-top:8px;height:40px;padding:0 18px;border-radius:10px;background:var(--color-primary);color:#fff;font-size:14px;font-weight:600}
+
+/* 하단 메뉴 */
+.bottom-nav{position:absolute;left:0;right:0;bottom:0;height:76px;background:#fff;border-top:1px solid var(--color-divider);display:flex;align-items:flex-start;padding-top:8px;z-index:20}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;color:var(--color-text-tertiary);padding-top:4px}
+.nav-item.active{color:var(--color-primary);font-weight:600}
+.nav-icon{font-size:22px;line-height:1}
+.nav-plus-wrap{flex:1;display:flex;justify-content:center}
+.nav-plus{width:48px;height:48px;border-radius:50%;background:var(--color-primary);color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;margin-top:-6px;box-shadow:0 6px 16px rgba(252,100,45,.35)}
+
+/* 시트·토스트 */
+.dim{position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:30;display:flex;align-items:flex-end}
+.sheet{width:100%;background:#fff;border-radius:20px 20px 0 0;padding:10px 20px 24px;display:flex;flex-direction:column;gap:14px}
+.grab{width:40px;height:4px;border-radius:2px;background:var(--color-divider);margin:0 auto 6px}
+.sheet h3{font-size:18px;font-weight:700}
+.field{display:flex;flex-direction:column;gap:6px}
+.field input{height:48px;border-radius:10px;border:1px solid var(--color-border);padding:0 14px;font-size:15px;font-family:inherit;color:var(--color-text-primary);background:#fff}
+.field input::placeholder{color:var(--color-text-tertiary)}
+.hint{display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-secondary)}
+.hint .warn{color:var(--color-primary)}
+.btn-lg{height:52px;border-radius:12px;background:var(--color-primary);color:#fff;font-size:16px;font-weight:700;text-align:center}
+.btn-lg:disabled{background:#FDC4AE;cursor:default}
+.toast{position:absolute;left:16px;right:16px;bottom:92px;background:var(--color-text-primary);color:#fff;font-size:14px;padding:13px 16px;border-radius:12px;z-index:40;display:flex;align-items:center;gap:8px}
+.toast .ok{color:#7FD3B1;font-weight:700}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+
+</head>
+<body>
+<div class="proto-bar" aria-label="프로토타입 컨트롤">
+  <div><p class="proto-label">필터</p>
+    <div class="proto-toggles" data-group="filter">
+      <button class="proto-toggle active" data-v="all">모두</button>
+      <button class="proto-toggle" data-v="recipe">레시피</button>
+      <button class="proto-toggle" data-v="collection">컬렉션</button>
+      <button class="proto-toggle" data-v="product">상품</button>
+    </div></div>
+  <div><p class="proto-label">레시피 표지</p>
+    <div class="proto-toggles" data-group="tile">
+      <button class="proto-toggle active" data-v="titled">표지 + 이름</button>
+      <button class="proto-toggle" data-v="cover">표지만 (인스타식)</button>
+    </div></div>
+  <div><p class="proto-label">상태</p>
+    <div class="proto-toggles" data-group="state">
+      <button class="proto-toggle active" data-v="filled">채워짐</button>
+      <button class="proto-toggle" data-v="empty">빈 상태 (신규)</button>
+    </div></div>
+  <div><p class="proto-label">레시피 정리 중</p>
+    <div class="proto-toggles" data-group="pending">
+      <button class="proto-toggle active" data-v="off">없음</button>
+      <button class="proto-toggle" data-v="on">있음</button>
+    </div></div>
+  <p class="proto-note">v1 → v1-1: 탭을 인스타 「저장됨」처럼 칩 필터로. 「모두」는 컬렉션 가로줄 → 레시피 표지 3열 → 상품 가로줄. 새 컬렉션은 헤더 오른쪽 버튼(어디서나) + 컬렉션 줄·컬렉션 화면의 첫 칸. 헤더를 「+」 아이콘 하나로 두지 않은 이유: 하단 「+」(레시피 만들기)와 뜻이 겹침.</p>
+  <p class="proto-note">v1-2 → v1-3: 새 컬렉션은 헤더 「+ 새 컬렉션」 하나로. 컬렉션 화면 버튼·「모두」 컬렉션 줄 첫 칸은 뺌. 컬렉션이 없으면 「모두」에서 컬렉션 줄을 숨김.</p>
+  <p class="proto-note">v1-3-1 → v1-4: 검색을 선 아이콘으로. 「모두」는 상품 줄 없이 컬렉션 → 레시피 전체(끝까지 이어짐). 상품은 「상품」 칩에서만.</p>
+  <p class="proto-version">jollypot-v2-save-v1-4</p>
+</div>
+
+<div class="phone">
+  <header class="app-header">
+    <h1>저장</h1>
+    <div class="hdr-r">
+      <button class="icon-btn" aria-label="검색"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg></button>
+      <button class="newcol-btn" data-open><span class="p">+</span>새 컬렉션</button>
+    </div>
+  </header>
+  <nav class="chips" id="chips">
+    <button class="chip active" data-f="all">모두</button>
+    <button class="chip" data-f="recipe">레시피</button>
+    <button class="chip" data-f="collection">컬렉션</button>
+    <button class="chip" data-f="product">상품</button>
+  </nav>
+  <div class="scroll" id="scroll"></div>
+
+  <nav class="bottom-nav" aria-label="하단 메뉴">
+    <div class="nav-item"><span class="nav-icon">🏠</span><span>홈</span></div>
+    <div class="nav-item"><span class="nav-icon">🛒</span><span>쇼핑</span></div>
+    <div class="nav-plus-wrap"><div class="nav-plus">+</div></div>
+    <div class="nav-item active"><span class="nav-icon">🔖</span><span>저장</span></div>
+    <div class="nav-item"><span class="nav-icon">👤</span><span>마이</span></div>
+  </nav>
+
+  <div class="dim" id="sheet" hidden>
+    <div class="sheet" role="dialog" aria-labelledby="sheet-title">
+      <div class="grab"></div>
+      <h3 id="sheet-title">새 컬렉션</h3>
+      <div class="field">
+        <input id="colname" maxlength="20" placeholder="예: 주말 브런치, 아이 반찬" autocomplete="off">
+        <div class="hint"><span id="dup"></span><span id="len">0/20</span></div>
+      </div>
+      <button class="btn-lg" id="create" disabled>만들기</button>
+    </div>
+  </div>
+  <div class="toast" id="toast" hidden><span class="ok">✓</span><span id="toast-msg"></span></div>
+</div>
+
+<script>
+// 레시피: 원본 릴스 표지(첫 화면 문구)를 그대로 보여 준다는 가정
+const RECIPES=[
+  {t:"들기름 막국수",h:"이 조합\n왜 이제 알았지",y:0,m:8,e:"🍜",g:"g1"},
+  {t:"돼지고기 김치찌개",h:"식당보다\n맛있는 김치찌개",y:1,m:25,e:"🍲",g:"g2"},
+  {t:"애호박 달걀전",h:"편식하는 아이가\n두 그릇 먹었어요",y:0,m:15,e:"🥚",g:"g4"},
+  {t:"10분 간장 계란밥",h:"퇴근하고\n10분 컷",y:1,m:10,e:"🍚",g:"g3"},
+  {t:"시금치 프리타타",h:"냉장고 털이\n끝판왕",y:0,m:20,e:"🥗",g:"g5"},
+  {t:"에어프라이어 닭다리",h:"치킨 시킬 필요\n없어요",y:1,m:30,e:"🍗",g:"g6"},
+  {t:"블루베리 요거트 볼",h:"아침 5분\n등원 전 완성",y:0,m:5,e:"🫐",g:"g7"},
+  {t:"감자 수제비",h:"비 오는 날\n무조건 이거",y:1,m:35,e:"🥔",g:"g8"},
+  {t:"연어 오차즈케",h:"혼밥\n이렇게 드세요",y:0,m:10,e:"🍣",g:"g9"},
+  {t:"두부 강정",h:"고기보다\n인기 많은 두부",y:1,m:20,e:"🍢",g:"g6"},
+  {t:"양배추 참치덮밥",h:"만 원으로\n3일 버티기",y:0,m:12,e:"🥬",g:"g5"},
+  {t:"우유 푸딩",h:"아이 간식\n집에서 5분",y:1,m:5,e:"🍮",g:"g4"},
+  {t:"소고기 미역국",h:"생일 아니어도\n끓여요",y:0,m:40,e:"🍲",g:"g1"},
+  {t:"토마토 달걀볶음",h:"중국집\n그 맛 그대로",y:1,m:10,e:"🍅",g:"g2"},
+  {t:"멸치 주먹밥",h:"소풍 도시락\n이거 하나면",y:0,m:15,e:"🍙",g:"g3"}
+];
+const COLS=[
+  {n:"아이 반찬",k:12,e:["🥚","🥕","🍗","🍚"]},
+  {n:"주말 브런치",k:5,e:["🥗","🫐","🍳","🥞"]},
+  {n:"10분 저녁",k:1,e:["🍚"]},
+  {n:"손님 초대 상차림",k:0,e:[]}
+];
+const PRODUCTS=[
+  {b:"살림공방",n:"스텐 채반 3종 세트",o:39000,r:47,e:"🧺"},
+  {b:"주방연구소",n:"실리콘 조리도구 5종",o:28000,r:30,e:"🥄"},
+  {b:"키친데이",n:"유리 밀폐용기 10P",o:45000,r:38,e:"🫙",end:true},
+  {b:"살림공방",n:"원목 도마 대형",o:32000,r:0,e:"🪵"}
+];
+let CREATED=[];
+const S={filter:"all",tile:"titled",state:"filled",pending:"off"};
+const $=id=>document.getElementById(id);
+const won=n=>n.toLocaleString("ko-KR")+"원";
+const empty=()=>S.state==="empty";
+const cols=()=>empty()?CREATED:[...CREATED,...COLS];
+const recs=()=>empty()?[]:RECIPES;
+const prods=()=>empty()?[]:PRODUCTS;
+const titled=()=>S.tile==="titled";
+
+function rtile(r){
+  return `<button class="rtile"><div class="cover ${r.g}" role="img" aria-label="레시피 표지">
+    <p class="hook${r.y?" y":""}">${r.h.replace("\n","<br>")}</p><span class="dish">${r.e}</span>
+    <span class="play">▶</span><span class="chip-time">${r.m}분</span></div>
+    ${titled()?`<p class="rtitle">${r.t}</p>`:""}</button>`;
+}
+function rpending(){
+  return `<button class="rtile pending"><div class="cover g2" role="img" aria-label="정리 중인 레시피"><span class="dish">🍲</span>
+    <div class="pend"><span class="spin"></span>정리 중</div></div>${titled()?`<p class="rtitle" style="color:var(--color-text-tertiary)">정리하고 있어요</p>`:""}</button>`;
+}
+function rgrid(list,limit){
+  const pend=S.pending==="on";
+  let items=(pend?[rpending()]:[]).concat(list.map(rtile));
+  if(limit) items=items.slice(0,limit);
+  return `<div class="rgrid${titled()?" titled":""}">${items.join("")}</div>`;
+}
+function ccover(c){
+  if(c.k===0) return `<div class="ccover empty"><div class="yolk"></div></div>`;
+  if(c.k<4) return `<div class="ccover one g4">${c.e[0]}</div>`;
+  return `<div class="ccover">${c.e.slice(0,4).map((x,i)=>`<span class="g${[4,2,5,1][i]}">${x}</span>`).join("")}</div>`;
+}
+const addTile=()=>`<button class="ccard add" data-open><div class="ccover"><span class="p">+</span>새 컬렉션<br>만들기</div></button>`;
+const ccard=c=>`<button class="ccard">${ccover(c)}<p class="n">${c.n}</p><p class="m">레시피 ${c.k}개</p></button>`;
+function pcard(p){
+  const sale=Math.round(p.o*(100-p.r)/100/100)*100;
+  return `<button class="pcard${p.end?" ended":""}"><div class="pthumb" role="img" aria-label="상품 썸네일">${p.e}${p.end?`<span class="ended-chip">딜 종료</span>`:""}</div>
+    <p class="brand">${p.b}</p><p class="pname">${p.n}</p>
+    ${p.r?`<p class="orig">${won(p.o)}</p><p class="price"><span class="rate">${p.r}%</span>${won(sale)}</p>`:`<p class="price">${won(p.o)}</p>`}</button>`;
+}
+const banner=()=>S.pending==="on"?`<div class="banner"><span class="spin"></span><span><b>레시피 정리 중</b> · 다 되면 저장 목록에 나타나요</span></div>`:"";
+const emptyBox=(h,p,btn)=>`<div class="empty"><div class="yolk"></div><h2>${h}</h2><p>${p}</p>${btn?`<button class="btn-sm">${btn}</button>`:""}</div>`;
+
+function viewAll(){
+  const R=recs(),C=cols();
+  if(!R.length&&!C.length&&S.pending!=="on")
+    return emptyBox("아직 저장한 레시피가 없어요","마음에 드는 레시피에서 🔖를 누르거나<br>영상 링크로 레시피를 만들어 보세요.","레시피 만들기");
+  let h=banner();
+  if(C.length) h+=`<section class="sec"><div class="sec-h"><h2>컬렉션<span class="n">${C.length}</span></h2><button class="link" data-go="collection">모두 보기</button></div>
+    <div class="row">${C.map(ccard).join("")}</div></section>`;
+  if(R.length||S.pending==="on"){
+    const n=R.length+(S.pending==="on"?1:0);
+    h+=`<section class="sec"><div class="sec-h"><h2>레시피<span class="n">${n}</span></h2><button class="sort">저장한 순 ⌄</button></div>${rgrid(R)}</section>`;
+  }
+  return h;
+}
+function viewRecipe(){
+  const R=recs();
+  if(!R.length&&S.pending!=="on") return emptyBox("아직 저장한 레시피가 없어요","마음에 드는 레시피에서 🔖를 누르거나<br>영상 링크로 레시피를 만들어 보세요.","레시피 만들기");
+  return banner()+`<section class="sec"><div class="sec-h"><h2>레시피<span class="n">${R.length+(S.pending==="on"?1:0)}</span></h2><button class="sort">저장한 순 ⌄</button></div>${rgrid(R)}</section>`;
+}
+function viewCollection(){
+  const C=cols();
+  if(!C.length) return emptyBox("아직 컬렉션이 없어요","위쪽 「+ 새 컬렉션」을 눌러<br>저장한 레시피를 주제별로 모아 보세요.");
+  return `<section class="sec"><div class="sec-h"><h2>컬렉션<span class="n">${C.length}</span></h2><button class="sort">최근 담은 순 ⌄</button></div>
+    <div class="cgrid">${C.map(ccard).join("")}</div></section>`;
+}
+function viewProduct(){
+  const P=prods();
+  if(!P.length) return emptyBox("아직 저장한 상품이 없어요","쇼핑에서 마음에 드는 상품을 저장하면<br>여기에 모여요.","쇼핑 둘러보기");
+  return `<section class="sec"><div class="sec-h"><h2>상품<span class="n">${P.length}</span></h2><button class="sort">저장한 순 ⌄</button></div><div class="pgrid">${P.map(pcard).join("")}</div></section>`;
+}
+function render(){
+  document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("active",c.dataset.f===S.filter));
+  for(const g of ["filter","tile","state","pending"]) setProto(g,S[g]);
+  $("scroll").innerHTML={all:viewAll,recipe:viewRecipe,collection:viewCollection,product:viewProduct}[S.filter]();
+  $("scroll").scrollTop=0;
+}
+function setProto(g,v){ document.querySelectorAll(`.proto-toggles[data-group="${g}"] .proto-toggle`).forEach(b=>b.classList.toggle("active",b.dataset.v===v)); }
+function openSheet(){ $("colname").value=""; onInput(); $("sheet").hidden=false; setTimeout(()=>$("colname").focus(),50); }
+function closeSheet(){ $("sheet").hidden=true; }
+function onInput(){
+  const v=$("colname").value.trim(); $("len").textContent=$("colname").value.length+"/20";
+  const dup=cols().some(c=>c.n===v);
+  $("dup").innerHTML=dup?`<span class="warn">이미 같은 이름의 컬렉션이 있어요</span>`:"";
+  $("create").disabled=!v||dup;
+}
+let tt;
+function toast(m){ $("toast-msg").textContent=m; $("toast").hidden=false; clearTimeout(tt); tt=setTimeout(()=>$("toast").hidden=true,2200); }
+document.addEventListener("click",e=>{
+  const o=e.target.closest("[data-open]"); if(o){ openSheet(); return; }
+  const g=e.target.closest("[data-go]"); if(g){ S.filter=g.dataset.go; render(); return; }
+  const c=e.target.closest(".chip"); if(c){ S.filter=c.dataset.f; render(); return; }
+  const t=e.target.closest(".proto-toggle"); if(t){ const grp=t.parentElement.dataset.group; S[grp]=t.dataset.v; render(); }
+});
+$("colname").addEventListener("input",onInput);
+$("colname").addEventListener("keydown",e=>{ if(e.key==="Enter"&&!$("create").disabled) $("create").click(); });
+$("create").onclick=()=>{ const n=$("colname").value.trim(); CREATED.unshift({n,k:0,e:[]}); closeSheet(); render(); toast(`「${n}」 컬렉션을 만들었어요`); };
+$("sheet").addEventListener("click",e=>{ if(e.target.id==="sheet") closeSheet(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet(); });
+render();
+</script>
+
+</body>
+</html>
