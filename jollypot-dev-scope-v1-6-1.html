@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>졸리팟 — 개발사 전달용 개발 범위 (Lean MVP) · v1-6-1 · rev 2026.09.01</title>
+<title>졸리팟 — 개발사 전달용 개발 범위 (Lean MVP) · v1-6-1 · rev 2026.10.28</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root{
@@ -233,8 +233,8 @@
 </head>
 <body>
 <div style="max-width:980px;margin:0 auto 18px;padding:14px 16px;background:#FFF5EA;border:1px solid #CCCFD4;border-radius:12px;font-size:14px;line-height:1.65;color:#212121;">
-<b style="color:#FC642D;">디자인 시스템 v2.0 적용 (2026.08.07)</b> — 모든 화면이 아래 가이드를 따릅니다. <b>화면을 보기 전에 가이드를 먼저 확인해 주세요.</b><br>
-<a href="jollypot-design-guide-v2.html" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;background:#FC642D;color:#fff;text-decoration:none;font-weight:600;border-radius:999px;padding:9px 18px;">📐 졸리팟 디자인 가이드 v2.0 열기 →</a>
+<b style="color:#FC642D;">디자인 시스템 v2.0.6 적용 (2026.10.28)</b> — 모든 화면이 아래 가이드를 따릅니다. <b>화면을 보기 전에 가이드를 먼저 확인해 주세요.</b><br>
+<a href="jollypot-design-guide-v2-0-6.html" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;background:#FC642D;color:#fff;text-decoration:none;font-weight:600;border-radius:999px;padding:9px 18px;">📐 졸리팟 디자인 가이드 v2.0.6 열기 →</a>
 </div>
 <div class="wrap">
 
@@ -283,26 +283,27 @@
         <span class="tag">디자인 시스템 · 전 화면 공통</span>
         <span class="badge in">이번 범위</span>
       </div>
-      <h2 class="c-title">디자인 가이드 v2.0 — 구현 기준</h2>
+      <h2 class="c-title">디자인 가이드 v2.0.6 — 구현 기준</h2>
       <p class="c-sub">모든 화면의 컬러·타이포·컴포넌트 스펙이 이 문서 하나로 정의됩니다. <b>개별 화면 검토 전에 이 절을 먼저 반영해 주세요.</b></p>
 
       <div class="item">
-        <div class="item-h"><b>디자인 가이드</b><span class="key">v2.0.4</span>
-          <a class="open" href="jollypot-design-guide-v2.html" target="_blank" rel="noopener">열기 →</a></div>
+        <div class="item-h"><b>디자인 가이드</b><span class="key">v2.0.6</span>
+          <a class="open" href="jollypot-design-guide-v2-0-6.html" target="_blank" rel="noopener">열기 →</a></div>
         <div class="flow">CSS Variables<span class="sep">→</span>타이포 스케일<span class="sep">→</span>컴포넌트 스펙<span class="sep">→</span>체크리스트</div>
         <div class="chips">
-          <span class="chip hot">Kitchen Stories 실측 기준</span>
+          <span class="chip hot">§4.0 색·모양 결정표 최우선</span>
+          <span class="chip">Kitchen Stories 실측 기준</span>
           <span class="chip">CSS Variables 제공(§8)</span>
           <span class="chip">Figma 네이밍(§9)</span>
           <span class="chip">명암비 검증표(§10)</span>
         </div>
         <div class="pt"><span><b>핵심 스펙</b><br>
-        · <b>컬러</b>: 오렌지 <code>#FC642D</code>(액션) · 딥그린 <code>#145F48</code>(확정·분류) · 노른자 <code>#FDB813</code>(브랜드 IP) · 피치크림 <code>#FFF5EA</code>(카드 면) · 잉크 <code>#212121</code>(본문)<br>
+        · <b>컬러</b>: 오렌지 <code>#FC642D</code>(누르는 버튼 전부 — 결제·주문 포함) · 딥그린 <code>#145F48</code>(고른 상태·완료 — 버튼 면 ❌) · 노른자 <code>#FDB813</code>(브랜드 IP) · 피치크림 <code>#FFF5EA</code>(카드 면) · 잉크 <code>#212121</code>(본문)<br>
         · <b>선은 뉴트럴, 면은 웜</b>: 보더 <code>#CCCFD4</code> · 구분선 <code>#E5E7EB</code> (웜 톤 선 금지)<br>
         · <b>타이포</b>: Pretendard Variable <b>웹폰트 실제 로드 필수</b> + <code>-webkit-font-smoothing: antialiased</code> + 자간 <code>-0.3px</code> · 섹션 헤더 <b>19px/600</b>(700 아님)<br>
         · <b>한글 줄바꿈</b>: 카드 제목에 <code>word-break: keep-all</code> 필수(없으면 어절 중간에서 끊김)</span></div>
         <div class="pt"><span><b>받을 것:</b> §8 CSS Variables를 토큰으로 구현 + §11 체크리스트 기준 자체 검수. 화면별 하드코딩 색상 금지 — 전부 변수 참조.</span></div>
-        <div class="pt"><span><b style="color:var(--later)">주의:</b> 프로토타입에 남아 있는 색상값이 가이드와 다르면 <b>가이드가 우선</b>합니다. 프로토는 의사결정 이력이 쌓인 산출물이라 일부 화면에 구값이 남아 있을 수 있습니다.</span></div>
+        <div class="pt"><span><b style="color:var(--later)">주의:</b> <b>가이드 맨 앞 §4.0 색·모양 결정표가 우선</b>합니다. 가이드 안에서 두 문장이 부딪히거나, 표에 없거나, 프로토타입 색·모양이 표와 다르면 <b>추측하지 말고 문의</b>해 주세요. 프로토는 의사결정 이력이 쌓인 산출물이라 일부 화면에 구값이 남아 있을 수 있습니다.</span></div>
       </div>
 
       <div class="item">
@@ -724,7 +725,7 @@
         <span class="badge in">이번 범위</span>
       </div>
       <h2 class="c-title">주문하기 — 구매 플로우 전체 (옵션 선택 → 주문서 → 결제)</h2>
-      <p class="c-sub">기존 샵바이 기본 스킨을 <b>디자인 가이드 v2.0.4 기준으로 전면 재설계</b>했습니다. <b>구매하기 → 옵션 선택 → 장바구니 → 주문서 → 결제수단 → 결제 실패·중단 → 주문완료(레시피 넛지)</b>까지 구매 동선 전체가 이번 범위입니다. 흐름 순서대로 6-A~6-D가 화면, 6-E~6-F가 요건·산식 문서입니다.</p>
+      <p class="c-sub">기존 샵바이 기본 스킨을 <b>디자인 가이드 v2.0.6 기준으로 전면 재설계</b>했습니다. <b>구매하기·주문하기·결제하기 버튼은 오렌지</b>입니다(가이드 §4.0 #1 — 딥그린 아님). <b>구매하기 → 옵션 선택 → 장바구니 → 주문서 → 결제수단 → 결제 실패·중단 → 주문완료(레시피 넛지)</b>까지 구매 동선 전체가 이번 범위입니다. 흐름 순서대로 6-A~6-D가 화면, 6-E~6-F가 요건·산식 문서입니다.</p>
 
       <div class="item">
         <div class="item-h"><b>6-A. 구매 플로우</b><span class="key">purchase-flow · v10</span>
@@ -966,7 +967,7 @@
       <tr><th>화면 / 기능</th><th style="width:96px">이번 범위</th><th>비고</th></tr>
     </thead>
     <tbody>
-      <tr><td class="feat">디자인 시스템 v2.0</td><td class="yes">포함</td><td>전 화면 공통 토큰(§8) · 타이포(Pretendard Variable 로드) · 컴포넌트 스펙 · 여백 규칙</td></tr>
+      <tr><td class="feat">디자인 시스템 v2.0.6</td><td class="yes">포함</td><td>전 화면 공통 토큰(§8) · 타이포(Pretendard Variable 로드) · 컴포넌트 스펙 · 여백 규칙</td></tr>
       <tr><td class="feat">홈 화면</td><td class="yes">포함</td><td>유저 분기(빈 상태 표) · 데크카드(에디터 픽) · 냉장고 진입점 · <b>코너 고정4+로테이션1</b> · 커머스 ON/OFF(기본 OFF)</td></tr>
       <tr><td class="feat">레시피 상세</td><td class="yes">포함</td><td>Case1/Case2 · 소스 4종 · 상태 3종 · <b>rev 08-11 = 7섹션("알아두면 좋아요" 삭제) · 메타 4종(요리시간·인분·난이도·칼로리)</b> · <b>저신뢰 토글 제외</b>(발행 후 신고로 처리)</td></tr>
       <tr><td class="feat">레시피 만들기</td><td class="yes">포함</td><td>입력→편집→발행 · 에러/예외 6종</td></tr>
@@ -1014,8 +1015,8 @@
       <a class="file" href="jollypot-v2-order-checkout-v9.html" target="_blank" rel="noopener">
         <i class="proto">06 프로토</i><span class="fn">주문하기 · order-checkout-v8</span>
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
-      <a class="file" href="jollypot-design-guide-v2.html" target="_blank" rel="noopener">
-        <i class="doc">00 문서</i><span class="fn">디자인 가이드 · v2.0.4 <b>(먼저 읽어주세요)</b></span>
+      <a class="file" href="jollypot-design-guide-v2-0-6.html" target="_blank" rel="noopener">
+        <i class="doc">00 문서</i><span class="fn">디자인 가이드 · v2.0.6 <b>(먼저 읽어주세요)</b></span>
         <span class="fu">동봉 · 같은 폴더</span><span class="arr">열기 →</span></a>
       <a class="file" href="jollypot-reco-algo-spec-v1.html" target="_blank" rel="noopener">
         <i class="doc">01 문서</i><span class="fn">추천 알고리즘 정의서 · reco-algo-spec-v1</span>
@@ -1061,7 +1062,7 @@
       <div style="margin-top:9px"><b>결과</b>: 문서 안 모든 링크가 <code>hapjung470.github.io</code> 같은 도메인(동봉 2종은 상대링크)으로 동작합니다. 제3자 렌더러·타 브랜치 의존이 없어 개발사 접근 시 깨지지 않습니다.</div>
     </div>
 
-    <div class="ver">jollypot-dev-scope-v1-6-1 · 개발사 전달용 개발 범위 정의서 · 2026.06.26 · rev 2026.08.11 — <b>만들기 v12-2 반영</b>: 단계 추가 버그 수정(재료 영역 삽입 오류) · 발행 미리보기/발행후 상세를 상세 v1.9-7 결정에 맞춰 최신화(kcal·장보기 섹션 제거 등). 개발사 참조 URL 유지를 위해 v1-6-1에 직접 반영 · <b>rev 08-11 상세</b>: "알아두면 좋아요" 삭제 + 메타 4종(난이도·칼로리 — 소스 정의 포함) · <b>rev 08-12</b>: 연결 화면 전수검사 — 디자인가이드 v2.0.4 미반영 잔재(웜 보더·구팔레트·폰트 미로드) 일괄 정리 · <b>rev 08-13</b>: 06 주문하기 절 신설 — 5개 영역 → 6개 영역 · <b>rev 08-14</b>: 06에 <b>구매 플로우 전체</b>(옵션 2단 선택) 편입 + <b>절약 금액 산식을 온라인 정가 기준</b>으로 확정 · <b>rev 08-18</b>: 옵션시트 고정 높이·테두리 통합, <b>도착일 표기 전면 제외</b>(출고 소요일로 대체) · <b>옵션 축 이름·개수 데이터화</b>(폴백 선택1/2 · 축 0/1/2단 대응) · <b>rev 09-01b</b>: <b>06 전면 재구성</b>(흐름 순서대로 6-A 옵션 → 6-B 장바구니 → 6-C 주문서 → 6-D 주문완료 → 6-E 요건서 → 6-F 산식) + 옵션 케이스 <b>9종</b>(추가상품·케미콩 실사용, 자체 옵션·수량) + <b>추가상품 범위 포함 확정</b> · <b>rev 09-01</b>: 06에 <b>주문완료+레시피 넛지</b>(order-complete-v1) 추가 — 넛지 2단·결제수단 분기·가상계좌 입금 카드, 주문서 v9 결제 버튼과 연결 · <b>rev 08-26</b>: <b>07 검색노출 절 신설</b> — 전 레시피 검색 비노출(OFF) 기본 + 어드민 수동 ON, 요건서·어드민 반영안 링크 연결 (6개 영역 → 7개 영역) · <b>rev 08-22</b>: 레시피 상세 <b>v1-19</b>(디자인 1차 피드백 — 추천 핀터레스트식 지그재그·컬렉션 버튼 승격·칼로리 말풍선·댓글 하트·TIP 상한 2개+위계 분리)</div>
+    <div class="ver">jollypot-dev-scope-v1-6-1 · 개발사 전달용 개발 범위 정의서 · 2026.06.26 · <b>rev 10-28</b>: 디자인 가이드 <b>v2.0.6</b> 반영 — 결제·주문 버튼 오렌지 확정, 「가이드 우선」 → 「§4.0 색·모양 결정표 우선·애매하면 문의」 · rev 2026.08.11 — <b>만들기 v12-2 반영</b>: 단계 추가 버그 수정(재료 영역 삽입 오류) · 발행 미리보기/발행후 상세를 상세 v1.9-7 결정에 맞춰 최신화(kcal·장보기 섹션 제거 등). 개발사 참조 URL 유지를 위해 v1-6-1에 직접 반영 · <b>rev 08-11 상세</b>: "알아두면 좋아요" 삭제 + 메타 4종(난이도·칼로리 — 소스 정의 포함) · <b>rev 08-12</b>: 연결 화면 전수검사 — 디자인가이드 v2.0.4 미반영 잔재(웜 보더·구팔레트·폰트 미로드) 일괄 정리 · <b>rev 08-13</b>: 06 주문하기 절 신설 — 5개 영역 → 6개 영역 · <b>rev 08-14</b>: 06에 <b>구매 플로우 전체</b>(옵션 2단 선택) 편입 + <b>절약 금액 산식을 온라인 정가 기준</b>으로 확정 · <b>rev 08-18</b>: 옵션시트 고정 높이·테두리 통합, <b>도착일 표기 전면 제외</b>(출고 소요일로 대체) · <b>옵션 축 이름·개수 데이터화</b>(폴백 선택1/2 · 축 0/1/2단 대응) · <b>rev 09-01b</b>: <b>06 전면 재구성</b>(흐름 순서대로 6-A 옵션 → 6-B 장바구니 → 6-C 주문서 → 6-D 주문완료 → 6-E 요건서 → 6-F 산식) + 옵션 케이스 <b>9종</b>(추가상품·케미콩 실사용, 자체 옵션·수량) + <b>추가상품 범위 포함 확정</b> · <b>rev 09-01</b>: 06에 <b>주문완료+레시피 넛지</b>(order-complete-v1) 추가 — 넛지 2단·결제수단 분기·가상계좌 입금 카드, 주문서 v9 결제 버튼과 연결 · <b>rev 08-26</b>: <b>07 검색노출 절 신설</b> — 전 레시피 검색 비노출(OFF) 기본 + 어드민 수동 ON, 요건서·어드민 반영안 링크 연결 (6개 영역 → 7개 영역) · <b>rev 08-22</b>: 레시피 상세 <b>v1-19</b>(디자인 1차 피드백 — 추천 핀터레스트식 지그재그·컬렉션 버튼 승격·칼로리 말풍선·댓글 하트·TIP 상한 2개+위계 분리)</div>
   </footer>
 
 </div>
