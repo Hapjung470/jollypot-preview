@@ -49,7 +49,7 @@
 <body>
 <div class="wrap">
 <a class="back" href="index.html">&larr; 프로토타입 허브</a>
-<div class="toc"><a href="#v206-변경-요약-20261028-먼저-읽어주세요">v2.0.6 변경 요약 (2026.10.28) — 먼저 읽어주세요</a><a href="#0-v20-개정-요약-먼저-읽어주세요">0. v2.0 개정 요약 — 먼저 읽어주세요</a><a href="#1-브랜드-철학">1. 브랜드 철학</a><a href="#2-컬러-팔레트-전체">2. 컬러 팔레트 전체</a><a href="#3-타이포그래피">3. 타이포그래피</a><a href="#4-컬러별-상세-가이드">4. 컬러별 상세 가이드</a><a href="#40-색모양-결정표-v206-신설-이-문서에서-가장-우선">4.0 색·모양 결정표 (v2.0.6 신설 — 이 문서에서 가장 우선)</a><a href="#5-사용-원칙">5. 사용 원칙</a><a href="#6-컴포넌트-스펙">6. 컴포넌트 스펙</a><a href="#7-금지-사항-do-not">7. 금지 사항 (Do Not)</a><a href="#8-css-variables-개발-핸드오프용">8. CSS Variables (개발 핸드오프용)</a><a href="#9-figma-변수-네이밍">9. Figma 변수 네이밍</a><a href="#10-접근성-명암비-검증표-v20-신규">10. 접근성 — 명암비 검증표 (v2.0 신규)</a><a href="#11-디자인-체크리스트">11. 디자인 체크리스트</a><a href="#12-이미지-규격">12. 이미지 규격</a><a href="#13-향후-확장">13. 향후 확장</a><a href="#14-마이그레이션-v11-v20">14. 마이그레이션 (v1.1 → v2.0)</a></div>
+<div class="toc"><a href="#1-브랜드-철학">1. 브랜드 철학</a><a href="#2-컬러-팔레트-전체">2. 컬러 팔레트 전체</a><a href="#3-타이포그래피">3. 타이포그래피</a><a href="#4-컬러별-상세-가이드">4. 컬러별 상세 가이드</a><a href="#40-색모양-결정표-v206-신설-이-문서에서-가장-우선">4.0 색·모양 결정표 (v2.0.6 신설 — 이 문서에서 가장 우선)</a><a href="#5-사용-원칙">5. 사용 원칙</a><a href="#6-컴포넌트-스펙">6. 컴포넌트 스펙</a><a href="#7-금지-사항-do-not">7. 금지 사항 (Do Not)</a><a href="#8-css-variables-개발-핸드오프용">8. CSS Variables (개발 핸드오프용)</a><a href="#9-figma-변수-네이밍">9. Figma 변수 네이밍</a><a href="#10-접근성-명암비-검증표-v20-신규">10. 접근성 — 명암비 검증표 (v2.0 신규)</a><a href="#11-디자인-체크리스트">11. 디자인 체크리스트</a><a href="#12-이미지-규격">12. 이미지 규격</a><a href="#13-향후-확장">13. 향후 확장</a><a href="#14-마이그레이션-v11-v20">14. 마이그레이션 (v1.1 → v2.0)</a></div>
 <h1>졸리팟 디자인 가이드</h1>
 <blockquote>
 <p>UI/UX 디자이너 · 개발자용 디자인 시스템 문서
@@ -57,202 +57,6 @@
 <p><strong>⚠ 이 가이드를 읽는 사람·AI 모두: §4.0 「색·모양 결정표」가 이 문서의 다른 모든 문장보다 우선합니다.</strong>
 표에 없거나, 표와 시안(프로토타입)이 다르면 <strong>추측하지 말고 문의</strong>해 주세요.</p>
 </blockquote>
-<hr />
-<h2 id="v206-변경-요약-20261028-먼저-읽어주세요">v2.0.6 변경 요약 (2026.10.28) — 먼저 읽어주세요</h2>
-<p>개발사가 가이드를 AI로 읽고 <strong>결제하기 버튼을 딥그린</strong>으로 만들었습니다. 원인은 개발사가 아니라 가이드였습니다 — §4.3에 「회원가입 / 결제 등 확정 액션 = 딥그린」이 남아 있었고, 같은 문서의 다른 곳(§4.3 표·§5.2·§13)은 「누르는 버튼 = 오렌지」였습니다. 덧붙여 고치는 동안 생긴 이런 모순을 전수 점검해 정리했습니다.</p>
-<div class="tw"><table>
-<thead>
-<tr>
-<th>무엇</th>
-<th>이전</th>
-<th><strong>v2.0.6</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>결제하기·주문하기·회원가입 버튼</td>
-<td>딥그린으로 읽힐 수 있음(§4.3)</td>
-<td><strong>오렌지</strong> — 누르는 버튼은 전부 오렌지</td>
-</tr>
-<tr>
-<td>버튼 둥글기</td>
-<td>999px 또는 12px(§4.2) / 999px(§6.1)</td>
-<td><strong>화면 아래 큰 버튼 14px · 콘텐츠 안 작은 버튼 999px</strong></td>
-</tr>
-<tr>
-<td>저장됨</td>
-<td>딥그린(§4.3·§6.2) vs 오렌지(§2.5)</td>
-<td><strong>오렌지</strong>(§2.5 v2.0.5 결정 유지)</td>
-</tr>
-<tr>
-<td>고른 상태(라디오·체크박스·선택한 카드)</td>
-<td>정의 없음(「활성=오렌지」로 읽힘)</td>
-<td><strong>딥그린</strong></td>
-</tr>
-<tr>
-<td>보조 버튼 · 비활성 버튼 · 알림(토스트)</td>
-<td>정의 없음</td>
-<td><strong>신설</strong> — 흰 바탕+회색 테두리 / 회색 / 검정 바탕</td>
-</tr>
-<tr>
-<td>TIP 상자</td>
-<td>피치크림</td>
-<td><strong>연한 초록 #F1F8F3</strong>(레시피 상세 v1-30 기준)</td>
-</tr>
-<tr>
-<td>링크</td>
-<td>오렌지(§4.2) vs 파랑(§2.5)</td>
-<td><strong>파랑</strong></td>
-</tr>
-<tr>
-<td>크리에이터 이름</td>
-<td>오렌지(§4.2) — 시안은 회색</td>
-<td><strong>미드그레이</strong></td>
-</tr>
-<tr>
-<td>홈 섹션 간격</td>
-<td>40px</td>
-<td><strong>32px</strong>(최신 홈 v14-33 기준)</td>
-</tr>
-<tr>
-<td>명암비 수치</td>
-<td>일부 계산 오류</td>
-<td>재계산(§2.6·§10.3)</td>
-</tr>
-</tbody>
-</table></div>
-<blockquote>
-<p><strong>이전 버전</strong>: <code>Jollypot_Design_Guide_v2-0-5.md</code> · 웹 <code>jollypot-design-guide-v2.html</code></p>
-</blockquote>
-<hr />
-<h2 id="0-v20-개정-요약-먼저-읽어주세요">0. v2.0 개정 요약 — 먼저 읽어주세요</h2>
-<p>이번 개정은 <strong>컬러 시스템 전체를 교체</strong>하는 메이저 변경입니다. 기존 화면·컴포넌트 전반에 영향을 주므로 반영 전 이 절을 확인해주세요.</p>
-<h3 id="01-무엇이-왜-바뀌었나">0.1 무엇이 왜 바뀌었나</h3>
-<p>기존 팔레트(테라코타 + 세이지)는 <strong>채도가 지나치게 낮아</strong> "보는 게 즐겁지 않다"는 피드백을 받았습니다. 실측해보니 구조적 문제였습니다.</p>
-<div class="tw"><table>
-<thead>
-<tr>
-<th>컬러</th>
-<th>채도(S)</th>
-<th>문제</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>노른자 옐로우 <span class="sw" style="background:#FDB813"></span><code>#FDB813</code></td>
-<td><strong>98%</strong></td>
-<td>브랜드색만 쨍함</td>
-</tr>
-<tr>
-<td>테라코타 <span class="sw" style="background:#C75D3E"></span><code>#C75D3E</code></td>
-<td>55%</td>
-<td>액션색이 중간</td>
-</tr>
-<tr>
-<td>세이지 <span class="sw" style="background:#8FA68E"></span><code>#8FA68E</code></td>
-<td><strong>12%</strong></td>
-<td>보조색이 거의 회색</td>
-</tr>
-</tbody>
-</table></div>
-<p>브랜드색과 보조색의 채도 격차가 <strong>86%p</strong>. 한 화면에서 따로 노는 인상의 원인이었습니다.</p>
-<p><strong>Kitchen Stories 실측 결과 — 역할 배치는 우리와 동일한데 채도만 균형이 잡혀 있었습니다.</strong></p>
-<div class="tw"><table>
-<thead>
-<tr>
-<th>역할</th>
-<th>졸리팟 v1.1</th>
-<th>Kitchen Stories</th>
-<th>조치</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>브랜드 IP</td>
-<td>노른자 <span class="sw" style="background:#FDB813"></span><code>#FDB813</code> (98%)</td>
-<td>옐로우 <span class="sw" style="background:#FFC520"></span><code>#FFC520</code></td>
-<td><strong>유지</strong></td>
-</tr>
-<tr>
-<td>액션</td>
-<td>테라코타 <span class="sw" style="background:#C75D3E"></span><code>#C75D3E</code> (55%)</td>
-<td>오렌지 <span class="sw" style="background:#FC642D"></span><code>#FC642D</code> (97%)</td>
-<td><strong>교체</strong></td>
-</tr>
-<tr>
-<td>보조·전환</td>
-<td>세이지 <span class="sw" style="background:#8FA68E"></span><code>#8FA68E</code> (12%)</td>
-<td>딥그린 <span class="sw" style="background:#145F48"></span><code>#145F48</code> (65%)</td>
-<td><strong>교체</strong></td>
-</tr>
-<tr>
-<td>카드 면</td>
-<td>크림 <span class="sw" style="background:#F5F0E8"></span><code>#F5F0E8</code></td>
-<td>피치크림 <span class="sw" style="background:#FFF5EA"></span><code>#FFF5EA</code></td>
-<td><strong>교체</strong></td>
-</tr>
-</tbody>
-</table></div>
-<p>액션색과 보조색의 채도 격차가 <strong>43%p → 32%p</strong>로 좁혀지며 한 세트로 읽힙니다.</p>
-<h3 id="02-변경-범위-요약">0.2 변경 범위 요약</h3>
-<div class="tw"><table>
-<thead>
-<tr>
-<th>구분</th>
-<th>v1.1</th>
-<th><strong>v2.0</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Primary (액션)</td>
-<td><span class="sw" style="background:#C75D3E"></span><code>#C75D3E</code></td>
-<td><strong><span class="sw" style="background:#FC642D"></span><code>#FC642D</code></strong></td>
-</tr>
-<tr>
-<td>Secondary (보조)</td>
-<td><span class="sw" style="background:#8FA68E"></span><code>#8FA68E</code></td>
-<td><strong><span class="sw" style="background:#145F48"></span><code>#145F48</code></strong></td>
-</tr>
-<tr>
-<td>Surface (카드)</td>
-<td><span class="sw" style="background:#F5F0E8"></span><code>#F5F0E8</code></td>
-<td><strong><span class="sw" style="background:#FFF5EA"></span><code>#FFF5EA</code></strong></td>
-</tr>
-<tr>
-<td>Text Primary</td>
-<td><span class="sw" style="background:#2A2A2A"></span><code>#2A2A2A</code></td>
-<td><strong><span class="sw" style="background:#212121"></span><code>#212121</code></strong></td>
-</tr>
-<tr>
-<td>섹션 헤더 굵기</td>
-<td>700</td>
-<td><strong>600</strong></td>
-</tr>
-<tr>
-<td>폰트</td>
-<td>시스템 폰트</td>
-<td><strong>Pretendard Variable (웹폰트 로드 필수)</strong></td>
-</tr>
-<tr>
-<td>칩·태그</td>
-<td>미정의</td>
-<td><strong>신규 정의 (§2.7)</strong></td>
-</tr>
-<tr>
-<td>섹션 헤더 패턴</td>
-<td>제목 + 부제 + "전체보기"</td>
-<td><strong>제목 + 원형 화살표 (부제 없음)</strong></td>
-</tr>
-</tbody>
-</table></div>
-<p>기존 → 신규 전체 대응표는 <strong>§14 마이그레이션</strong>에 있습니다.</p>
-<h3 id="03-바뀌지-않은-것">0.3 바뀌지 않은 것</h3>
-<ul>
-<li><strong>노른자 옐로우는 브랜드 IP로 유지</strong>됩니다. Kitchen Stories도 옐로우를 브랜드 자산(Plus 로고·프로필 아바타)으로만 쓰며, 우리와 같은 원칙입니다.</li>
-<li><strong>브랜드 컬러와 액션 컬러의 역할 분리</strong> 원칙은 그대로입니다.</li>
-<li><strong>플랫 디자인</strong>(그림자 없음, 1px 보더) 유지.</li>
-</ul>
 <hr />
 <h2 id="1-브랜드-철학">1. 브랜드 철학</h2>
 <p>졸리팟은 <strong>"따뜻한 살림 큐레이션 플랫폼"</strong> 을 지향합니다.</p>
@@ -262,7 +66,7 @@
 <li><strong>기능성</strong>: 감성과 전환을 분리. 브랜드 컬러와 액션 컬러의 역할을 명확히 구분</li>
 <li><strong>위계</strong>: 한 화면에서 "어디를 먼저 볼지"가 컬러와 타이포그래피 두 축으로 결정됨</li>
 </ul>
-<p><strong>핵심 원칙</strong>: 노른자 옐로우는 <strong>브랜드 IP</strong>, 오렌지는 <strong>액션</strong>, 딥그린은 <strong>확정·전환</strong>. 세 컬러의 역할을 절대 섞지 않습니다.</p>
+<p><strong>핵심 원칙</strong>: 노른자 옐로우는 <strong>브랜드 IP</strong>, 오렌지는 <strong>누르는 것(액션)</strong>, 딥그린은 <strong>고른 상태·완료</strong>. 세 컬러의 역할을 절대 섞지 않습니다.</p>
 <h3 id="11-차별화-근거-v20에서-갱신">1.1 차별화 근거 (v2.0에서 갱신)</h3>
 <p>v1.1은 <em>"빨강/순주황 단독 사용 금지 — 쿠팡/배민 톤"</em> 을 명시했습니다. v2.0의 오렌지는 이 원칙과 충돌하지 않습니다.</p>
 <div class="tw"><table>
@@ -335,7 +139,7 @@
 <td>오렌지 (Primary)</td>
 <td><span class="sw" style="background:#FC642D"></span><code>#FC642D</code></td>
 <td><strong>[실측]</strong> 등장 33회·최다 액센트</td>
-<td>누르는 버튼 / 활성 탭·하단 메뉴 / 할인 강조 / 저장·찜 켠 상태</td>
+<td>누르는 버튼 / 하단 메뉴 활성 / 할인 강조 / 저장·찜 켠 상태</td>
 </tr>
 <tr>
 <td>딥그린 (Secondary)</td>
@@ -626,7 +430,7 @@ L5  캡션 · 메타       12px / 400 / 미드 그레이   ← 라이트 그레�
 <td>1</td>
 <td><strong>누르는 버튼</strong>(주 버튼)</td>
 <td>오렌지 <span class="sw" style="background:#FC642D"></span><code>#FC642D</code> 바탕 + 흰 글자</td>
-<td>높이 56px(작은 버튼 44px) · 둥글기 <strong>14px</strong>(화면 아래 큰 버튼) / <strong>999px</strong>(콘텐츠 안 작은 버튼) · 글자 16px 이상 · 600</td>
+<td>화면 아래 큰 버튼: 높이 56px · 둥글기 <strong>14px</strong> · 글자 16px 이상 / 콘텐츠 안 작은 버튼: 높이 44px 이하 · 둥글기 <strong>999px</strong> · 글자 크기는 §10.2 · 굵기 600</td>
 <td>구매하기 · 주문하기 · <strong>결제하기</strong> · 이어서 결제하기 · 다시 시도하기 · 저장하기 · 회원가입</td>
 <td>❌ 딥그린·노른자 바탕</td>
 </tr>
@@ -635,7 +439,7 @@ L5  캡션 · 메타       12px / 400 / 미드 그레이   ← 라이트 그레�
 <td><strong>보조 버튼</strong></td>
 <td>흰 바탕 + 1px <span class="sw" style="background:#CCCFD4"></span><code>#CCCFD4</code> 테두리 + 잉크 <span class="sw" style="background:#212121"></span><code>#212121</code> 글자</td>
 <td>주 버튼과 같은 높이·둥글기 · 600</td>
-<td>장바구니(옵션 시트) · 장바구니로 돌아가기 · 고객센터 문의하기 · 코드등록</td>
+<td>장바구니(옵션 시트) · 장바구니로 돌아가기 · 고객센터 문의하기</td>
 <td>❌ 회색 채움 · 딥그린 채움</td>
 </tr>
 <tr>
@@ -656,11 +460,19 @@ L5  캡션 · 메타       12px / 400 / 미드 그레이   ← 라이트 그레�
 </tr>
 <tr>
 <td>5</td>
-<td><strong>활성 탭 · 하단 메뉴</strong></td>
+<td><strong>하단 메뉴 활성</strong></td>
 <td>오렌지</td>
 <td>—</td>
-<td>하단 내비 활성 아이콘 · 활성 탭 밑줄</td>
+<td>하단 내비 활성 아이콘</td>
 <td>—</td>
+</tr>
+<tr>
+<td>5-1</td>
+<td><strong>필터 칩 선택</strong></td>
+<td>잉크 <span class="sw" style="background:#212121"></span><code>#212121</code> 바탕 + 흰 글자 (안 고른 칩: 흰 바탕 + <span class="sw" style="background:#CCCFD4"></span><code>#CCCFD4</code> 테두리)</td>
+<td>높이 36px · 999px</td>
+<td>저장 화면 「모두·레시피·컬렉션·상품」</td>
+<td>❌ 오렌지 (저장 v1-4 기준)</td>
 </tr>
 <tr>
 <td>6</td>
@@ -668,15 +480,15 @@ L5  캡션 · 메타       12px / 400 / 미드 그레이   ← 라이트 그레�
 <td>딥그린 <span class="sw" style="background:#145F48"></span><code>#145F48</code></td>
 <td>선택한 카드 테두리 2px · 라디오·체크박스 채움 · 고른 셀렉트 테두리</td>
 <td>결제수단 선택 · 옵션 선택 완료 · 「다음에도 사용」 체크</td>
-<td>❌ 오렌지(오렌지는 #5 활성 탭·메뉴에만)</td>
+<td>❌ 오렌지(오렌지는 #5 하단 메뉴 활성에만)</td>
 </tr>
 <tr>
 <td>7</td>
 <td><strong>완료·성공 표시</strong></td>
 <td>딥그린 글자·아이콘 (면이 필요하면 연한 초록 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code>)</td>
 <td>배지 · 문구</td>
-<td>✓완료 배지 · 결제 완료 · 무료배송 적용 · 성공 메시지</td>
-<td>❌ rgba 초록 틴트(탁해짐) — 단색 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code>만</td>
+<td>✓완료 배지 · 파트너 배송·무료배송 배지 · 결제 완료 · 무료배송 적용 · 성공 메시지</td>
+<td>❌ rgba 초록 틴트 — 배지·상자 모두 단색 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code></td>
 </tr>
 <tr>
 <td>8</td>
@@ -766,7 +578,7 @@ L5  캡션 · 메타       12px / 400 / 미드 그레이   ← 라이트 그레�
 <p><strong>적용</strong>
 - <strong>누르는 버튼 전부</strong>(§4.0 #1): 구매하기 · 주문하기 · <strong>결제하기</strong> · 저장하기 · 회원가입 · 다음 단계 보러가기
 - 할인율 · 할인 금액 강조 (판매가는 잉크 — §6.4)
-- 활성 탭 / 활성 하단 네비 아이콘
+- 활성 하단 네비 아이콘 (필터 칩 선택은 잉크 — §4.0 #5-1)
 - 저장 · 찜 · 좋아요 켠 상태 (§2.5)
 - 플로팅 액션 버튼(+)
 - 캐러셀 진행 바</p>
@@ -784,7 +596,7 @@ font-weight: 600
 - ❌ 링크 · 크리에이터명 (링크는 파랑, 이름은 미드그레이 — §4.0)
 - ❌ 흐린 오렌지로 비활성 표시 (비활성은 회색 — §4.0 #3)</p>
 <hr />
-<h3 id="43-딥그린-145f48-확정-전환">4.3 딥그린 <span class="sw" style="background:#145F48"></span><code>#145F48</code> — 확정 · 전환</h3>
+<h3 id="43-딥그린-145f48-고른-상태-완료">4.3 딥그린 <span class="sw" style="background:#145F48"></span><code>#145F48</code> — 고른 상태 · 완료</h3>
 <p><strong>적용</strong>
 - <strong>고른 상태</strong>: 선택한 카드 테두리 · 라디오 · 체크박스 · 옵션 선택 완료(✓완료 배지)
 - <strong>완료·성공 표시</strong>: 결제 완료 · 무료배송 적용 · 성공 시스템 메시지
@@ -807,7 +619,7 @@ font-weight: 600
 <td><strong>오렌지</strong></td>
 </tr>
 <tr>
-<td>"됐습니다" (확정·완료)</td>
+<td>"됐습니다 · 골랐습니다" (고른 상태·완료)</td>
 <td><strong>딥그린</strong></td>
 </tr>
 </tbody>
@@ -885,7 +697,7 @@ font-weight: 600
 <td>오렌지</td>
 </tr>
 <tr>
-<td>"이건 됐다 / 분류다"</td>
+<td>"이건 골랐다 / 됐다"</td>
 <td>딥그린</td>
 </tr>
 <tr>
@@ -1005,6 +817,7 @@ Border-radius: 10px · padding: 9px 12px
 라벨 &quot;💡 TIP&quot;: #145F48 / 700 / 11.5px
 본문: #666666 / 400 / 13px
 </code></pre>
+<p><strong>피치크림에서 바꾼 이유(레시피 상세 v1-30)</strong>: 피치크림은 사실상 오렌지 8% 틴트라, 오렌지 계열 버튼 면과 거의 같아 <strong>정보가 액션처럼 읽혔습니다.</strong></p>
 <p>딥그린 틴트(rgba) 배경은 <strong>금지</strong> — 낮은 투명도에서 탁하고 바랜 인상을 줍니다. 초록 면이 필요하면 <strong>단색 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code></strong>만 씁니다.</p>
 <h3 id="69-섹션-디바이더">6.9 섹션 디바이더</h3>
 <pre><code>height: 1px · background: #E5E7EB (뉴트럴 그레이 · KS 실측) · 좌우 풀블리드
@@ -1379,7 +1192,7 @@ Typo/Price            → Bold(700)
 - [ ] <code>-webkit-font-smoothing: antialiased</code>를 지정했는가?
 - [ ] 섹션 헤더가 19px / <strong>600</strong>인가? (700 ❌)
 - [ ] 자간이 <code>-0.3px</code>인가?
-- [ ] 700이 가격 외에 쓰이지 않았는가?
+- [ ] 700이 가격 외에 쓰이지 않았는가? (스텝 번호·TIP 라벨 예외)
 - [ ] 카드 제목에 <code>word-break: keep-all</code>이 있는가?</p>
 <p><strong>섹션 헤더</strong>
 - [ ] 제목 한 줄만 있는가? (부제 ❌)
@@ -1427,7 +1240,7 @@ Typo/Price            → Bold(700)
 <td><code>--color-primary</code></td>
 <td><span class="sw" style="background:#C75D3E"></span><code>#C75D3E</code></td>
 <td><strong><span class="sw" style="background:#FC642D"></span><code>#FC642D</code></strong></td>
-<td>CTA·가격·활성탭 전부</td>
+<td>CTA·할인율·하단 메뉴 활성</td>
 </tr>
 <tr>
 <td><code>--color-secondary</code></td>
