@@ -430,7 +430,7 @@ L5  캡션 · 메타       12px / 400 / 미드 그레이   ← 라이트 그레�
 <td>1</td>
 <td><strong>누르는 버튼</strong>(주 버튼)</td>
 <td>오렌지 <span class="sw" style="background:#FC642D"></span><code>#FC642D</code> 바탕 + 흰 글자</td>
-<td>화면 아래 큰 버튼: 높이 56px · 둥글기 <strong>14px</strong> · 글자 16px 이상 / 콘텐츠 안 작은 버튼: 높이 44px 이하 · 둥글기 <strong>999px</strong> · 글자 크기는 §10.2 · 굵기 600</td>
+<td>화면 아래 큰 버튼: 높이 56px · 둥글기 <strong>14px</strong> · 글자 16px 이상 / 콘텐츠 안 작은 버튼: 높이 44px 이하 · 둥글기 <strong>999px</strong> · 글자 14px 이상 / 굵기 600</td>
 <td>구매하기 · 주문하기 · <strong>결제하기</strong> · 이어서 결제하기 · 다시 시도하기 · 저장하기 · 회원가입</td>
 <td>❌ 딥그린·노른자 바탕</td>
 </tr>
@@ -494,7 +494,7 @@ L5  캡션 · 메타       12px / 400 / 미드 그레이   ← 라이트 그레�
 <td>8</td>
 <td><strong>알림(토스트)</strong></td>
 <td>잉크 <span class="sw" style="background:#212121"></span><code>#212121</code> 바탕(불투명도 92% 이상) + 흰 글자</td>
-<td>둥글기 12px</td>
+<td>둥글기 999px(알약)</td>
 <td>장바구니에 담았어요 · 저장했어요</td>
 <td>❌ 민트 · 보라 · 초록 바탕</td>
 </tr>
@@ -763,7 +763,7 @@ height: 56px · border-radius: 14px (화면 아래 큰 버튼) / 999px (콘텐�
 <h3 id="62-1-보조-버튼-비활성-버튼-알림-v206-신설">6.2-1 보조 버튼 · 비활성 버튼 · 알림 (v2.0.6 신설)</h3>
 <pre><code>보조 버튼:   background #FFFFFF · border 1px solid #CCCFD4 · color #212121 · 600 · 주 버튼과 같은 높이·둥글기
 비활성 버튼: background #E5E7EB · border #E5E7EB · color #9E9E9E
-알림(토스트): background #212121 (불투명도 92% 이상) · color #FFFFFF · border-radius 12px
+알림(토스트): background #212121 (불투명도 92% 이상) · color #FFFFFF · border-radius 999px
 </code></pre>
 <h3 id="63-레시피-상품-카드">6.3 레시피 / 상품 카드</h3>
 <pre><code>background: #FFF5EA (사진 중심 카드는 #FFFFFF)
@@ -905,7 +905,7 @@ overflow-wrap: anywhere;   /* 폭보다 긴 단일 어절만 예외 */
 <td>명암비 2.68:1 (§10.2)</td>
 </tr>
 <tr>
-<td>❌ 오렌지 배경 + 14px 이하 흰색 텍스트</td>
+<td>❌ 오렌지 배경 + 13px 이하 흰색 텍스트</td>
 <td>명암비 3.0:1 (§10.2)</td>
 </tr>
 <tr>
@@ -1110,7 +1110,7 @@ Typo/Price            → Bold(700)
 <tbody>
 <tr>
 <td><strong>권장</strong></td>
-<td>CTA 텍스트를 <strong>16px 이상 / 600 이상</strong>으로 — 버튼 텍스트는 짧고 크므로 실사용 가독성은 확보됨</td>
+<td>화면 아래 큰 버튼은 <strong>16px 이상 / 600 이상</strong>, 콘텐츠 안 작은 버튼은 <strong>14px 이상 / 600 이상</strong> — 버튼 텍스트는 짧아 실사용 가독성은 확보됨</td>
 </tr>
 <tr>
 <td>엄격 준수가 필요할 때</td>
@@ -1118,7 +1118,7 @@ Typo/Price            → Bold(700)
 </tr>
 <tr>
 <td>금지</td>
-<td>오렌지 배경에 <strong>14px 이하 흰색 텍스트</strong></td>
+<td>오렌지 배경에 <strong>13px 이하 흰색 텍스트</strong></td>
 </tr>
 </tbody>
 </table></div>
@@ -1204,7 +1204,7 @@ Typo/Price            → Bold(700)
 - [ ] <code>min-height</code>로 줄 수를 불필요하게 강제하지 않았는가?</p>
 <p><strong>접근성 (§10)</strong>
 - [ ] 캡션·메타에 라이트그레이 대신 미드그레이(<span class="sw" style="background:#666666"></span><code>#666666</code>)를 썼는가?
-- [ ] 오렌지 버튼의 흰색 텍스트가 16px 이상 / 600 이상인가?
+- [ ] 오렌지 버튼의 흰색 텍스트가 큰 버튼 16px·작은 버튼 14px 이상 / 600 이상인가?
 - [ ] 보더가 실기기에서 보이는가? (1.5:1 이상)</p>
 <hr />
 <h2 id="12-이미지-규격">12. 이미지 규격</h2>
@@ -1405,7 +1405,7 @@ Typo/Price            → Bold(700)
 <tr>
 <td><strong>2.0.6</strong></td>
 <td>2026.10.28</td>
-<td><strong>§4.0 색·모양 결정표 신설(문서 최우선)</strong> — 개발사가 §4.3 「결제 = 딥그린 확정 액션」을 따라 결제하기를 딥그린으로 만든 일이 계기. 결제·주문·가입 버튼 오렌지 확정, 버튼 둥글기 14px(큰 버튼)/999px(작은 버튼), 고른 상태 딥그린, 보조·비활성 버튼·알림 신설, TIP 연한 초록 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code>, 링크 파랑·크리에이터명 미드그레이, 홈 섹션 간격 32px, 명암비 재계산(보더 1.56/1.45, 구분선 1.24), 굵기 700 예외 명시. 단계별 영상 시각 표시는 확정 전(문의). 버튼 글자 굵기는 600 유지(일부 시안의 700은 시안 쪽 차이)</td>
+<td><strong>§4.0 색·모양 결정표 신설(문서 최우선)</strong> — 개발사가 §4.3 「결제 = 딥그린 확정 액션」을 따라 결제하기를 딥그린으로 만든 일이 계기. 결제·주문·가입 버튼 오렌지 확정, 버튼 둥글기 14px(큰 버튼)/999px(작은 버튼), 고른 상태 딥그린, 보조·비활성 버튼·알림 신설, TIP 연한 초록 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code>, 링크 파랑·크리에이터명 미드그레이, 홈 섹션 간격 32px, 명암비 재계산(보더 1.56/1.45, 구분선 1.24), 굵기 700 예외 명시, 필터 칩 선택은 잉크, 배지·상자 초록 면은 단색 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code>, 작은 오렌지 버튼 글자 14px 이상 허용(금지 기준 13px 이하 — 홈 13px 버튼은 14px로), 알림 모서리 999px 통일. 단계별 영상 시각 표시는 확정 전(문의). 버튼 글자 굵기는 600 유지(일부 시안의 700은 시안 쪽 차이)</td>
 </tr>
 </tbody>
 </table></div>
