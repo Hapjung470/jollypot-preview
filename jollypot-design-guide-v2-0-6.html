@@ -1,0 +1,1604 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>졸리팟 디자인 가이드 v2.0.6</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  :root{ --o:#FC642D; --g:#145F48; --pc:#FFF5EA; --ink:#212121; --mid:#666666;
+         --bd:#CCCFD4; --dv:#E5E7EB; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;letter-spacing:-0.3px;
+    background:#fff;color:var(--ink);line-height:1.7;font-size:15px;
+    padding:36px 20px 80px}
+  .wrap{max-width:880px;margin:0 auto}
+  h1{font-size:26px;font-weight:700;letter-spacing:-0.6px;margin-bottom:4px}
+  h2{font-size:20px;font-weight:600;margin:38px 0 12px;padding-top:24px;border-top:1px solid var(--dv)}
+  h3{font-size:16px;font-weight:600;margin:24px 0 8px;color:var(--o)}
+  h4{font-size:15px;font-weight:600;margin:18px 0 6px}
+  p{margin:0 0 10px}
+  ul,ol{margin:0 0 12px 20px} li{margin-bottom:4px}
+  code{font-family:ui-monospace,Consolas,monospace;font-size:13px;background:var(--pc);
+    border:1px solid var(--bd);border-radius:5px;padding:1px 6px;white-space:nowrap}
+  pre{background:#1F2430;color:#E8E8F0;border-radius:10px;padding:14px 16px;
+    overflow-x:auto;margin:8px 0 16px;line-height:1.6}
+  pre code{background:none;border:none;color:inherit;padding:0;font-size:12.5px;white-space:pre}
+  .tw{overflow-x:auto;margin:10px 0 16px}
+  table{width:100%;border-collapse:collapse;font-size:14px;min-width:420px}
+  th{background:var(--pc);text-align:left;font-weight:600}
+  th,td{border:1px solid var(--bd);padding:8px 10px;vertical-align:top}
+  blockquote{background:var(--pc);border-left:3px solid var(--o);border-radius:0 8px 8px 0;
+    padding:12px 14px;margin:10px 0 16px;font-size:14px}
+  hr{border:none;border-top:1px solid var(--dv);margin:28px 0}
+  .sw{display:inline-block;width:11px;height:11px;border-radius:3px;
+    border:1px solid var(--bd);margin-right:5px;vertical-align:-1px}
+  .toc{background:var(--pc);border:1px solid var(--bd);border-radius:12px;
+    padding:14px 16px;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:6px 10px}
+  .toc a{font-size:12.5px;color:var(--mid);text-decoration:none;
+    border:1px solid var(--bd);background:#fff;border-radius:999px;padding:4px 10px}
+  .toc a:hover{color:var(--o);border-color:var(--o)}
+  .back{display:inline-block;font-size:13px;color:var(--mid);text-decoration:none;margin-bottom:14px}
+  .back:hover{color:var(--o)}
+  del{color:var(--mid)}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="index.html">&larr; 프로토타입 허브</a>
+<div class="toc"><a href="#v206-변경-요약-20261028-먼저-읽어주세요">v2.0.6 변경 요약 (2026.10.28) — 먼저 읽어주세요</a><a href="#0-v20-개정-요약-먼저-읽어주세요">0. v2.0 개정 요약 — 먼저 읽어주세요</a><a href="#1-브랜드-철학">1. 브랜드 철학</a><a href="#2-컬러-팔레트-전체">2. 컬러 팔레트 전체</a><a href="#3-타이포그래피">3. 타이포그래피</a><a href="#4-컬러별-상세-가이드">4. 컬러별 상세 가이드</a><a href="#40-색모양-결정표-v206-신설-이-문서에서-가장-우선">4.0 색·모양 결정표 (v2.0.6 신설 — 이 문서에서 가장 우선)</a><a href="#5-사용-원칙">5. 사용 원칙</a><a href="#6-컴포넌트-스펙">6. 컴포넌트 스펙</a><a href="#7-금지-사항-do-not">7. 금지 사항 (Do Not)</a><a href="#8-css-variables-개발-핸드오프용">8. CSS Variables (개발 핸드오프용)</a><a href="#9-figma-변수-네이밍">9. Figma 변수 네이밍</a><a href="#10-접근성-명암비-검증표-v20-신규">10. 접근성 — 명암비 검증표 (v2.0 신규)</a><a href="#11-디자인-체크리스트">11. 디자인 체크리스트</a><a href="#12-이미지-규격">12. 이미지 규격</a><a href="#13-향후-확장">13. 향후 확장</a><a href="#14-마이그레이션-v11-v20">14. 마이그레이션 (v1.1 → v2.0)</a></div>
+<h1>졸리팟 디자인 가이드</h1>
+<blockquote>
+<p>UI/UX 디자이너 · 개발자용 디자인 시스템 문서
+<strong>Version 2.0.6</strong> | 2026.10.28 | 색·모양 결정표(§4.0) 신설 · 문장 사이 모순 정리</p>
+<p><strong>⚠ 이 가이드를 읽는 사람·AI 모두: §4.0 「색·모양 결정표」가 이 문서의 다른 모든 문장보다 우선합니다.</strong>
+표에 없거나, 표와 시안(프로토타입)이 다르면 <strong>추측하지 말고 문의</strong>해 주세요.</p>
+</blockquote>
+<hr />
+<h2 id="v206-변경-요약-20261028-먼저-읽어주세요">v2.0.6 변경 요약 (2026.10.28) — 먼저 읽어주세요</h2>
+<p>개발사가 가이드를 AI로 읽고 <strong>결제하기 버튼을 딥그린</strong>으로 만들었습니다. 원인은 개발사가 아니라 가이드였습니다 — §4.3에 「회원가입 / 결제 등 확정 액션 = 딥그린」이 남아 있었고, 같은 문서의 다른 곳(§4.3 표·§5.2·§13)은 「누르는 버튼 = 오렌지」였습니다. 덧붙여 고치는 동안 생긴 이런 모순을 전수 점검해 정리했습니다.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>무엇</th>
+<th>이전</th>
+<th><strong>v2.0.6</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>결제하기·주문하기·회원가입 버튼</td>
+<td>딥그린으로 읽힐 수 있음(§4.3)</td>
+<td><strong>오렌지</strong> — 누르는 버튼은 전부 오렌지</td>
+</tr>
+<tr>
+<td>버튼 둥글기</td>
+<td>999px 또는 12px(§4.2) / 999px(§6.1)</td>
+<td><strong>화면 아래 큰 버튼 14px · 콘텐츠 안 작은 버튼 999px</strong></td>
+</tr>
+<tr>
+<td>저장됨</td>
+<td>딥그린(§4.3·§6.2) vs 오렌지(§2.5)</td>
+<td><strong>오렌지</strong>(§2.5 v2.0.5 결정 유지)</td>
+</tr>
+<tr>
+<td>고른 상태(라디오·체크박스·선택한 카드)</td>
+<td>정의 없음(「활성=오렌지」로 읽힘)</td>
+<td><strong>딥그린</strong></td>
+</tr>
+<tr>
+<td>보조 버튼 · 비활성 버튼 · 알림(토스트)</td>
+<td>정의 없음</td>
+<td><strong>신설</strong> — 흰 바탕+회색 테두리 / 회색 / 검정 바탕</td>
+</tr>
+<tr>
+<td>TIP 상자</td>
+<td>피치크림</td>
+<td><strong>연한 초록 #F1F8F3</strong>(레시피 상세 v1-30 기준)</td>
+</tr>
+<tr>
+<td>링크</td>
+<td>오렌지(§4.2) vs 파랑(§2.5)</td>
+<td><strong>파랑</strong></td>
+</tr>
+<tr>
+<td>크리에이터 이름</td>
+<td>오렌지(§4.2) — 시안은 회색</td>
+<td><strong>미드그레이</strong></td>
+</tr>
+<tr>
+<td>홈 섹션 간격</td>
+<td>40px</td>
+<td><strong>32px</strong>(최신 홈 v14-33 기준)</td>
+</tr>
+<tr>
+<td>명암비 수치</td>
+<td>일부 계산 오류</td>
+<td>재계산(§2.6·§10.3)</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>이전 버전</strong>: <code>Jollypot_Design_Guide_v2-0-5.md</code> · 웹 <code>jollypot-design-guide-v2.html</code></p>
+</blockquote>
+<hr />
+<h2 id="0-v20-개정-요약-먼저-읽어주세요">0. v2.0 개정 요약 — 먼저 읽어주세요</h2>
+<p>이번 개정은 <strong>컬러 시스템 전체를 교체</strong>하는 메이저 변경입니다. 기존 화면·컴포넌트 전반에 영향을 주므로 반영 전 이 절을 확인해주세요.</p>
+<h3 id="01-무엇이-왜-바뀌었나">0.1 무엇이 왜 바뀌었나</h3>
+<p>기존 팔레트(테라코타 + 세이지)는 <strong>채도가 지나치게 낮아</strong> "보는 게 즐겁지 않다"는 피드백을 받았습니다. 실측해보니 구조적 문제였습니다.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>컬러</th>
+<th>채도(S)</th>
+<th>문제</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>노른자 옐로우 <span class="sw" style="background:#FDB813"></span><code>#FDB813</code></td>
+<td><strong>98%</strong></td>
+<td>브랜드색만 쨍함</td>
+</tr>
+<tr>
+<td>테라코타 <span class="sw" style="background:#C75D3E"></span><code>#C75D3E</code></td>
+<td>55%</td>
+<td>액션색이 중간</td>
+</tr>
+<tr>
+<td>세이지 <span class="sw" style="background:#8FA68E"></span><code>#8FA68E</code></td>
+<td><strong>12%</strong></td>
+<td>보조색이 거의 회색</td>
+</tr>
+</tbody>
+</table></div>
+<p>브랜드색과 보조색의 채도 격차가 <strong>86%p</strong>. 한 화면에서 따로 노는 인상의 원인이었습니다.</p>
+<p><strong>Kitchen Stories 실측 결과 — 역할 배치는 우리와 동일한데 채도만 균형이 잡혀 있었습니다.</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>역할</th>
+<th>졸리팟 v1.1</th>
+<th>Kitchen Stories</th>
+<th>조치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>브랜드 IP</td>
+<td>노른자 <span class="sw" style="background:#FDB813"></span><code>#FDB813</code> (98%)</td>
+<td>옐로우 <span class="sw" style="background:#FFC520"></span><code>#FFC520</code></td>
+<td><strong>유지</strong></td>
+</tr>
+<tr>
+<td>액션</td>
+<td>테라코타 <span class="sw" style="background:#C75D3E"></span><code>#C75D3E</code> (55%)</td>
+<td>오렌지 <span class="sw" style="background:#FC642D"></span><code>#FC642D</code> (97%)</td>
+<td><strong>교체</strong></td>
+</tr>
+<tr>
+<td>보조·전환</td>
+<td>세이지 <span class="sw" style="background:#8FA68E"></span><code>#8FA68E</code> (12%)</td>
+<td>딥그린 <span class="sw" style="background:#145F48"></span><code>#145F48</code> (65%)</td>
+<td><strong>교체</strong></td>
+</tr>
+<tr>
+<td>카드 면</td>
+<td>크림 <span class="sw" style="background:#F5F0E8"></span><code>#F5F0E8</code></td>
+<td>피치크림 <span class="sw" style="background:#FFF5EA"></span><code>#FFF5EA</code></td>
+<td><strong>교체</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>액션색과 보조색의 채도 격차가 <strong>43%p → 32%p</strong>로 좁혀지며 한 세트로 읽힙니다.</p>
+<h3 id="02-변경-범위-요약">0.2 변경 범위 요약</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>구분</th>
+<th>v1.1</th>
+<th><strong>v2.0</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary (액션)</td>
+<td><span class="sw" style="background:#C75D3E"></span><code>#C75D3E</code></td>
+<td><strong><span class="sw" style="background:#FC642D"></span><code>#FC642D</code></strong></td>
+</tr>
+<tr>
+<td>Secondary (보조)</td>
+<td><span class="sw" style="background:#8FA68E"></span><code>#8FA68E</code></td>
+<td><strong><span class="sw" style="background:#145F48"></span><code>#145F48</code></strong></td>
+</tr>
+<tr>
+<td>Surface (카드)</td>
+<td><span class="sw" style="background:#F5F0E8"></span><code>#F5F0E8</code></td>
+<td><strong><span class="sw" style="background:#FFF5EA"></span><code>#FFF5EA</code></strong></td>
+</tr>
+<tr>
+<td>Text Primary</td>
+<td><span class="sw" style="background:#2A2A2A"></span><code>#2A2A2A</code></td>
+<td><strong><span class="sw" style="background:#212121"></span><code>#212121</code></strong></td>
+</tr>
+<tr>
+<td>섹션 헤더 굵기</td>
+<td>700</td>
+<td><strong>600</strong></td>
+</tr>
+<tr>
+<td>폰트</td>
+<td>시스템 폰트</td>
+<td><strong>Pretendard Variable (웹폰트 로드 필수)</strong></td>
+</tr>
+<tr>
+<td>칩·태그</td>
+<td>미정의</td>
+<td><strong>신규 정의 (§2.7)</strong></td>
+</tr>
+<tr>
+<td>섹션 헤더 패턴</td>
+<td>제목 + 부제 + "전체보기"</td>
+<td><strong>제목 + 원형 화살표 (부제 없음)</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>기존 → 신규 전체 대응표는 <strong>§14 마이그레이션</strong>에 있습니다.</p>
+<h3 id="03-바뀌지-않은-것">0.3 바뀌지 않은 것</h3>
+<ul>
+<li><strong>노른자 옐로우는 브랜드 IP로 유지</strong>됩니다. Kitchen Stories도 옐로우를 브랜드 자산(Plus 로고·프로필 아바타)으로만 쓰며, 우리와 같은 원칙입니다.</li>
+<li><strong>브랜드 컬러와 액션 컬러의 역할 분리</strong> 원칙은 그대로입니다.</li>
+<li><strong>플랫 디자인</strong>(그림자 없음, 1px 보더) 유지.</li>
+</ul>
+<hr />
+<h2 id="1-브랜드-철학">1. 브랜드 철학</h2>
+<p>졸리팟은 <strong>"따뜻한 살림 큐레이션 플랫폼"</strong> 을 지향합니다.</p>
+<ul>
+<li><strong>친근함</strong>: 내 부엌 같은 따뜻함</li>
+<li><strong>차별화</strong>: 한국 푸드 플랫폼에서 흔하지 않은 <strong>주황 + 딥그린</strong> 조합</li>
+<li><strong>기능성</strong>: 감성과 전환을 분리. 브랜드 컬러와 액션 컬러의 역할을 명확히 구분</li>
+<li><strong>위계</strong>: 한 화면에서 "어디를 먼저 볼지"가 컬러와 타이포그래피 두 축으로 결정됨</li>
+</ul>
+<p><strong>핵심 원칙</strong>: 노른자 옐로우는 <strong>브랜드 IP</strong>, 오렌지는 <strong>액션</strong>, 딥그린은 <strong>확정·전환</strong>. 세 컬러의 역할을 절대 섞지 않습니다.</p>
+<h3 id="11-차별화-근거-v20에서-갱신">1.1 차별화 근거 (v2.0에서 갱신)</h3>
+<p>v1.1은 <em>"빨강/순주황 단독 사용 금지 — 쿠팡/배민 톤"</em> 을 명시했습니다. v2.0의 오렌지는 이 원칙과 충돌하지 않습니다.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>브랜드</th>
+<th>색상각(Hue)</th>
+<th>구성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>쿠팡</td>
+<td>0° 안팎 (빨강)</td>
+<td>빨강 단독</td>
+</tr>
+<tr>
+<td>배민</td>
+<td>175° (민트)</td>
+<td>민트 단독</td>
+</tr>
+<tr>
+<td>컬리</td>
+<td>300° 안팎 (보라)</td>
+<td>보라 단독</td>
+</tr>
+<tr>
+<td><strong>졸리팟 v2.0</strong></td>
+<td><strong>16° (주황)</strong></td>
+<td><strong>주황 + 딥그린 158° 페어</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>빨강(0°)과 주황(16°)은 구분되며, 결정적으로 <strong>단독이 아니라 딥그린과 짝을 이룹니다.</strong> 국내 푸드 플랫폼에 이 조합은 없습니다.</p>
+<hr />
+<h2 id="2-컬러-팔레트-전체">2. 컬러 팔레트 전체</h2>
+<blockquote>
+<p><strong>[실측]</strong> 표기는 kitchenstories.com에서 computed style을 직접 추출한 값입니다.
+<strong>[파생]</strong> 표기는 실측값에서 톤을 맞춰 산출한 값입니다.</p>
+</blockquote>
+<h3 id="21-브랜드-컬러">2.1 브랜드 컬러</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>이름</th>
+<th>HEX</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>노른자 옐로우 (Brand)</td>
+<td><span class="sw" style="background:#FDB813"></span><code>#FDB813</code></td>
+<td>로고 / 마스코트 / 브랜드 감성</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="22-메인-서브">2.2 메인 / 서브</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>이름</th>
+<th>HEX</th>
+<th>출처</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>오렌지 (Primary)</td>
+<td><span class="sw" style="background:#FC642D"></span><code>#FC642D</code></td>
+<td><strong>[실측]</strong> 등장 33회·최다 액센트</td>
+<td>누르는 버튼 / 활성 탭·하단 메뉴 / 할인 강조 / 저장·찜 켠 상태</td>
+</tr>
+<tr>
+<td>딥그린 (Secondary)</td>
+<td><span class="sw" style="background:#145F48"></span><code>#145F48</code></td>
+<td><strong>[실측]</strong> KS의 Sign-up·Submit·장바구니 담기 배경 (졸리팟은 버튼 면에 쓰지 않음 — §4.0)</td>
+<td>고른 상태 / 완료·성공 / 태그 <code>#</code> 기호</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="23-베이스">2.3 베이스</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>이름</th>
+<th>HEX</th>
+<th>출처</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>순백색 (Background)</td>
+<td><span class="sw" style="background:#FFFFFF"></span><code>#FFFFFF</code></td>
+<td><strong>[실측]</strong></td>
+<td>페이지 배경</td>
+</tr>
+<tr>
+<td>피치크림 (Surface)</td>
+<td><span class="sw" style="background:#FFF5EA"></span><code>#FFF5EA</code></td>
+<td><strong>[실측]</strong> 등장 27회</td>
+<td>카드 배경 / 배너</td>
+</tr>
+<tr>
+<td>딥 피치 (Surface Alt)</td>
+<td><span class="sw" style="background:#FFEEDC"></span><code>#FFEEDC</code></td>
+<td><strong>[파생]</strong></td>
+<td>카드 안 강조 영역</td>
+</tr>
+<tr>
+<td>연한 초록 (Surface Info)</td>
+<td><span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code></td>
+<td>레시피 상세 v1-30</td>
+<td>TIP 상자 · 완료 배지 면 (v2.0.6)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="24-텍스트">2.4 텍스트</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>이름</th>
+<th>HEX</th>
+<th>출처</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>잉크 (Text Primary)</td>
+<td><span class="sw" style="background:#212121"></span><code>#212121</code></td>
+<td><strong>[실측]</strong></td>
+<td>본문 / 제목</td>
+</tr>
+<tr>
+<td>미드 그레이 (Text Secondary)</td>
+<td><span class="sw" style="background:#666666"></span><code>#666666</code></td>
+<td><strong>[실측]</strong></td>
+<td>보조 설명 / 메타</td>
+</tr>
+<tr>
+<td>라이트 그레이 (Text Tertiary)</td>
+<td><span class="sw" style="background:#9E9E9E"></span><code>#9E9E9E</code></td>
+<td><strong>[실측]</strong></td>
+<td>비활성 / placeholder <strong>전용</strong> ⚠</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>⚠ 라이트그레이는 흰 배경 대비 <strong>2.68:1</strong> 로 WCAG AA 미달입니다. <strong>읽어야 하는 텍스트(캡션·메타·날짜)에는 미드그레이(<span class="sw" style="background:#666666"></span><code>#666666</code>)를 사용</strong>하세요. 자세한 근거는 §10.2.</p>
+</blockquote>
+<h3 id="25-시스템">2.5 시스템</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>이름</th>
+<th>HEX</th>
+<th>출처</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>에러 (Error)</td>
+<td><span class="sw" style="background:#D64545"></span><code>#D64545</code></td>
+<td>v1.1 유지</td>
+<td><strong>오류 / 삭제 전용</strong></td>
+</tr>
+<tr>
+<td>성공 (Success)</td>
+<td><span class="sw" style="background:#145F48"></span><code>#145F48</code></td>
+<td><strong>[실측]</strong> 딥그린과 통합</td>
+<td>완료 / 확인</td>
+</tr>
+<tr>
+<td>정보 (Info)</td>
+<td><span class="sw" style="background:#3276AE"></span><code>#3276AE</code></td>
+<td><strong>[실측]</strong></td>
+<td>안내 / 링크</td>
+</tr>
+<tr>
+<td>경고 (Warning)</td>
+<td><span class="sw" style="background:#FFC520"></span><code>#FFC520</code></td>
+<td><strong>[실측]</strong> New 뱃지</td>
+<td>주의 / 신규</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>⚠️ 에러 레드는 오류에만 씁니다 (v2.0.5)</strong>: 저장·찜·좋아요처럼 <strong>긍정적 상태</strong>는 브랜드 오렌지 <span class="sw" style="background:#FC642D"></span><code>#FC642D</code>를 씁니다.
+하트를 빨강으로 칠하는 것은 업계 관습일 뿐이며, 우리 시스템에서 <span class="sw" style="background:#D64545"></span><code>#D64545</code>는 결제 실패·삭제 경고에 쓰이므로
+같은 색을 찜에 쓰면 <strong>"빨강 = 문제"와 "빨강 = 좋아요"가 충돌</strong>합니다.
+적용 대상: 상품 찜 · 레시피 저장(북마크) · 좋아요 · 홈 카드 저장 배지 — <strong>전부 오렌지</strong>.</p>
+<p><strong>Success를 딥그린으로 통합한 이유</strong>: Kitchen Stories는 그린을 "완료·확정" 의미로 일관되게 씁니다(Sign-up, Submit, 장바구니 담기). 별도 성공 컬러를 두면 의미가 분산됩니다. <strong>단, 졸리팟은 딥그린을 버튼 면에 쓰지 않습니다</strong>(KS는 결제가 없는 앱 — 결제·주문·가입 버튼은 오렌지, §4.0).</p>
+</blockquote>
+<h3 id="26-디바이더-보더">2.6 디바이더 / 보더</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>이름</th>
+<th>HEX</th>
+<th>출처</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>카드 보더</td>
+<td><span class="sw" style="background:#CCCFD4"></span><code>#CCCFD4</code></td>
+<td><strong>[검증]</strong> 흰 배경 1.56:1 · 피치크림 1.45:1</td>
+<td>카드 외곽선 (1px) · 빈 상태 점선 — <strong>뉴트럴 그레이</strong></td>
+</tr>
+<tr>
+<td>섹션 디바이더</td>
+<td><span class="sw" style="background:#E5E7EB"></span><code>#E5E7EB</code></td>
+<td><strong>[실측]</strong> KS hr 토큰</td>
+<td>섹션 사이 구분선 — <strong>뉴트럴 그레이</strong> (웜 톤 ❌)</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>선은 뉴트럴, 면은 웜</strong>: 보더·구분선은 회색 계열로 통일합니다. 피치크림(웜) 면 위에 웜 선을 겹치면 경계가 흐려집니다 — KS가 피치크림 카드에 회색 선을 쓰는 이유.
+<strong>보더가 하나뿐인 이유</strong>: 초안에서는 카드용·강조용을 나눴으나, 명암비를 계산해보니 초안값(<span class="sw" style="background:#F0E2D0"></span><code>#F0E2D0</code>)이 피치크림 위 <strong>1.18:1</strong>, 흰색 위 <strong>1.27:1</strong> 로 <strong>양쪽 모두 사실상 보이지 않았습니다.</strong>
+<span class="sw" style="background:#CCCFD4"></span><code>#CCCFD4</code>는 피치크림 위 <strong>1.45:1</strong>, 흰색 위 <strong>1.56:1</strong> 로 두 배경 모두에서 경계가 살아나 하나로 통합했습니다. 카드가 흰색이든 피치크림이든 같은 보더를 쓰면 됩니다.</p>
+</blockquote>
+<h3 id="27-칩-태그-v20-신규">2.7 칩 / 태그 (v2.0 신규)</h3>
+<p>Kitchen Stories의 칩 체계를 그대로 채택합니다. <strong>칩 글자색은 전부 잉크(<span class="sw" style="background:#212121"></span><code>#212121</code>)</strong> 입니다.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>용도</th>
+<th>배경</th>
+<th>글자</th>
+<th>출처</th>
+<th>예시</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>시간</td>
+<td><span class="sw" style="background:#FFF5C6"></span><code>#FFF5C6</code></td>
+<td><span class="sw" style="background:#212121"></span><code>#212121</code></td>
+<td><strong>[실측]</strong></td>
+<td>⏱ 20분</td>
+</tr>
+<tr>
+<td>채식</td>
+<td><span class="sw" style="background:#E3F4C7"></span><code>#E3F4C7</code></td>
+<td><span class="sw" style="background:#212121"></span><code>#212121</code></td>
+<td><strong>[실측]</strong></td>
+<td>채식</td>
+</tr>
+<tr>
+<td>비건</td>
+<td><span class="sw" style="background:#CEEC9C"></span><code>#CEEC9C</code></td>
+<td><span class="sw" style="background:#212121"></span><code>#212121</code></td>
+<td><strong>[실측]</strong></td>
+<td>비건</td>
+</tr>
+<tr>
+<td>신규</td>
+<td><span class="sw" style="background:#FFC520"></span><code>#FFC520</code></td>
+<td><span class="sw" style="background:#212121"></span><code>#212121</code></td>
+<td><strong>[실측]</strong></td>
+<td>NEW</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>칩 공통 스펙</strong></p>
+<pre><code>border-radius: 999px
+padding: 4px 9px
+font-size: 11.5px
+font-weight: 600
+</code></pre>
+<hr />
+<h2 id="3-타이포그래피">3. 타이포그래피</h2>
+<h3 id="31-폰트-pretendard-variable">3.1 폰트 — Pretendard Variable</h3>
+<pre><code class="language-html">&lt;link rel=&quot;stylesheet&quot;
+  href=&quot;https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css&quot;&gt;
+</code></pre>
+<pre><code class="language-css">body {
+  font-family: 'Pretendard Variable', Pretendard, -apple-system,
+               BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  -webkit-font-smoothing: antialiased;   /* 필수 */
+  -moz-osx-font-smoothing: grayscale;
+}
+</code></pre>
+<p><strong>⚠ Kitchen Stories의 폰트는 차용할 수 없습니다.</strong> KS는 <code>ttcommons</code>(UI)와 <code>aime</code>(레시피 제목)를 쓰는데, <strong>둘 다 한글 글리프가 없는 라틴 전용 폰트</strong>입니다. 따라서 타이포그래피는 한글 환경에서 검증된 <strong>Pretendard Variable</strong>을 채택합니다.</p>
+<p><strong>⚠ 선언만 하고 로드하지 않으면 무의미합니다.</strong> 폰트 스택에 이름만 넣으면 시스템 폰트로 폴백되고, Pretendard보다 x-height가 작아 <strong>같은 px에서도 작아 보입니다.</strong> 반드시 위 <code>&lt;link&gt;</code>로 실제 로드하세요.</p>
+<p><strong><code>-webkit-font-smoothing: antialiased</code>도 필수입니다.</strong> 기본값(서브픽셀 AA)은 획 주변에 색 성분을 더해 <strong>같은 굵기라도 두껍게</strong> 보입니다. Kitchen Stories와 오늘의집 모두 이 값을 명시적으로 지정합니다.</p>
+<h3 id="32-자간">3.2 자간</h3>
+<pre><code class="language-css">letter-spacing: -0.3px;   /* 제목·본문 공통 */
+</code></pre>
+<p>한글은 라틴보다 글자 폭이 넓어 기본 자간이 성기게 보입니다. <code>-0.3px</code>이 검증된 값이며, <strong>-0.5px 이하로 조이면 답답해 보입니다.</strong></p>
+<h3 id="33-스케일">3.3 스케일</h3>
+<pre><code>L1  섹션 헤더        19px / 600 / 잉크
+L2  서브섹션 헤더     17px / 600 / 잉크
+L3  아이템 제목       15px / 500 / 잉크
+L4  본문 · 설명       14px / 400 / 잉크 또는 미드 그레이
+L5  캡션 · 메타       12px / 400 / 미드 그레이   ← 라이트 그레이 ❌ (§10.2)
+</code></pre>
+<p><strong>v1.1에서 바뀐 점: 섹션 헤더 굵기가 700 → 600입니다.</strong></p>
+<p>한글에서 700은 라틴보다 무겁게 렌더링됩니다. 실측 근거:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>서비스</th>
+<th>섹션 헤더</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>오늘의집</td>
+<td><strong>600</strong> @ 16–17px</td>
+</tr>
+<tr>
+<td>Kitchen Stories</td>
+<td>700 @ 24px (라틴 전용 폰트)</td>
+</tr>
+<tr>
+<td><strong>졸리팟 v2.0</strong></td>
+<td><strong>600</strong> @ 19px</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>700은 가격·할인율 등 강조 전용으로만 사용합니다.</strong> 예외: 스텝 번호(§6.7) · TIP 라벨(§6.8). 버튼 글자는 600입니다(§6.1).</p>
+<h3 id="34-예외-가격-표시">3.4 예외: 가격 표시</h3>
+<pre><code>판매가: 15px / 700 / 잉크
+할인율: 15px / 700 / 오렌지
+정가:   14px / 400 / 미드 그레이, line-through
+</code></pre>
+<h3 id="35-금지-사항">3.5 금지 사항</h3>
+<ul>
+<li>❌ Pretendard를 선언만 하고 로드하지 않기</li>
+<li>❌ <code>-webkit-font-smoothing</code> 미지정</li>
+<li>❌ 섹션 헤더에 <code>font-weight: 700</code> (600 사용)</li>
+<li>❌ L3 이하에서 700 (가격·스텝 번호·TIP 라벨 예외)</li>
+<li>❌ 자간 <code>-0.5px</code> 이하</li>
+<li>❌ L5 캡션에 잉크(<span class="sw" style="background:#212121"></span><code>#212121</code>) 사용</li>
+<li>❌ 읽어야 하는 텍스트에 라이트그레이(<span class="sw" style="background:#9E9E9E"></span><code>#9E9E9E</code>) 사용 — placeholder·비활성 전용 (§10.2)</li>
+</ul>
+<hr />
+<h2 id="4-컬러별-상세-가이드">4. 컬러별 상세 가이드</h2>
+<h3 id="40-색모양-결정표-v206-신설-이-문서에서-가장-우선">4.0 색·모양 결정표 (v2.0.6 신설 — 이 문서에서 가장 우선)</h3>
+<p><strong>같은 내용이 다른 절과 다르게 읽히면 이 표를 따릅니다.</strong> 표에 없는 요소는 추측하지 말고 문의해 주세요.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>요소</th>
+<th>색</th>
+<th>모양</th>
+<th>예</th>
+<th>금지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>누르는 버튼</strong>(주 버튼)</td>
+<td>오렌지 <span class="sw" style="background:#FC642D"></span><code>#FC642D</code> 바탕 + 흰 글자</td>
+<td>높이 56px(작은 버튼 44px) · 둥글기 <strong>14px</strong>(화면 아래 큰 버튼) / <strong>999px</strong>(콘텐츠 안 작은 버튼) · 글자 16px 이상 · 600</td>
+<td>구매하기 · 주문하기 · <strong>결제하기</strong> · 이어서 결제하기 · 다시 시도하기 · 저장하기 · 회원가입</td>
+<td>❌ 딥그린·노른자 바탕</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>보조 버튼</strong></td>
+<td>흰 바탕 + 1px <span class="sw" style="background:#CCCFD4"></span><code>#CCCFD4</code> 테두리 + 잉크 <span class="sw" style="background:#212121"></span><code>#212121</code> 글자</td>
+<td>주 버튼과 같은 높이·둥글기 · 600</td>
+<td>장바구니(옵션 시트) · 장바구니로 돌아가기 · 고객센터 문의하기 · 코드등록</td>
+<td>❌ 회색 채움 · 딥그린 채움</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>비활성 버튼</strong></td>
+<td><span class="sw" style="background:#E5E7EB"></span><code>#E5E7EB</code> 바탕·테두리 + <span class="sw" style="background:#9E9E9E"></span><code>#9E9E9E</code> 글자</td>
+<td>원래 버튼과 같은 크기</td>
+<td>필수 옵션을 다 고르기 전의 구매하기</td>
+<td>❌ 흐린 오렌지(여전히 「누르세요」로 보임)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>저장·찜·좋아요 켠 상태</strong></td>
+<td>오렌지 채움</td>
+<td>아이콘</td>
+<td>북마크 · 하트 · 홈 카드 저장</td>
+<td>❌ 빨강 · 딥그린 (§2.5)</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>활성 탭 · 하단 메뉴</strong></td>
+<td>오렌지</td>
+<td>—</td>
+<td>하단 내비 활성 아이콘 · 활성 탭 밑줄</td>
+<td>—</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>고른 상태</strong></td>
+<td>딥그린 <span class="sw" style="background:#145F48"></span><code>#145F48</code></td>
+<td>선택한 카드 테두리 2px · 라디오·체크박스 채움 · 고른 셀렉트 테두리</td>
+<td>결제수단 선택 · 옵션 선택 완료 · 「다음에도 사용」 체크</td>
+<td>❌ 오렌지(오렌지는 #5 활성 탭·메뉴에만)</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>완료·성공 표시</strong></td>
+<td>딥그린 글자·아이콘 (면이 필요하면 연한 초록 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code>)</td>
+<td>배지 · 문구</td>
+<td>✓완료 배지 · 결제 완료 · 무료배송 적용 · 성공 메시지</td>
+<td>❌ rgba 초록 틴트(탁해짐) — 단색 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code>만</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>알림(토스트)</strong></td>
+<td>잉크 <span class="sw" style="background:#212121"></span><code>#212121</code> 바탕(불투명도 92% 이상) + 흰 글자</td>
+<td>둥글기 12px</td>
+<td>장바구니에 담았어요 · 저장했어요</td>
+<td>❌ 민트 · 보라 · 초록 바탕</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>오류</strong></td>
+<td>레드 <span class="sw" style="background:#D64545"></span><code>#D64545</code></td>
+<td>—</td>
+<td>결제 실패 · 삭제 경고 · 글자 수 초과</td>
+<td>❌ 오류 외 사용 (§2.5)</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>링크</strong></td>
+<td>파랑 <span class="sw" style="background:#3276AE"></span><code>#3276AE</code></td>
+<td>—</td>
+<td>원본 영상 링크 · 「자세히」</td>
+<td>❌ 오렌지</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>크리에이터 이름 · 메타</strong></td>
+<td>미드그레이 <span class="sw" style="background:#666666"></span><code>#666666</code></td>
+<td>12px</td>
+<td>카드 아래 크리에이터명 · 조회수</td>
+<td>❌ 오렌지 · 라이트그레이(§10.2)</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>가격</strong></td>
+<td>판매가 잉크 700 · 할인율·할인 금액 오렌지 700 · 정가 미드그레이 취소선</td>
+<td>§6.4</td>
+<td>32% 9,500원 · -4,500원</td>
+<td>❌ 판매가 오렌지</td>
+</tr>
+<tr>
+<td>13</td>
+<td><strong>TIP 상자</strong></td>
+<td>연한 초록 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code> + 라벨 딥그린 700 + 본문 미드그레이</td>
+<td>둥글기 10px</td>
+<td>레시피 단계 TIP</td>
+<td>❌ rgba 틴트</td>
+</tr>
+<tr>
+<td>14</td>
+<td><strong>태그</strong></td>
+<td>레시피 태그: 흰 알약 + 1px <span class="sw" style="background:#CCCFD4"></span><code>#CCCFD4</code> + 잉크 글자, <code>#</code> 기호만 딥그린 / 속성 칩(시간·채식·비건·신규): §2.7</td>
+<td>레시피 태그 높이 36px · 999px</td>
+<td>#감자조림 · ⏱ 20분</td>
+<td>❌ 딥그린 채움 태그</td>
+</tr>
+<tr>
+<td>15</td>
+<td><strong>단계별 영상 시각 표시</strong></td>
+<td>⚠ <strong>확정 전 — 문의</strong></td>
+<td>—</td>
+<td>레시피 단계의 「0:42」</td>
+<td>확정되면 이 표에 추가합니다</td>
+</tr>
+<tr>
+<td>16</td>
+<td><strong>섹션 간격</strong></td>
+<td>—</td>
+<td>홈: 섹션 사이 32px(선 없음) / 상세: 1px 구분선 + 위아래 24px</td>
+<td>—</td>
+<td>❌ 8px 두꺼운 밴드 (§6.9)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>한 줄 원칙</strong>: 「누르세요」 = 오렌지, 「됐습니다·골랐습니다」 = 딥그린, 「못 누릅니다」 = 회색, 「문제입니다」 = 레드.</p>
+<h3 id="41-노른자-옐로우-fdb813-브랜드-ip">4.1 노른자 옐로우 <span class="sw" style="background:#FDB813"></span><code>#FDB813</code> — 브랜드 IP</h3>
+<p><strong>적용</strong>: 앱 아이콘 · 로고 · 마스코트 · 스플래시 · 빈 상태 일러스트 · 온보딩 포인트</p>
+<p><strong>금지</strong>
+- ❌ CTA 버튼 (가독성 부족)
+- ❌ 가격 / 할인율 (오렌지 영역)
+- ❌ 흰색 텍스트 위 배경 (대비 미달)
+- ❌ 면적: §5.1 기준(노른자 + 딥그린 합 3% 이내)</p>
+<p><strong>이유</strong>: 장기 IP 자산입니다. 기능 영역에 남용하면 브랜드 인지가 희석됩니다.</p>
+<hr />
+<h3 id="42-오렌지-fc642d-메인-액션">4.2 오렌지 <span class="sw" style="background:#FC642D"></span><code>#FC642D</code> — 메인 액션</h3>
+<p><strong>적용</strong>
+- <strong>누르는 버튼 전부</strong>(§4.0 #1): 구매하기 · 주문하기 · <strong>결제하기</strong> · 저장하기 · 회원가입 · 다음 단계 보러가기
+- 할인율 · 할인 금액 강조 (판매가는 잉크 — §6.4)
+- 활성 탭 / 활성 하단 네비 아이콘
+- 저장 · 찜 · 좋아요 켠 상태 (§2.5)
+- 플로팅 액션 버튼(+)
+- 캐러셀 진행 바</p>
+<p><strong>버튼 스펙</strong></p>
+<pre><code>background: #FC642D
+color: #FFFFFF
+border-radius: 14px (화면 아래 큰 버튼) / 999px (콘텐츠 안 작은 버튼)
+height: 56px (메인) / 44px (서브)
+font-weight: 600
+</code></pre>
+<p><strong>금지</strong>
+- ❌ 면적 7% 초과
+- ❌ 본문 텍스트 컬러
+- ❌ 큰 면적의 배경
+- ❌ 링크 · 크리에이터명 (링크는 파랑, 이름은 미드그레이 — §4.0)
+- ❌ 흐린 오렌지로 비활성 표시 (비활성은 회색 — §4.0 #3)</p>
+<hr />
+<h3 id="43-딥그린-145f48-확정-전환">4.3 딥그린 <span class="sw" style="background:#145F48"></span><code>#145F48</code> — 확정 · 전환</h3>
+<p><strong>적용</strong>
+- <strong>고른 상태</strong>: 선택한 카드 테두리 · 라디오 · 체크박스 · 옵션 선택 완료(✓완료 배지)
+- <strong>완료·성공 표시</strong>: 결제 완료 · 무료배송 적용 · 성공 시스템 메시지
+- 태그의 <code>#</code> 기호 · TIP 라벨</p>
+<p><strong>금지</strong>
+- ❌ <strong>누르는 버튼의 면</strong> — 결제하기 · 주문하기 · 회원가입 포함 전부 오렌지 (v2.0.6)
+- ❌ 저장 · 찜 켠 상태 (오렌지 — §2.5)
+- ❌ 오렌지와 같은 면적으로 동시 사용</p>
+<p><strong>오렌지와의 역할 구분</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>상태</th>
+<th>컬러</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"누르세요" (행동 유도)</td>
+<td><strong>오렌지</strong></td>
+</tr>
+<tr>
+<td>"됐습니다" (확정·완료)</td>
+<td><strong>딥그린</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Kitchen Stories가 오렌지를 앱 전반의 액센트로, 딥그린을 Sign-up·Submit 같은 확정 지점에만 쓰는 것과 같은 원리입니다. <strong>단, KS는 결제가 없는 앱입니다.</strong> 졸리팟은 결제하기도 「누르세요」이므로 오렌지이고, 딥그린은 결제가 끝난 뒤의 완료 표시에 씁니다.</p>
+<hr />
+<h3 id="44-베이스-면surface-위계">4.4 베이스 — 면(Surface) 위계</h3>
+<pre><code>┌─────────────────────────────────────┐
+│ 페이지 배경 #FFFFFF                  │
+│  ┌───────────────────────────────┐  │
+│  │ 카드 #FFF5EA + #CCCFD4 보더    │  │
+│  │  ┌─────────────────────────┐  │  │
+│  │  │ 강조 영역 #FFEEDC        │  │  │
+│  │  └─────────────────────────┘  │  │
+│  └───────────────────────────────┘  │
+└─────────────────────────────────────┘
+</code></pre>
+<p><strong>카드 컴포넌트 필수 스펙</strong>
+- Background: <span class="sw" style="background:#FFF5EA"></span><code>#FFF5EA</code> (또는 <span class="sw" style="background:#FFFFFF"></span><code>#FFFFFF</code>)
+- Border: <code>1px solid #CCCFD4</code>
+- Border-radius: <code>16px</code> (중첩 요소는 <code>14px</code> 이하)
+- 그림자: 사용하지 않음</p>
+<p><strong>중첩 라운딩 규칙</strong>: 카드 안의 요소는 카드보다 <strong>작은</strong> radius를 씁니다. 카드 18px이면 내부 이미지는 14px. 반대면 모서리가 어긋나 보입니다.</p>
+<p><strong>흰 카드를 쓰는 경우</strong>: 사진이 주인공인 카드(레시피 카드 등)는 배경을 흰색으로 두어 사진이 돋보이게 합니다. 이때 보더는 반드시 유지하세요.</p>
+<hr />
+<h2 id="5-사용-원칙">5. 사용 원칙</h2>
+<h3 id="51-면적-비율">5.1 면적 비율</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>영역</th>
+<th>비율</th>
+<th>컬러</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>베이스</td>
+<td>70%</td>
+<td>흰색 + 피치크림</td>
+</tr>
+<tr>
+<td>텍스트</td>
+<td>20%</td>
+<td>잉크 + 그레이</td>
+</tr>
+<tr>
+<td>액션</td>
+<td>7%</td>
+<td>오렌지</td>
+</tr>
+<tr>
+<td>브랜드 + 확정</td>
+<td>3%</td>
+<td>노른자 + 딥그린</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Kitchen Stories의 오렌지 사용 면적은 5% 미만입니다.</strong> 화면을 매력적으로 만드는 건 컬러가 아니라 <strong>음식 사진</strong>입니다. 컬러는 액센트일 뿐입니다.</p>
+<h3 id="52-컬러-역할-분리-매트릭스">5.2 컬러 역할 분리 매트릭스</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>목적</th>
+<th>컬러</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"이 앱 졸리팟이구나"</td>
+<td>노른자 옐로우</td>
+</tr>
+<tr>
+<td>"이거 눌러야겠다"</td>
+<td>오렌지</td>
+</tr>
+<tr>
+<td>"이건 됐다 / 분류다"</td>
+<td>딥그린</td>
+</tr>
+<tr>
+<td>"여긴 콘텐츠 영역이다"</td>
+<td>피치크림</td>
+</tr>
+</tbody>
+</table></div>
+<p>각 컬러는 <strong>하나의 목적만</strong> 책임집니다.</p>
+<h3 id="53-텍스트-컬러-페어링">5.3 텍스트 컬러 페어링</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>배경</th>
+<th>권장 텍스트</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>흰색 <span class="sw" style="background:#FFFFFF"></span><code>#FFFFFF</code></td>
+<td>잉크 <span class="sw" style="background:#212121"></span><code>#212121</code></td>
+</tr>
+<tr>
+<td>피치크림 <span class="sw" style="background:#FFF5EA"></span><code>#FFF5EA</code></td>
+<td>잉크 <span class="sw" style="background:#212121"></span><code>#212121</code></td>
+</tr>
+<tr>
+<td>딥 피치 <span class="sw" style="background:#FFEEDC"></span><code>#FFEEDC</code></td>
+<td>잉크 <span class="sw" style="background:#212121"></span><code>#212121</code></td>
+</tr>
+<tr>
+<td>오렌지 <span class="sw" style="background:#FC642D"></span><code>#FC642D</code></td>
+<td>흰색 <span class="sw" style="background:#FFFFFF"></span><code>#FFFFFF</code></td>
+</tr>
+<tr>
+<td>딥그린 <span class="sw" style="background:#145F48"></span><code>#145F48</code></td>
+<td>흰색 <span class="sw" style="background:#FFFFFF"></span><code>#FFFFFF</code></td>
+</tr>
+<tr>
+<td>노른자 <span class="sw" style="background:#FDB813"></span><code>#FDB813</code></td>
+<td>잉크 <span class="sw" style="background:#212121"></span><code>#212121</code> (흰색 ❌)</td>
+</tr>
+<tr>
+<td>칩 배경 전체</td>
+<td>잉크 <span class="sw" style="background:#212121"></span><code>#212121</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>순검정(<code>#000</code>) 사용 금지.</strong> 잉크(<span class="sw" style="background:#212121"></span><code>#212121</code>)로 통일합니다.</p>
+<hr />
+<h2 id="6-컴포넌트-스펙">6. 컴포넌트 스펙</h2>
+<h3 id="61-메인-cta">6.1 메인 CTA</h3>
+<pre><code>background: #FC642D · color: #FFFFFF · font-size: 16px 이상 · font-weight: 600
+height: 56px · border-radius: 14px (화면 아래 큰 버튼) / 999px (콘텐츠 안 작은 버튼)
+적용: 구매하기 · 주문하기 · 결제하기 · 저장하기 · 회원가입 — §4.0 #1
+</code></pre>
+<h3 id="62-고른-상태-완료-표시-v206-개정">6.2 고른 상태 · 완료 표시 (v2.0.6 개정)</h3>
+<pre><code>선택한 카드:      background #FFFFFF · border 2px solid #145F48
+라디오·체크박스:  켬 = #145F48 채움 + 흰 표시
+✓완료 배지:       background #F1F8F3 · color #145F48 · font-weight 600
+</code></pre>
+<p>저장됨·찜은 여기에 해당하지 않습니다 — 오렌지(§2.5).</p>
+<h3 id="62-1-보조-버튼-비활성-버튼-알림-v206-신설">6.2-1 보조 버튼 · 비활성 버튼 · 알림 (v2.0.6 신설)</h3>
+<pre><code>보조 버튼:   background #FFFFFF · border 1px solid #CCCFD4 · color #212121 · 600 · 주 버튼과 같은 높이·둥글기
+비활성 버튼: background #E5E7EB · border #E5E7EB · color #9E9E9E
+알림(토스트): background #212121 (불투명도 92% 이상) · color #FFFFFF · border-radius 12px
+</code></pre>
+<h3 id="63-레시피-상품-카드">6.3 레시피 / 상품 카드</h3>
+<pre><code>background: #FFF5EA (사진 중심 카드는 #FFFFFF)
+border: 1px solid #CCCFD4 · border-radius: 16px · padding: 16px
+</code></pre>
+<h3 id="64-가격">6.4 가격</h3>
+<pre><code>정가:   #666666 / 400 / line-through
+판매가: #212121 / 700
+할인율: #FC642D / 700
+</code></pre>
+<h3 id="65-칩-태그">6.5 칩 / 태그</h3>
+<p>§2.7 참조.</p>
+<h3 id="66-섹션-헤더-v20-전면-개정">6.6 섹션 헤더 (v2.0 전면 개정)</h3>
+<pre><code>┌────────────────────────────────────────┐
+│  화제의 레시피                      (→)  │
+│  ← 19px / 600 / 잉크 / 자간 -0.3px      │
+└────────────────────────────────────────┘
+</code></pre>
+<p><strong>구성 규칙</strong>
+- <strong>제목 한 줄만.</strong> 회색 부가설명(부제)을 붙이지 않습니다
+- <strong>이모지 금지.</strong> 제목 앞 장식 이모지를 두지 않습니다 — 필요하면 운영자가 제목 텍스트 끝에 직접 입력
+- <strong>"전체보기" 텍스트 대신 원형 화살표</strong></p>
+<p><strong>원형 화살표 버튼</strong></p>
+<pre><code>width/height: 24px · border-radius: 50%
+background: #FFF5EA · color: #212121
+아이콘: 13px 화살표 SVG
+aria-label 필수 (예: &quot;더보기&quot;)
+</code></pre>
+<p><strong>간격</strong></p>
+<pre><code>헤더 좌우 패딩:      20px
+제목 → 콘텐츠:       14px
+섹션 ↔ 섹션:         32px   (홈 · 선 없음 — v2.0.6, 최신 홈 v14-33 기준)
+</code></pre>
+<blockquote>
+<p><strong>"안은 붙이고 사이는 벌린다"</strong> — 헤더와 콘텐츠는 붙여 한 덩어리로, 섹션끼리는 넓게 띄워 경계를 만듭니다.</p>
+</blockquote>
+<p><strong>이모지를 금지하는 이유</strong>
+1. 어드민 섹션 추가 모달에 이모지 입력란이 없어 <strong>구조와 운영도구가 어긋납니다</strong>
+2. 알고리즘 자동 생성 섹션은 이모지를 정할 주체가 없습니다
+3. 로테이션 섹션은 매주 바뀌어 매번 선택해야 합니다
+4. 같은 종류의 코너가 나열되면 이모지가 카테고리를 구분해주지 못합니다</p>
+<h3 id="67-레시피-스텝">6.7 레시피 스텝</h3>
+<pre><code>스텝 넘버:   오렌지 #FC642D / 700 / 12.5px
+스텝 소제목: #212121 / 500 / 15px
+스텝 설명:   #666666 / 400 / 14px
+타임스탬프:  ⚠ 표시 방식 확정 전 — 문의 (§4.0 #15)
+</code></pre>
+<h3 id="68-tip-콜아웃-박스">6.8 TIP · 콜아웃 박스</h3>
+<pre><code>Background: #F1F8F3 (연한 초록, 단색 — v2.0.6, 레시피 상세 v1-30 기준)
+Border-radius: 10px · padding: 9px 12px
+라벨 &quot;💡 TIP&quot;: #145F48 / 700 / 11.5px
+본문: #666666 / 400 / 13px
+</code></pre>
+<p>딥그린 틴트(rgba) 배경은 <strong>금지</strong> — 낮은 투명도에서 탁하고 바랜 인상을 줍니다. 초록 면이 필요하면 <strong>단색 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code></strong>만 씁니다.</p>
+<h3 id="69-섹션-디바이더">6.9 섹션 디바이더</h3>
+<pre><code>height: 1px · background: #E5E7EB (뉴트럴 그레이 · KS 실측) · 좌우 풀블리드
+섹션 간 여백: 상하 24px   (상세 화면 · 홈은 선 없이 32px — §6.6)
+</code></pre>
+<p><strong>8px 두꺼운 밴드는 사용하지 않습니다</strong> (v2.0.2에서 폐기 — Kitchen Stories의 1px 헤어라인 패턴 채택). 콘텐츠가 넉넉한 여백 + 가는 선으로 나뉘어야 사진과 텍스트가 숨 쉽니다.</p>
+<h3 id="610-하단-네비게이션">6.10 하단 네비게이션</h3>
+<pre><code>활성:   #FC642D
+비활성: #9E9E9E
+</code></pre>
+<h3 id="611-카드-제목-줄-처리">6.11 카드 제목 줄 처리</h3>
+<pre><code class="language-css">display: -webkit-box;
+-webkit-line-clamp: 2;
+-webkit-box-orient: vertical;
+overflow: hidden;
+word-break: keep-all;      /* 한글 어절 중간에서 끊지 않음 */
+overflow-wrap: anywhere;   /* 폭보다 긴 단일 어절만 예외 */
+</code></pre>
+<p><strong><code>word-break: keep-all</code>은 한글에서 필수입니다.</strong> 없으면 "팬케이크"가 <code>팬케</code> / <code>이크</code>로 갈라집니다.</p>
+<p><strong>⚠ <code>min-height</code>로 줄 수를 강제하지 마세요.</strong> 1줄 제목에 2줄 높이를 잡으면 제목과 메타 사이에 빈 공간이 생깁니다. 단, <strong>가로 스크롤·그리드에서 제목 줄 수가 실제로 섞이는 경우에만</strong> 정렬 목적으로 허용합니다.</p>
+<hr />
+<h2 id="7-금지-사항-do-not">7. 금지 사항 (Do Not)</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>금지 항목</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>❌ 핑크 CTA</td>
+<td>클릭 무게 부족, 여성용 앱 클리셰</td>
+</tr>
+<tr>
+<td>❌ 노른자 옐로우 CTA</td>
+<td>가독성 부족, 브랜드 역할 충돌</td>
+</tr>
+<tr>
+<td>❌ 노른자 위 흰색 텍스트</td>
+<td>대비 미달</td>
+</tr>
+<tr>
+<td>❌ 빨강 단독 사용</td>
+<td>쿠팡 톤</td>
+</tr>
+<tr>
+<td>❌ 순검정 <code>#000</code></td>
+<td>잉크 <span class="sw" style="background:#212121"></span><code>#212121</code>로 통일</td>
+</tr>
+<tr>
+<td>❌ 그라데이션 남용</td>
+<td>플랫 톤 유지</td>
+</tr>
+<tr>
+<td>❌ 그림자 + 보더 동시</td>
+<td>보더만 사용</td>
+</tr>
+<tr>
+<td>❌ 보라 / 네이비 추가</td>
+<td>컬리·토스 영역</td>
+</tr>
+<tr>
+<td>❌ 세이지 그린 <span class="sw" style="background:#8FA68E"></span><code>#8FA68E</code></td>
+<td><strong>v2.0에서 폐기</strong> — 딥그린으로 대체</td>
+</tr>
+<tr>
+<td>❌ 테라코타 <span class="sw" style="background:#C75D3E"></span><code>#C75D3E</code></td>
+<td><strong>v2.0에서 폐기</strong> — 오렌지로 대체</td>
+</tr>
+<tr>
+<td>❌ 섹션 헤더에 700</td>
+<td>600 사용</td>
+</tr>
+<tr>
+<td>❌ 섹션 헤더에 부제 · 이모지</td>
+<td>§6.6</td>
+</tr>
+<tr>
+<td>❌ Pretendard 미로드</td>
+<td>§3.1</td>
+</tr>
+<tr>
+<td>❌ 캡션·메타에 라이트그레이 <span class="sw" style="background:#9E9E9E"></span><code>#9E9E9E</code></td>
+<td>명암비 2.68:1 (§10.2)</td>
+</tr>
+<tr>
+<td>❌ 오렌지 배경 + 14px 이하 흰색 텍스트</td>
+<td>명암비 3.0:1 (§10.2)</td>
+</tr>
+<tr>
+<td>❌ 딥그린 채움 버튼 (결제·주문·가입 포함)</td>
+<td>누르는 버튼은 전부 오렌지 (§4.0)</td>
+</tr>
+<tr>
+<td>❌ 흐린 오렌지 비활성 버튼</td>
+<td>비활성은 회색 (§4.0 #3)</td>
+</tr>
+<tr>
+<td>❌ 민트·보라 알림 바탕</td>
+<td>알림은 잉크 바탕 (§4.0 #8)</td>
+</tr>
+<tr>
+<td>❌ 링크·크리에이터명 오렌지</td>
+<td>링크 파랑 · 이름 미드그레이 (§4.0)</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="8-css-variables-개발-핸드오프용">8. CSS Variables (개발 핸드오프용)</h2>
+<pre><code class="language-css">:root {
+  /* Brand */
+  --color-brand: #FDB813;
+
+  /* Primary / Secondary */
+  --color-primary: #FC642D;      /* 액션 */
+  --color-secondary: #145F48;    /* 고른 상태 · 완료 · 태그 # (버튼 면 ❌) */
+
+  /* Surface */
+  --color-bg: #FFFFFF;
+  --color-surface: #FFF5EA;
+  --color-surface-alt: #FFEEDC;
+  --color-surface-info: #F1F8F3; /* TIP · 완료 배지 면 (v2.0.6) */
+
+  /* Text */
+  --color-text-primary: #212121;
+  --color-text-secondary: #666666;
+  --color-text-tertiary: #9E9E9E;
+
+  /* System */
+  --color-error: #D64545;
+  --color-success: #145F48;
+  --color-info: #3276AE;
+  --color-warning: #FFC520;
+
+  /* Border / Divider */
+  --color-border: #CCCFD4;
+  --color-divider: #E5E7EB;
+
+  /* Button · Toast (v2.0.6) */
+  --radius-cta: 14px;            /* 화면 아래 큰 버튼 */
+  --radius-pill: 999px;          /* 콘텐츠 안 작은 버튼 */
+  --toast-bg: #212121;
+
+  /* Chip */
+  --chip-time-bg: #FFF5C6;
+  --chip-veg-bg: #E3F4C7;
+  --chip-vegan-bg: #CEEC9C;
+  --chip-new-bg: #FFC520;
+  --chip-text: #212121;
+
+  /* Typography */
+  --font-family: 'Pretendard Variable', Pretendard, -apple-system,
+                 BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --letter-spacing: -0.3px;
+
+  --typo-l1-size: 19px;  --typo-l1-weight: 600;
+  --typo-l2-size: 17px;  --typo-l2-weight: 600;
+  --typo-l3-size: 15px;  --typo-l3-weight: 500;
+  --typo-l4-size: 14px;  --typo-l4-weight: 400;
+  --typo-l5-size: 12px;  --typo-l5-weight: 400;
+  --typo-price-weight: 700;
+}
+</code></pre>
+<hr />
+<h2 id="9-figma-변수-네이밍">9. Figma 변수 네이밍</h2>
+<pre><code>Brand/Yellow          → #FDB813
+Primary/Orange        → #FC642D
+Secondary/DeepGreen   → #145F48
+
+Surface/Background    → #FFFFFF
+Surface/Default       → #FFF5EA
+Surface/Alt           → #FFEEDC
+Surface/Info          → #F1F8F3
+
+Text/Primary          → #212121
+Text/Secondary        → #666666
+Text/Tertiary         → #9E9E9E
+
+System/Error          → #D64545
+System/Success        → #145F48
+System/Info           → #3276AE
+System/Warning        → #FFC520
+
+Border/Card           → #CCCFD4
+Border/Divider        → #E5E7EB
+
+Chip/Time             → #FFF5C6
+Chip/Vegetarian       → #E3F4C7
+Chip/Vegan            → #CEEC9C
+Chip/New              → #FFC520
+
+Typo/L1               → 19px / SemiBold(600)
+Typo/L2               → 17px / SemiBold(600)
+Typo/L3               → 15px / Medium(500)
+Typo/L4               → 14px / Regular(400)
+Typo/L5               → 12px / Regular(400)
+Typo/Price            → Bold(700)
+</code></pre>
+<hr />
+<h2 id="10-접근성-명암비-검증표-v20-신규">10. 접근성 — 명암비 검증표 (v2.0 신규)</h2>
+<p>v2.0 팔레트 전 조합의 명암비를 계산해 검증했습니다. WCAG 2.1 AA 기준은 본문 <strong>4.5:1</strong>, 큰 텍스트(24px 이상 또는 18.66px 이상 Bold) <strong>3:1</strong> 입니다.</p>
+<h3 id="101-검증-통과">10.1 검증 통과</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>조합</th>
+<th>명암비</th>
+<th>판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>잉크 <span class="sw" style="background:#212121"></span><code>#212121</code> / 흰색</td>
+<td><strong>16.10 : 1</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>잉크 / 피치크림 <span class="sw" style="background:#FFF5EA"></span><code>#FFF5EA</code></td>
+<td><strong>14.95 : 1</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>잉크 / 딥피치 <span class="sw" style="background:#FFEEDC"></span><code>#FFEEDC</code></td>
+<td><strong>14.20 : 1</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>흰색 / 딥그린 <span class="sw" style="background:#145F48"></span><code>#145F48</code></td>
+<td><strong>7.61 : 1</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>딥그린 / 연한 초록 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code></td>
+<td><strong>7.05 : 1</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>파랑 <span class="sw" style="background:#3276AE"></span><code>#3276AE</code> / 흰색</td>
+<td><strong>4.84 : 1</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>잉크 / 노른자 <span class="sw" style="background:#FDB813"></span><code>#FDB813</code></td>
+<td><strong>9.23 : 1</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>미드그레이 <span class="sw" style="background:#666666"></span><code>#666666</code> / 흰색</td>
+<td><strong>5.74 : 1</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>미드그레이 / 피치크림</td>
+<td><strong>5.33 : 1</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>잉크 / 시간칩 <span class="sw" style="background:#FFF5C6"></span><code>#FFF5C6</code></td>
+<td><strong>14.67 : 1</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>잉크 / 채식칩 <span class="sw" style="background:#E3F4C7"></span><code>#E3F4C7</code></td>
+<td><strong>13.83 : 1</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>잉크 / 비건칩 <span class="sw" style="background:#CEEC9C"></span><code>#CEEC9C</code></td>
+<td><strong>12.35 : 1</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>잉크 / 신규칩 <span class="sw" style="background:#FFC520"></span><code>#FFC520</code></td>
+<td><strong>10.17 : 1</strong></td>
+<td>✅</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="102-주의가-필요한-조합">10.2 ⚠ 주의가 필요한 조합</h3>
+<p><strong>① 흰색 텍스트 / 오렌지 배경 — 3.00 : 1</strong></p>
+<p>CTA 버튼의 기본 조합인데 <strong>본문 기준(4.5:1)에 미달</strong>합니다. Kitchen Stories도 동일한 한계를 갖습니다(그들의 실측값이므로).</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>대응</th>
+<th>방법</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>권장</strong></td>
+<td>CTA 텍스트를 <strong>16px 이상 / 600 이상</strong>으로 — 버튼 텍스트는 짧고 크므로 실사용 가독성은 확보됨</td>
+</tr>
+<tr>
+<td>엄격 준수가 필요할 때</td>
+<td>오렌지 위에 <strong>잉크 텍스트</strong>(<span class="sw" style="background:#212121"></span><code>#212121</code>) 사용 — <strong>5.37 : 1</strong> 로 AA 통과</td>
+</tr>
+<tr>
+<td>금지</td>
+<td>오렌지 배경에 <strong>14px 이하 흰색 텍스트</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>② 라이트그레이 <span class="sw" style="background:#9E9E9E"></span><code>#9E9E9E</code> / 흰색 — 2.68 : 1</strong></p>
+<p>AA 미달입니다. <strong>placeholder·비활성(disabled) 전용</strong>으로만 쓰세요. WCAG는 비활성 컨트롤에 명암비를 요구하지 않습니다.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>용도</th>
+<th>컬러</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>placeholder · 비활성</td>
+<td>라이트그레이 <span class="sw" style="background:#9E9E9E"></span><code>#9E9E9E</code> ✅</td>
+</tr>
+<tr>
+<td>캡션 · 메타 · 날짜</td>
+<td><strong>미드그레이 <span class="sw" style="background:#666666"></span><code>#666666</code></strong> (5.74:1)</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>v1.1에서는 캡션(L5)에 라이트그레이를 허용했으나, <strong>v2.0에서는 읽어야 하는 텍스트에 라이트그레이를 금지</strong>합니다.</p>
+</blockquote>
+<h3 id="103-보더-가시성">10.3 보더 가시성</h3>
+<p>보더는 텍스트가 아니라 WCAG 대상은 아니지만, <strong>1.5:1 미만이면 실기기에서 사라집니다.</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>조합</th>
+<th>명암비</th>
+<th>판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>카드 보더 <span class="sw" style="background:#CCCFD4"></span><code>#CCCFD4</code> / 피치크림</td>
+<td>1.45 : 1</td>
+<td>보임</td>
+</tr>
+<tr>
+<td>카드 보더 / 흰색</td>
+<td>1.56 : 1</td>
+<td>보임</td>
+</tr>
+<tr>
+<td>섹션 디바이더 <span class="sw" style="background:#E5E7EB"></span><code>#E5E7EB</code> / 흰색</td>
+<td>1.24 : 1</td>
+<td>은은 (의도)</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="11-디자인-체크리스트">11. 디자인 체크리스트</h2>
+<p><strong>컬러</strong>
+- [ ] 메인 CTA가 오렌지(<span class="sw" style="background:#FC642D"></span><code>#FC642D</code>)인가? — <strong>결제하기·주문하기 포함</strong> (딥그린 ❌)
+- [ ] 고른 상태(결제수단·라디오·체크박스)가 딥그린인가?
+- [ ] 비활성 버튼이 회색(흐린 오렌지 ❌)인가?
+- [ ] 링크가 파랑, 크리에이터명이 미드그레이인가?
+- [ ] 알림(토스트)이 잉크 바탕인가?
+- [ ] 확정·완료 상태가 딥그린(<span class="sw" style="background:#145F48"></span><code>#145F48</code>)인가?
+- [ ] 폐기된 테라코타·세이지가 남아 있지 않은가?
+- [ ] 노른자가 CTA로 쓰이지 않았는가?
+- [ ] 카드에 1px 보더(<span class="sw" style="background:#CCCFD4"></span><code>#CCCFD4</code>)가 있는가?
+- [ ] 본문이 잉크(<span class="sw" style="background:#212121"></span><code>#212121</code>)인가? (순검정 ❌)
+- [ ] 오렌지 면적이 7% 이내인가?</p>
+<p><strong>타이포그래피</strong>
+- [ ] Pretendard Variable을 <strong>실제 로드</strong>했는가?
+- [ ] <code>-webkit-font-smoothing: antialiased</code>를 지정했는가?
+- [ ] 섹션 헤더가 19px / <strong>600</strong>인가? (700 ❌)
+- [ ] 자간이 <code>-0.3px</code>인가?
+- [ ] 700이 가격 외에 쓰이지 않았는가?
+- [ ] 카드 제목에 <code>word-break: keep-all</code>이 있는가?</p>
+<p><strong>섹션 헤더</strong>
+- [ ] 제목 한 줄만 있는가? (부제 ❌)
+- [ ] 제목 앞 이모지가 없는가?
+- [ ] "전체보기" 텍스트 대신 24px 원형 화살표인가?
+- [ ] 제목→콘텐츠 14px, 홈 섹션 간 32px인가?</p>
+<p><strong>레이아웃</strong>
+- [ ] 중첩 라운딩이 바깥보다 작은가?
+- [ ] <code>min-height</code>로 줄 수를 불필요하게 강제하지 않았는가?</p>
+<p><strong>접근성 (§10)</strong>
+- [ ] 캡션·메타에 라이트그레이 대신 미드그레이(<span class="sw" style="background:#666666"></span><code>#666666</code>)를 썼는가?
+- [ ] 오렌지 버튼의 흰색 텍스트가 16px 이상 / 600 이상인가?
+- [ ] 보더가 실기기에서 보이는가? (1.5:1 이상)</p>
+<hr />
+<h2 id="12-이미지-규격">12. 이미지 규격</h2>
+<h3 id="121-레시피-썸네일-34-세로">12.1 레시피 썸네일 — 3:4 세로</h3>
+<p><strong>원본 자산은 3:4로 저장합니다.</strong> 숏폼(9:16)과 롱폼(16:9)을 함께 담기 위한 중간 규격입니다.</p>
+<p><strong>⚠ 3:4 이미지를 카드 전폭으로 넣지 마세요.</strong> 폭 330px 카드 기준 사진 높이만 <strong>440px</strong>가 되어, 카드 하나가 화면 세로를 거의 다 차지합니다.</p>
+<p><strong>권장: 좌측 분할 배치</strong></p>
+<pre><code>사진 폭 = 카드 콘텐츠 폭의 약 42% (예: 137×183)
+카드 padding 16px, 사진 border-radius 14px
+</code></pre>
+<hr />
+<h2 id="13-향후-확장">13. 향후 확장</h2>
+<h3 id="다크모드">다크모드</h3>
+<p>현재 라이트모드 기준입니다. 단순 명도 반전으로는 톤이 유지되지 않으므로 별도 페어링이 필요합니다. 특히 피치크림(<span class="sw" style="background:#FFF5EA"></span><code>#FFF5EA</code>)은 다크모드에서 대응 토큰을 새로 정의해야 합니다.</p>
+<h3 id="시즌-캠페인-컬러">시즌 / 캠페인 컬러</h3>
+<p>별도 정의하되, <strong>메인 CTA는 항상 오렌지로 유지</strong>해야 컨버전 데이터가 일관되게 누적됩니다.</p>
+<h3 id="마스코트-ip-확장">마스코트 IP 확장</h3>
+<p>노른자 옐로우와 톤 일관성을 유지하세요.</p>
+<hr />
+<h2 id="14-마이그레이션-v11-v20">14. 마이그레이션 (v1.1 → v2.0)</h2>
+<h3 id="141-전체-대응표">14.1 전체 대응표</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>v1.1</th>
+<th><strong>v2.0</strong></th>
+<th>영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--color-primary</code></td>
+<td><span class="sw" style="background:#C75D3E"></span><code>#C75D3E</code></td>
+<td><strong><span class="sw" style="background:#FC642D"></span><code>#FC642D</code></strong></td>
+<td>CTA·가격·활성탭 전부</td>
+</tr>
+<tr>
+<td><code>--color-secondary</code></td>
+<td><span class="sw" style="background:#8FA68E"></span><code>#8FA68E</code></td>
+<td><strong><span class="sw" style="background:#145F48"></span><code>#145F48</code></strong></td>
+<td>고른 상태·완료·태그 <code>#</code> (버튼 면 ❌, v2.0.6)</td>
+</tr>
+<tr>
+<td><code>--color-surface</code></td>
+<td><span class="sw" style="background:#F5F0E8"></span><code>#F5F0E8</code></td>
+<td><strong><span class="sw" style="background:#FFF5EA"></span><code>#FFF5EA</code></strong></td>
+<td>모든 카드 배경</td>
+</tr>
+<tr>
+<td><code>--color-surface-alt</code></td>
+<td><span class="sw" style="background:#F7F2EA"></span><code>#F7F2EA</code></td>
+<td><strong><span class="sw" style="background:#FFEEDC"></span><code>#FFEEDC</code></strong></td>
+<td>강조 영역</td>
+</tr>
+<tr>
+<td><code>--color-text-primary</code></td>
+<td><span class="sw" style="background:#2A2A2A"></span><code>#2A2A2A</code></td>
+<td><strong><span class="sw" style="background:#212121"></span><code>#212121</code></strong></td>
+<td>본문 전체</td>
+</tr>
+<tr>
+<td><code>--color-text-secondary</code></td>
+<td><span class="sw" style="background:#6B6B6B"></span><code>#6B6B6B</code></td>
+<td><strong><span class="sw" style="background:#666666"></span><code>#666666</code></strong></td>
+<td>메타 전체</td>
+</tr>
+<tr>
+<td><code>--color-text-tertiary</code></td>
+<td><span class="sw" style="background:#A8A8A8"></span><code>#A8A8A8</code></td>
+<td><strong><span class="sw" style="background:#9E9E9E"></span><code>#9E9E9E</code></strong></td>
+<td>placeholder</td>
+</tr>
+<tr>
+<td><code>--color-border</code></td>
+<td><span class="sw" style="background:#EDE8E0"></span><code>#EDE8E0</code></td>
+<td><strong><span class="sw" style="background:#CCCFD4"></span><code>#CCCFD4</code></strong></td>
+<td>카드 외곽선</td>
+</tr>
+<tr>
+<td><code>--color-divider</code></td>
+<td><span class="sw" style="background:#E8EDE6"></span><code>#E8EDE6</code></td>
+<td><strong><span class="sw" style="background:#E5E7EB"></span><code>#E5E7EB</code></strong></td>
+<td>섹션 구분</td>
+</tr>
+<tr>
+<td><code>--color-line</code></td>
+<td><span class="sw" style="background:#F0EDE7"></span><code>#F0EDE7</code></td>
+<td><strong>삭제</strong> → <code>--color-divider</code>로 통합</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>--color-success</code></td>
+<td><span class="sw" style="background:#5B8A6B"></span><code>#5B8A6B</code></td>
+<td><strong><span class="sw" style="background:#145F48"></span><code>#145F48</code></strong></td>
+<td>성공 메시지</td>
+</tr>
+<tr>
+<td><code>--color-info</code></td>
+<td><span class="sw" style="background:#3D6B8C"></span><code>#3D6B8C</code></td>
+<td><strong><span class="sw" style="background:#3276AE"></span><code>#3276AE</code></strong></td>
+<td>링크·안내</td>
+</tr>
+<tr>
+<td><code>--color-warning</code></td>
+<td><span class="sw" style="background:#E8A33D"></span><code>#E8A33D</code></td>
+<td><strong><span class="sw" style="background:#FFC520"></span><code>#FFC520</code></strong></td>
+<td>경고·신규</td>
+</tr>
+<tr>
+<td>L1 헤더</td>
+<td>20px / 700</td>
+<td><strong>19px / 600</strong></td>
+<td>모든 섹션 헤더</td>
+</tr>
+<tr>
+<td>L2 헤더</td>
+<td>18px / 700</td>
+<td><strong>17px / 600</strong></td>
+<td>상세 섹션</td>
+</tr>
+<tr>
+<td>폰트</td>
+<td>시스템</td>
+<td><strong>Pretendard Variable 로드</strong></td>
+<td>전체</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="142-적용-순서-권장">14.2 적용 순서 (권장)</h3>
+<ol>
+<li><strong>CSS Variables 교체</strong> (§8) — 대부분의 화면이 변수를 참조하므로 여기서 80% 반영됩니다</li>
+<li><strong>Pretendard 로드 + font-smoothing 추가</strong> (§3.1)</li>
+<li><strong>섹션 헤더 굵기 700 → 600</strong> 일괄 변경</li>
+<li><strong>하드코딩된 구 HEX 검색·치환</strong> — 변수를 안 쓰고 직접 박아둔 값 확인
+   <code>#C75D3E  #8FA68E  #F5F0E8  #F7F2EA
+   #2A2A2A  #6B6B6B  #A8A8A8  #EDE8E0</code></li>
+<li><strong>섹션 헤더 구조 정리</strong> (§6.6) — 부제·이모지 제거, 화살표 전환</li>
+<li><strong>체크리스트로 검수</strong> (§11)</li>
+</ol>
+<h3 id="143-검수-시-주의">14.3 검수 시 주의</h3>
+<ul>
+<li><strong>가상요소(<code>::before</code> / <code>::after</code>)</strong> 는 조상의 CSS 변수 변경을 반영하지 않는 브라우저가 있습니다. 진행 바·구분선 등에 쓰였다면 별도 확인하세요.</li>
+<li><strong>흰 배경 위 카드</strong>는 보더 명암비를 재확인하세요(§2.6). 기존 크림 배경 기준으로 고른 보더 색은 흰 배경에서 사라집니다.</li>
+<li><strong>rgba로 틴트한 값</strong>(예: <code>rgba(199,93,62,0.1)</code>)은 변수를 안 쓰므로 수동 교체가 필요합니다.</li>
+</ul>
+<hr />
+<p><strong>문서 버전 관리</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>버전</th>
+<th>날짜</th>
+<th>변경 내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>2026.05</td>
+<td>최초 작성 (컬러 가이드)</td>
+</tr>
+<tr>
+<td>1.1</td>
+<td>2026.05</td>
+<td>디자인 가이드로 리네이밍, 타이포그래피 스케일 추가, 컴포넌트 스펙 업데이트</td>
+</tr>
+<tr>
+<td><strong>2.0</strong></td>
+<td><strong>2026.08</strong></td>
+<td><strong>컬러 시스템 전면 개정 (Kitchen Stories 실측 기준).</strong> 테라코타→오렌지 <span class="sw" style="background:#FC642D"></span><code>#FC642D</code>, 세이지→딥그린 <span class="sw" style="background:#145F48"></span><code>#145F48</code>, 크림→피치크림 <span class="sw" style="background:#FFF5EA"></span><code>#FFF5EA</code>, 텍스트 3종 교체. 칩/태그 체계 신설(§2.7). 타이포 폰트를 Pretendard Variable로 확정하고 섹션 헤더 굵기 700→600 조정(§3). 섹션 헤더 컴포넌트 전면 개정 — 부제·이모지 제거, 원형 화살표 도입(§6.6). 이미지 3:4 규격 신설(§12). <strong>전 조합 명암비 계산 검증</strong> 후 보더값 교체(<span class="sw" style="background:#F0E2D0"></span><code>#F0E2D0</code>→<span class="sw" style="background:#CCCFD4"></span><code>#CCCFD4</code>, 1.18:1→1.45:1)·라이트그레이 용도 제한, 접근성 검증표 신설(§10) · 마이그레이션 가이드 추가(§14).</td>
+</tr>
+<tr>
+<td>2.0.1</td>
+<td>2026.08</td>
+<td>TIP·콜아웃 박스 스펙 추가(§6.8) — 배경 피치크림 고정, 딥그린 틴트 금지</td>
+</tr>
+<tr>
+<td>2.0.2</td>
+<td>2026.08</td>
+<td>섹션 디바이더 스펙 추가(§6.9) — 8px 밴드 폐기, 1px 헤어라인 채택</td>
+</tr>
+<tr>
+<td>2.0.3</td>
+<td>2026.08</td>
+<td>구분선 색을 뉴트럴 그레이 <span class="sw" style="background:#E5E7EB"></span><code>#E5E7EB</code>로 확정(KS 실측) — 웜 톤 구분선 폐기. 만드는 법 스텝 간 구분선 제거(여백만으로 구분)</td>
+</tr>
+<tr>
+<td>2.0.4</td>
+<td>2026.08</td>
+<td>카드 보더도 뉴트럴 그레이 <span class="sw" style="background:#CCCFD4"></span><code>#CCCFD4</code>로 확정(1.56:1 검증) — 선 계열 전체 뉴트럴 통일, "면은 웜·선은 뉴트럴" 원칙 명문화</td>
+</tr>
+<tr>
+<td><strong>2.0.5</strong></td>
+<td>2026.08</td>
+<td><strong>에러 레드 <span class="sw" style="background:#D64545"></span><code>#D64545</code>를 오류 전용으로 한정</strong>(§2.5) — 저장·찜·좋아요 등 <b>긍정적 상태는 브랜드 오렌지 <span class="sw" style="background:#FC642D"></span><code>#FC642D</code>로 통일</b>. 근거: 결제 실패 화면이 같은 레드를 쓰고 있어 "빨강=문제"와 "빨강=좋아요"가 충돌</td>
+</tr>
+<tr>
+<td><strong>2.0.6</strong></td>
+<td>2026.10.28</td>
+<td><strong>§4.0 색·모양 결정표 신설(문서 최우선)</strong> — 개발사가 §4.3 「결제 = 딥그린 확정 액션」을 따라 결제하기를 딥그린으로 만든 일이 계기. 결제·주문·가입 버튼 오렌지 확정, 버튼 둥글기 14px(큰 버튼)/999px(작은 버튼), 고른 상태 딥그린, 보조·비활성 버튼·알림 신설, TIP 연한 초록 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code>, 링크 파랑·크리에이터명 미드그레이, 홈 섹션 간격 32px, 명암비 재계산(보더 1.56/1.45, 구분선 1.24), 굵기 700 예외 명시. 단계별 영상 시각 표시는 확정 전(문의). 버튼 글자 굵기는 600 유지(일부 시안의 700은 시안 쪽 차이)</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>이전 버전</strong>: <code>Jollypot_Design_Guide_v2-0-5.md</code> · <code>Jollypot_Design_Guide_v1-1.md</code></p>
+</blockquote>
+</div>
+</body>
+</html>
