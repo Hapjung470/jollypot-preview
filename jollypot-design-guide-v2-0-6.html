@@ -139,7 +139,7 @@
 <td>오렌지 (Primary)</td>
 <td><span class="sw" style="background:#FC642D"></span><code>#FC642D</code></td>
 <td><strong>[실측]</strong> 등장 33회·최다 액센트</td>
-<td>누르는 버튼 / 하단 메뉴 활성 / 할인 강조 / 저장·찜 켠 상태</td>
+<td>누르는 버튼 / 하단 메뉴·탭 활성 / 할인 강조 / 저장·찜 켠 상태</td>
 </tr>
 <tr>
 <td>딥그린 (Secondary)</td>
@@ -460,10 +460,10 @@ L5  캡션 · 메타       12px / 400 / 미드 그레이   ← 라이트 그레�
 </tr>
 <tr>
 <td>5</td>
-<td><strong>하단 메뉴 활성</strong></td>
+<td><strong>하단 메뉴 · 탭 활성</strong></td>
 <td>오렌지</td>
-<td>—</td>
-<td>하단 내비 활성 아이콘</td>
+<td>탭은 글자 아래 밑줄</td>
+<td>하단 내비 활성 아이콘 · 프로필 탭(레시피·컬렉션 등) 밑줄</td>
 <td>—</td>
 </tr>
 <tr>
@@ -478,9 +478,9 @@ L5  캡션 · 메타       12px / 400 / 미드 그레이   ← 라이트 그레�
 <td>6</td>
 <td><strong>고른 상태</strong></td>
 <td>딥그린 <span class="sw" style="background:#145F48"></span><code>#145F48</code></td>
-<td>선택한 카드 테두리 2px · 라디오·체크박스 채움 · 고른 셀렉트 테두리</td>
-<td>결제수단 선택 · 옵션 선택 완료 · 「다음에도 사용」 체크</td>
-<td>❌ 오렌지(오렌지는 #5 하단 메뉴 활성에만)</td>
+<td>선택한 카드 테두리 2px · 라디오·체크박스 채움 · 고른 셀렉트 테두리 · <strong>하나만 고르는 버튼 묶음: 고른 버튼 = 흰 바탕 + 딥그린 2px 테두리 + 딥그린 글자 600 / 안 고른 버튼 = 회색 바탕 + 미드그레이 <span class="sw" style="background:#666666"></span><code>#666666</code> 글자</strong></td>
+<td>결제수단 선택 · 옵션 선택 완료 · 「다음에도 사용」 체크 · <strong>난이도(쉬움·보통·어려움) · 요리 시간 단위(분/시간)</strong></td>
+<td>❌ 오렌지(오렌지는 #5 하단 메뉴·탭 활성에만) · ❌ 안 고른 버튼 글자 라이트그레이(비활성처럼 보임)</td>
 </tr>
 <tr>
 <td>7</td>
@@ -578,7 +578,7 @@ L5  캡션 · 메타       12px / 400 / 미드 그레이   ← 라이트 그레�
 <p><strong>적용</strong>
 - <strong>누르는 버튼 전부</strong>(§4.0 #1): 구매하기 · 주문하기 · <strong>결제하기</strong> · 저장하기 · 회원가입 · 다음 단계 보러가기
 - 할인율 · 할인 금액 강조 (판매가는 잉크 — §6.4)
-- 활성 하단 네비 아이콘 (필터 칩 선택은 잉크 — §4.0 #5-1)
+- 활성 하단 네비 아이콘 · 활성 탭 밑줄 (필터 칩 선택은 잉크 — §4.0 #5-1)
 - 저장 · 찜 · 좋아요 켠 상태 (§2.5)
 - 플로팅 액션 버튼(+)
 - 캐러셀 진행 바</p>
@@ -756,6 +756,8 @@ height: 56px · border-radius: 14px (화면 아래 큰 버튼) / 999px (콘텐�
 </code></pre>
 <h3 id="62-고른-상태-완료-표시-v206-개정">6.2 고른 상태 · 완료 표시 (v2.0.6 개정)</h3>
 <pre><code>선택한 카드:      background #FFFFFF · border 2px solid #145F48
+버튼 묶음(하나만 고름): 고른 버튼 background #FFFFFF · border 2px solid #145F48 · color #145F48 · 600
+                  안 고른 버튼 background #F1F2F4 · color #666666 · 500  (예: 난이도 · 분/시간)
 라디오·체크박스:  켬 = #145F48 채움 + 흰 표시
 ✓완료 배지:       background #F1F8F3 · color #145F48 · font-weight 600
 </code></pre>
@@ -1240,7 +1242,7 @@ Typo/Price            → Bold(700)
 <td><code>--color-primary</code></td>
 <td><span class="sw" style="background:#C75D3E"></span><code>#C75D3E</code></td>
 <td><strong><span class="sw" style="background:#FC642D"></span><code>#FC642D</code></strong></td>
-<td>CTA·할인율·하단 메뉴 활성</td>
+<td>CTA·할인율·하단 메뉴·탭 활성</td>
 </tr>
 <tr>
 <td><code>--color-secondary</code></td>
@@ -1405,7 +1407,7 @@ Typo/Price            → Bold(700)
 <tr>
 <td><strong>2.0.6</strong></td>
 <td>2026.10.28</td>
-<td><strong>§4.0 색·모양 결정표 신설(문서 최우선)</strong> — 개발사가 §4.3 「결제 = 딥그린 확정 액션」을 따라 결제하기를 딥그린으로 만든 일이 계기. 결제·주문·가입 버튼 오렌지 확정, 버튼 둥글기 14px(큰 버튼)/999px(작은 버튼), 고른 상태 딥그린, 보조·비활성 버튼·알림 신설, TIP 연한 초록 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code>, 링크 파랑·크리에이터명 미드그레이, 홈 섹션 간격 32px, 명암비 재계산(보더 1.56/1.45, 구분선 1.24), 굵기 700 예외 명시, 필터 칩 선택은 잉크, 배지·상자 초록 면은 단색 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code>, 작은 오렌지 버튼 글자 14px 이상 허용(금지 기준 13px 이하 — 홈 13px 버튼은 14px로), 알림 모서리 999px 통일. 단계별 영상 시각 표시는 확정 전(문의). 버튼 글자 굵기는 600 유지(일부 시안의 700은 시안 쪽 차이)</td>
+<td><strong>§4.0 색·모양 결정표 신설(문서 최우선)</strong> — 개발사가 §4.3 「결제 = 딥그린 확정 액션」을 따라 결제하기를 딥그린으로 만든 일이 계기. 결제·주문·가입 버튼 오렌지 확정, 버튼 둥글기 14px(큰 버튼)/999px(작은 버튼), 고른 상태 딥그린, 보조·비활성 버튼·알림 신설, TIP 연한 초록 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code>, 링크 파랑·크리에이터명 미드그레이, 홈 섹션 간격 32px, 명암비 재계산(보더 1.56/1.45, 구분선 1.24), 굵기 700 예외 명시, 필터 칩 선택은 잉크, 배지·상자 초록 면은 단색 <span class="sw" style="background:#F1F8F3"></span><code>#F1F8F3</code>, 작은 오렌지 버튼 글자 14px 이상 허용(금지 기준 13px 이하 — 홈 13px 버튼은 14px로), 알림 모서리 999px 통일. 단계별 영상 시각 표시는 확정 전(문의). <strong>10/30 보완</strong>: #6에 「하나만 고르는 버튼 묶음(난이도·분/시간)」 명시(개발사 질의), #5 「활성 탭 밑줄 = 오렌지」 복원. 버튼 글자 굵기는 600 유지(일부 시안의 700은 시안 쪽 차이)</td>
 </tr>
 </tbody>
 </table></div>
