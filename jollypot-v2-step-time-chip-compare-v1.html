@@ -59,9 +59,10 @@
   .vA .st{display:inline-block;font-size:11px;font-weight:600;color:var(--color-info);background:rgba(50,118,174,0.08);padding:2px 8px;border-radius:10px;margin-left:4px;vertical-align:middle;white-space:nowrap;cursor:pointer;border:none;font-family:inherit}
   .vA .st .ic{display:none}
   /* 확정안 — §2.7 시간 칩 규격 + ▶ (§4.0 #15) · 누르는 영역은 위아래로 넓힘 */
-  .vB .st{position:relative;display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:600;color:var(--color-text-primary);background:var(--chip-time-bg);padding:3px 9px 3px 8px;border-radius:999px;margin-left:4px;vertical-align:middle;white-space:nowrap;cursor:pointer;border:none;font-family:inherit;letter-spacing:-0.2px}
+  .vB .st{position:relative;display:inline-flex;align-items:center;gap:2px;font-size:11px;font-weight:600;color:var(--color-text-primary);background:var(--chip-time-bg);padding:2px 7px 2px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;white-space:nowrap;cursor:pointer;border:none;font-family:inherit;line-height:normal}
+  /* v1 보완(이사님 10/30): 크기는 기존 시안과 같게 — 글자 11px · 위아래 2px, ▶는 6px로 작게 */
   .vB .st::after{content:"";position:absolute;left:-6px;right:-6px;top:-10px;bottom:-10px}
-  .vB .st .ic{width:8px;height:8px}
+  .vB .st .ic{width:6px;height:6px;flex-shrink:0}
   .st:active{filter:brightness(.94)}
 
   .toast{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);background:rgba(33,33,33,.94);color:#fff;font-size:13.5px;padding:11px 18px;border-radius:999px;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
@@ -122,8 +123,9 @@ const MEMO = {
       <ul><li>글자 #3276AE / 바탕 연파랑 — 대비 <b>4.37:1</b>(작은 글자 기준 4.5:1에 조금 못 미침)</li>
       <li>▶ 아이콘 없이 「00"05」 표기 — 영상 시각인지 한눈에 덜 읽힘</li>
       <li>9/26 이전 결정. 이후 9/27 이사님이 「노란 알약」으로 피드백</li></ul>`,
-  B: `<b>확정안</b> — §2.7 시간 칩 규격 + ▶ (가이드 §4.0 #15)
+  B: `<b>확정안</b> — 색은 §2.7 시간 칩, 크기는 기존 시안과 같게 + ▶ (가이드 §4.0 #15)
       <ul><li>바탕 #FFF5C6 + 잉크 글자 — 대비 <b>14.67:1</b></li>
+      <li>크기: 글자 11px · 위아래 2px — 기존 파란 알약과 같은 높이, ▶는 6px로 작게(이사님 10/30)</li>
       <li><b>▶ 아이콘 필수 · 분:초(00:12)</b> — 조리시간 칩(⏱ 20분)과 구분</li>
       <li>칩을 누르면 영상이 그 시각으로 이동 · 누르는 영역은 칩보다 위아래로 넓게</li></ul>
       <div class="pair"><span class="chipT">⏱ 20분</span> 조리시간(카드 위 · 누르지 않음)
