@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>졸리팟 V2 · 단계별 영상 시각 칩 비교 v1</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  [hidden]{display:none!important}
+  :root{
+    --color-primary:#FC642D; --color-secondary:#145F48; --color-surface:#FFF5EA; --color-surface-info:#F1F8F3;
+    --color-text-primary:#212121; --color-text-secondary:#666666; --color-text-tertiary:#9E9E9E;
+    --color-border:#CCCFD4; --color-divider:#E5E7EB; --color-info:#3276AE; --chip-time-bg:#FFF5C6;
+    --proto-bar-bg:#1E1E2E; --proto-active:#5B6ABF; --proto-inactive-bg:#2D2D3D; --proto-inactive-text:#8888A0; --proto-label:#CCCCDD; --proto-divider:#3A3A4E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;letter-spacing:-0.3px;background:#ECECEC;color:var(--color-text-primary);padding:16px 0 40px}
+
+  /* ── 프로토타입 컨트롤 (앱 UI 아님) ── */
+  .proto-bar{width:390px;max-width:100%;margin:0 auto 14px;background:var(--proto-bar-bg);border-radius:14px;padding:12px 14px;color:var(--proto-label)}
+  .proto-bar .lbl{font-size:11.5px;margin-bottom:6px}
+  .proto-bar .row{display:flex;gap:6px}
+  .proto-bar button{flex:1;border:none;border-radius:8px;padding:9px 0;font-family:inherit;font-size:12.5px;font-weight:600;background:var(--proto-inactive-bg);color:var(--proto-inactive-text);cursor:pointer}
+  .proto-bar button.on{background:var(--proto-active);color:#fff}
+  .proto-bar .fn{margin-top:10px;padding-top:8px;border-top:1px solid var(--proto-divider);font-size:11px;color:var(--proto-inactive-text)}
+
+  .stage{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;padding:0 8px}
+  .col{width:390px;max-width:100%}
+  .tag{display:inline-block;font-size:12.5px;font-weight:700;color:#fff;border-radius:6px;padding:4px 10px;margin:0 0 8px 2px}
+  .tag.a{background:#6B6B7B} .tag.b{background:#5B6ABF}
+
+  /* ── 앱 화면 ── */
+  .phone{width:390px;max-width:100%;height:844px;background:#fff;border-radius:28px;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 0 0 1px #D9D9D9}
+  .video{position:relative;height:219px;flex-shrink:0;background:linear-gradient(135deg,#6B4A35,#3B2619)}
+  .video .cap{position:absolute;left:12px;top:10px;font-size:11px;color:rgba(255,255,255,.7)}
+  .video .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center}
+  .video .play svg{width:22px;height:22px;margin-left:3px}
+  .video .bar{position:absolute;left:0;right:0;bottom:0;padding:8px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,.55));display:flex;align-items:center;gap:10px;color:#fff;font-size:12px;font-weight:600}
+  .video .track{flex:1;height:3px;background:rgba(255,255,255,.35);border-radius:2px;position:relative}
+  .video .track i{position:absolute;left:0;top:0;bottom:0;width:0;background:#fff;border-radius:2px;transition:width .35s}
+  .body{flex:1;overflow-y:auto;padding:20px 16px 40px}
+  .rt{font-size:19px;font-weight:600}
+  .meta{display:flex;margin:14px 0 6px;border:1px solid var(--color-divider);border-radius:12px}
+  .meta div{flex:1;text-align:center;padding:9px 0;font-size:12px;color:var(--color-text-secondary)}
+  .meta div+div{border-left:1px solid var(--color-divider)}
+  .meta b{display:block;font-size:14px;color:var(--color-text-primary);font-weight:600;margin-top:2px}
+  .div{height:1px;background:var(--color-divider);margin:22px -16px}
+  .sh{font-size:18px;font-weight:600;margin-bottom:8px}
+  .step-item{display:flex;gap:12px;padding:9px 0}
+  .step-number{width:24px;height:24px;border-radius:50%;background:var(--color-secondary);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+  .step-content{flex:1;min-width:0}
+  .step-text{font-size:14px;line-height:1.5}
+  .step-tip{display:flex;gap:7px;margin-top:7px;padding:8px 12px;background:var(--color-surface-info);border-radius:10px;font-size:13px;color:var(--color-text-secondary);line-height:1.5}
+  .step-tip .tb{font-size:11.5px;font-weight:700;color:var(--color-secondary);flex-shrink:0;margin-top:1px}
+
+  /* 기존 시안 v1-30 — 파란 알약, ▶ 없음 */
+  .vA .st{display:inline-block;font-size:11px;font-weight:600;color:var(--color-info);background:rgba(50,118,174,0.08);padding:2px 8px;border-radius:10px;margin-left:4px;vertical-align:middle;white-space:nowrap;cursor:pointer;border:none;font-family:inherit}
+  .vA .st .ic{display:none}
+  /* 확정안 — §2.7 시간 칩 규격 + ▶ (§4.0 #15) · 누르는 영역은 위아래로 넓힘 */
+  .vB .st{position:relative;display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:600;color:var(--color-text-primary);background:var(--chip-time-bg);padding:3px 9px 3px 8px;border-radius:999px;margin-left:4px;vertical-align:middle;white-space:nowrap;cursor:pointer;border:none;font-family:inherit;letter-spacing:-0.2px}
+  .vB .st::after{content:"";position:absolute;left:-6px;right:-6px;top:-10px;bottom:-10px}
+  .vB .st .ic{width:8px;height:8px}
+  .st:active{filter:brightness(.94)}
+
+  .toast{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);background:rgba(33,33,33,.94);color:#fff;font-size:13.5px;padding:11px 18px;border-radius:999px;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.on{opacity:1}
+
+  /* 비교 메모 (앱 UI 아님) */
+  .memo{margin-top:12px;background:#fff;border-radius:14px;padding:14px 16px;font-size:13.5px;line-height:1.65;color:#333}
+  .memo b{color:#111}
+  .memo ul{margin:6px 0 0 18px}
+  .pair{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0 2px;font-size:12.5px;color:#555}
+  .chipT{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:600;background:var(--chip-time-bg);color:#212121;padding:3px 9px;border-radius:999px}
+</style>
+</head>
+<body>
+
+<div class="proto-bar">
+  <div class="lbl">보기</div>
+  <div class="row">
+    <button data-v="both" class="on">나란히</button>
+    <button data-v="A">기존 시안(v1-30)</button>
+    <button data-v="B">확정안</button>
+  </div>
+  <div class="fn">jollypot-v2-step-time-chip-compare-v1 · 레시피 상세 「만드는 법」 · 칩을 누르면 영상이 그 시각으로 이동합니다</div>
+</div>
+
+<div class="stage" id="stage"></div>
+
+<template id="screen">
+  <div class="phone">
+    <div class="video">
+      <span class="cap">영상 자리</span>
+      <div class="play"><svg viewBox="0 0 24 24" fill="#fff"><path d="M7 4v16l13-8z"/></svg></div>
+      <div class="bar"><span class="now">0:00</span><div class="track"><i></i></div><span>1:52</span></div>
+    </div>
+    <div class="body">
+      <div class="rt">노오븐 초코 케이크</div>
+      <div class="meta"><div>요리 시간<b>3시간 20분</b></div><div>인분<b>6인분</b></div><div>난이도<b>쉬움</b></div><div>칼로리<b>약 450kcal</b></div></div>
+      <div class="div"></div>
+      <div class="sh">만드는 법</div>
+      <div class="steps"></div>
+    </div>
+    <div class="toast"></div>
+  </div>
+</template>
+
+<script>
+const STEPS = [
+  ['다이제스티브 12개를 지퍼백에 넣고 잘게 부순 뒤 녹인 버터 40g과 섞어요.', 12],
+  ['틀에 깔고 숟가락으로 꾹꾹 눌러 바닥을 만들어요.', 31],
+  ['다크 초콜릿 150g에 따뜻한 생크림 200ml를 붓고 1분 뒤 저어 녹여요.', 48, '생크림은 끓이지 말고 가장자리에 기포가 올라올 때 불을 꺼요.'],
+  ['바닥 위에 붓고 냉장고에서 3시간 굳혀요.', 80],
+  ['코코아 가루를 뿌려 완성해요.', 101],
+];
+const TOTAL = 112;
+const mmss = s => String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+const MEMO = {
+  A: `<b>기존 시안 v1-30</b> — 파란 알약(링크 색)
+      <ul><li>글자 #3276AE / 바탕 연파랑 — 대비 <b>4.37:1</b>(작은 글자 기준 4.5:1에 조금 못 미침)</li>
+      <li>▶ 아이콘 없이 「00"05」 표기 — 영상 시각인지 한눈에 덜 읽힘</li>
+      <li>9/26 이전 결정. 이후 9/27 이사님이 「노란 알약」으로 피드백</li></ul>`,
+  B: `<b>확정안</b> — §2.7 시간 칩 규격 + ▶ (가이드 §4.0 #15)
+      <ul><li>바탕 #FFF5C6 + 잉크 글자 — 대비 <b>14.67:1</b></li>
+      <li><b>▶ 아이콘 필수 · 분:초(00:12)</b> — 조리시간 칩(⏱ 20분)과 구분</li>
+      <li>칩을 누르면 영상이 그 시각으로 이동 · 누르는 영역은 칩보다 위아래로 넓게</li></ul>
+      <div class="pair"><span class="chipT">⏱ 20분</span> 조리시간(카드 위 · 누르지 않음)
+      <span class="chipT"><svg width="8" height="8" viewBox="0 0 24 24" fill="#212121"><path d="M6 3v18l15-9z"/></svg>00:12</span> 영상 시각(단계 줄 · 누름)</div>`
+};
+const stage = document.getElementById('stage'), tpl = document.getElementById('screen');
+function col(v){
+  const c = document.createElement('div'); c.className = 'col v' + v; c.dataset.v = v;
+  c.innerHTML = `<span class="tag ${v==='A'?'a':'b'}">${v==='A'?'기존 시안(v1-30)':'확정안'}</span>`;
+  c.appendChild(tpl.content.cloneNode(true));
+  const box = c.querySelector('.steps');
+  STEPS.forEach((s, i) => {
+    const label = v === 'A' ? `${String(Math.floor(s[1]/60)).padStart(2,'0')}"${String(s[1]%60).padStart(2,'0')}` : mmss(s[1]);
+    box.insertAdjacentHTML('beforeend', `<div class="step-item"><div class="step-number">${i+1}</div><div class="step-content">
+      <div class="step-text">${s[0]} <button class="st" data-t="${s[1]}"><svg class="ic" viewBox="0 0 24 24" fill="#212121"><path d="M6 3v18l15-9z"/></svg>${label}</button></div>
+      ${s[2] ? `<div class="step-tip"><span class="tb">💡 TIP</span><span>${s[2]}</span></div>` : ''}</div></div>`);
+  });
+  const m = document.createElement('div'); m.className = 'memo'; m.innerHTML = MEMO[v]; c.appendChild(m);
+  return c;
+}
+stage.appendChild(col('A')); stage.appendChild(col('B'));
+stage.addEventListener('click', e => {
+  const b = e.target.closest('.st'); if (!b) return;
+  const ph = b.closest('.phone'), t = +b.dataset.t;
+  ph.querySelector('.now').textContent = Math.floor(t/60) + ':' + String(t%60).padStart(2,'0');
+  ph.querySelector('.track i').style.width = (t / TOTAL * 100) + '%';
+  ph.querySelector('.body').scrollTo({top:0, behavior:'smooth'});
+  const to = ph.querySelector('.toast'); to.textContent = mmss(t) + '부터 재생해요'; to.classList.add('on');
+  clearTimeout(to._t); to._t = setTimeout(() => to.classList.remove('on'), 1600);
+});
+document.querySelectorAll('.proto-bar button').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.proto-bar button').forEach(x => x.classList.toggle('on', x === btn));
+  const v = btn.dataset.v;
+  document.querySelectorAll('.col').forEach(c => c.hidden = !(v === 'both' || c.dataset.v === v));
+}));
+if (window.innerWidth < 840) document.querySelector('.proto-bar button[data-v="B"]').click();
+</script>
+</body>
+</html>
