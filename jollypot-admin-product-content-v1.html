@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>졸리팟 어드민 — 상품 콘텐츠 (릴스·캐러셀) · jollypot-admin-product-content-v1</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+/* =========================================================
+   졸리팟 어드민 — 상품 콘텐츠(인스타 릴스·캐러셀을 샵바이 상품에 붙이기) v1
+   어드민 셸 = jollypot-admin-v4-19-4와 같은 업무 톤
+   미리보기(.phone) = 소비자 화면 토큰(디자인 가이드 v2.0.6 §4.0)
+   ========================================================= */
+:root{
+  --a-bg:#F4F5F7;--a-panel:#FFFFFF;--a-sidebar:#1F2430;--a-sidebar-2:#2A3140;
+  --a-sidebar-text:#AEB6C6;--a-line:#E4E7EC;--a-line-2:#EEF0F3;
+  --a-text:#212121;--a-text-2:#666666;--a-text-3:#98A0AE;
+  --brand:#FDB813;--primary:#FC642D;--sage:#145F48;--error:#D64545;--info:#3276AE;--success:#145F48;
+  --c-surface:#FFF5EA;--c-border:#CCCFD4;--tip:#F1F8F3;
+  --proto-bar-bg:#1E1E2E;--proto-on:#5B6ABF;--proto-off-bg:#2D2D3D;--proto-off-text:#8888A0;--proto-label:#CCCCDD;--proto-div:#3A3A4E;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;letter-spacing:-0.3px;
+  background:var(--a-bg);color:var(--a-text);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit;font-size:14px}
+
+/* ===== 프로토타입 컨트롤 (졸리팟 토큰 사용 안 함) ===== */
+.proto{background:var(--proto-bar-bg);color:var(--proto-label);padding:10px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;font-size:12px;position:sticky;top:0;z-index:100}
+.proto .g{display:flex;align-items:center;gap:6px}
+.proto .lab{color:var(--proto-label);font-weight:600;margin-right:2px}
+.proto .t{background:var(--proto-off-bg);color:var(--proto-off-text);padding:6px 11px;border-radius:7px;font-size:12px;font-weight:600}
+.proto .t.on{background:var(--proto-on);color:#fff}
+.proto .sep{width:1px;height:20px;background:var(--proto-div)}
+.proto .ver{margin-left:auto;color:var(--proto-label);font-size:12px}
+
+.app{display:flex;min-height:calc(100vh - 48px)}
+/* ===== 사이드바 ===== */
+.sidebar{width:236px;flex:0 0 236px;background:var(--a-sidebar);color:var(--a-sidebar-text);display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:10px;padding:20px 20px 18px}
+.brand .logo{width:30px;height:30px;border-radius:9px;background:var(--brand);display:flex;align-items:center;justify-content:center;font-size:17px}
+.brand b{color:#fff;font-size:16px;font-weight:700}
+.brand span{color:var(--a-text-3);font-size:11px;display:block;margin-top:1px}
+.nav{padding:6px 12px;flex:1}
+.nav-label{font-size:11px;color:#5E6675;padding:14px 12px 6px;letter-spacing:.04em}
+.nav-item{display:flex;align-items:center;gap:11px;width:100%;padding:11px 12px;border-radius:9px;color:var(--a-sidebar-text);font-size:14px;text-align:left;margin-bottom:2px}
+.nav-item .ic{width:18px;text-align:center;font-size:15px;opacity:.9}
+.nav-item:hover{background:var(--a-sidebar-2);color:#fff}
+.nav-item.active{background:var(--a-sidebar-2);color:#fff;font-weight:600}
+.nav-item .new{margin-left:auto;background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.nav-div{height:1px;background:#2C323F;margin:8px 12px}
+.sidebar-foot{padding:14px 20px;border-top:1px solid #2C323F;font-size:11px;color:#5E6675}
+
+/* ===== 메인 ===== */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:60px;background:var(--a-panel);border-bottom:1px solid var(--a-line);display:flex;align-items:center;gap:14px;padding:0 24px}
+.topbar h1{font-size:18px;font-weight:700;white-space:nowrap}
+.topbar .crumb{color:var(--a-text-3);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar .right{margin-left:auto;display:flex;gap:8px}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--sage);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex-shrink:0}
+.content{padding:24px}
+
+.card{background:var(--a-panel);border:1px solid var(--a-line);border-radius:14px}
+.card-h{padding:16px 18px;border-bottom:1px solid var(--a-line-2);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card-h h2{font-size:15px;font-weight:700}
+.card-h .sub{color:var(--a-text-2);font-size:12px}
+.card-h .right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.card-b{padding:18px}
+.btn{height:38px;padding:0 16px;border-radius:9px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--a-line);background:#fff;color:var(--a-text);white-space:nowrap}
+.btn:hover{background:var(--a-bg)}
+.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn.primary:hover{filter:brightness(.95);background:var(--primary)}
+.btn.primary:disabled{background:#E5E7EB;border-color:#E5E7EB;color:#9E9E9E;cursor:not-allowed;filter:none}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--a-text-2)}
+.btn.danger{color:var(--error);border-color:#F0CFCF}
+.btn.sm{height:30px;padding:0 11px;font-size:12px;border-radius:8px}
+.btn.lg{height:46px;padding:0 22px;font-size:15px;border-radius:10px}
+.tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;font-size:11px;font-weight:600;white-space:nowrap}
+.tag.sage{background:rgba(20,95,72,.10);color:#145F48}
+.tag.yellow{background:rgba(253,184,19,.18);color:#8A6200}
+.tag.gray{background:var(--a-bg);color:var(--a-text-2)}
+.tag.red{background:#FBEFEF;color:var(--error)}
+.tag.blue{background:#EAF1F6;color:var(--info)}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;white-space:nowrap}
+.status::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.status.pub{color:var(--success)}.status.hide{color:var(--error)}.status.work{color:var(--info)}.status.end{color:var(--a-text-3)}.status.wait{color:#B07A00}
+
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.kpi{background:var(--a-panel);border:1px solid var(--a-line);border-radius:14px;padding:16px 18px}
+.kpi .lab{font-size:12px;color:var(--a-text-2)}
+.kpi .num{font-size:26px;font-weight:700;margin-top:6px}
+.kpi .d{font-size:12px;color:var(--a-text-3);margin-top:2px}
+.kpi.alert{border-color:#F0CFCF;background:#FCF4F4}.kpi.alert .num{color:var(--error)}
+
+.notice{display:flex;gap:12px;align-items:flex-start;background:var(--tip);border:1px solid #D6E9DC;border-radius:12px;padding:13px 16px;margin-bottom:16px;font-size:13px;color:#2C4A3E}
+.notice b{color:#145F48}
+.notice .ic{font-size:18px;line-height:1.2}
+
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{height:30px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:600;background:var(--a-bg);color:var(--a-text-2)}
+.fchip.on{background:#212121;color:#fff}
+
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;color:var(--a-text-2);font-weight:600;font-size:12px;padding:11px 14px;border-bottom:1px solid var(--a-line);background:#FAFBFC;white-space:nowrap}
+.tbl td{padding:12px 14px;border-bottom:1px solid var(--a-line-2);vertical-align:middle}
+.tbl tr.flash td{animation:flash 2.4s ease}
+@keyframes flash{0%,40%{background:#FFF5EA}100%{background:transparent}}
+.tbl tr.dim td{color:var(--a-text-3)}
+.tbl tr.dim .cthumb img{filter:grayscale(1) opacity(.6)}
+.cthumb{position:relative;width:46px;height:64px;border-radius:8px;overflow:hidden;background:#EEE;flex-shrink:0}
+.cthumb img{width:100%;height:100%;object-fit:cover;display:block}
+.cthumb .k{position:absolute;left:4px;bottom:4px;background:rgba(0,0,0,.62);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:5px}
+.prod{display:flex;gap:10px;align-items:center;min-width:0}
+.prod .pi{width:40px;height:40px;border-radius:8px;object-fit:cover;background:#EEE;flex-shrink:0}
+.prod .pn{font-weight:600;font-size:13px;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prod .pm{font-size:11px;color:var(--a-text-3);margin-top:2px}
+.why{font-size:11px;color:var(--a-text-3);margin-top:3px}
+.perf{font-size:12px;color:var(--a-text-2);white-space:nowrap}
+.perf b{color:var(--a-text)}
+.tbl-wrap{overflow-x:auto}
+.tbl-wrap .tbl{min-width:980px}
+
+/* ===== 등록 화면 ===== */
+.reg{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
+.steps{display:flex;flex-direction:column;gap:14px}
+.step .card-h h2 .n{display:inline-flex;width:22px;height:22px;border-radius:50%;background:#145F48;color:#fff;font-size:12px;align-items:center;justify-content:center;margin-right:8px;vertical-align:1px}
+.step.lock{opacity:.5;pointer-events:none}
+.step .done{margin-left:auto;color:#145F48;font-weight:700;font-size:12px}
+.row{display:flex;gap:8px}
+.inp{flex:1;height:42px;border:1px solid var(--c-border);border-radius:9px;padding:0 12px;outline:none;min-width:0;background:#fff}
+.inp:focus{border-color:#145F48;box-shadow:0 0 0 3px rgba(20,95,72,.12)}
+.hint{font-size:12px;color:var(--a-text-3);margin-top:8px}
+.hint a,.hint button.lk{color:var(--info);font-weight:600;text-decoration:underline;font-size:12px}
+.err{font-size:12px;color:var(--error);margin-top:8px}
+
+.pcard{display:flex;gap:14px;margin-top:14px;border:1px solid var(--a-line);border-radius:12px;padding:12px;background:#FAFBFC}
+.pcard img{width:84px;height:84px;border-radius:10px;object-fit:cover;background:#EEE;flex-shrink:0}
+.pcard .nm{font-weight:700;font-size:14px;line-height:1.35}
+.pcard .meta{font-size:12px;color:var(--a-text-2);margin-top:4px}
+.pcard .pr{margin-top:6px;font-size:13px}
+.pcard .pr s{color:var(--a-text-3);margin-right:6px}
+.pcard .pr .rate{color:var(--primary);font-weight:700;margin-right:4px}
+.pcard .pr b{font-size:15px}
+.src{font-size:11px;color:var(--a-text-3);margin-top:8px;display:flex;align-items:center;gap:6px}
+.warn{margin-top:10px;background:#FCF4F4;border:1px solid #F0CFCF;color:#8A2E2E;border-radius:10px;padding:10px 12px;font-size:12px}
+
+/* 하나만 고르는 버튼 묶음 — 가이드 §4.0 #6 */
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{height:40px;padding:0 16px;border-radius:10px;background:#F1F2F4;color:#666;font-size:13px;font-weight:500;border:2px solid transparent}
+.seg button.on{background:#fff;color:#145F48;border-color:#145F48;font-weight:600}
+
+.drop{margin-top:12px;border:2px dashed var(--c-border);border-radius:12px;padding:22px;text-align:center;color:var(--a-text-2);background:#FAFBFC;cursor:pointer}
+.drop:hover,.drop.over{border-color:#145F48;background:#F1F8F3}
+.drop .big{font-size:26px}
+.drop b{display:block;color:var(--a-text);margin:4px 0 2px;font-size:14px}
+.files{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.files .f{position:relative;width:64px;height:84px;border-radius:8px;overflow:hidden;background:#EEE}
+.files .f img,.files .f video{width:100%;height:100%;object-fit:cover}
+.files .f .o{position:absolute;left:4px;top:4px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;font-weight:700;padding:0 5px;border-radius:5px}
+.files .f .x{position:absolute;right:3px;top:3px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:11px;line-height:18px}
+.prog{margin-top:12px}
+.prog .bar{height:8px;background:var(--a-line-2);border-radius:99px;overflow:hidden}
+.prog .bar i{display:block;height:100%;width:0;background:#145F48;transition:width .25s}
+.prog .lb{display:flex;justify-content:space-between;font-size:12px;color:var(--a-text-2);margin-top:6px}
+.stages{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.stages span{font-size:11px;padding:3px 8px;border-radius:6px;background:var(--a-bg);color:var(--a-text-3);font-weight:600}
+.stages span.on{background:#EAF1F6;color:var(--info)}
+.stages span.ok{background:rgba(20,95,72,.1);color:#145F48}
+.cost{margin-top:10px;font-size:12px;color:var(--a-text-2);background:var(--a-bg);border-radius:10px;padding:10px 12px}
+
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--a-line);border-radius:12px;padding:13px 14px;cursor:pointer;margin-bottom:8px;background:#fff}
+.opt.on{border:2px solid #145F48;padding:12px 13px}
+.opt .rd{width:18px;height:18px;border-radius:50%;border:2px solid var(--c-border);flex-shrink:0;margin-top:1px;position:relative}
+.opt.on .rd{border-color:#145F48}
+.opt.on .rd::after{content:"";position:absolute;inset:3px;border-radius:50%;background:#145F48}
+.opt .t{font-weight:600;font-size:14px}
+.opt .d{font-size:12px;color:var(--a-text-2);margin-top:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.fl label{display:block;font-size:12px;color:var(--a-text-2);font-weight:600;margin-bottom:6px}
+.fl select,.fl input[type=date]{width:100%;height:42px;border:1px solid var(--c-border);border-radius:9px;padding:0 10px;background:#fff}
+.ck{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--a-line-2);cursor:pointer}
+.ck:last-child{border-bottom:none}
+.ck .bx{width:20px;height:20px;border-radius:6px;border:2px solid var(--c-border);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;margin-top:1px}
+.ck.on .bx{background:#145F48;border-color:#145F48}
+.ck .t{font-weight:600}
+.ck .d{font-size:12px;color:var(--a-text-2);margin-top:2px}
+.ck.auto{cursor:default}
+.ck.auto .bx{border-radius:50%;background:#145F48;border-color:#145F48}
+.ck.auto.no .bx{border-color:#F0CFCF;background:#FCF4F4;color:var(--error)}
+.mini-ck{display:inline-flex;gap:8px;align-items:center;font-size:13px;margin-top:10px;cursor:pointer}
+.mini-ck .bx{width:18px;height:18px;border-radius:5px;border:2px solid var(--c-border);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
+.mini-ck.on .bx{background:#145F48;border-color:#145F48}
+.foot{display:flex;gap:8px;justify-content:flex-end;align-items:center;margin-top:4px}
+.foot .why{margin-right:auto;font-size:12px;color:var(--a-text-3)}
+
+/* ===== 미리보기 (소비자 화면 토큰) ===== */
+.pv{position:sticky;top:64px}
+.pv-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.pv-h b{font-size:13px}
+.pv-h .seg button{height:30px;padding:0 10px;font-size:12px;border-radius:8px}
+.phone{width:360px;margin:0 auto;background:#fff;border-radius:34px;border:8px solid #1A1A1A;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.12);position:relative;height:700px;display:flex;flex-direction:column}
+.ph-top{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:15px;flex-shrink:0;border-bottom:1px solid #F0F0F0}
+.ph-top b{font-size:15px;font-weight:700}
+.ph-body{flex:1;overflow-y:auto;overflow-x:hidden}
+.ph-body::-webkit-scrollbar{width:0}
+.gal{position:relative;width:100%;aspect-ratio:1/1;background:#F4F4F4;overflow:hidden}
+.gal img,.gal video{width:100%;height:100%;object-fit:cover;display:block}
+.gal .cnt{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px}
+.gal .snd{position:absolute;left:10px;bottom:10px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px}
+.gal .who{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.45);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px}
+.gal .nav-l,.gal .nav-r{position:absolute;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.85);font-size:14px;color:#212121}
+.gal .nav-l{left:8px}.gal .nav-r{right:8px}
+.gal .dots{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center;gap:5px}
+.gal .dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.55)}
+.gal .dots i.on{background:#fff}
+.fake{position:absolute;inset:0;overflow:hidden}
+.fake img{animation:kb 6s ease-in-out infinite alternate}
+@keyframes kb{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.18) translate(-4%,-3%)}}
+.hidden-note{position:absolute;inset:0;background:rgba(255,255,255,.86);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:12px;color:#8A2E2E;padding:20px;border:2px dashed #E8B4B4}
+.hidden-note b{font-size:13px;margin-bottom:4px}
+.thumbs{display:flex;gap:6px;padding:10px 16px 0}
+.thumbs div{width:46px;height:46px;border-radius:8px;overflow:hidden;background:#EEE;position:relative;border:2px solid transparent}
+.thumbs div.on{border-color:#212121}
+.thumbs img{width:100%;height:100%;object-fit:cover}
+.thumbs .pl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;background:rgba(0,0,0,.25)}
+.pinfo{padding:14px 16px 18px}
+.pinfo .br{font-size:12px;color:#666}
+.pinfo .nm{font-size:16px;font-weight:600;margin-top:4px;line-height:1.4}
+.pinfo .pr{margin-top:10px;display:flex;align-items:baseline;gap:6px}
+.pinfo .pr .rate{color:#FC642D;font-weight:700;font-size:18px}
+.pinfo .pr b{font-size:20px;font-weight:700}
+.pinfo .pr s{color:#9E9E9E;font-size:13px}
+.ph-div{height:8px;background:#F4F5F7}
+.ph-sec{padding:16px}
+.ph-sec h4{font-size:15px;font-weight:700;margin-bottom:8px}
+.ph-sec .ln{height:10px;border-radius:5px;background:#F0F0F0;margin-bottom:8px}
+.ph-cta{flex-shrink:0;padding:10px 14px 14px;border-top:1px solid #F0F0F0;display:flex;gap:8px;background:#fff}
+.ph-cta .sv{width:48px;height:50px;border-radius:14px;border:1px solid #CCCFD4;font-size:18px}
+.ph-cta .buy{flex:1;height:50px;border-radius:14px;background:#FC642D;color:#fff;font-size:16px;font-weight:600}
+/* 쇼핑 탭 피드 */
+.feed-tabs{display:flex;gap:16px;padding:12px 16px 0;border-bottom:1px solid #F0F0F0}
+.feed-tabs span{font-size:14px;color:#666;padding-bottom:10px;font-weight:500}
+.feed-tabs span.on{color:#212121;font-weight:700;border-bottom:2px solid #FC642D}
+.feed{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}
+.fc{border-radius:12px;overflow:hidden;background:#fff}
+.fc .m{position:relative;aspect-ratio:9/14;background:#EEE;overflow:hidden;border-radius:12px}
+.fc .m img,.fc .m video{width:100%;height:100%;object-fit:cover;display:block}
+.fc .m .k{position:absolute;right:6px;top:6px;background:rgba(0,0,0,.5);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:999px}
+.fc .m .w{position:absolute;left:6px;bottom:6px;color:#fff;font-size:11px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.fc .p{display:flex;gap:6px;align-items:center;margin-top:6px}
+.fc .p img{width:30px;height:30px;border-radius:6px;object-fit:cover}
+.fc .p .t{font-size:11px;line-height:1.3;min-width:0}
+.fc .p .t div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#666}
+.fc .p .t b{font-size:12px}
+.fc .p .t .rate{color:#FC642D}
+.fc.mine .m{outline:3px solid #FDB813;outline-offset:-3px}
+.pv-note{font-size:12px;color:var(--a-text-3);text-align:center;margin-top:10px;line-height:1.5}
+
+/* 토스트 */
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:rgba(33,33,33,.94);color:#fff;font-size:14px;padding:12px 20px;border-radius:999px;opacity:0;transition:.25s;z-index:200;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* 흐름 설명 띠 */
+.flow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.flow span{font-size:12px;background:#fff;border:1px solid var(--a-line);border-radius:999px;padding:5px 11px;color:var(--a-text-2)}
+.flow span b{color:#145F48;margin-right:4px}
+
+@media (max-width:1100px){
+  .reg{grid-template-columns:1fr}
+  .pv{position:static}
+}
+@media (max-width:860px){
+  .sidebar{display:none}
+  .content{padding:14px}
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .topbar{padding:0 14px}
+  .topbar .crumb{display:none}
+  .grid2{grid-template-columns:1fr}
+  .phone{width:340px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== 프로토타입 컨트롤 ===================== -->
+<div class="proto">
+  <div class="g"><span class="lab">화면</span>
+    <button class="t on" data-v="list" onclick="show('list')">목록</button>
+    <button class="t" data-v="reg" onclick="show('reg')">등록</button>
+  </div>
+  <div class="sep"></div>
+  <div class="g"><span class="lab">샵바이 판매 상태</span>
+    <button class="t on" data-s="on" onclick="simSale('on')">판매 중</button>
+    <button class="t" data-s="off" onclick="simSale('off')">품절로 바뀜</button>
+  </div>
+  <div class="sep"></div>
+  <div class="g"><button class="t" onclick="demoFill()">예시로 한 번에 채우기</button></div>
+  <span class="ver">jollypot-admin-product-content-v1</span>
+</div>
+
+<div class="app">
+  <!-- ===================== 사이드바 ===================== -->
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">🍳</div><div><b>졸리팟</b><span>Admin · Lean</span></div></div>
+    <nav class="nav">
+      <div class="nav-label">운영</div>
+      <button class="nav-item" onclick="toast('이 프로토타입은 「상품 콘텐츠」 화면만 담았습니다')"><span class="ic">▦</span>대시보드</button>
+      <button class="nav-item" onclick="toast('이 프로토타입은 「상품 콘텐츠」 화면만 담았습니다')"><span class="ic">🏠</span>큐레이션</button>
+      <button class="nav-item" onclick="toast('이 프로토타입은 「상품 콘텐츠」 화면만 담았습니다')"><span class="ic">🍲</span>레시피</button>
+      <button class="nav-item active" onclick="show('list')"><span class="ic">🎬</span>상품 콘텐츠<span class="new">새 메뉴</span></button>
+      <button class="nav-item" onclick="toast('이 프로토타입은 「상품 콘텐츠」 화면만 담았습니다')"><span class="ic">📝</span>에디터 노트</button>
+      <button class="nav-item" onclick="toast('이 프로토타입은 「상품 콘텐츠」 화면만 담았습니다')"><span class="ic">🍳</span>요리후기</button>
+      <button class="nav-item" onclick="toast('이 프로토타입은 「상품 콘텐츠」 화면만 담았습니다')"><span class="ic">💬</span>댓글</button>
+      <button class="nav-item" onclick="toast('이 프로토타입은 「상품 콘텐츠」 화면만 담았습니다')"><span class="ic">👤</span>회원</button>
+      <div class="nav-div"></div>
+      <div class="nav-label">시스템</div>
+      <button class="nav-item" onclick="toast('이 프로토타입은 「상품 콘텐츠」 화면만 담았습니다')"><span class="ic">⚙</span>운영 설정</button>
+    </nav>
+    <div class="sidebar-foot">jollypot-admin-product-content-v1<br>v4-19-4 셸 기준 · 2026.11.01</div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h1 id="ttl">상품 콘텐츠</h1>
+      <span class="crumb" id="crumb">하봄·프롬졸리 릴스와 캐러셀을 샵바이 상품에 붙입니다</span>
+      <div class="right">
+        <button class="btn primary" id="topNew" onclick="show('reg')">＋ 콘텐츠 등록</button>
+        <div class="avatar">운</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ============ 목록 ============ -->
+      <section id="v-list">
+        <div class="kpi-row">
+          <div class="kpi"><div class="lab">게시 중</div><div class="num" id="k-pub">0</div><div class="d">손님에게 보이는 콘텐츠</div></div>
+          <div class="kpi alert"><div class="lab">자동 숨김</div><div class="num" id="k-hide">0</div><div class="d">품절·판매 종료라 숨김</div></div>
+          <div class="kpi"><div class="lab">변환 중</div><div class="num" id="k-work">0</div><div class="d">영상 준비 중 (보통 1~3분)</div></div>
+          <div class="kpi"><div class="lab">지난 7일 구매하기 누름</div><div class="num">412</div><div class="d">콘텐츠를 본 뒤 누른 횟수 · 예시</div></div>
+        </div>
+
+        <div class="notice"><span class="ic">🔄</span><div><b>판매 상태 자동 확인</b> — 샵바이 상품이 품절되거나 판매가 끝나면 콘텐츠를 자동으로 숨깁니다. 다시 팔기 시작하면 다시 보입니다. 사람이 따로 지울 필요가 없습니다. <span style="color:var(--a-text-3)">(위 컨트롤의 「품절로 바뀜」을 눌러 보세요)</span></div></div>
+
+        <div class="card">
+          <div class="card-h">
+            <h2>콘텐츠 목록</h2><span class="sub" id="cnt">예시 데이터 · 상품 정보는 실제 샵바이 값(11/1 조회)</span>
+            <div class="right filters" id="filters">
+              <button class="fchip on" data-f="all">전체</button>
+              <button class="fchip" data-f="pub">게시 중</button>
+              <button class="fchip" data-f="hide">자동 숨김</button>
+              <button class="fchip" data-f="work">변환 중</button>
+              <button class="fchip" data-f="end">예약·끝남</button>
+            </div>
+          </div>
+          <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>콘텐츠</th><th>연결 상품</th><th>위치</th><th>기간</th><th>지난 7일</th><th>상태</th><th></th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 등록 ============ -->
+      <section id="v-reg" hidden>
+        <div class="flow">
+          <span><b>1</b>상품 연결</span><span><b>2</b>파일 올리기</span><span><b>3</b>인스타 원본·출연자</span><span><b>4</b>어디에 보일지</span><span><b>5</b>올리기 전 확인</span>
+        </div>
+        <div class="reg">
+          <div class="steps">
+
+            <!-- ① 상품 연결 -->
+            <div class="card step" id="s1">
+              <div class="card-h"><h2><span class="n">1</span>어떤 상품에 붙일까요?</h2><span class="done" id="d1" hidden>✓ 연결됨</span></div>
+              <div class="card-b">
+                <div class="row">
+                  <input class="inp" id="pIn" placeholder="졸리팟 상품 주소나 상품번호를 붙여 넣으세요" onkeydown="if(event.key==='Enter')loadProd()">
+                  <button class="btn" onclick="loadProd()">불러오기</button>
+                </div>
+                <div class="hint">예: <button class="lk" onclick="ex('https://jollypot.co.kr/products/137341637')">jollypot.co.kr/products/137341637</button> · <button class="lk" onclick="ex('137418445')">137418445</button> · <button class="lk" onclick="ex('137364550')">137364550</button>(판매 종료) · <button class="lk" onclick="ex('137367016')">137367016</button>(품절)</div>
+                <div class="err" id="pErr" hidden></div>
+                <div id="pBox"></div>
+              </div>
+            </div>
+
+            <!-- ② 파일 올리기 -->
+            <div class="card step lock" id="s2">
+              <div class="card-h"><h2><span class="n">2</span>릴스나 캐러셀 파일을 올려 주세요</h2><span class="done" id="d2" hidden>✓ 준비 완료</span></div>
+              <div class="card-b">
+                <div class="seg" id="typeSeg">
+                  <button class="on" data-t="reel" onclick="setType('reel')">🎬 릴스 (영상 1개)</button>
+                  <button data-t="car" onclick="setType('car')">🖼 캐러셀 (사진 여러 장)</button>
+                </div>
+                <div class="drop" id="drop" onclick="document.getElementById('fIn').click()">
+                  <div class="big">⬆</div>
+                  <b id="dropT">영상 파일을 끌어다 놓거나 눌러서 고르세요</b>
+                  <span id="dropD">mp4·mov · 60초 이하 · 세로(9:16) 권장 · 인스타에 올리기 전 원본 파일</span>
+                </div>
+                <input type="file" id="fIn" hidden accept="video/*" onchange="gotFiles(this.files)">
+                <div class="hint">파일이 없으면 <button class="lk" onclick="sampleFiles()">예시 파일로 해보기</button></div>
+                <div class="files" id="files"></div>
+                <div class="prog" id="prog" hidden>
+                  <div class="bar"><i id="pBar"></i></div>
+                  <div class="lb"><span id="pLab">올리는 중…</span><span id="pPct">0%</span></div>
+                  <div class="stages" id="stages"><span>1. 영상 서비스로 바로 전송</span><span>2. 휴대폰 화질별로 변환</span><span>3. 자동 재생용 6초 미리보기 만들기</span></div>
+                </div>
+                <div class="cost" id="cost" hidden></div>
+                <div class="hint">💡 인스타에서 내려받은 파일은 화질이 깎이고, 인스타가 붙인 음악이 같이 들어갈 수 있어 쓰지 않습니다. 파일은 우리 서버를 거치지 않고 영상 서비스(Bunny Stream 등)로 바로 올라가서 서버 부담이 없습니다.</div>
+              </div>
+            </div>
+
+            <!-- ③ 인스타 원본 -->
+            <div class="card step lock" id="s3">
+              <div class="card-h"><h2><span class="n">3</span>인스타 원본과 만든 사람</h2><span class="sub">선택</span></div>
+              <div class="card-b">
+                <div class="fl"><label>인스타 원본 게시물 주소</label>
+                  <input class="inp" style="width:100%" id="igIn" placeholder="https://www.instagram.com/reel/…" oninput="refresh()"></div>
+                <div class="hint">기록용입니다. 같은 릴스를 두 번 올리면 알려 주고, 나중에 「인스타 성과 vs 졸리팟 성과」를 나란히 볼 때 씁니다. 손님 화면에는 링크가 나가지 않습니다.</div>
+                <div class="grid2">
+                  <div class="fl"><label>만든 계정</label>
+                    <select id="who" onchange="refresh()"><option>하봄</option><option>프롬졸리</option><option>기타 (직접 입력)</option></select></div>
+                  <div class="fl"><label>손님 화면 표시</label>
+                    <div class="mini-ck on" id="whoShow" onclick="this.classList.toggle('on');refresh()"><span class="bx">✓</span>영상 위에 「@계정이름」 작게 표시</div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ④ 표시 설정 -->
+            <div class="card step lock" id="s4">
+              <div class="card-h"><h2><span class="n">4</span>어디에, 언제까지 보일까요?</h2></div>
+              <div class="card-b">
+                <div class="opt on" data-p="detail" onclick="setPlace('detail')"><span class="rd"></span><div><div class="t">상품 상세 맨 앞 사진 자리 <span class="tag sage">1단계</span></div><div class="d">상품 사진 대신 첫 장에 영상이 소리 없이 재생됩니다. 손님이 누르면 소리가 켜집니다.</div></div></div>
+                <div class="opt" data-p="feed" onclick="setPlace('feed')"><span class="rd"></span><div><div class="t">쇼핑 탭 영상 모아보기 <span class="tag yellow">2단계</span></div><div class="d">쇼핑 탭에 영상 카드로 줄지어 보입니다. 카드 아래 상품을 누르면 바로 상세로 갑니다. 1단계 결과(구매하기 누른 비율)를 보고 엽니다.</div></div></div>
+                <div class="grid2">
+                  <div class="fl"><label>이 상품 안에서 순서</label>
+                    <select id="ord" onchange="refresh()"><option value="1">맨 앞 (사진보다 먼저)</option><option value="2">상품 사진 1장 다음</option></select></div>
+                  <div class="fl"><label>보이기 시작</label><input type="date" id="dFrom" value="2026-11-01"></div>
+                </div>
+                <div class="mini-ck on" id="untilSold" onclick="toggleUntil()"><span class="bx">✓</span>판매가 끝날 때까지 계속 보이기</div>
+                <div class="fl" id="dToWrap" hidden style="margin-top:10px;max-width:50%"><label>보이기 끝</label><input type="date" id="dTo" value="2026-11-30"></div>
+              </div>
+            </div>
+
+            <!-- ⑤ 확인 -->
+            <div class="card step lock" id="s5">
+              <div class="card-h"><h2><span class="n">5</span>올리기 전 확인</h2><span class="sub">둘 다 체크해야 게시할 수 있습니다</span></div>
+              <div class="card-b">
+                <div class="ck" id="ckMusic" onclick="tog(this)"><span class="bx">✓</span><div><div class="t">음악 권리 확인</div><div class="d">음악 없이 원래 소리만 있거나, 쇼핑몰에 써도 된다고 허락받은 음악입니다. 인스타 앱 안 음악은 인스타 밖에서 쓸 수 없습니다.</div></div></div>
+                <div class="ck" id="ckFace" onclick="tog(this)"><span class="bx">✓</span><div><div class="t">출연자 사용 동의</div><div class="d">영상에 나온 사람(아이 포함)과 계정 주인이 졸리팟 쇼핑에 쓰는 것에 동의했습니다. 프롬졸리처럼 개인 계정은 따로 동의를 받아 두세요.</div></div></div>
+                <div style="margin-top:12px;padding-top:4px;border-top:1px solid var(--a-line)">
+                  <div class="ck auto" id="aSale"><span class="bx">✓</span><div><div class="t">상품이 판매 중</div><div class="d" id="aSaleD">샵바이에서 자동 확인</div></div></div>
+                  <div class="ck auto" id="aFile"><span class="bx">✓</span><div><div class="t">파일 변환 끝남</div><div class="d">영상 서비스에서 자동 확인</div></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="foot">
+              <span class="why" id="whyOff">상품을 먼저 연결해 주세요</span>
+              <button class="btn" onclick="toast('임시 저장했습니다 — 목록에 「작성 중」으로 남습니다')">임시 저장</button>
+              <button class="btn primary lg" id="pubBtn" disabled onclick="publish()">게시하기</button>
+            </div>
+          </div>
+
+          <!-- 미리보기 -->
+          <div class="pv">
+            <div class="pv-h"><b>손님 화면 미리보기</b>
+              <div class="seg" style="margin-left:auto" id="pvSeg">
+                <button class="on" data-p="detail" onclick="setPlace('detail')">상품 상세</button>
+                <button data-p="feed" onclick="setPlace('feed')">쇼핑 탭</button>
+              </div>
+            </div>
+            <div class="phone" id="phone"></div>
+            <div class="pv-note" id="pvNote">상품을 연결하면 실제 샵바이 상품 정보로 그려집니다.</div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- 실제 샵바이 상품 정보 (공개 상품 API, 2026-11-01 조회 사본) ----------
+   실제 화면에서는 「불러오기」를 누를 때 샵바이에서 바로 가져옵니다. */
+var P = {
+  137341637:{n:'맥킹덤 미니 시리즈_재재마미',p:'(주)원더코퍼레이션',s:33000,d:17100,st:'ONSALE',so:false,i:'20260616/154056.200083761/0.jpg'},
+  137418445:{n:'쫀득돌 키트 1+1_윤우네',p:'주식회사 오들리웍스',s:38500,d:13600,st:'ONSALE',so:false,i:'20260721/144527.791542647/032.png'},
+  137364550:{n:'WMF 티메이커_프롬졸리',p:'[PO]선우실업 (주)',s:270000,d:131000,st:'FINISHED',so:false,i:'20261007/085042.878858093/Gtazt_123969_1.jpg'},
+  137208101:{n:'살림의기술 옷걸이_하봄',p:'(주) 코윈커머스',s:25900,d:8000,st:'ONSALE',so:false,i:'migration/81152/product/638168735/살림의기술옷걸이.jpg'},
+  137286675:{n:'블로우 보냉백팩',p:'쇼핑몰 자체 상품',s:189000,d:90000,st:'ONSALE',so:false,i:'20261019/134157.797685746/KakaoTalk_20251023_133254163_12.jpg'},
+  137254264:{n:'데코아르 센서 스테인리스 휴지통_용감이네',p:'[PO]주식회사 티케이커머스',s:39900,d:0,st:'ONSALE',so:false,i:'20260928/154351.325569399/1.jpg'},
+  137367016:{n:'쫀득돌 키트 1+1_유짱맘',p:'주식회사 오들리웍스',s:38500,d:13600,st:'ONSALE',so:true,i:'20260721/144527.791542647/032.png'},
+  136645624:{n:'앤도르프 원목주방놀이_윤슬라엘',p:'(주)원더코퍼레이션',s:27900,d:0,st:'ONSALE',so:false,i:'migration/81152/product/638159005/2024080423381505231_161172383464678.jpg'},
+  137382018:{n:'뽀로로 동요 사운드카드_클럽',p:'쇼핑몰 자체 상품',s:14400,d:0,st:'ONSALE',so:false,i:'20261008/173735.679447200/뽀사카.png'},
+  137336567:{n:'킨즈 마이베이비북 1+1 소근육 발달 몬테소리 교구책',p:'주식회사브랜뉴인터내셔널',s:59800,d:0,st:'ONSALE',so:false,i:'20261002/143928.32043767/01.jpg'},
+  136999852:{n:'아기 상어&뽀로로 빛따라 그리기 테이블_도하맘',p:'㈜비앤씨',s:29900,d:0,st:'ONSALE',so:false,i:'20260915/153349.3721386/썸네일7.jpg'},
+  137087482:{n:'니시오 기적의 칫솔',p:'플레어스',s:9900,d:0,st:'ONSALE',so:false,i:'20260917/135838.128251185/5.jpg'}
+};
+function img(no){return encodeURI('https://shopby-images.cdn-nhncommerce.com/Mall-No-AOfJ/'+P[no].i)}
+function won(n){return n.toLocaleString('ko-KR')+'원'}
+function fin(no){var x=P[no];return x.s-x.d}
+function rate(no){var x=P[no];return x.d?Math.round(x.d/x.s*100):0}
+function onSale(no){var x=P[no];return x.st==='ONSALE'&&!x.so}
+function saleLabel(no){var x=P[no];if(x.st!=='ONSALE')return '판매 종료';if(x.so)return '품절';return '판매 중'}
+var FALLBACK='https://placehold.co/300x300/F4F5F7/98A0AE?text=%EC%83%81%ED%92%88';
+
+/* ---------- 목록 예시 데이터 ---------- */
+var rows = [
+  {no:137418445,t:'reel',len:'0:28',who:'하봄',place:'detail',from:'10/28',to:'판매 끝까지',views:3120,buys:184,st:'auto'},
+  {no:137208101,t:'car',len:'7장',who:'하봄',place:'detail',from:'10/20',to:'판매 끝까지',views:1460,buys:61,st:'auto'},
+  {no:137286675,t:'reel',len:'0:41',who:'하봄',place:'detail',from:'11/01',to:'판매 끝까지',views:0,buys:0,st:'work'},
+  {no:137364550,t:'reel',len:'0:33',who:'프롬졸리',place:'detail',from:'10/08',to:'판매 끝까지',views:2280,buys:97,st:'auto'},
+  {no:137367016,t:'reel',len:'0:19',who:'하봄',place:'detail',from:'10/22',to:'판매 끝까지',views:1890,buys:70,st:'auto'},
+  {no:137254264,t:'car',len:'5장',who:'하봄',place:'feed',from:'11/10',to:'11/30',views:0,buys:0,st:'wait'},
+  {no:136645624,t:'car',len:'6장',who:'하봄',place:'detail',from:'9/15',to:'10/15',views:940,buys:22,st:'end'}
+];
+var SALE_SIM='on', FILTER='all', NEWROW=null;
+
+function rowState(r){
+  if(r.st==='work')return {k:'work',lab:'변환 중',why:'1~3분 뒤 자동 게시'};
+  if(r.st==='wait')return {k:'end',lab:'예약',why:r.from+'부터 보임',cls:'wait'};
+  if(r.st==='end')return {k:'end',lab:'기간 끝남',why:r.to+'에 내려감'};
+  var sale=onSale(r.no);
+  if(SALE_SIM==='off' && r===rows[0]) sale=false;
+  if(!sale){var why=(SALE_SIM==='off'&&r===rows[0])?'방금 품절 → 자동으로 숨김':(P[r.no].st!=='ONSALE'?'샵바이 판매 종료 → 자동으로 숨김':'샵바이 품절 → 자동으로 숨김');return {k:'hide',lab:'자동 숨김',why:why}}
+  return {k:'pub',lab:'게시 중',why:'샵바이 '+saleLabel(r.no)};
+}
+function renderRows(){
+  var h='',c={pub:0,hide:0,work:0};
+  rows.forEach(function(r){
+    var s=rowState(r); if(c[s.k]!==undefined)c[s.k]++;
+    if(FILTER!=='all'&&FILTER!==s.k)return;
+    var thumb=r.thumb||img(r.no);
+    var dim=(s.k==='hide'||s.k==='end');
+    var plc=r.place==='detail'?'<span class="tag sage">상품 상세 맨 앞</span>':'<span class="tag yellow">쇼핑 탭 (2단계)</span>';
+    var perf=r.views?('재생 <b>'+r.views.toLocaleString()+'</b><br>구매하기 <b>'+r.buys+'</b> ('+(r.buys/r.views*100).toFixed(1)+'%)'):'<span style="color:var(--a-text-3)">아직 없음</span>';
+    h+='<tr class="'+(dim?'dim ':'')+(r===NEWROW?'flash':'')+'">'+
+      '<td><div class="prod"><div class="cthumb"><img src="'+thumb+'" onerror="this.src=FALLBACK" alt="콘텐츠 썸네일"><span class="k">'+(r.t==='reel'?'▶ '+r.len:'▦ '+r.len)+'</span></div><div><div style="font-weight:600;font-size:13px">'+(r.t==='reel'?'릴스':'캐러셀')+'</div><div class="pm" style="font-size:11px;color:var(--a-text-3)">@'+r.who+'</div></div></div></td>'+
+      '<td><div class="prod"><img class="pi" src="'+img(r.no)+'" onerror="this.src=FALLBACK" alt="상품 사진"><div style="min-width:0"><div class="pn">'+P[r.no].n+'</div><div class="pm">'+r.no+' · '+P[r.no].p+' · '+won(fin(r.no))+'</div></div></div></td>'+
+      '<td>'+plc+'</td>'+
+      '<td style="white-space:nowrap;font-size:12px">'+r.from+' ~ '+r.to+'</td>'+
+      '<td class="perf">'+perf+'</td>'+
+      '<td><span class="status '+(s.cls||s.k)+'">'+s.lab+'</span><div class="why">'+s.why+'</div></td>'+
+      '<td style="white-space:nowrap"><button class="btn sm" onclick="toast(\'수정 화면은 등록 화면과 같습니다\')">수정</button></td></tr>';
+  });
+  document.getElementById('rows').innerHTML=h||'<tr><td colspan="7" style="text-align:center;color:var(--a-text-3);padding:30px">해당 상태의 콘텐츠가 없습니다</td></tr>';
+  document.getElementById('k-pub').textContent=c.pub;
+  document.getElementById('k-hide').textContent=c.hide;
+  document.getElementById('k-work').textContent=c.work;
+}
+document.getElementById('filters').addEventListener('click',function(e){
+  var b=e.target.closest('.fchip');if(!b)return;FILTER=b.dataset.f;
+  [].forEach.call(this.children,function(x){x.classList.toggle('on',x===b)});renderRows();
+});
+
+/* ---------- 화면 전환 ---------- */
+function show(v){
+  document.getElementById('v-list').hidden=v!=='list';
+  document.getElementById('v-reg').hidden=v!=='reg';
+  document.querySelectorAll('.proto [data-v]').forEach(function(b){b.classList.toggle('on',b.dataset.v===v)});
+  document.getElementById('ttl').textContent=v==='list'?'상품 콘텐츠':'콘텐츠 등록';
+  document.getElementById('crumb').textContent=v==='list'?'하봄·프롬졸리 릴스와 캐러셀을 샵바이 상품에 붙입니다':'상품 콘텐츠 › 새로 등록';
+  document.getElementById('topNew').hidden=v!=='list';
+  window.scrollTo(0,0);
+}
+function simSale(s){
+  SALE_SIM=s;
+  document.querySelectorAll('.proto [data-s]').forEach(function(b){b.classList.toggle('on',b.dataset.s===s)});
+  renderRows();renderPhone();check();
+  toast(s==='off'?'샵바이에서 품절로 바뀐 상황 — 콘텐츠가 자동으로 숨겨집니다':'다시 판매 중 — 콘텐츠가 다시 보입니다');
+}
+
+/* ---------- 등록 상태 ---------- */
+var F={no:null,type:'reel',files:[],ready:false,place:'detail',slide:0};
+
+function ex(v){document.getElementById('pIn').value=v;loadProd()}
+function loadProd(){
+  var v=document.getElementById('pIn').value.trim(), m=v.match(/(\d{6,})/), err=document.getElementById('pErr'), box=document.getElementById('pBox');
+  err.hidden=true;box.innerHTML='';
+  if(!m){err.hidden=false;err.textContent='상품번호를 찾지 못했습니다. 「jollypot.co.kr/products/숫자」 주소나 숫자만 넣어 주세요.';F.no=null;after();return}
+  var no=+m[1];
+  if(!P[no]){err.hidden=false;err.innerHTML='프로토타입에는 예시 상품 12개만 들어 있습니다. 실제 화면에서는 어떤 상품번호든 샵바이에서 바로 불러옵니다.';F.no=null;after();return}
+  F.no=no;var x=P[no];
+  var st=saleLabel(no), tagc=onSale(no)?'sage':'red';
+  box.innerHTML='<div class="pcard"><img src="'+img(no)+'" onerror="this.src=FALLBACK" alt="상품 대표 사진"><div style="min-width:0;flex:1">'+
+    '<div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><span class="tag '+tagc+'">샵바이 '+st+'</span><span class="tag gray">상품번호 '+no+'</span></div>'+
+    '<div class="nm">'+x.n+'</div><div class="meta">'+x.p+'</div>'+
+    '<div class="pr">'+(x.d?'<s>'+won(x.s)+'</s><span class="rate">'+rate(no)+'%</span>':'')+'<b>'+won(fin(no))+'</b></div>'+
+    '<div class="src">🔗 샵바이에서 불러온 정보입니다. 이름·가격·사진은 여기서 고치지 않고 샵바이 값을 그대로 씁니다.</div></div></div>'+
+    (onSale(no)?'':'<div class="warn">⚠ 지금 <b>'+st+'</b> 상태입니다. 등록은 할 수 있지만, 다시 판매를 시작할 때까지 손님에게 보이지 않습니다.</div>');
+  after();
+}
+function setType(t){
+  F.type=t;F.files=[];F.ready=false;
+  document.querySelectorAll('#typeSeg button').forEach(function(b){b.classList.toggle('on',b.dataset.t===t)});
+  var fi=document.getElementById('fIn');fi.accept=t==='reel'?'video/*':'image/*';fi.multiple=t==='car';
+  document.getElementById('dropT').textContent=t==='reel'?'영상 파일을 끌어다 놓거나 눌러서 고르세요':'사진 여러 장을 끌어다 놓거나 눌러서 고르세요';
+  document.getElementById('dropD').textContent=t==='reel'?'mp4·mov · 60초 이하 · 세로(9:16) 권장 · 인스타에 올리기 전 원본 파일':'jpg·png · 최대 10장 · 인스타에 올린 순서대로 · 원본 파일';
+  document.getElementById('prog').hidden=true;document.getElementById('cost').hidden=true;
+  renderFiles();after();
+}
+var drop=document.getElementById('drop');
+['dragover','dragenter'].forEach(function(e){drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.add('over')})});
+['dragleave','drop'].forEach(function(e){drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.remove('over')})});
+drop.addEventListener('drop',function(ev){gotFiles(ev.dataTransfer.files)});
+
+function gotFiles(list){
+  var arr=[].slice.call(list).filter(function(f){return F.type==='reel'?/^video/.test(f.type):/^image/.test(f.type)});
+  if(!arr.length){toast(F.type==='reel'?'영상 파일만 올릴 수 있습니다':'사진 파일만 올릴 수 있습니다');return}
+  if(F.type==='reel')arr=arr.slice(0,1);
+  F.files=arr.slice(0,10).map(function(f){return {url:URL.createObjectURL(f),video:/^video/.test(f.type),size:f.size,name:f.name}});
+  upload();
+}
+function sampleFiles(){
+  if(!F.no){toast('상품을 먼저 연결해 주세요');return}
+  if(F.type==='reel'){F.files=[{url:img(F.no),video:false,fake:true,size:9.6e6,name:'예시_릴스.mp4'}]}
+  else{F.files=[img(F.no)].concat([11,12,13,14].map(function(n){return 'https://picsum.photos/600/600?random='+n})).map(function(u){return {url:u,video:false,size:1.2e6}})}
+  upload();
+}
+function upload(){
+  F.ready=false;F.slide=0;renderFiles();after();
+  var pr=document.getElementById('prog'),bar=document.getElementById('pBar'),lab=document.getElementById('pLab'),pct=document.getElementById('pPct'),sg=document.querySelectorAll('#stages span');
+  pr.hidden=false;document.getElementById('cost').hidden=true;
+  if(F.type==='car'){sg[1].textContent='2. 사진 크기 맞추기';sg[2].textContent='3. 썸네일 만들기'}
+  else{sg[1].textContent='2. 휴대폰 화질별로 변환';sg[2].textContent='3. 자동 재생용 6초 미리보기 만들기'}
+  sg.forEach(function(s){s.className=''});
+  var p=0;
+  var tm=setInterval(function(){
+    p+=F.type==='reel'?4:10;if(p>100)p=100;
+    bar.style.width=p+'%';pct.textContent=p+'%';
+    var stage=p<40?0:p<85?1:2;
+    sg.forEach(function(s,i){s.className=i<stage?'ok':i===stage?'on':''});
+    lab.textContent=['영상 서비스로 바로 보내는 중…','변환 중… (실제로는 1~3분)','미리보기 만드는 중…'][stage];
+    if(p>=100){clearInterval(tm);sg.forEach(function(s){s.className='ok'});lab.textContent='준비 완료';F.ready=true;showCost();after()}
+  },F.type==='reel'?90:70);
+}
+function showCost(){
+  var c=document.getElementById('cost');c.hidden=false;
+  if(F.type==='reel'){
+    var mb=(F.files[0].size/1e6);
+    c.innerHTML='💰 <b>이 영상의 비용</b> — 파일 '+mb.toFixed(1)+'MB · 변환은 무료 · 1,000명이 끝까지 보면 전송비 약 '+Math.max(10,Math.round(mb*1000/1000*0.03*1450/10)*10).toLocaleString()+'원 (Bunny 아시아 1GB당 $0.03, 1달러 1,450원으로 계산). 대부분은 6초 미리보기만 보고 지나가서 실제로는 이보다 적습니다.';
+  }else{
+    c.innerHTML='💰 <b>사진 비용</b> — 사진은 영상의 수십 분의 1이라 거의 들지 않습니다. 기존 이미지 저장소(CloudFront)에 그대로 둡니다.';
+  }
+}
+function renderFiles(){
+  document.getElementById('files').innerHTML=F.files.map(function(f,i){
+    var m=f.video?'<video src="'+f.url+'" muted></video>':'<img src="'+f.url+'" onerror="this.src=FALLBACK" alt="올린 파일">';
+    return '<div class="f">'+m+'<span class="o">'+(F.type==='reel'?'▶':(i+1))+'</span><button class="x" onclick="rmFile('+i+')">✕</button></div>';
+  }).join('');
+}
+function rmFile(i){F.files.splice(i,1);if(!F.files.length){F.ready=false;document.getElementById('prog').hidden=true;document.getElementById('cost').hidden=true}F.slide=0;renderFiles();after()}
+
+function setPlace(p){
+  F.place=p;
+  document.querySelectorAll('.opt').forEach(function(o){o.classList.toggle('on',o.dataset.p===p)});
+  document.querySelectorAll('#pvSeg button').forEach(function(b){b.classList.toggle('on',b.dataset.p===p)});
+  renderPhone();
+}
+function toggleUntil(){var e=document.getElementById('untilSold');e.classList.toggle('on');document.getElementById('dToWrap').hidden=e.classList.contains('on')}
+function tog(el){el.classList.toggle('on');check()}
+function refresh(){renderPhone()}
+
+function after(){
+  var ok1=!!F.no, ok2=ok1&&F.ready;
+  document.getElementById('d1').hidden=!ok1;
+  document.getElementById('d2').hidden=!ok2;
+  document.getElementById('s2').classList.toggle('lock',!ok1);
+  ['s3','s4','s5'].forEach(function(id){document.getElementById(id).classList.toggle('lock',!ok2)});
+  renderPhone();check();
+}
+function check(){
+  var sale=F.no&&onSale(F.no)&&SALE_SIM==='on';
+  var a=document.getElementById('aSale'),af=document.getElementById('aFile');
+  a.classList.toggle('no',!sale);a.querySelector('.bx').textContent=sale?'✓':'!';
+  document.getElementById('aSaleD').textContent=!F.no?'샵바이에서 자동 확인':(sale?'샵바이 판매 중 — 바로 보입니다':'지금은 '+(SALE_SIM==='off'?'품절':saleLabel(F.no))+' — 게시해도 판매 시작 전까지 숨겨집니다');
+  af.classList.toggle('no',!F.ready);af.querySelector('.bx').textContent=F.ready?'✓':'!';
+  var m=document.getElementById('ckMusic').classList.contains('on'),f=document.getElementById('ckFace').classList.contains('on');
+  var ok=F.no&&F.ready&&m&&f;
+  document.getElementById('pubBtn').disabled=!ok;
+  document.getElementById('whyOff').textContent=!F.no?'상품을 먼저 연결해 주세요':!F.ready?'파일을 올려 주세요':!(m&&f)?'5번의 두 가지를 체크해 주세요':(sale?'게시하면 바로 손님에게 보입니다':'게시는 되지만 판매가 시작될 때 보입니다');
+}
+
+/* ---------- 손님 화면 미리보기 ---------- */
+function mediaHTML(cls){
+  if(!F.files.length)return '';
+  var f=F.type==='reel'?F.files[0]:F.files[F.slide%F.files.length];
+  if(f.video)return '<video src="'+f.url+'" autoplay muted loop playsinline></video>';
+  if(f.fake)return '<div class="fake"><img src="'+f.url+'" onerror="this.src=FALLBACK" alt="예시 영상"></div>';
+  return '<img src="'+f.url+'" onerror="this.src=FALLBACK" alt="캐러셀 사진">';
+}
+function renderPhone(){
+  var ph=document.getElementById('phone'),note=document.getElementById('pvNote');
+  if(!F.no){ph.innerHTML='<div class="ph-top"><span>‹</span><b>상품 상세</b><span>⌂</span></div><div class="ph-body" style="display:flex;align-items:center;justify-content:center;color:#9E9E9E;font-size:13px;text-align:center;padding:30px">상품을 연결하면<br>여기에 손님 화면이 보입니다</div>';note.textContent='상품을 연결하면 실제 샵바이 상품 정보로 그려집니다.';return}
+  var x=P[F.no], has=F.files.length>0, sale=onSale(F.no)&&SALE_SIM==='on';
+  var whoOn=document.getElementById('whoShow').classList.contains('on'), who=document.getElementById('who').value.replace(' (직접 입력)','');
+  if(F.place==='detail'){
+    var first=document.getElementById('ord').value==='1';
+    var total=1+(has?(F.type==='car'?F.files.length:1):0);
+    var gal='';
+    if(has&&first){
+      gal=mediaHTML()+
+        (whoOn?'<span class="who">@'+who+'</span>':'')+
+        (F.type==='reel'?'<span class="snd">🔇 누르면 소리</span>':'')+
+        (F.type==='car'&&F.files.length>1?'<button class="nav-l" onclick="slide(-1)">‹</button><button class="nav-r" onclick="slide(1)">›</button><div class="dots">'+F.files.map(function(_,i){return '<i class="'+(i===F.slide%F.files.length?'on':'')+'"></i>'}).join('')+'</div>':'')+
+        '<span class="cnt">1 / '+total+'</span>'+
+        (sale?'':'<div class="hidden-note"><b>자동 숨김 상태</b>손님에게는 이 영상 대신 원래 상품 사진이 보입니다.<br>다시 판매하면 저절로 돌아옵니다.</div>');
+    }else{
+      gal='<img src="'+img(F.no)+'" onerror="this.src=FALLBACK" alt="상품 대표 사진"><span class="cnt">1 / '+total+'</span>';
+    }
+    var th='';
+    if(has){
+      var tm='<div class="'+(first?'on':'')+'"><img src="'+(F.files[0].fake||!F.files[0].video?F.files[0].url:img(F.no))+'" onerror="this.src=FALLBACK" alt=""><span class="pl">'+(F.type==='reel'?'▶':'▦')+'</span></div>';
+      var tp='<div class="'+(first?'':'on')+'"><img src="'+img(F.no)+'" onerror="this.src=FALLBACK" alt=""></div>';
+      th='<div class="thumbs">'+(first?tm+tp:tp+tm)+'<div><img src="https://picsum.photos/100/100?random=31" alt=""></div><div><img src="https://picsum.photos/100/100?random=32" alt=""></div></div>';
+    }
+    ph.innerHTML='<div class="ph-top"><span>‹</span><b>상품 상세</b><span>⌂</span></div>'+
+      '<div class="ph-body"><div class="gal">'+gal+'</div>'+th+
+      '<div class="pinfo"><div class="br">'+x.p+'</div><div class="nm">'+x.n+'</div>'+
+      '<div class="pr">'+(x.d?'<span class="rate">'+rate(F.no)+'%</span>':'')+'<b>'+won(fin(F.no))+'</b>'+(x.d?'<s>'+won(x.s)+'</s>':'')+'</div></div>'+
+      '<div class="ph-div"></div><div class="ph-sec"><h4>상품 정보</h4><div class="ln" style="width:92%"></div><div class="ln" style="width:78%"></div><div class="ln" style="width:85%"></div></div></div>'+
+      '<div class="ph-cta"><button class="sv">♡</button><button class="buy" onclick="toast(\'샵바이 결제는 지금 그대로입니다 — 콘텐츠는 결제에 손대지 않습니다\')">구매하기</button></div>';
+    note.innerHTML=has?(first?'상품 사진 맨 앞에 콘텐츠가 들어갑니다. 결제·옵션은 샵바이 그대로입니다.':'상품 사진 1장 다음에 콘텐츠가 들어갑니다. (아래 작은 사진 두 번째)'):'파일을 올리면 맨 앞 사진 자리에 들어갑니다.';
+  }else{
+    var mine=has?'<div class="fc mine"><div class="m">'+(sale?mediaHTML():'<img src="'+img(F.no)+'" style="filter:grayscale(1);opacity:.4" alt="">')+'<span class="k">'+(F.type==='reel'?'▶':'▦ '+F.files.length)+'</span>'+(whoOn?'<span class="w">@'+who+'</span>':'')+(sale?'':'<div class="hidden-note" style="font-size:11px;padding:8px"><b>자동 숨김</b>피드에서 빠집니다</div>')+'</div>'+
+      '<div class="p"><img src="'+img(F.no)+'" onerror="this.src=FALLBACK" alt=""><div class="t"><div>'+x.n+'</div><b>'+(x.d?'<span class="rate">'+rate(F.no)+'%</span> ':'')+won(fin(F.no))+'</b></div></div></div>':'';
+    var others=[137382018,136999852,137087482,137336567,137341637].filter(function(n){return n!==F.no}).slice(0,has?3:4).map(function(n,i){
+      return '<div class="fc"><div class="m"><img src="'+img(n)+'" onerror="this.src=FALLBACK" alt=""><span class="k">'+(i%2?'▦ 5':'▶')+'</span><span class="w">@'+(i%2?'프롬졸리':'하봄')+'</span></div><div class="p"><img src="'+img(n)+'" onerror="this.src=FALLBACK" alt=""><div class="t"><div>'+P[n].n+'</div><b>'+(P[n].d?'<span class="rate">'+rate(n)+'%</span> ':'')+won(fin(n))+'</b></div></div></div>';
+    }).join('');
+    ph.innerHTML='<div class="ph-top"><span></span><b>쇼핑</b><span>🛒</span></div><div class="feed-tabs"><span>추천</span><span class="on">영상으로 보기</span><span>오늘의 딜</span></div><div class="ph-body"><div class="feed">'+mine+others+'</div></div>'+
+      '<div class="ph-cta" style="justify-content:space-around;font-size:11px;color:#9E9E9E;padding:8px 10px 12px"><span>홈</span><span>레시피</span><span style="color:#FC642D;font-weight:700">쇼핑</span><span>저장</span><span>마이</span></div>';
+    note.innerHTML=has?'노란 테두리가 지금 등록 중인 콘텐츠입니다. 2단계에서 열 화면입니다.':'파일을 올리면 피드 맨 앞에 들어갑니다.';
+  }
+}
+function slide(d){F.slide=(F.slide+d+F.files.length)%F.files.length;renderPhone()}
+
+/* ---------- 게시 ---------- */
+function publish(){
+  var sale=onSale(F.no)&&SALE_SIM==='on';
+  var f=F.files[0];
+  var r={no:F.no,t:F.type,len:F.type==='reel'?'0:32':F.files.length+'장',who:document.getElementById('who').value.replace(' (직접 입력)',''),
+    place:F.place,from:document.getElementById('dFrom').value.slice(5).replace('-','/').replace(/^0/,''),
+    to:document.getElementById('untilSold').classList.contains('on')?'판매 끝까지':document.getElementById('dTo').value.slice(5).replace('-','/').replace(/^0/,''),
+    views:0,buys:0,st:'auto',thumb:(f.video?null:f.url)};
+  rows.unshift(r);NEWROW=r;
+  if(SALE_SIM==='off')simSale('on');
+  FILTER='all';document.querySelectorAll('.fchip').forEach(function(x){x.classList.toggle('on',x.dataset.f==='all')});
+  renderRows();show('list');
+  toast(sale?'게시했습니다 — 지금부터 상품 상세에 보입니다':'게시했습니다 — 판매가 시작되면 보입니다');
+  resetForm();
+}
+function resetForm(){
+  F={no:null,type:F.type,files:[],ready:false,place:F.place,slide:0};
+  document.getElementById('pIn').value='';document.getElementById('pBox').innerHTML='';document.getElementById('igIn').value='';
+  document.getElementById('prog').hidden=true;document.getElementById('cost').hidden=true;
+  document.getElementById('ckMusic').classList.remove('on');document.getElementById('ckFace').classList.remove('on');
+  renderFiles();after();
+}
+function demoFill(){
+  show('reg');ex('137341637');setType('reel');sampleFiles();
+  document.getElementById('igIn').value='https://www.instagram.com/reel/예시';
+  setTimeout(function(){document.getElementById('ckMusic').classList.add('on');document.getElementById('ckFace').classList.add('on');check()},2600);
+}
+
+var tt;function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('on')},2400)}
+
+renderRows();after();
+</script>
+</body>
+</html>
