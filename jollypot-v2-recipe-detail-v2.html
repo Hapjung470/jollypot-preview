@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>졸리팟 레시피 상세 v2 — 레시피×상품 연결 제안</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<!-- v2: 레시피×상품 연결 최적안(2026-11-01) 반영 — 모든 재료 쿠팡 카트(v1-30) → 상품 4유형 배치 -->
+<style>
+  :root {
+    --color-brand: #FDB813; --color-primary: #FC642D; --color-secondary: #145F48;
+    --color-bg: #FFFFFF; --color-surface: #FFF5EA; --color-surface-info: #F1F8F3;
+    --color-text-primary: #212121; --color-text-secondary: #666666; --color-text-tertiary: #9E9E9E;
+    --color-border: #CCCFD4; --color-divider: #E5E7EB; --color-info: #3276AE;
+    /* 프로토타입 컨트롤 전용 — 졸리팟 토큰 사용 금지(컨벤션 7.1) */
+    --proto-bar-bg: #1E1E2E; --proto-active-bg: #5B6ABF; --proto-inactive-bg: #2D2D3D;
+    --proto-inactive-text: #8888A0; --proto-label: #CCCCDD; --proto-divider: #3A3A4E;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', sans-serif; background: #F4F4F6; color: var(--color-text-primary); -webkit-font-smoothing: antialiased; letter-spacing: -0.3px; }
+  .phone { max-width: 390px; margin: 0 auto; background: var(--color-bg); min-height: 100vh; padding-bottom: 90px; position: relative; }
+
+  /* ===== 프로토 컨트롤 바 ===== */
+  .proto { max-width: 390px; margin: 0 auto; background: var(--proto-bar-bg); padding: 12px 14px 10px; }
+  .proto-group + .proto-group { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--proto-divider); }
+  .proto-label { font-size: 11.5px; color: var(--proto-label); margin-bottom: 6px; }
+  .proto-btns { display: flex; gap: 6px; }
+  .proto-btns button { flex: 1; border: none; border-radius: 8px; padding: 8px 0; font-family: inherit; font-size: 12px; font-weight: 600; background: var(--proto-inactive-bg); color: var(--proto-inactive-text); cursor: pointer; }
+  .proto-btns button.on { background: var(--proto-active-bg); color: #fff; }
+  .proto-ver { font-size: 12px; color: var(--proto-label); margin-top: 10px; }
+
+  /* 유형 표시 — 검토용 라벨(실서비스 미포함). 프로토 색으로 앱 UI와 구분 */
+  .tl { display: none; font-size: 10.5px; font-weight: 700; color: #fff; background: var(--proto-active-bg); border-radius: 4px; padding: 1px 5px; margin-right: 4px; vertical-align: 1px; white-space: nowrap; }
+  body.show-types .tl { display: inline-block; }
+
+  /* ===== 헤더·히어로 ===== */
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; position: sticky; top: 0; background: var(--color-bg); z-index: 10; }
+  .header-title { font-size: 16px; font-weight: 600; }
+  .header svg { width: 24px; height: 24px; }
+  .hero { width: 100%; aspect-ratio: 16/9; position: relative; background: #ddd center/cover no-repeat; }
+  .play { position: absolute; inset: 0; margin: auto; width: 56px; height: 56px; border-radius: 50%; background: rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; }
+  .play svg { width: 24px; height: 24px; fill: #fff; margin-left: 3px; }
+
+  .content { padding: 0 16px; }
+  .breadcrumb { padding: 12px 0 0; font-size: 12px; color: var(--color-text-secondary); }
+  .recipe-title { font-size: 20px; font-weight: 600; line-height: 1.35; padding-top: 6px; }
+  .source { font-size: 13px; color: var(--color-text-secondary); padding-top: 6px; }
+  .source a { color: var(--color-info); text-decoration: none; font-weight: 500; }
+  .meta-row { display: flex; padding: 14px 0 0; }
+  .meta-cell { flex: 1; text-align: center; font-size: 13px; color: var(--color-text-secondary); }
+  .meta-cell + .meta-cell { border-left: 1px solid var(--color-divider); }
+  .divider { height: 1px; background: var(--color-divider); margin: 24px -16px; }
+
+  /* ===== 섹션 ===== */
+  .sec-row { display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; }
+  .sec-h { font-size: 19px; font-weight: 600; }
+  .stepper { display: flex; align-items: center; gap: 8px; }
+  .stepper button { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--color-border); background: #fff; color: var(--color-text-secondary); font-size: 16px; cursor: pointer; }
+  .stepper span { font-size: 13px; color: var(--color-text-secondary); min-width: 32px; text-align: center; }
+
+  /* 재료 2열 */
+  .ing { display: grid; grid-template-columns: 1fr 1fr; }
+  .ing-cell { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 9px 0; min-height: 40px; }
+  .ing > .ing-cell:nth-child(odd) { padding-right: 14px; }
+  .ing > .ing-cell:nth-child(even) { padding-left: 14px; border-left: 1px solid var(--color-divider); }
+  .ing-text { font-size: 14px; line-height: 1.4; }
+  .ing-amt { color: var(--color-text-secondary); }
+  .ing-buy { width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; color: var(--color-primary); opacity: 0.85; cursor: pointer; flex-shrink: 0; }
+  .ing-buy svg { width: 16px; height: 16px; }
+  /* ② 기준 상품 표시 — 완료 배지 문법(가이드: #F1F8F3 + 딥그린) */
+  .badge-base { font-size: 11px; font-weight: 600; color: var(--color-secondary); background: var(--color-surface-info); border-radius: 999px; padding: 2px 7px; white-space: nowrap; flex-shrink: 0; }
+  .ing-note { font-size: 11.5px; color: var(--color-text-secondary); display: block; margin-top: 1px; }
+  .disclosure { font-size: 12px; color: var(--color-text-tertiary); padding-top: 8px; }
+
+  /* ② 기준 상품 안내 박스 — TIP 박스 문법 */
+  .base-box { margin-top: 14px; padding: 12px 14px; background: var(--color-surface-info); border-radius: 10px; }
+  .base-box .lbl { font-size: 11.5px; font-weight: 700; color: var(--color-secondary); margin-bottom: 4px; }
+  .base-box p { font-size: 13px; line-height: 1.55; color: var(--color-text-secondary); }
+  .base-box p b { color: var(--color-text-primary); font-weight: 600; }
+  .base-box a { display: inline-block; margin-top: 6px; font-size: 13px; color: var(--color-info); text-decoration: none; font-weight: 500; }
+
+  /* 카드 공통(가이드: 흰 바탕 + 1px 보더 + radius 16, 그림자 없음) */
+  .card { border: 1px solid var(--color-border); border-radius: 16px; background: #fff; }
+  .card.cream { background: var(--color-surface); }
+
+  /* ③ 이번 주 식단 */
+  .week { margin-top: 14px; padding: 14px; }
+  .week-top { display: flex; justify-content: space-between; align-items: baseline; }
+  .week-t { font-size: 14.5px; font-weight: 600; }
+  .week-d { font-size: 12px; color: var(--color-text-secondary); }
+  .week p { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; margin-top: 6px; }
+  .week-days { display: flex; gap: 6px; margin-top: 10px; }
+  .wd { flex: 1; text-align: center; border: 1px solid var(--color-border); border-radius: 10px; padding: 7px 0; font-size: 12px; color: var(--color-text-secondary); background: #fff; }
+  .wd b { display: block; font-size: 12.5px; color: var(--color-text-primary); font-weight: 600; margin-top: 2px; }
+  .wd.me { border-color: var(--color-secondary); color: var(--color-secondary); }
+  .wd.me b { color: var(--color-secondary); }
+
+  /* 버튼(가이드 §4.0) */
+  .btn { height: 44px; border-radius: 999px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0 18px; letter-spacing: -0.3px; }
+  .btn.full { width: 100%; margin-top: 12px; }
+  .btn.pri { background: var(--color-primary); color: #fff; border: none; }
+  .btn.sec { background: #fff; color: var(--color-text-primary); border: 1px solid var(--color-border); }
+  .btn.done { background: var(--color-surface-info); color: var(--color-secondary); border: none; }
+  .btn.sm { height: 34px; font-size: 13px; padding: 0 14px; }
+
+  /* 만드는 법 */
+  .steps { list-style: none; }
+  .step { display: flex; gap: 12px; padding: 9px 0; }
+  .step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--color-secondary); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .step-body { flex: 1; min-width: 0; }
+  .step-text { font-size: 14px; line-height: 1.5; }
+  .chip-time { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; background: #FFF5C6; color: var(--color-text-primary); border-radius: 6px; padding: 2px 6px; margin-left: 4px; vertical-align: 1px; }
+  .tip { margin-top: 7px; padding: 8px 12px; background: var(--color-surface-info); border-radius: 10px; font-size: 13px; line-height: 1.55; color: var(--color-text-secondary); }
+  .tip .k { font-size: 11.5px; font-weight: 700; color: var(--color-secondary); margin-right: 5px; }
+
+  /* ① 레시피 상품 — 결정적 단계 옆 한 개 */
+  .rp { margin-top: 9px; padding: 12px; display: flex; gap: 12px; align-items: center; }
+  .rp img { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; flex-shrink: 0; background: #eee; }
+  .rp-body { flex: 1; min-width: 0; }
+  .rp-why { font-size: 12px; color: var(--color-secondary); font-weight: 600; }
+  .rp-name { font-size: 13.5px; line-height: 1.4; margin-top: 2px; }
+  .price { margin-top: 3px; font-size: 13.5px; }
+  .price .dc { color: var(--color-primary); font-weight: 700; margin-right: 4px; }
+  .price .sale { font-weight: 700; }
+  .price .list { color: var(--color-text-secondary); text-decoration: line-through; font-size: 12px; margin-left: 4px; }
+
+  /* 장보기(현재안) */
+  .shop { display: flex; gap: 10px; overflow-x: auto; margin-right: -16px; padding-right: 16px; scrollbar-width: none; }
+  .shop::-webkit-scrollbar { display: none; }
+  .shop-card { flex: 0 0 120px; }
+  .shop-card img { width: 120px; height: 120px; border-radius: 12px; object-fit: cover; background: #eee; }
+  .shop-card .n { font-size: 12.5px; margin-top: 6px; line-height: 1.35; height: 34px; overflow: hidden; }
+
+  /* 산 뒤: 상품 → 레시피 (김치 한 통의 여정) */
+  .journey { margin-top: 16px; padding: 14px; }
+  .j-top { font-size: 12px; color: var(--color-text-secondary); }
+  .j-t { font-size: 15px; font-weight: 600; margin-top: 3px; line-height: 1.4; }
+  .j-bar { display: flex; gap: 4px; margin-top: 12px; }
+  .j-bar div { flex: 1; text-align: center; font-size: 11px; color: var(--color-text-secondary); }
+  .j-bar i { display: block; height: 6px; border-radius: 3px; background: var(--color-divider); margin-bottom: 5px; }
+  .j-bar .past i { background: #9CC5B3; }
+  .j-bar .now i { background: var(--color-secondary); }
+  .j-bar .now { color: var(--color-secondary); font-weight: 700; }
+  .j-list { margin-top: 12px; display: flex; gap: 8px; }
+  .j-rec { flex: 1; }
+  .j-rec img { width: 100%; aspect-ratio: 4/3; border-radius: 10px; object-fit: cover; background: #eee; }
+  .j-rec span { display: block; font-size: 12.5px; margin-top: 5px; }
+
+  .next { margin-top: 16px; padding: 14px; }
+  .next .t { font-size: 14.5px; font-weight: 600; }
+  .next p { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; margin-top: 4px; }
+
+  /* 하단바 — v1-30과 같은 문법(저장 아웃라인) */
+  .bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 390px; background: #fff; border-top: 1px solid var(--color-divider); padding: 8px 14px 10px; display: flex; gap: 8px; z-index: 20; }
+  .bottom .save { flex: 1; height: 56px; border-radius: 14px; border: 1px solid var(--color-border); background: #fff; font-family: inherit; font-size: 16px; font-weight: 600; color: var(--color-text-primary); cursor: pointer; }
+  .bottom .save.on { border-color: var(--color-primary); color: var(--color-primary); background: rgba(252,100,45,0.06); }
+
+  .toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: #212121; color: #fff; font-size: 13.5px; padding: 11px 18px; border-radius: 999px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 30; white-space: nowrap; }
+  .toast.show { opacity: 1; }
+
+  /* 기획 메모(시안 아래, 실서비스 미포함) */
+  .spec { max-width: 390px; margin: 0 auto; background: #fff; padding: 22px 16px 120px; border-top: 8px solid #F4F4F6; }
+  .spec h2 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+  .spec h3 { font-size: 14.5px; font-weight: 700; margin: 18px 0 6px; }
+  .spec p, .spec li { font-size: 13px; line-height: 1.65; color: #444; }
+  .spec ul { padding-left: 18px; }
+  .spec table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12.5px; }
+  .spec th, .spec td { border: 1px solid var(--color-divider); padding: 6px; text-align: left; vertical-align: top; line-height: 1.5; }
+  .spec th { background: #F7F7F9; font-weight: 600; }
+</style>
+</head>
+<body class="show-types">
+
+<!-- ===== 프로토 컨트롤 바 ===== -->
+<div class="proto">
+  <div class="proto-group">
+    <div class="proto-label">연결 방식</div>
+    <div class="proto-btns">
+      <button data-k="mode" data-v="now">지금(v1-30)</button>
+      <button data-k="mode" data-v="new" class="on">제안안</button>
+    </div>
+  </div>
+  <div class="proto-group">
+    <div class="proto-label">레시피</div>
+    <div class="proto-btns">
+      <button data-k="recipe" data-v="kimchi" class="on">돼지고기 김치찌개</button>
+      <button data-k="recipe" data-v="aglio">알리오 올리오</button>
+    </div>
+  </div>
+  <div class="proto-group">
+    <div class="proto-label">보는 사람</div>
+    <div class="proto-btns">
+      <button data-k="buyer" data-v="first" class="on">처음 온 사람</button>
+      <button data-k="buyer" data-v="bought">상품 산 사람</button>
+    </div>
+  </div>
+  <div class="proto-group">
+    <div class="proto-label">유형 표시(검토용)</div>
+    <div class="proto-btns">
+      <button data-k="types" data-v="on" class="on">켜기</button>
+      <button data-k="types" data-v="off">끄기</button>
+    </div>
+  </div>
+  <div class="proto-ver">jollypot-v2-recipe-detail-v2</div>
+</div>
+
+<div class="phone">
+  <div class="header">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    <span class="header-title">레시피</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+  </div>
+  <div id="hero" class="hero"><div class="play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div></div>
+  <div class="content" id="content"></div>
+</div>
+
+<div class="bottom"><button id="saveBtn" class="save" onclick="toggleSave()">저장하기</button></div>
+<div id="toast" class="toast"></div>
+
+<!-- ===== 기획 메모 ===== -->
+<div class="spec">
+  <h2>이 시안이 바꾼 것</h2>
+  <p>v1-30은 재료 8개 모두에 쿠팡 카트가 붙어 있다. 제안안은 상품을 4가지로 나눠 각각 다른 자리에 둔다. 근거 문서: <a href="https://claude.ai/artifact/E1nNJpEz8m7JHMbZ8B9QSQ" style="color:#3276AE">레시피×상품 연결 최적안</a></p>
+
+  <h3>상품 4유형과 자리</h3>
+  <table>
+    <tr><th>유형</th><th>판정</th><th>자리</th></tr>
+    <tr><td>① 레시피 상품</td><td>집에 없고 결과를 바꾼다 (냄비·오일·도구)</td><td>결정적 단계 바로 아래 카드 1개. 레시피당 최대 1개</td></tr>
+    <tr><td>② 기준 상품</td><td>집에 있지만 결과를 바꾼다 (김치·장류)</td><td>재료에 「졸리팟 기준」 배지 + 다른 제품일 때 맞추는 법. 구매 버튼 없이 「보기」 링크만</td></tr>
+    <tr><td>③ 식단 상품</td><td>고기·생선·채소·반찬</td><td>레시피에서 팔지 않음. 「이번 주 식단에 넣기」 → 일요일 준비물 딜로 모아서 판다</td></tr>
+    <tr><td>④ 붙이지 않음</td><td>대파·마늘·소금처럼 집에 있거나 아무거나 써도 되는 것</td><td>이름과 양만</td></tr>
+  </table>
+
+  <h3>왜 이렇게 나눴나 (숫자)</h3>
+  <ul>
+    <li>레시피 몰(우리의식탁)이 장보기 몰보다 매출 몫이 큰 것: 냄비·팬 254배, 올리브오일 123배, 도구 44배</li>
+    <li>반대로 레시피 몰이 약한 것: 김치 0.13배, 과일 0.19배, 돼지·닭 0.34배</li>
+    <li>김치 후기 7,953개 중 찌개 언급은 0.5~1.1%. 찌개는 이미 산 김치를 다 쓰는 방법이다</li>
+  </ul>
+
+  <h3>「상품 산 사람」 토글</h3>
+  <ul>
+    <li>상품 → 레시피 방향. 산 김치가 지금 어느 단계인지 보여 주고, 그 단계에 맞는 레시피를 고른다</li>
+    <li>찌개는 김치 마지막 단계라, 레시피 끝에 「다음 통」 예약을 둔다. 다 먹기 전에 다음 통이 도착하게 한다</li>
+    <li>오일처럼 오래 쓰는 상품은 「이 오일로 다음엔」 레시피만 보여 주고 재주문은 묻지 않는다</li>
+  </ul>
+
+  <h3>하지 않는 것</h3>
+  <ul>
+    <li>「재료 한 번에 담기」 — 쿠팡 파트너스는 묶음 담기를 지원하지 않고, 우리 데이터에서도 고기·김치는 레시피 몰에서 약하다</li>
+    <li>모든 레시피에 같은 추천 상품 줄 — ①은 레시피마다 단계에 맞는 것 하나만</li>
+    <li>자동 실행·플로팅 배너 — 쿠팡 운영정책 위반(v1-30 기획 메모 5항과 같음)</li>
+  </ul>
+
+  <h3>개발 메모</h3>
+  <ul>
+    <li>재료 데이터에 <code>link_type</code>(recipe_item / base_item / meal_item / none) 필드 추가. ①은 <code>step_id</code>도 함께 저장</li>
+    <li>①이 졸리팟 자체 딜이면 쿠팡 고지 문구를 숨긴다. 쿠팡 링크일 때만 시스템이 자동 표시</li>
+    <li>유형 표시 라벨(보라색 ①~④)은 검토용이라 개발하지 않는다</li>
+    <li>8주 시험안: ① 한 레시피 한 상품 vs 추천 3개 / ③ 일요일 준비물 딜 vs 레시피별 링크 / ② 김치 한 통의 여정</li>
+  </ul>
+</div>
+
+<script>
+// 장바구니 아이콘(v1-30과 같은 모양)
+const CART = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>';
+const IMG = s => `https://picsum.photos/seed/${s}/400/300`;
+
+// 레시피 데이터 — type: 1 레시피 상품 / 2 기준 상품 / 3 식단 상품 / 4 붙이지 않음
+const R = {
+  kimchi: {
+    crumb: '홈 › 한식 › 찌개',
+    title: '돼지고기 김치찌개, 볶아서 끓이는 법',
+    source: '김셰프의 간단요리',
+    meta: ['총 25분', '2인분', '쉬움', '420 kcal'],
+    base: 2, hero: 'kimchijjigae',
+    ing: [
+      { n: '배추김치', a: 300, u: 'g', t: 2 },
+      { n: '돼지 앞다리살', a: 200, u: 'g', t: 3 },
+      { n: '두부', a: 0.5, u: '모', t: 3 },
+      { n: '대파', a: 1, u: '대', t: 4 },
+      { n: '고춧가루', a: 1, u: '큰술', t: 4 },
+      { n: '다진 마늘', a: 0.5, u: '큰술', t: 4 },
+      { n: '설탕', a: 0.5, u: '작은술', t: 4 },
+      { n: '물', a: 500, u: 'ml', t: 4 },
+    ],
+    baseBox: {
+      first: '이 레시피는 <b>졸리팟 포기김치(담근 지 2주)</b> 기준이에요. 다른 김치라면: 덜 익었으면 <b>식초 반 작은술</b>, 짠 김치면 <b>물 100ml</b>를 더 넣어요.',
+      bought: '<b>받으신 졸리팟 포기김치(도착 9일째)</b> 기준으로 양을 맞췄어요. 지금 익은 정도면 설탕은 그대로 두세요.',
+      link: '졸리팟 포기김치 보기 ›'
+    },
+    week: { item: '돼지 앞다리살·두부', days: ['일', '월', '화', '수', '목'], menu: ['', '닭곰탕', '김치찌개', '제육', '두부조림'], me: 2 },
+    steps: [
+      { t: '돼지고기는 한입 크기로, 김치는 2cm 폭으로 썰어요.' },
+      { t: '냄비에 기름 1큰술을 두르고 고기를 중불에서 볶다가, 김치를 넣고 5분 더 볶아요.', time: '01:42',
+        tip: '김치를 오래 볶을수록 신맛이 줄고 깊은 맛이 나요.',
+        rp: { why: '여기서 바닥에 눌어붙는다면', name: '졸리팟 무쇠 전골냄비 22cm', dc: '23%', sale: '49,900원', list: '64,900원', img: 'castironpot' } },
+      { t: '물 500ml와 고춧가루·다진 마늘을 넣고 센불로 끓여요.', time: '03:10' },
+      { t: '끓어오르면 중약불로 줄여 15분 끓여요.', time: '03:35' },
+      { t: '두부와 대파를 넣고 3분 더 끓이면 끝.', time: '05:02' },
+    ],
+    journey: {
+      top: '졸리팟 포기김치 · 도착 9일째',
+      title: '지금은 알맞게 익은 때예요. 찌개가 가장 맛있는 단계예요',
+      stages: ['생김치', '알맞게', '푹 익음', '신김치'], now: 1,
+      recs: [['김치볶음밥', 'kimchirice'], ['김치전', 'kimchijeon'], ['두부김치', 'dubukimchi']],
+      recLabel: '이 단계에 좋은 다른 요리'
+    },
+    next: { t: '김치가 반쯤 남았어요', p: '지금 다음 통을 예약하면 남은 김치를 다 먹을 무렵(약 12일 뒤)에 도착해요.', btn: '다음 통 예약하기' },
+    shopNow: [['포기김치 5kg', 'kimchi5'], ['한돈 앞다리살', 'pork'], ['국산 두부', 'tofu'], ['대파 1단', 'pa'], ['고춧가루 500g', 'gochu']]
+  },
+  aglio: {
+    crumb: '홈 › 양식 › 파스타',
+    title: '15분 알리오 올리오, 마늘 향 살리는 법',
+    source: '요리하는지영',
+    meta: ['총 15분', '1인분', '쉬움', '610 kcal'],
+    base: 1, hero: 'aglioolio',
+    ing: [
+      { n: '스파게티면', a: 100, u: 'g', t: 4 },
+      { n: '마늘', a: 6, u: '쪽', t: 4 },
+      { n: '엑스트라버진 올리브오일', a: 4, u: '큰술', t: 1 },
+      { n: '페페론치노', a: 3, u: '개', t: 4 },
+      { n: '소금', a: 1, u: '작은술', t: 4 },
+      { n: '파슬리', a: 0, u: '약간', t: 4 },
+    ],
+    baseBox: null, week: null,
+    steps: [
+      { t: '끓는 물에 소금을 넣고 면을 포장지 시간보다 1분 짧게 삶아요. 면수 반 컵은 남겨 둬요.', time: '00:40' },
+      { t: '팬에 올리브오일 4큰술과 편 썬 마늘을 넣고 약불에서 천천히 익혀요. 마늘이 연한 갈색이 되면 불을 꺼요.', time: '02:15',
+        tip: '센불이면 마늘이 금방 타서 쓴맛이 나요. 기름이 끓지 않을 정도로 두세요.',
+        rp: { why: '이 요리는 오일이 맛의 절반이에요', name: '졸리팟 엑스트라버진 올리브오일 500ml', dc: '18%', sale: '18,900원', list: '22,900원', img: 'oliveoil' } },
+      { t: '페페론치노를 부숴 넣고, 면과 면수 3큰술을 넣어 1분 볶아요.', time: '04:05' },
+      { t: '불을 끄고 파슬리를 뿌려 마무리해요.', time: '05:20' },
+    ],
+    journey: {
+      top: '졸리팟 엑스트라버진 올리브오일 · 받은 지 6일째',
+      title: '이 오일로 다음엔 이런 요리를 해 보세요',
+      stages: null,
+      recs: [['카프레제', 'caprese'], ['감바스', 'gambas'], ['오일 바게트', 'baguette']],
+      recLabel: '오일이 맛을 정하는 요리'
+    },
+    next: null,
+    shopNow: [['스파게티면 500g', 'pasta'], ['깐마늘 1kg', 'garlic'], ['올리브오일', 'olive2'], ['페페론치노', 'pepper'], ['파슬리 가루', 'parsley']]
+  }
+};
+
+const S = { mode: 'new', recipe: 'kimchi', buyer: 'first', types: 'on', serving: null, inWeek: false };
+const TL = { 1: '① 레시피 상품', 2: '② 기준 상품', 3: '③ 식단 상품', 4: '④ 붙이지 않음' };
+const tl = t => `<span class="tl">${TL[t]}</span>`;
+const tn = t => `<span class="tl">${'①②③④'[t - 1]}</span>`;
+
+function fmt(v) { return Number.isInteger(v) ? v : Math.round(v * 10) / 10; }
+function amt(i, r) {
+  if (!i.a) return i.u;
+  return fmt(i.a * S.serving / r.base) + i.u;
+}
+
+function ingredients(r) {
+  const cells = r.ing.map(i => {
+    const text = `<span class="ing-text">${i.n} <span class="ing-amt">${amt(i, r)}</span></span>`;
+    if (S.mode === 'now') {
+      return `<div class="ing-cell">${text}<span class="ing-buy" onclick="toast('쿠팡: ${i.n}')">${CART}</span></div>`;
+    }
+    if (i.t === 2) {
+      return `<div class="ing-cell"><span class="ing-text">${tn(2)}${i.n} <span class="ing-amt">${amt(i, r)}</span></span><span class="badge-base">졸리팟 기준</span></div>`;
+    }
+    if (i.t === 3) {
+      return `<div class="ing-cell"><span class="ing-text">${tn(3)}${i.n} <span class="ing-amt">${amt(i, r)}</span></span></div>`;
+    }
+    if (i.t === 1) {
+      return `<div class="ing-cell"><span class="ing-text">${tn(1)}${i.n} <span class="ing-amt">${amt(i, r)}</span><span class="ing-note">2단계에서 설명해요</span></span></div>`;
+    }
+    return `<div class="ing-cell">${text}</div>`;
+  }).join('');
+  let h = `<div class="ing">${cells}</div>`;
+  if (S.mode === 'now') {
+    h += `<p class="disclosure">이 페이지는 쿠팡 파트너스 활동을 포함하며 일정 수수료가 제공됩니다.</p>`;
+    return h;
+  }
+  if (S.types === 'on') {
+    const rest = r.ing.filter(i => i.t === 4).map(i => i.n).join('·');
+    h += `<p class="disclosure"><span class="tl">${TL[4]}</span>${rest} — 이름과 양만</p>`;
+  }
+  // ② 기준 상품 안내
+  if (r.baseBox) {
+    const bought = S.buyer === 'bought';
+    h += `<div class="base-box">${tl(2)}<div class="lbl">졸리팟 김치 기준 레시피</div>
+      <p>${bought ? r.baseBox.bought : r.baseBox.first}</p>
+      ${bought ? '' : `<a href="#" onclick="toast('졸리팟 포기김치 상품 페이지');return false;">${r.baseBox.link}</a>`}</div>`;
+  }
+  // ③ 이번 주 식단
+  if (r.week) {
+    const w = r.week;
+    const days = w.days.map((d, k) => `<div class="wd ${k === w.me && S.inWeek ? 'me' : ''}">${d}<b>${k === 0 ? '장보기' : (k === w.me && !S.inWeek ? '?' : w.menu[k])}</b></div>`).join('');
+    h += `<div class="card cream week">${tl(3)}
+      <div class="week-top"><span class="week-t">이번 주 식단에 넣기</span><span class="week-d">일요일 도착</span></div>
+      <p>${w.item}는 여기서 따로 사지 않아요. 식단에 넣으면 일요일 준비물 딜에 한 주 분량으로 같이 담겨요.</p>
+      <div class="week-days">${days}</div>
+      ${S.inWeek
+        ? `<button class="btn done full" onclick="toggleWeek()">화요일 저녁에 넣었어요 ✓</button>`
+        : `<button class="btn sec full" onclick="toggleWeek()">화요일 저녁으로 넣기</button>`}
+    </div>`;
+  }
+  return h;
+}
+
+function steps(r) {
+  return r.steps.map((s, k) => {
+    let h = `<li class="step"><span class="step-num">${k + 1}</span><div class="step-body">
+      <p class="step-text">${s.t}${s.time ? `<span class="chip-time">▶ ${s.time}</span>` : ''}</p>`;
+    if (s.tip) h += `<div class="tip"><span class="k">TIP</span>${s.tip}</div>`;
+    if (s.rp && S.mode === 'new' && !(S.buyer === 'bought' && S.recipe === 'aglio')) {
+      const p = s.rp;
+      h += `<div class="card rp"><img src="${IMG(p.img)}" alt="">
+        <div class="rp-body">${tl(1)}<div class="rp-why">${p.why}</div>
+          <div class="rp-name">${p.name}</div>
+          <div class="price"><span class="dc">${p.dc}</span><span class="sale">${p.sale}</span><span class="list">${p.list}</span></div>
+        </div>
+        <button class="btn sec sm" onclick="toast('${p.name}')">보기</button></div>`;
+    }
+    return h + `</div></li>`;
+  }).join('');
+}
+
+function journey(r) {
+  if (S.mode !== 'new' || S.buyer !== 'bought') return '';
+  const j = r.journey;
+  const bar = j.stages ? `<div class="j-bar">${j.stages.map((st, k) =>
+    `<div class="${k < j.now ? 'past' : k === j.now ? 'now' : ''}"><i></i>${st}</div>`).join('')}</div>` : '';
+  return `<div class="card journey"><span class="tl">산 뒤: 상품 → 레시피</span>
+    <div class="j-top">${j.top}</div><div class="j-t">${j.title}</div>${bar}
+    <div class="j-top" style="margin-top:12px">${j.recLabel}</div>
+    <div class="j-list" style="margin-top:6px">${j.recs.map(x => `<div class="j-rec"><img src="${IMG(x[1])}" alt=""><span>${x[0]}</span></div>`).join('')}</div>
+  </div>`;
+}
+
+function render() {
+  const r = R[S.recipe];
+  if (S.serving === null) S.serving = r.base;
+  document.body.classList.toggle('show-types', S.types === 'on' && S.mode === 'new');
+  document.getElementById('hero').style.backgroundImage = `url(https://picsum.photos/seed/${r.hero}/780/440)`;
+
+  let h = `<div class="breadcrumb">${r.crumb}</div>
+    <h1 class="recipe-title">${r.title}</h1>
+    <div class="source">${r.source} · <a href="#">YouTube에서 보기 ↗</a></div>
+    <div class="meta-row">${r.meta.map((m, k) => `<div class="meta-cell">${k === 1 ? S.serving + '인분' : m}</div>`).join('')}</div>`;
+  // 산 사람: 레시피 위에 상품의 현재 단계
+  h += journey(r);
+  h += `<div class="divider"></div>
+    <div class="sec-row"><h2 class="sec-h">재료</h2>
+      <div class="stepper"><button onclick="serve(-1)">−</button><span>${S.serving}인분</span><button onclick="serve(1)">+</button></div></div>
+    ${ingredients(r)}`;
+  if (S.mode === 'now') {
+    h += `<div class="divider"></div><h2 class="sec-h" style="padding-bottom:4px">레시피로 장보기</h2>
+      <p class="disclosure" style="padding:0 0 10px">이 페이지는 쿠팡 파트너스 활동을 포함하며 일정 수수료가 제공됩니다.</p>
+      <div class="shop">${r.shopNow.map(x => `<div class="shop-card" onclick="toast('쿠팡: ${x[0]}')"><img src="${IMG(x[1])}" alt=""><div class="n">${x[0]}</div></div>`).join('')}</div>`;
+  }
+  h += `<div class="divider"></div><h2 class="sec-h" style="padding-bottom:6px">만드는 법</h2>
+    <ul class="steps">${steps(r)}</ul>`;
+  // 레시피 끝: 다음 통(김치만, 산 사람만)
+  if (S.mode === 'new' && S.buyer === 'bought' && r.next) {
+    h += `<div class="card cream next"><span class="tl">산 뒤: 다음 주문</span>
+      <div class="t">${r.next.t}</div><p>${r.next.p}</p>
+      <button class="btn pri full" onclick="toast('다음 통 예약 — 도착일 선택')">${r.next.btn}</button></div>`;
+  }
+  h += `<p class="disclosure" style="padding-top:18px">AI가 영상을 보고 정리한 레시피예요.</p>`;
+  document.getElementById('content').innerHTML = h;
+}
+
+function serve(d) { S.serving = Math.min(10, Math.max(1, S.serving + d)); render(); }
+function toggleWeek() { S.inWeek = !S.inWeek; render(); if (S.inWeek) toast('이번 주 식단에 넣었어요'); }
+function toggleSave() { const b = document.getElementById('saveBtn'); b.classList.toggle('on'); b.textContent = b.classList.contains('on') ? '저장됨' : '저장하기'; }
+let tt;
+function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 1600); }
+
+document.querySelectorAll('.proto-btns button').forEach(b => b.addEventListener('click', () => {
+  const k = b.dataset.k;
+  document.querySelectorAll(`.proto-btns button[data-k="${k}"]`).forEach(x => x.classList.toggle('on', x === b));
+  S[k] = b.dataset.v;
+  if (k === 'recipe') { S.serving = null; S.inWeek = false; }
+  render();
+}));
+render();
+</script>
+</body>
+</html>
