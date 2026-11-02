@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>졸리팟 CRM 고도화 — 회원 정보가 샵바이에 있는 게 제약인가</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{--ink:#212121;--mid:#666666;--line:#E5E7EB;--orange:#FC642D;--green:#145F48;--tip:#F1F8F3;--cream:#FFF5EA;--blue:#3276AE;--red:#D64545}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;color:var(--ink);background:#F7F7F5;line-height:1.7;letter-spacing:-0.2px;font-size:16px}
+.wrap{max-width:860px;margin:0 auto;padding:36px 20px 80px}
+h1{font-size:28px;line-height:1.35;font-weight:700}
+.meta{color:var(--mid);font-size:14px;margin-top:8px}
+h2{font-size:21px;font-weight:700;margin:44px 0 14px;padding-top:20px;border-top:1px solid var(--line)}
+h3{font-size:17px;font-weight:700;margin:22px 0 8px}
+p{margin:10px 0}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:14px 0}
+.concl{background:var(--tip);border:1px solid #D6E9DC;border-radius:14px;padding:20px 22px;margin:22px 0}
+.concl ol{padding-left:20px}.concl li{margin:6px 0}
+.warn{background:#FCF4F4;border:1px solid #F0CFCF;border-radius:12px;padding:14px 18px;margin:14px 0;font-size:15px}
+table{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff;border-radius:12px;overflow:hidden;margin:12px 0}
+th{background:#FAFAFA;text-align:left;font-weight:600;color:var(--mid);font-size:13px;padding:10px 12px;border-bottom:1px solid var(--line)}
+td{padding:11px 12px;border-bottom:1px solid #F0F0F0;vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.t-red{background:#FBEFEF;color:var(--red)}.t-yel{background:#FFF5C6;color:#7A5B00}.t-gray{background:#F1F2F4;color:var(--mid)}.t-green{background:var(--tip);color:var(--green)}
+code{background:#F1F2F4;padding:1px 6px;border-radius:5px;font-size:14px}
+ul,ol{padding-left:20px}li{margin:4px 0}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.kpi .l{font-size:12.5px;color:var(--mid)}.kpi .num{font-size:26px;font-weight:700}.kpi .s{font-size:12px;color:var(--mid)}
+.layers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.layer{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:14.5px}
+.layer .h{font-weight:700;margin-bottom:6px}
+.layer.a{border-top:4px solid var(--orange)}.layer.b{border-top:4px solid var(--green)}.layer.c{border-top:4px solid var(--blue)}
+.src{font-size:13px;color:var(--mid)}.src a{color:var(--blue);word-break:break-all}
+@media(max-width:640px){.kpis{grid-template-columns:1fr 1fr}.layers{grid-template-columns:1fr}h1{font-size:24px}table{font-size:13.5px}}
+</style>
+</head>
+<body><div class="wrap">
+
+<h1>졸리팟 CRM 고도화<br>회원 정보가 샵바이에 있는 게 제약인가</h1>
+<div class="meta">2026.11.02 · 샵바이 회원 API로 회원 수 직접 집계(개인정보는 꺼내지 않고 숫자만) · 샵바이 웹훅·서버 API 명세 확인</div>
+
+<div class="concl">
+<b>결론 3줄</b>
+<ol>
+<li><b>개인정보가 샵바이에 있는 것 자체는 제약이 아닙니다.</b> 이메일·전화·수신 동의는 서버 API로 한 번에 1만 명씩 읽을 수 있습니다. 회원가입·정보 변경·주문·장바구니·탈퇴는 웹훅(사건이 생기면 바로 알려 주는 기능)으로 받습니다. 오늘 실제로 API로 회원 50.8만 명을 셌습니다.</li>
+<li><b>진짜 제약은 넷입니다.</b> ① 레시피 행동 데이터가 샵바이에 없음 ② 광고 수신 동의 ③ 행동에 맞춰 자동으로 보내는 엔진이 없음 ④ 개인정보를 밖으로 옮길 때의 법·보안 부담.</li>
+<li><b>추천 구조는 「연락처는 샵바이에 두고, 회원번호로만 움직이기」입니다.</b> 사람을 고르는 계산은 회원번호로 하고, 보내는 건 샵바이 메시지나 앱 푸시로 합니다. 이러면 개인정보를 밖으로 꺼낼 일이 거의 없습니다.</li>
+</ol>
+</div>
+
+<h2>1. 실측 — 우리 회원은 몇 명이고, 몇 명에게 보낼 수 있나</h2>
+<p>샵바이 회원 목록 API를 가입 기간별로 나눠 불러 <b>숫자만</b> 셌습니다. 이름·연락처는 꺼내지 않았습니다.</p>
+<div class="kpis">
+<div class="kpi"><div class="l">전체 회원</div><div class="num">50.8만</div><div class="s">508,304명</div></div>
+<div class="kpi"><div class="l">최근 1년 로그인</div><div class="num">15.3만</div><div class="s">30%</div></div>
+<div class="kpi"><div class="l">그중 SMS 수신 동의</div><div class="num">9.3만</div><div class="s">지금 광고를 보낼 수 있는 상한</div></div>
+<div class="kpi"><div class="l">최근 1년 가입자 SMS 동의</div><div class="num">42%</div><div class="s">이관 회원은 99.7%</div></div>
+</div>
+<table>
+<tr><th>가입 시기</th><th>회원</th><th>SMS 동의</th><th>이메일 동의</th><th>최근 1년 로그인</th><th>그중 SMS 동의</th></tr>
+<tr><td>2023-11~2024-10<br><span style="font-size:12.5px;color:var(--mid)">2024-08 한 달 337,575명 = 하봄몰 이관</span></td><td class="n">361,871</td><td class="n">360,954 (99.7%)</td><td class="n">66,306 (18%)</td><td class="n">42,193</td><td class="n">41,349</td></tr>
+<tr><td>2024-11~2025-10</td><td class="n">45,043</td><td class="n">44,648 (99.1%)</td><td class="n">44,080 (98%)</td><td class="n">9,641</td><td class="n">9,401</td></tr>
+<tr><td>2025-11~2026-11</td><td class="n">101,390</td><td class="n">42,272 (41.7%)</td><td class="n">41,084 (41%)</td><td class="n">101,216</td><td class="n">42,126</td></tr>
+<tr><td><b>합계</b></td><td class="n"><b>508,304</b></td><td class="n"><b>447,874 (88%)</b></td><td class="n"><b>151,470 (30%)</b></td><td class="n"><b>153,050</b></td><td class="n"><b>92,876</b></td></tr>
+</table>
+<p>세 가지가 보입니다.</p>
+<ul>
+<li><b>회원 70%는 1년 넘게 로그인하지 않았습니다.</b> 대부분 2024년 8월에 옮겨 온 하봄몰 회원입니다.</li>
+<li><b>최근 1년 가입자의 동의율(42%)이 이전(99%)보다 크게 낮습니다.</b> 가입 화면에서 동의 칸 기본값이 바뀐 것으로 보입니다. 지금 42%가 실제 동의에 가까운 값이고, 이전 99%는 기본 체크였을 수 있습니다. 확인이 필요합니다.</li>
+<li><b>광고를 실제로 보낼 수 있는 활동 회원은 약 9.3만 명입니다.</b> 모든 CRM 계획의 상한입니다. 앱 푸시 동의는 마이앱 안에만 있었으므로, 새 앱에서 0부터 다시 받습니다.</li>
+</ul>
+
+<div class="warn"><b>먼저 확인할 법적 의무 하나.</b> 광고 수신 동의는 받은 날부터 <b>2년마다 동의 여부를 다시 확인해야 합니다</b>(정보통신망법 제50조 제8항·시행령 제62조의3, 어기면 과태료 3천만 원 이하). 하봄몰 이관 회원 33.8만 명의 동의일이 2024년 8월로 기록돼 있다면, 2026년 8월에 이미 알림 기한이 지났습니다. 샵바이의 「수신 동의 확인 자동 안내」가 켜져 있었는지 운영 설정에서 확인해야 합니다. 원래 하봄몰 시절 동의일이 따로 남아 있다면 기한은 더 이릅니다.</div>
+
+<h2>2. 샵바이가 내주는 것 — 제약이 아닌 이유</h2>
+<table>
+<tr><th>필요한 것</th><th>샵바이 제공 방법</th><th>확인</th></tr>
+<tr><td>이메일·전화·이름·생일·성별</td><td>회원 목록 API (한 번에 최대 1만 명, 가입일·수정일·마지막 로그인으로 걸러 읽기)</td><td><span class="tag t-green">오늘 실행</span></td></tr>
+<tr><td>SMS·이메일·앱 푸시 수신 동의</td><td>같은 API의 <code>isSmsAgreed</code>·<code>isDirectMailAgreed</code>·<code>isPushNotificationAgreed</code></td><td><span class="tag t-green">오늘 실행</span></td></tr>
+<tr><td>실시간 사건</td><td>웹훅: 회원가입·회원정보 변경(동의 변경 포함)·등급·그룹 변경·휴면·탈퇴·주문 생성·주문 상태 변경·장바구니 담기·적립금 지급·상품 후기</td><td><span class="tag t-yel">명세 확인</span></td></tr>
+<tr><td>구매 이력</td><td>주문 API (37,109건 시간대 분석 때 이미 사용)</td><td><span class="tag t-green">사용 중</span></td></tr>
+<tr><td>나눈 집단을 샵바이에 돌려 넣기</td><td>회원 그룹 만들기·회원을 그룹에 넣기 API → 그룹 대상 쿠폰</td><td><span class="tag t-yel">명세 확인</span></td></tr>
+<tr><td>보내기</td><td>샵바이 메시지(SMS·알림톡·브랜드 메시지): 엑셀 대상·예약·반복 발송 (9/29 업데이트)</td><td><span class="tag t-yel">공지 확인</span></td></tr>
+</table>
+
+<h3>샵바이 쪽 작은 제약 (오늘 겪은 것)</h3>
+<ul>
+<li><b>회원 검색은 가입 기간을 꼭 넣어야 하고, 너무 넓으면 거절합니다.</b> 1년 단위로 나눠야 했습니다. 마지막 로그인 검색은 1년 범위까지만 됩니다.</li>
+<li><b>웹훅은 실패해도 다시 보내 주지 않습니다.</b> 「실패한 웹훅 조회」 API로 매일 한 번 빠진 것을 맞춰야 합니다.</li>
+<li><b>앱 푸시 발송은 마이앱 상점에만 있습니다.</b> 새 앱으로 바꾸면 푸시는 우리가 따로 붙여야 합니다(OneSignal 견적 트랙).</li>
+</ul>
+<p>이 정도는 개발로 넘을 수 있는 수준입니다.</p>
+
+<h2>3. 진짜 제약 4가지</h2>
+<table>
+<tr><th>제약</th><th>무슨 뜻인가</th><th>대응</th></tr>
+<tr><td><b>① 레시피 행동이 샵바이에 없음</b></td><td>샵바이는 장바구니·주문·후기만 압니다. 「김치찜 레시피를 저장했다」「요리 후기를 썼다」는 졸리팟 DB에만 있습니다. 졸리팟 CRM의 핵심인 「레시피 → 장보기」 연결이 바로 이 데이터입니다.</td><td>졸리팟 서버가 행동 기록을 <b>회원번호와 함께</b> 남기게 합니다. 이벤트 이름은 처음부터 정해 둡니다.</td></tr>
+<tr><td><b>② 로그인 전 방문자</b></td><td>인스타에서 들어와 레시피만 보고 나간 사람은 누구인지 모릅니다.</td><td>로그인 순간 「이 기기 = 회원번호」로 이어 붙입니다. 앱은 설치 기기 ID와 회원번호를 묶습니다.</td></tr>
+<tr><td><b>③ 수신 동의</b></td><td>활동 회원 중 보낼 수 있는 사람이 9.3만 명이고, 최근 가입자는 42%만 동의했습니다. 새 앱 푸시는 0부터 시작합니다.</td><td>동의를 늘리는 장치가 CRM 1순위입니다. 「재입고·오픈 알림 받기」「적립금 소멸 알림」처럼 받을 이유를 줍니다.</td></tr>
+<tr><td><b>④ 자동 발송 엔진이 없음</b></td><td>샵바이 메시지는 사람이 엑셀로 대상을 올리고 예약하는 방식입니다. 「레시피 저장 후 다음 날 저녁 준비물 딜 알림」처럼 사람마다 다른 순간에 맞춰 보내지는 못합니다.</td><td>처음엔 하루 1번 배치(전날 저장한 사람 → 그룹 → 예약 발송)로 반자동화합니다. 물량이 커지면 CRM 도구를 붙입니다.</td></tr>
+</table>
+
+<h2>4. 추천 구조 — 연락처는 샵바이에, 계산은 회원번호로</h2>
+<div class="layers">
+<div class="layer a"><div class="h">① 신원·연락처·동의</div>샵바이 (원본)<br>이메일·전화·수신 동의<br><b>밖으로 복사하지 않음</b></div>
+<div class="layer b"><div class="h">② 행동</div>졸리팟 DB + 샵바이 웹훅<br>레시피 저장·후기·장바구니·주문<br><b>전부 회원번호로</b></div>
+<div class="layer c"><div class="h">③ 실행</div>집단 나누기 → 샵바이 그룹으로 넣기<br>→ 샵바이 메시지·쿠폰 발송<br>앱 푸시는 회원번호로</div>
+</div>
+
+<h3>보내는 방법 두 가지</h3>
+<table>
+<tr><th></th><th>A. 개인정보를 꺼내지 않는 방식 <span class="tag t-green">지금</span></th><th>B. CRM 도구 방식 <span class="tag t-gray">나중</span></th></tr>
+<tr><td>흐름</td><td>회원번호로 대상 계산 → 샵바이 회원 그룹·엑셀로 넣기 → 샵바이가 알림톡·SMS 발송</td><td>CRM 도구에 회원번호·동의·연락처를 매일 동기화 → 도구가 행동에 맞춰 자동 발송</td></tr>
+<tr><td>장점</td><td>개인정보가 샵바이 밖으로 안 나감 · 추가 비용 거의 없음</td><td>사람마다 다른 순간에 자동 발송 · 실험(A/B)·성과 측정이 쉬움</td></tr>
+<tr><td>단점</td><td>하루 1번 배치 수준 · 발송 화면은 사람이 다룸</td><td>월 비용 · 개인정보 처리위탁 고지(처리방침에 업체명) · 보안 점검</td></tr>
+<tr><td>넘어갈 때</td><td colspan="2">자동 발송 시나리오가 3개를 넘고, 배치를 사람이 매일 돌리는 게 병목이 될 때 B로 넘어갑니다.</td></tr>
+</table>
+<p><b>앱 푸시는 처음부터 회원번호로 붙입니다.</b> 푸시 도구는 「외부 ID = 회원번호」만 알면 되고, 전화·이메일이 필요 없습니다. 광고 푸시 동의는 샵바이 회원 정보의 「푸시 알림 동의」 칸에 기록해서, 원본을 한 곳에 둡니다.</p>
+
+<h2>5. 졸리팟 첫 CRM 시나리오 5개</h2>
+<table>
+<tr><th>#</th><th>누구에게</th><th>무엇을</th><th>데이터</th><th>성격</th></tr>
+<tr><td>1</td><td>어제 레시피를 저장했는데 그 재료 딜을 안 산 사람</td><td>오늘 저녁 4시, 그 레시피 준비물 딜</td><td>졸리팟 저장 + 샵바이 주문</td><td><span class="tag t-yel">광고</span> 동의자만</td></tr>
+<tr><td>2</td><td>재입고·오픈 알림 신청자</td><td>열리는 순간 알림</td><td>샵바이 재입고 신청</td><td><span class="tag t-green">신청한 정보</span></td></tr>
+<tr><td>3</td><td>첫 구매 7일 뒤</td><td>「해 보셨어요?」 사진 후기 요청 + 적립금 안내</td><td>샵바이 주문 웹훅</td><td>후기 요청은 성격 판단 필요</td></tr>
+<tr><td>4</td><td>적립금·쿠폰 소멸 7일 전</td><td>소멸 안내</td><td>샵바이 적립금</td><td><span class="tag t-yel">광고</span> (KISA 2025-12 해석)</td></tr>
+<tr><td>5</td><td>11개월째 로그인 없는 회원</td><td>휴면 전 안내 + 이번 주 식단</td><td>샵바이 마지막 로그인</td><td>휴면 안내는 정보성, 식단은 광고</td></tr>
+</table>
+<p>1번이 졸리팟만 할 수 있는 시나리오입니다. 레시피 행동과 구매가 같은 회원번호로 이어져 있어야 가능하고, 이 문서의 구조가 그 전제를 만듭니다.</p>
+
+<h2>6. 개발사에 줄 요구사항</h2>
+<ol>
+<li><b>행동 기록</b>: 레시피 보기·저장·요리 후기·장보기 담기를 회원번호와 시각으로 남기는 표 하나. 이름은 미리 정합니다(<code>recipe_view</code>·<code>recipe_save</code>·<code>cook_review</code>·<code>cart_from_recipe</code>).</li>
+<li><b>샵바이 웹훅 받기</b>: 회원가입·회원정보 변경·탈퇴·주문 생성·주문 상태 변경·장바구니. 매일 「실패한 웹훅 조회」로 맞추기.</li>
+<li><b>개인정보 복사 금지</b>: 졸리팟 DB에는 회원번호만 둡니다. 이메일·전화는 저장하지 않습니다.</li>
+<li><b>앱 푸시</b>: 푸시 도구의 외부 ID = 샵바이 회원번호. 광고 푸시 동의는 샵바이 「푸시 알림 동의」 칸에 씁니다.</li>
+<li><b>로그인 이어 붙이기</b>: 웹·앱 모두 로그인 때 기기 ID와 회원번호를 연결합니다. GA4의 사용자 ID에는 회원번호를 넣습니다. 이메일·전화는 넣지 않습니다.</li>
+</ol>
+
+<h2>7. 정해 주실 것</h2>
+<div class="box">
+<ol>
+<li><b>2년 재확인 의무</b>: 샵바이 운영 설정에서 「수신 동의 확인 안내」가 켜져 있는지 확인. 꺼져 있었다면 바로 발송이 필요합니다.</li>
+<li><b>최근 가입자 동의율 42%</b>: 가입 화면 동의 칸을 바꿀지. 기본 체크는 무효라 그대로 둡니다. 대신 「재입고·오픈 알림 받기」처럼 받을 이유를 붙여 올리는 방향을 권합니다.</li>
+<li><b>보내는 방법</b>: 지금은 A(개인정보를 꺼내지 않는 방식)로 시작하고, 1번 시나리오부터 해 볼지.</li>
+</ol>
+</div>
+
+<h2>출처</h2>
+<div class="src">
+<p><a href="https://server-docs.shopby.co.kr/">샵바이 server API 문서</a> — member 명세 「회원 목록 조회하기 V1.2」(최대 1만 명·기간 필수)·「회원 그룹」·「회원을 그룹에 추가하기」, manage 명세 「적립금」, promotion 명세 「쿠폰 대상」</p>
+<p><a href="https://workspace-help.nhn-commerce.com/app-guide/shopby_webhook">샵바이 웹훅 가이드</a> — 이벤트 목록, 재전송 없음·실패 웹훅 조회</p>
+<p><a href="https://www.godo.co.kr/support/board/35/40/5463">샵바이 2026-09-29 메시지 통합 업데이트 공지</a> · <a href="https://m.boannews.com/html/detail.html?idx=52494">보안뉴스 — 광고성 정보 수신동의 2년 확인</a> · <a href="https://www.kyobobook.co.kr/cscenter/notice/1001193">교보문고 — 수신동의 확인 안내(시행령 인용)</a></p>
+<p>측정: 샵바이 회원 API(V1.2, <code>includesCount</code>)로 가입 기간·수신 동의·마지막 로그인 조건별 회원 수만 집계 · 개인정보 미출력 · 2026-11-02</p>
+</div>
+
+</div></body></html>
