@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>졸리팟 회원 구조와 활동 적립금 설계 — 댓글·후기에 적립금을 줄 수 있나</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{--ink:#212121;--mid:#666666;--line:#E5E7EB;--orange:#FC642D;--green:#145F48;--tip:#F1F8F3;--cream:#FFF5EA;--blue:#3276AE;--red:#D64545}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;color:var(--ink);background:#F7F7F5;line-height:1.7;letter-spacing:-0.2px;font-size:16px}
+.wrap{max-width:860px;margin:0 auto;padding:36px 20px 80px}
+h1{font-size:28px;line-height:1.35;font-weight:700}
+.meta{color:var(--mid);font-size:14px;margin-top:8px}
+h2{font-size:21px;font-weight:700;margin:44px 0 14px;padding-top:20px;border-top:1px solid var(--line)}
+h3{font-size:17px;font-weight:700;margin:22px 0 8px}
+p{margin:10px 0}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:14px 0}
+.concl{background:var(--tip);border:1px solid #D6E9DC;border-radius:14px;padding:20px 22px;margin:22px 0}
+.concl ol{padding-left:20px}.concl li{margin:6px 0}
+.warn{background:#FCF4F4;border:1px solid #F0CFCF;border-radius:12px;padding:14px 18px;margin:14px 0;font-size:15px}
+table{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff;border-radius:12px;overflow:hidden;margin:12px 0}
+th{background:#FAFAFA;text-align:left;font-weight:600;color:var(--mid);font-size:13px;padding:10px 12px;border-bottom:1px solid var(--line)}
+td{padding:11px 12px;border-bottom:1px solid #F0F0F0;vertical-align:top}
+tr:last-child td{border-bottom:none}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.t-red{background:#FBEFEF;color:var(--red)}.t-yel{background:#FFF5C6;color:#7A5B00}.t-gray{background:#F1F2F4;color:var(--mid)}.t-green{background:var(--tip);color:var(--green)}
+code{background:#F1F2F4;padding:1px 6px;border-radius:5px;font-size:14px}
+ul,ol{padding-left:20px}li{margin:4px 0}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0}
+.flow div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px}
+.flow b{display:block;color:var(--orange);font-size:13px;margin-bottom:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.ledger{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.ledger .h{font-weight:700;margin-bottom:6px}
+.ledger.shop{border-top:4px solid var(--orange)}.ledger.jp{border-top:4px solid var(--green)}
+.src{font-size:13px;color:var(--mid)}.src a{color:var(--blue);word-break:break-all}
+@media(max-width:640px){.flow{grid-template-columns:1fr}.two{grid-template-columns:1fr}h1{font-size:24px}table{font-size:13.5px}}
+</style>
+</head>
+<body><div class="wrap">
+
+<h1>졸리팟 회원 구조와 활동 적립금 설계<br>댓글·후기를 쓴 사람에게 쇼핑 적립금을 줄 수 있나</h1>
+<div class="meta">2026.11.02 · 개발 서버 실측 · 샵바이 공식 서버 API 명세(manage·member·promotion) 확인</div>
+
+<div class="concl">
+<b>결론 3줄</b>
+<ol>
+<li><b>됩니다. 샵바이에 「적립금 지급하기」 공식 API가 있습니다.</b> 회원번호와 금액, 만료일만 넣으면 즉시 지급됩니다. 받은 적립금은 샵바이 마이페이지에 보이고, 결제 때 그대로 쓸 수 있습니다. 결제 쪽은 손댈 게 없습니다.</li>
+<li><b>회원은 이미 하나입니다.</b> 개발 서버는 샵바이 로그인으로 사람을 알아보고, 레시피에 샵바이 회원번호를 붙여 저장합니다. 레시피를 올린 A와 물건을 산 A는 같은 회원번호라, 따로 회원 DB를 만들 필요가 없습니다. <b>샵바이 = 회원·돈 원장, 졸리팟 DB = 활동 원장</b>으로 나누면 됩니다.</li>
+<li><b>다만 「댓글」에는 주지 않기를 권합니다.</b> 댓글은 가장 쉽게 부풀릴 수 있고, 졸리팟에 남는 가치가 작습니다. 돈은 <b>사진이 있는 요리 후기</b>와 <b>남이 저장한 레시피</b>에 겁니다. 오늘의집처럼 사진 콘텐츠가 쌓이는 쪽입니다.</li>
+</ol>
+</div>
+
+<h2>1. 지금 구조 — 개발 서버 실측</h2>
+<table>
+<tr><th>확인한 것</th><th>결과</th></tr>
+<tr><td>로그인</td><td>샵바이 로그인(<code>oauth/token</code>)으로 받은 토큰을 졸리팟 서버에 함께 보냅니다. 졸리팟 서버는 그 토큰으로 샵바이 회원 정보(<code>/profile</code>)를 확인합니다.</td></tr>
+<tr><td>레시피에 붙는 사람 정보</td><td><code>ownerMemberNo</code>·<code>memberNo</code>(샵바이 회원번호), <code>memberId</code>(아이디), <code>memberName</code>(이름)</td></tr>
+<tr><td>닉네임</td><td>샵바이 회원 정보의 닉네임 칸을 그대로 씁니다(중복 확인도 샵바이)</td></tr>
+<tr><td>마이페이지 적립금</td><td>개발 서버 화면에 <code>/mypage/accumulations</code>가 이미 있고, 샵바이 적립금 API를 그대로 읽습니다</td></tr>
+</table>
+<p>대표님 짐작이 맞습니다. <b>졸리팟 서버에는 회원 DB가 따로 없고, 샵바이 회원번호를 열쇠로 씁니다.</b> 이 구조는 맞는 방향입니다. 회원을 두 군데 두면 탈퇴·개인정보·로그인을 두 번 관리해야 하기 때문입니다.</p>
+
+<div class="two">
+<div class="ledger shop"><div class="h">샵바이 — 회원·돈 원장</div>
+<ul><li>로그인·회원가입·탈퇴</li><li>이름·연락처·주소(개인정보)</li><li>닉네임·마케팅 수신 동의</li><li>주문·결제·쿠폰·<b>적립금</b></li></ul></div>
+<div class="ledger jp"><div class="h">졸리팟 DB — 활동 원장</div>
+<ul><li>레시피·요리 후기·댓글·저장·신고</li><li>모든 기록에 <b>샵바이 회원번호만</b> 붙임</li><li>보상 장부(무엇에 얼마를 줬나)</li><li>공개 프로필은 닉네임·사진만</li></ul></div>
+</div>
+
+<div class="warn"><b>고칠 점 하나.</b> 개발 서버는 레시피 기록에 회원의 <b>이름(실명)</b>까지 복사해 둡니다. 화면에는 안 나오더라도, 개인정보가 콘텐츠 DB로 퍼지면 탈퇴·유출 때 지울 곳이 늘어납니다. <b>활동 기록에는 회원번호만 두고</b>, 이름이 필요하면 그때 샵바이에서 읽게 하는 게 맞습니다.</div>
+
+<h2>2. 적립금 지급 — 샵바이 공식 API</h2>
+<table>
+<tr><th>API (server, manage 명세)</th><th>하는 일</th><th>졸리팟 쓰임</th></tr>
+<tr><td><code>POST /profile/accumulations</code><br>적립금 지급하기</td><td>회원번호·금액·만료일·사유·외부 키를 넣으면 <b>즉시 지급</b></td><td>후기 승인 시 지급. 외부 키에 후기 번호를 넣어 <b>두 번 지급 방지</b></td></tr>
+<tr><td><code>DELETE /profile/accumulations</code><br>적립금 차감하기</td><td>회원번호·금액·사유로 차감. 보유액보다 많으면 실패</td><td>부정 후기가 지워졌을 때 회수</td></tr>
+<tr><td><code>GET /accumulations/settlement</code><br>지급·차감 이력</td><td>기간별 지급·차감·롤백 이력</td><td>월 정산·회계 보고</td></tr>
+<tr><td><code>POST /coupons/issues</code><br>회원번호로 쿠폰 발급 (promotion 명세)</td><td>만들어 둔 쿠폰을 특정 회원에게 지급</td><td>「첫 후기 쿠폰」처럼 적립금 대신 쓸 때</td></tr>
+</table>
+<p>지급 사유는 회원의 적립금 내역에 「레시피 후기 작성 적립」처럼 남습니다. 지금은 관리자 화면에서 엑셀로 한 번에 지급(최대 1만 건)하는 방법도 있습니다. 하지만 API를 쓰면 사람 손이 필요 없습니다.</p>
+
+<h3>흐름 — 결제는 손대지 않습니다</h3>
+<div class="flow">
+<div><b>1 활동</b>A가 사진 요리 후기를 올림 (졸리팟 DB, 회원번호 붙음)</div>
+<div><b>2 대기</b>보상 장부에 「대기」로 기록. 7일 동안 신고·삭제를 봄</div>
+<div><b>3 지급</b>졸리팟 서버가 샵바이 지급 API 호출 (외부 키 = 후기 번호)</div>
+<div><b>4 확인</b>A는 마이페이지 적립금에서 확인 (이미 있는 화면)</div>
+<div><b>5 사용</b>샵바이 결제 화면에서 적립금으로 결제</div>
+</div>
+<p><b>지급 API는 졸리팟 서버에서만 부릅니다.</b> 앱이나 웹 화면에서 부르면 열쇠(systemKey)가 노출돼 누구나 적립금을 찍어낼 수 있습니다.</p>
+
+<h2>3. 무엇에 줄 것인가</h2>
+<table>
+<tr><th>행동</th><th>졸리팟에 남는 것</th><th>부풀리기 위험</th><th>제안</th></tr>
+<tr><td><b>사진 요리 후기</b><br>(해 봤어요 + 사진)</td><td>다른 엄마가 믿는 증거, 오늘의집식 사진 콘텐츠</td><td>중간 (사진 재사용)</td><td><span class="tag t-green">주력</span></td></tr>
+<tr><td><b>AI 레시피 등록</b><br>(링크로 만들기)</td><td>레시피 수</td><td>높음. 한 건 만들 때마다 우리 AI 비용이 듦</td><td><span class="tag t-yel">등록이 아니라</span><br>남이 저장 N회 되면 지급</td></tr>
+<tr><td><b>댓글</b></td><td>작음</td><td>가장 높음 (「맛있어요」 복붙)</td><td><span class="tag t-red">돈 안 줌</span><br>배지·활동 표시로</td></tr>
+<tr><td><b>첫 후기</b></td><td>첫 경험 만들기</td><td>낮음 (1인 1회)</td><td><span class="tag t-green">쿠폰</span><br>쿠폰 발급 API</td></tr>
+</table>
+<p><b>AI 레시피 등록에 바로 돈을 주면, 우리가 AI 비용과 적립금을 동시에 내는 구조가 됩니다.</b> 「다른 사람이 저장한 레시피」에만 주면 쓸모 있는 레시피만 돈을 받습니다.</p>
+
+<h3>금액 — 시험값입니다</h3>
+<div class="box">
+<p>국내 레시피·식품몰의 후기 적립금 공식 금액은 이번에 확인하지 못했습니다. 그래서 아래는 <b>4주 시험으로 정할 출발값</b>입니다.</p>
+<ul>
+<li>사진 요리 후기 <b>500원</b> · 첫 후기는 1,000원 쿠폰</li>
+<li>남이 5번 저장한 레시피 <b>1,000원</b> (레시피당 1회)</li>
+<li>한 사람 <b>월 상한 3,000원</b>, 만료 <b>30일</b>. 만료가 짧아야 「쓰러 오는」 이유가 됩니다</li>
+</ul>
+<p>판정 지표는 둘입니다. 후기를 쓴 사람의 30일 안 재구매율, 그리고 쓰지 않은 사람과의 차이입니다. 차이가 적립금보다 작으면 접습니다.</p>
+</div>
+
+<h2>4. 부풀리기를 막는 규칙 7개</h2>
+<ol>
+<li><b>바로 주지 않고 7일 뒤 줍니다.</b> 그동안 신고되거나 지워지면 지급하지 않습니다.</li>
+<li><b>외부 키로 한 번만 줍니다.</b> 같은 후기 번호로는 두 번 지급되지 않습니다.</li>
+<li><b>같은 레시피 후기는 1회, 하루 1건, 월 상한 3,000원.</b></li>
+<li><b>사진 필수, 같은 사진 재사용 차단.</b> 사진 지문 비교로 막습니다.</li>
+<li><b>구매 이력이 1번 이상인 회원만 받습니다.</b> 샵바이 주문 기록으로 확인합니다. 가짜 계정으로 적립금을 모으는 걸 막고, 이미 산 사람이 다시 오게 합니다.</li>
+<li><b>지운 후기는 남은 적립금에서 회수합니다.</b> 이미 썼으면 회수가 실패하므로 그냥 둡니다. 1번 규칙 덕에 드뭅니다.</li>
+<li><b>탈퇴 회원은 매일 맞춥니다.</b> 샵바이 탈퇴 회원 조회(<code>/members/expelled-members</code>)로 활동 기록을 익명 처리합니다.</li>
+</ol>
+
+<h2>5. 법·회계에서 챙길 것</h2>
+<div class="box">
+<p><b>후기 보상 표시.</b> 공정위 추천·보증 심사지침은 대가를 받고 쓴 후기에 그 사실을 표시하게 합니다. 다만 「모든 사람에게 차별 없이 소액을 주고, 소비자가 그 사실을 쉽게 알 수 있으면」 따로 표시하지 않아도 된다는 해설이 있습니다. 안전하게 가려면 아래 셋을 지킵니다.</p>
+<ul>
+<li>적립금 정책을 후기 쓰기 화면에 분명히 적습니다.</li>
+<li>적립금을 받은 후기에는 「적립금 지급 후기」 표시를 붙입니다.</li>
+<li><b>좋은 말·별점과 상관없이</b> 줍니다. 칭찬한 후기에만 주면 문제가 됩니다.</li>
+</ul>
+<p><b>회계.</b> 지급한 적립금은 쓰일 때 매출이 줄어드는 구조라, 지급액·사용액·소멸액을 매달 따로 봐야 합니다. 지급·차감 이력 API로 월 보고서를 자동으로 뽑을 수 있습니다. 처리 방식은 회계 담당 확인이 필요합니다.</p>
+<p>위 법 해석은 언론 해설 기준입니다. 시작 전에 공정위 지침 원문으로 확인해야 합니다.</p>
+</div>
+
+<h2>6. 개발사에 줄 요구사항</h2>
+<table>
+<tr><th>#</th><th>요구사항</th></tr>
+<tr><td>1</td><td>회원 원장은 샵바이 하나. 졸리팟 DB의 활동 기록에는 <b>샵바이 회원번호만</b> 저장 (이름·연락처 복사 금지)</td></tr>
+<tr><td>2</td><td>보상 장부 테이블: 회원번호 · 활동 종류 · 활동 번호 · 금액 · 상태(대기/지급/회수/취소) · 외부 키 · 지급 일시</td></tr>
+<tr><td>3</td><td>7일 대기 후 지급하는 예약 작업 + 샵바이 <code>POST /profile/accumulations</code> 호출 (서버에서만)</td></tr>
+<tr><td>4</td><td>삭제·신고 확정 시 <code>DELETE /profile/accumulations</code> 회수</td></tr>
+<tr><td>5</td><td>규칙 값(금액·상한·대기일·대상)은 <b>운영 설정에서 바꿀 수 있게</b> — 시험하며 조정</td></tr>
+<tr><td>6</td><td>관리자 화면: 보상 장부 목록 · 수동 지급/회수 · 월 합계</td></tr>
+<tr><td>7</td><td>샵바이 서버 API 앱에 <b>적립금 권한</b> 추가 (레몬트리가 워크스페이스에서 승인)</td></tr>
+</table>
+<p><b>순서 제안</b>: 출시 때는 2번 장부 테이블과 1번 원칙만 넣고 지급은 끕니다. 후기가 쌓이기 시작하면 4주 시험으로 켭니다. 장부를 처음부터 두면, 나중에 「출시 이후 쓴 후기」에 소급 지급도 할 수 있습니다.</p>
+
+<h2>7. 정해 주실 것</h2>
+<div class="box">
+<ol>
+<li><b>보상 대상</b>: 사진 요리 후기 + 저장된 레시피로 갈지, 댓글도 넣을지.</li>
+<li><b>받는 사람</b>: 구매 이력 1회 이상 회원만으로 제한할지.</li>
+<li><b>시점</b>: 출시 때는 장부만 두고, 지급은 출시 뒤 시험으로 켤지.</li>
+</ol>
+</div>
+
+<h2>출처</h2>
+<div class="src">
+<p><a href="https://server-docs.shopby.co.kr/">샵바이 server API 문서</a> — manage 명세 「적립금 지급하기 POST /profile/accumulations」「적립금 차감하기」「적립금 지급/차감 이력 조회」, promotion 명세 「회원번호와 쿠폰번호로 쿠폰 발급하기」, member 명세 「탈퇴 회원 조회」</p>
+<p><a href="https://workspace-help.nhn-commerce.com/aurora-guide/api-1/mypage-benefit/accumulation-list">샵바이 가이드 — 마이페이지 적립금 내역</a> · <a href="https://www.godo.co.kr/main/class/81/Manage-Member-Rewards-in-Bulk-5410">고도몰 셀러팁 — 적립금 일괄 지급</a></p>
+<p><a href="https://www.etoday.co.kr/news/view/1943473">이투데이 — 후기 쓰고 적립금 받아도 광고 표시해야 할까</a> · <a href="https://www.dailian.co.kr/news/view/899675/">데일리안 — 광고성 후기 표시</a></p>
+<p>측정: 개발 서버 d1nmxpjaa8tlrm.cloudfront.net (test01 계정 레시피 기록·화면 코드) · 2026-11-02</p>
+</div>
+
+</div></body></html>
