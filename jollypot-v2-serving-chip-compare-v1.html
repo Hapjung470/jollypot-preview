@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>인분 칩 색 비교 — jollypot-v2-serving-chip-compare-v1</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;background:#2B2B33;color:#212121;letter-spacing:-0.3px;-webkit-font-smoothing:antialiased}
+/* 프로토 컨트롤 — 졸리팟 토큰 미사용 */
+.proto{width:390px;margin:0 auto;background:#1E1E2E;color:#CCCCDD;padding:12px 14px 10px;font-size:12px}
+.proto .lab{font-weight:600;margin:6px 0 6px}
+.proto .row{display:flex;gap:6px;flex-wrap:wrap}
+.proto button{border:none;background:#2D2D3D;color:#8888A0;padding:7px 10px;border-radius:7px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer}
+.proto button.on{background:#5B6ABF;color:#fff}
+.proto .ver{margin-top:10px;font-size:12px;color:#CCCCDD;border-top:1px solid #3A3A4E;padding-top:8px}
+.proto .desc{margin-top:8px;line-height:1.55;color:#CCCCDD}
+.phone{width:390px;margin:0 auto;background:#fff;min-height:760px;padding:18px 0 40px}
+.h{display:flex;align-items:baseline;justify-content:space-between;padding:0 20px 12px}
+.h b{font-size:19px;font-weight:600}
+.h span{font-size:15px;font-weight:600;color:#FC642D}
+.card{margin:0 20px 18px;border:1px solid #CCCFD4;border-radius:16px;padding:14px;display:grid;grid-template-columns:132px 1fr;gap:12px;background:#fff}
+.photo{width:132px;height:132px;border-radius:12px;background-size:cover;background-position:center}
+.src{font-size:12px;color:#666;margin-bottom:4px}
+.tt{font-size:17px;font-weight:600;line-height:1.35}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:999px;color:#212121;white-space:nowrap}
+.c-time{background:#FFF5C6}
+.c-veg{background:#E3F4C7}
+.c-gray{background:#F1F2F4}
+.c-text{background:none;padding:4px 2px;color:#666;font-weight:500;font-size:12px}
+.ic{width:12px;height:12px;flex-shrink:0}
+.steps{grid-column:1/-1;border-top:1px solid #E5E7EB;padding-top:10px;font-size:13.5px;color:#212121}
+.steps div{display:flex;gap:8px;align-items:center;margin:5px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.num{width:20px;height:20px;border-radius:50%;background:#145F48;color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.verdict{margin:6px 20px 0;padding:14px 16px;border-radius:12px;font-size:13.5px;line-height:1.6}
+.verdict.bad{background:#FCF4F4;color:#8A2E2E}
+.verdict.ok{background:#F1F8F3;color:#145F48}
+.verdict b{display:block;margin-bottom:2px}
+.cap{margin:0 20px 8px;font-size:12px;color:#666}
+</style>
+</head>
+<body>
+<div class="proto">
+  <div class="lab">안</div>
+  <div class="row" id="optRow">
+    <button data-o="A">A 개발사 현재</button>
+    <button data-o="B">B 우리 프로토</button>
+    <button data-o="C" class="on">C 회색 칩 (추천)</button>
+    <button data-o="D">D 글자만</button>
+  </div>
+  <div class="lab">레시피</div>
+  <div class="row" id="vegRow">
+    <button data-v="0" class="on">일반 레시피</button>
+    <button data-v="1">채식 레시피 (채식 칩이 붙을 때)</button>
+  </div>
+  <div class="desc" id="desc"></div>
+  <div class="ver">jollypot-v2-serving-chip-compare-v1</div>
+</div>
+
+<div class="phone">
+  <div class="h"><b>오늘 점심 뭐 해주지?</b><span>1 / 5</span></div>
+  <div class="card">
+    <div class="photo" id="ph1"></div>
+    <div>
+      <div class="src">데일리쿡</div>
+      <div class="tt" id="t1">키위 카스테라 케이크</div>
+      <div class="chips" id="chips1"></div>
+    </div>
+    <div class="steps">
+      <div><span class="num">1</span>카스테라를 적당한 두께로 슬라이스해요.</div>
+      <div><span class="num">2</span>키위 껍질을 벗기고 얇게 슬라이스해요.</div>
+      <div><span class="num">3</span>생크림에 설탕을 넣고 단단하게 휘핑해요.</div>
+    </div>
+  </div>
+  <p class="cap">아래는 같은 칩이 여러 카드에 반복될 때의 모습입니다.</p>
+  <div class="card">
+    <div class="photo" id="ph2"></div>
+    <div>
+      <div class="src">매일맛나</div>
+      <div class="tt" id="t2">매콤한 닭볶음탕</div>
+      <div class="chips" id="chips2"></div>
+    </div>
+  </div>
+  <div class="verdict" id="verdict"></div>
+</div>
+
+<script>
+var O='C', V='0';
+var ICON_T='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg>';
+var ICON_S='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.2c3 .2 5.5 2.6 5.5 5.8"/></svg>';
+function chips(time,serv,veg){
+  var t='<span class="chip c-time">'+ICON_T+time+'</span>', s;
+  if(O==='A') s='<span class="chip c-time">'+ICON_S+serv+'</span>';
+  if(O==='B') s='<span class="chip c-veg">'+ICON_S+serv+'</span>';
+  if(O==='C') s='<span class="chip c-gray">'+ICON_S+serv+'</span>';
+  if(O==='D') s='<span class="chip c-text">'+ICON_S+serv+'</span>';
+  var v=veg?'<span class="chip c-veg">채식</span>':'';
+  return t+s+v;
+}
+var DESC={
+ A:'A: 인분도 시간과 같은 노랑 (개발사가 규칙이 없어 맞춘 상태)',
+ B:'B: 인분은 연두 #E3F4C7 (우리 홈 프로토 v14-32-1·v14-33) — 이 색은 가이드에서 「채식」 칩 색',
+ C:'C: 인분은 회색 칩 #F1F2F4 + 잉크 글자 — 시간만 색으로 강조',
+ D:'D: 인분은 칩 없이 회색 글자 #666 — 상세 화면 메타와 같은 방식'
+};
+var VERD={
+ A:['bad','노랑이 「시간」 뜻을 잃습니다','두 칩이 같은 색이면 엄마가 먼저 봐야 할 「얼마나 걸리나」가 묻힙니다. 노랑은 시간 전용 색이어야 합니다.'],
+ B:['bad','인분 칩이 채식 표시처럼 보입니다','채식 레시피를 켜 보세요. 인분 칩과 채식 칩이 같은 연두라 어느 게 채식인지 헷갈립니다. 한 색에 두 뜻이 붙은 상태입니다.'],
+ C:['ok','추천 — 시간만 색, 인분은 중립','노랑은 시간 하나만 뜻하고, 채식이 붙어도 겹치지 않습니다. 회색 칩은 크기가 시간 칩과 같아 줄이 고르게 보입니다. 글자 명암 14.4 : 1.'],
+ D:['ok','가능 — 다만 칩 줄이 들쭉날쭉','의미 충돌은 없고 상세 화면과도 같습니다. 다만 노란 칩 옆에 글자만 있으면 높이·여백이 달라 정리돼 보이지 않습니다. 칩이 하나뿐인 카드(리스트 등)에 어울립니다.']
+};
+function render(){
+  var veg=V==='1';
+  document.getElementById('chips1').innerHTML=chips('10분','1인분',veg);
+  document.getElementById('chips2').innerHTML=chips('40분','3인분',false);
+  document.getElementById('desc').textContent=DESC[O];
+  var v=VERD[O]; var el=document.getElementById('verdict'); el.className='verdict '+v[0]; el.innerHTML='<b>'+v[1]+'</b>'+v[2];
+  document.querySelectorAll('#optRow button').forEach(function(b){b.classList.toggle('on',b.dataset.o===O)});
+  document.querySelectorAll('#vegRow button').forEach(function(b){b.classList.toggle('on',b.dataset.v===V)});
+}
+document.getElementById('optRow').onclick=function(e){if(e.target.dataset.o){O=e.target.dataset.o;render()}};
+document.getElementById('vegRow').onclick=function(e){if(e.target.dataset.v){V=e.target.dataset.v;render()}};
+document.getElementById('ph1').style.backgroundImage='url(https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&q=70)';
+document.getElementById('ph2').style.backgroundImage='url(https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&q=70)';
+render();
+</script>
+</body>
+</html>
