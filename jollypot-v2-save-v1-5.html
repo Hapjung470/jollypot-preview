@@ -195,11 +195,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
       <button class="proto-toggle" data-v="recipe">레시피 고르기</button>
       <button class="proto-toggle" data-v="product">상품 고르기</button>
     </div></div>
-  <div><p class="proto-label">묶음 이름 (결정 대기)</p>
-    <div class="proto-toggles" data-group="name">
-      <button class="proto-toggle active" data-v="컬렉션">컬렉션</button>
-      <button class="proto-toggle" data-v="레시피북">레시피북</button>
-    </div></div>
   <div><p class="proto-label">상태</p>
     <div class="proto-toggles" data-group="state">
       <button class="proto-toggle active" data-v="filled">채워짐</button>
@@ -215,7 +210,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   ② 「저장 취소」는 확인 창 없이 바로 빼고, 알림의 「되돌리기」로 살림(되돌릴 수 있으니 묻지 않음). 「삭제」라는 말은 쓰지 않음 — 레시피가 지워지는 게 아님.<br>
   ③ 제목은 「저장」. 「○○님의 저장 목록」은 가입 때 닉네임을 받지 않아 실명이 나옴.<br>
   ④ 오른쪽 위는 「+ 새 컬렉션」 글자 버튼(「+」만 쓰면 하단 「+」 레시피 만들기와 겹침).<br>
-  ⑤ 가이드 v2.0.6 정리: 비활성 버튼 흐린 오렌지 → 회색, 알림 민트 체크·12px 모서리 → 알약, 섹션 머리 600·「모두 보기」 → 원형 화살표, 회색 글자 #666, 이름 중복 경고 레드.</p>
+  ⑤ 묶음 이름은 「컬렉션」 확정(11/08 대표 결정, 레시피북과 비교 검토 후).<br>
+  ⑥ 가이드 v2.0.6 정리: 비활성 버튼 흐린 오렌지 → 회색, 알림 민트 체크·12px 모서리 → 알약, 섹션 머리 600·「모두 보기」 → 원형 화살표, 회색 글자 #666, 이름 중복 경고 레드.</p>
   <p class="proto-version">jollypot-v2-save-v1-5</p>
 </div>
 
@@ -289,11 +285,11 @@ const PRODUCTS=[
   {id:104,b:"살림공방",n:"원목 도마 대형",o:32000,r:0,e:"🪵"}
 ];
 let recipes=[...RECIPES], products=[...PRODUCTS], created=[];
-const S={filter:"all",selmode:"off",name:"컬렉션",state:"filled",pending:"off",tile:"titled"};
+const S={filter:"all",selmode:"off",state:"filled",pending:"off",tile:"titled"};
 let picked=new Set(), prevFilter="all", lastRemoved=null, putPick=new Set();
 const $=id=>document.getElementById(id);
 const won=n=>n.toLocaleString("ko-KR")+"원";
-const N=()=>S.name;                                  // 묶음 이름(컬렉션/레시피북)
+const N=()=>"컬렉션";                              // 묶음 이름 = 컬렉션 (대표 결정 11/08)
 const josa=(w,a,b)=>((w.charCodeAt(w.length-1)-0xAC00)%28?a:b); // 받침 여부로 조사
 const isEmpty=()=>S.state==="empty";
 const cols=()=>isEmpty()?created:[...created,...COLS];
@@ -390,7 +386,7 @@ function render(){
   renderHeader();
   $("scroll").innerHTML={all:viewAll,recipe:viewRecipe,collection:viewCollection,product:viewProduct}[S.filter]();
   renderAction();
-  for(const g of ["filter","selmode","name","state","pending"]) setProto(g,S[g]);
+  for(const g of ["filter","selmode","state","pending"]) setProto(g,S[g]);
   $("pt-col").textContent=N();
 }
 function setProto(g,v){document.querySelectorAll(`.proto-toggles[data-group="${g}"] .proto-toggle`).forEach(b=>b.classList.toggle("active",b.dataset.v===v));}
