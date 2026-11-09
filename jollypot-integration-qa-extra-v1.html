@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>졸리팟 통합테스트 — 시나리오 밖 개선점(버그 시트용) v1</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{--ink:#212121;--mid:#666666;--line:#E5E7EB;--orange:#FC642D;--green:#145F48;--tip:#F1F8F3;--cream:#FFF5EA;--red:#D64545}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;color:var(--ink);background:#F7F7F5;line-height:1.7;letter-spacing:-0.2px;font-size:16px}
+.wrap{max-width:980px;margin:0 auto;padding:36px 20px 80px}
+h1{font-size:27px;line-height:1.35;font-weight:700}
+.meta{color:var(--mid);font-size:14px;margin-top:8px}
+h2{font-size:21px;font-weight:700;margin:40px 0 14px;padding-top:20px;border-top:1px solid var(--line)}
+h3{font-size:17px;font-weight:700;margin:22px 0 8px}
+p{margin:10px 0}
+.concl{background:var(--tip);border:1px solid #D6E9DC;border-radius:14px;padding:20px 22px;margin:22px 0}
+.concl ol{padding-left:20px}.concl li{margin:6px 0}
+.warn{background:#FCF4F4;border:1px solid #F0CFCF;border-radius:12px;padding:14px 18px;margin:14px 0;font-size:15px}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:14px 0}
+.nums{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0}
+.num{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.num b{display:block;font-size:24px}
+.num span{font-size:13px;color:var(--mid)}
+table{width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:12px;overflow:hidden;margin:12px 0}
+th{background:#FAFAFA;text-align:left;font-weight:600;color:var(--mid);font-size:12.5px;padding:10px;border-bottom:1px solid var(--line)}
+td{padding:11px 10px;border-bottom:1px solid #F0F0F0;vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.no{font-weight:700;white-space:nowrap;width:44px}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.p1{background:#FBEFEF;color:var(--red)}.p2{background:#FFF5C6;color:#7A5B00}.p3{background:#F1F2F4;color:var(--mid)}
+.ask{background:#EEF3FA;color:#2F5D8A}.ok{background:var(--tip);color:var(--green)}
+.cmt{white-space:pre-wrap;background:#FAFAF8;border:1px solid #EEE;border-radius:8px;padding:9px 11px;font-size:13.5px;line-height:1.6;margin-top:6px}
+.cp,.cpall{border:1px solid #DDD;background:#fff;border-radius:7px;font:inherit;font-size:12px;font-weight:600;padding:3px 9px;cursor:pointer;color:var(--ink)}
+.cpall{font-size:14px;padding:8px 14px;border-radius:10px;margin:4px 6px 4px 0}
+.cp.done,.cpall.done{background:var(--tip);color:var(--green);border-color:#CDE3D4}
+.yun{font-size:12.5px;color:var(--mid);margin-top:6px}
+.shots{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0}
+.shots figure{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;max-width:230px}
+.shots figure.wide{max-width:480px}
+.shots img{width:100%;border-radius:8px;display:block}
+.shots figcaption{font-size:12.5px;color:var(--mid);margin-top:6px;line-height:1.5}
+ul,ol{padding-left:20px}li{margin:4px 0}
+code{background:#F1F2F4;padding:1px 5px;border-radius:5px;font-size:13px;word-break:break-all}
+.ver{margin-top:40px;font-size:12px;color:#999}
+@media(max-width:700px){.nums{grid-template-columns:repeat(2,1fr)}table{font-size:13px}td,th{padding:9px 7px}h1{font-size:23px}.shots figure{max-width:46%}}
+</style>
+</head>
+<body><div class="wrap">
+
+<h1>졸리팟 통합테스트<br>시나리오 밖 개선점 (버그 시트용)</h1>
+<div class="meta">2026.11.09 23:00 ~ 11.10 실측 · 개발 서버 배포 판 <code>3b2BODv…</code> · 휴대폰 화면 45개를 로그인 전·후로 한 번씩(모두 90번) 열고, 관리자 화면 20개를 열어 전수 측정 · <b>시트에는 쓰지 않았습니다.</b> 아래 [복사]를 누르고 버그 시트의 <b>B열(화면)</b> 칸에 붙여 넣으면 화면~예시 6칸이 한 번에 채워집니다.</div>
+
+<div class="concl">
+<b>결론 3줄</b>
+<ol>
+<li><b>44개 시나리오 밖에서 개선점 33개를 찾았습니다.</b> 상 3개 · 중 12개 · 하 18개입니다. v1-2의 버그 21행(B1~B23)과 겹치는 것은 뺐습니다.</li>
+<li><b>오픈 전에 꼭 고칠 것은 3개입니다.</b> 로그인하지 않아도 옛 조회 경로가 회원번호·아이디·실명 형태 이름을 돌려줍니다(C1). 검색은 「김치찌게」「된장 찌개」처럼 한 글자만 달라도 0건입니다(C7). 홈 첫 화면이 7.2MB라 느린 망에서는 글자가 43.6초 뒤에 뜹니다(C3).</li>
+<li><b>디자인 가이드·접근성 항목은 많지만 공통 부품 몇 개에 몰려 있습니다.</b> 바닥글·헤더 아이콘·태그·하단 탭만 고쳐도 대부분 같이 풀립니다.</li>
+</ol>
+</div>
+
+<div class="nums">
+<div class="num"><b>33</b><span>새 개선점</span></div>
+<div class="num"><b>3</b><span>상</span></div>
+<div class="num"><b>12</b><span>중</span></div>
+<div class="num"><b>18</b><span>하</span></div>
+<div class="num"><b>5</b><span>레몬트리 내부 확인</span></div>
+</div>
+
+<h2>한 번에 붙여 넣기</h2>
+<p>버그 시트는 지금 비어 있습니다(No 1~30만 있음). v1-2 버그 21행도 아직 안 들어갔으니, 둘을 합쳐 한 번에 넣는 것을 권합니다.</p>
+<button class="cpall" data-set="all">v1-2 버그 21행 + 새 33행 = 54행 복사 (상→중→하)</button>
+<button class="cpall" data-set="new">새 33행만 복사 (상→중→하)</button>
+<button class="cpall" data-set="old">v1-2 버그 21행만 복사</button>
+<div class="yun">붙여 넣을 칸: 버그 시트 3행(No 1)의 B열. 시트에 30행까지만 번호가 있으니, 54행을 넣으면 A열 31~54 번호는 직접 이어 붙여 주세요. 요청일은 v1-2 행 11/09, 새 행 11/10입니다.</div>
+
+<div id="sections"></div>
+
+<h2>레몬트리 내부 확인 (개발사 시트에는 안 올려도 됨)</h2>
+<table>
+<thead><tr><th style="width:44px">No</th><th>내용</th></tr></thead>
+<tbody>
+<tr><td class="no">D1</td><td><b>개인정보처리방침의 제3자 제공 업체</b><br>방침에 「주식회사 퍼셀리(Purselly Inc.)」 제공 항목이 들어 있습니다. 졸리팟에 지금도 맞는 내용인지, 다른 서비스 방침을 옮겨 온 것인지 확인이 필요합니다.</td></tr>
+<tr><td class="no">D2</td><td><b>바닥글 「통신판매중개자」 문구</b><br>「(주)레몬트리커뮤니케이션은 통신판매중개자로서, 통신판매의 당사자가 아닙니다」라고 적혀 있습니다. 졸리팟 쇼핑에서 레몬트리가 직접 파는 상품이 있다면 맞지 않는 문구일 수 있습니다. 법무 확인을 권합니다.</td></tr>
+<tr><td class="no">D3</td><td><b>앱 알림(푸시) 수신 동의</b><br>가입 약관은 필수 2개와 SMS·이메일 선택 동의뿐이고 앱 알림 동의가 없습니다. 앱 알림으로 딜·혜택을 보내려면 광고성 정보 수신 동의가 따로 필요합니다(정보통신망법 제50조). 앱 출시 전에 넣을지 정해야 합니다(C26과 연결).</td></tr>
+<tr><td class="no">D4</td><td><b>오픈 전 시험 데이터 정리</b><br>홈 추천에 개발사 시험 레시피(「test」 등)와 우리 QA 레시피가 함께 나옵니다. 우리 쪽 QA 레시피·컬렉션·계정 2개(jollyqa01·02) 정리는 대표님 결정을 기다리고 있습니다(C9와 연결).</td></tr>
+<tr><td class="no">D5</td><td><b>아이디가 그대로 나가는 회원 1명</b><br>C1에서 아이디 원문이 나가는 회원(아이디 「te」로 시작·6자, 레시피 10개)은 개발사 시험 계정으로 보입니다. 맞다면 오픈 전에 지우면 되고, 실제 회원이면 C1을 더 서둘러야 합니다.</td></tr>
+</tbody>
+</table>
+
+<h2>이상 없음을 확인한 것</h2>
+<div class="box"><ul>
+<li>레시피를 보고 뒤로 가면 홈 스크롤 위치가 그대로입니다.</li>
+<li>[저장]·[댓글 등록]을 빠르게 두 번 눌러도 하나만 생깁니다.</li>
+<li>댓글에 HTML·스크립트를 넣어도 글자로만 보이고 실행되지 않습니다.</li>
+<li>인터넷이 끊긴 상태에서 저장하면 「레시피를 저장하지 못했어요.」가 뜹니다.</li>
+<li>일반 회원 로그인이나 로그인 없이 관리자 기능을 부르면 모두 401로 막힙니다.</li>
+<li>다른 회원 컬렉션에 레시피를 넣는 요청을 보내면 403 「내 컬렉션만 수정할 수 있습니다」로 막힙니다.</li>
+<li>조회 요청에 다른 회원 번호를 끼워 넣어도 무시하고 내 것만 줍니다.</li>
+<li>페이지 언어 표시(ko)·파비콘·앱 설치 정보(manifest)가 들어 있습니다.</li>
+</ul></div>
+
+<h2>어떻게 쟀나</h2>
+<div class="box"><ul>
+<li><b>화면 전수</b>: 앱 주소 69개 중 실제로 열리는 화면 45개를 로그인 전·후로 한 번씩 열고 다음을 셌습니다. 글자 색과 바탕의 대비, 가이드 밖 색, 굵기 700, 12px보다 작은 글자, 44px보다 작은 누르는 곳, 이름 없는 버튼, 오류 응답, 공유 미리보기 정보, 받은 용량입니다.</li>
+<li><b>느린 망</b>: 내려받기 400kbps·지연 0.4초로 홈과 레시피 상세를 열어 글자가 뜰 때까지의 시간을 쟀습니다.</li>
+<li><b>개인정보</b>: 로그인하지 않은 상태로 조회(GET)만 했습니다. 이름 값은 저장·출력하지 않고 개수만 셌습니다.</li>
+<li><b>문구</b>: 화면과 알림에 나온 글자 1,925개를 모아 말투·마침표·옛 이름을 분류했습니다. 레시피 본문 말투는 원본 144개 전체를 셌습니다.</li>
+<li><b>검색</b>: 같은 뜻의 검색어를 바른 표기와 틀린 표기로 한 쌍씩 넣어 결과 수를 비교했습니다.</li>
+</ul></div>
+
+<div class="ver">jollypot-integration-qa-extra-v1 · 앞 문서: jollypot-integration-qa-proposal-v1-2</div>
+</div>
+
+<script>
+const BU='https://hapjung470.github.io/jollypot-preview/qa1109/';
+const TODAY='2026-11-10';
+// [번호, 묶음, 우선순위, 화면, 1차 피드백(시트에 들어감), 예시(그림 이름 또는 주소), 근거(이 페이지에만)]
+const ROWS=[
+['C1','개인정보·보안','상','옛 공개 조회 경로(레시피·컬렉션·댓글)','로그인하지 않아도 옛 조회 경로가 회원 정보를 그대로 돌려줍니다. 레시피 목록(/api/shop/recipe/public-search)은 227개 모두에 회원번호가 들어 있고, 회원 1명(레시피 10개)은 로그인 아이디 원문과 실명 형태 이름까지 나옵니다. 컬렉션 목록(/api/shop/recipe/collections/public-search)은 60개 모두 회원번호가 있고 12개는 실명 형태 이름이 나옵니다. 댓글 조회도 회원번호를 돌려줍니다. 화면에 쓰지 않는 회원번호·아이디·이름은 응답에서 빼 주시고, 화면에서 안 쓰는 옛 경로는 닫아 주세요(B4와 같은 경로).','/api/shop/recipe/public-search','11/10 로그인 없이 조회만으로 다시 쟀습니다. 이름 값은 출력하지 않고 개수만 셌습니다.'],
+['C2','개인정보·보안','중','레시피 상세(회원 복사본)','회원이 저장하면서 생긴 복사본도 로그인 없이 레시피 번호만 넣으면 열립니다. 응답에는 주인 회원번호와 처음 만든 회원번호도 들어 있습니다. 레시피 번호가 차례대로라 모두 훑어볼 수 있습니다. 복사본이 공개 의도인지 알려 주시고, 비공개라면 본인만 보게 해 주세요.','/api/v2/shop/recipes/recipes/{번호}','다른 회원 복사본 1개를 로그인 없이 열어 200 응답을 확인했습니다. 지운(숨긴) 레시피는 404로 잘 막힙니다.'],
+['C3','성능','상','홈 첫 화면 용량','홈 첫 화면이 7.2MB·요청 133개입니다. 느린 휴대폰 망(400kbps·지연 0.4초)에서는 글자가 뜨기까지 43.6초 걸립니다(레시피 상세는 2.8초). 큰 파일은 ① 글꼴 PretendardVariable.woff2 2,010KB → 쓰는 글자만 나눠 받기(dynamic subset) ② 홈 캐릭터 그림 home-header-character.png 759KB → WebP·화면 크기로 ③ 유튜브 썸네일 원본 크기 3장(418~541KB) → 카드 크기 썸네일로 ④ 공통 스크립트 _app.js 518KB(풀면 1.6MB) → 화면별로 나눠 받기입니다. 검색 빈 화면 그림 empty-mascot.png도 297KB입니다.','/','로그인 전 7,034KB·136개, 로그인 후 7,171KB·133개. 레시피 상세는 522KB입니다.'],
+['C4','성능','중','레시피 썸네일(유튜브 주소 직접 사용)','원본 레시피 141개 중 82개의 썸네일이 유튜브 서버(i.ytimg.com) 주소를 그대로 씁니다. 영상이 지워지거나 비공개가 되면 카드가 빈칸이 됩니다. 관리자 [삭제] 탭에는 이미 썸네일이 깨진 레시피가 있습니다. 등록할 때 우리 저장소로 복사해 주세요.','/admin/user-recipes?tab=deleted',''],
+['C5','공유·검색 노출','중','컬렉션 공유 링크 미리보기','카톡 등에 컬렉션 링크를 보내면 미리보기 사진과 설명이 없습니다(og:image·og:description 없음). 제목도 컬렉션 이름 대신 「컬렉션 | JollyPot」입니다. 컬렉션 이름·대표 사진·레시피 수를 넣어 주세요.','/recipes/collections/{공유코드}','레시피 상세는 제목·사진이 잘 들어갑니다.'],
+['C6','공유·검색 노출','하','홈·상품 공유 미리보기','홈은 미리보기 사진(og:image)이 없습니다. 상품 페이지 사진 주소는 https: 없이 「//shopby-images…」로 시작해서 일부 미리보기 도구가 못 읽을 수 있습니다. 주소 앞에 https:를 붙여 주세요. 브라우저 위쪽 색(theme-color)도 비어 있습니다.','/products/{상품번호}',''],
+['C7','검색','상','검색(오타·띄어쓰기·같은 말)','검색이 글자가 똑같아야만 찾습니다. 김치찌게 0건(김치찌개 1건), 떡뽁이 0건(떡볶이 7건), 「된장 찌개」 0건(된장찌개 4건), 「볶음 밥」 0건(볶음밥 8건), 달걀말이 0건(계란말이 2건), kimbap 0건(김밥 5건)입니다. 띄어쓰기 무시, 자주 틀리는 표기, 같은 말 묶기(달걀=계란, B8)를 넣어 주세요. 0건일 때 「혹시 ○○을 찾으세요?」 안내도 부탁드립니다.','x_search_typo.jpg','11/10 로그인 없이 레시피 탭에서 쟀습니다.'],
+['C8','큐레이션 운영','중','홈 「5분 완성」·「8월 제철 레시피」','두 섹션의 자동 채움 규칙이 모두 「최근 7일·최신순」뿐입니다. 그래서 「5분 완성」 카드 8개는 모두 10~27분 레시피이고(5분 이하 0개), 11월인 지금도 「8월 제철 레시피」가 노출 중입니다. 자동 채움 규칙에 요리시간·태그 조건을 넣고, 이름에 계절·날짜가 든 섹션은 노출 기간(시작·끝)을 쓰게 해 주세요.','x_home_season.jpg','관리자 섹션 설정을 읽기만 해서 확인했습니다. 두 섹션 모두 시작·끝 날짜가 비어 있습니다.'],
+['C9','큐레이션 운영','중','홈 「이런 레시피는 어때요?」 시험 데이터','홈 추천에 「test」「QA 발행계정 확인용 테스트」 같은 시험 레시피가 나옵니다(레몬트리 QA 레시피도 섞여 있음). 오픈 전에 시험 데이터를 한 번에 숨길 방법(시험 표시·일괄 숨김)을 알려 주세요.','/',''],
+['C10','디자인 가이드','중','공통(순검정 #000)','가이드는 순검정(#000)을 쓰지 않고 잉크(#212121)로 통일합니다. 헤더 제목(카테고리·홈·레시피)과 추천 레시피 제목 등에 순검정이 쓰입니다(45개 화면 합계 743곳).','/',''],
+['C11','디자인 가이드','중','공통 바닥글·주황 버튼 글자 대비','바닥글 회사 정보 글자가 회색 #888888, 바탕 #F8F8F8이라 대비가 3.3:1입니다(읽는 글자 기준 4.5:1). 가이드대로 미드그레이 #666666으로 바꿔 주세요. 주황 바탕 흰 글자 「다음 단계 보러가기」(14px)·「회원가입」(15px)은 대비 3.0:1이고, 가이드 주 버튼 규칙(16px 이상·굵기 600)보다 작습니다. 약관 동의 화면의 「자세히」도 너무 옅습니다.','x_footer.jpg','대비가 기준에 못 미치는 글자는 로그인 상태 45개 화면 합계 958곳이고, 대부분 화면마다 반복되는 바닥글입니다.'],
+['C12','디자인 가이드','하','레시피 상세 태그','태그가 파란 글자 링크(#3276AE)로 보입니다. 가이드는 흰 알약 + 1px #CCCFD4 테두리 + 잉크 글자, # 기호만 딥그린(#145F48), 높이 36px입니다.','x_detail_tags.jpg',''],
+['C13','디자인 가이드','하','레시피 상세 영상 시각 칩·저장 버튼','단계별 영상 시각 칩이 12px·굵기 400·둥글기 100px입니다(가이드 11px·600·둥글기 10px). 저장 버튼은 테두리 #C4C4C4·둥글기 12px입니다(가이드 #CCCFD4·14px).','/recipes/616',''],
+['C14','디자인 가이드','하','제목 굵기 700','가이드는 섹션 헤더 19px·굵기 600이고, 700은 가격·할인율에만 씁니다. 홈 큰 제목(23px/700), 쇼핑 「라이프 베스트」「오늘만 특가」(22px/700), 레시피 제목(19px/700), 컬렉션 제목(21px/700), 바닥글 회사명·고객센터(14px/700)가 700입니다.','/shop',''],
+['C15','디자인 가이드','하','가이드 밖 색','쇼핑 할인율·남은 시간에 빨강 #F12345가 쓰입니다(가이드: 할인은 주황 #FC642D). 옛 색 #2A2A2A, 회색 #1F1F1F·#333333·#656966·#515151, 바탕 #EAEAEA·#F7F7F7·#F1F1F1도 쓰입니다. 가이드 색으로 묶어 주세요.','/time-sale',''],
+['C16','디자인 가이드','하','바닥글 저작권 줄','「© 2024 Jollypot Inc. All rights reserved.」의 연도·회사명이 바로 위 「(주)레몬트리커뮤니케이션」과 다릅니다. 「© 2026 (주)레몬트리커뮤니케이션」처럼 맞춰 주세요(최종 문구는 레몬트리가 정함). 글자도 11px로 가이드 최소 12px보다 작습니다.','x_footer.jpg',''],
+['C17','접근성','중','공통(화면 확대 막힘)','화면 설정에 maximum-scale=1, user-scalable=no가 있어 두 손가락으로 확대가 안 됩니다. 10~11.5px 글자가 있는 앱이라 확대를 열어 주세요. 입력칸 자동 확대가 걱정이면 입력칸 글자를 16px로 하면 됩니다.','/',''],
+['C18','접근성','중','공통(이름 없는 아이콘 버튼)','아이콘만 있는 버튼·링크에 이름이 없어 화면 읽기 기능이 「버튼」으로만 읽습니다. 로그인 상태 45개 화면 합계 184곳입니다: 헤더 장바구니·뒤로·홈·검색, 쇼핑 상품 카드 찜 버튼 등. 재료 옆 장바구니 아이콘은 「구매」로만 읽혀 무엇을 사는지 모릅니다. 「계란 쿠팡에서 보기」처럼 이름을 넣어 주세요(aria-label).','/shop',''],
+['C19','접근성','하','공통(누르는 곳 크기)','누르는 곳이 44px보다 작은 곳이 로그인 상태 45개 화면 합계 772곳입니다(북마크 추가·구매·추천 레시피 점·헤더 아이콘 등). 아이콘 크기는 그대로 두고 누르는 영역만 44px로 넓혀 주세요.','/',''],
+['C20','접근성','하','공통(작은 글자)','하단 탭 글자(홈·저장·쇼핑·마이)와 「6일 남음」이 10px, 카드의 「30분」「2인분」이 11.5px입니다. 가이드 최소 글자는 캡션 12px입니다.','/',''],
+['C21','접근성','하','선택 상자 화면 읽기 안내','선택 상자가 화면 읽기 기능에 「8 results available」「option , selected」처럼 영어로 안내합니다. 한국어 안내 문구를 넣어 주세요(끌기 안내 영어는 B12).','/admin/user-recipes/create/direct',''],
+['C22','문구','중','레시피 본문 말투','AI가 정리한 레시피의 말투가 섞여 있습니다. 원본 144개 중 119개가 한 레시피 안에서 말투가 섞입니다. 조리 순서는 「~합니다」 356줄·「~한다」 280줄·「~하세요」 77줄, 설명은 「~해요」 70개·「~합니다」 58개입니다. AI 정리 지시문에서 말투를 하나로 정해 주세요(어떤 말투로 할지는 레몬트리와 정함).','/recipes/616',''],
+['C23','문구','하','알림 문구 끝맺음','같은 종류 알림이 「2개를 담았어요.」와 「2개를 담았어요」처럼 마침표가 섞이고, 「컬렉션을 삭제했습니다.」만 「~습니다」입니다. 말줄임표도 「…」와 「...」 두 가지가 쓰입니다. 알림(토스트)은 마침표 없는 「~어요」로 맞춰 주세요.','/recipes/scrap','화면·알림 글자 1,925개를 모아 분류했습니다.'],
+['C24','문구','하','링크로 만들기 중복 안내','「이미 내 레시피에 저장된 영상이에요. 스크랩북에서 확인해주세요.」에 옛 이름 「스크랩북」이 남아 있습니다. 「저장 목록에서 확인해 주세요」로 바꿔 주세요.','/recipes/write',''],
+['C25','문구','하','인스타 레시피 상세','화면에 안 보이는 안내 「Instagram에서 보기 링크를 이용해 주세요.」가 있는데, 실제 버튼 이름은 「원본 보기」입니다. 같은 이름으로 맞춰 주세요.','/recipes/842',''],
+['C26','문구','하','링크로 만들기 완료 알림 약속','「분석은 2~3분 걸리니 완료되면 알려드릴게요:)」라고 안내하지만, 앱에 알림 화면이 없고 가입 약관에도 앱 알림 동의가 없습니다. 어떤 방법으로 알리는지 알려 주세요. 알릴 방법이 없다면 「저장 목록에서 확인할 수 있어요」로 바꿔 주세요.','/recipes/write',''],
+['C27','오류','중','쇼핑 타임특가·전시 칸','쇼핑 화면에서 타임특가 상품 조회가 422로 실패합니다(/api/shop/time-sale/sections/337427·338279/products). 샵바이 전시 이벤트 SHOP_DISCOVERY_TOP·KIDS_TOP·LIFE_TOP도 404입니다. 오픈 때 그 칸이 비어 보이지 않는지 확인 부탁드립니다.','/shop',''],
+['C28','오류','하','불필요한 요청','로그인 안 한 상태에서 /profile 조회가 400으로 실패하고, 콘솔에 「Shopby Statistics Error」가 찍힙니다. 로그인한 회원도 비회원 장바구니(guest/cart) 요청을 보냅니다. 필요 없는 요청을 빼 주세요(채널톡 403은 B15).','/',''],
+['C29','관리자','하','관리자 없는 주소(404)','관리자에서 없는 주소로 가면 탭 제목이 「React.js 404 Dashboard | TailAdmin - React.js Admin Dashboard Template」이고, 그림 3개가 깨지고 「ERROR」가 영어로 크게 나옵니다. 졸리팟 관리자용 404 화면으로 바꿔 주세요(관리자 바닥의 「© 2026 - TailAdmin」도).','x_admin404.jpg',''],
+['C30','관리자','하','관리자 탭 제목','직접 등록·캐시 관리 화면은 탭 제목에 「| JollyPot 관리자」가 없습니다. 다른 화면과 맞춰 주세요.','/admin/cache-management',''],
+['C31','관리자','하','컬렉션 담기 저장 방식','컬렉션에 담을 때 레시피 번호 목록 전체를 보내 덮어씁니다(PATCH recipeIds). 같은 회원이 두 기기에서 거의 동시에 담으면 먼저 담은 것이 사라질 수 있습니다. 「추가·빼기」 요청으로 바꾸는 것을 검토해 주세요.','/recipes/collections/{공유코드}/add','요청 모양을 보고 판단했습니다. 두 기기 동시 담기를 실제로 재현하지는 않았습니다.'],
+['C32','가입·화면 구조','중','회원가입 정보 입력','가입 화면에서 휴대폰 번호와 전화번호가 둘 다 필수이고, 생년월일·성별도 필수입니다. 졸리팟에서 쓰지 않는 칸은 빼거나 선택으로 바꿔 주세요. 입력칸이 많을수록 가입 중간에 그만두는 사람이 늘어납니다.','/signup/register','가입 2건(11/09)에서 직접 확인했습니다. 하단 탭이 입력칸을 가리는 문제는 B10입니다.'],
+['C33','가입·화면 구조','하','마이페이지 「나의 레시피」','마이페이지 「나의 레시피」(/mypage/recipes)와 하단 [저장] 목록이 내 레시피를 두 곳에서 보여 줍니다. 한 곳으로 모으거나, 둘의 차이가 이름에서 드러나게 해 주세요.','/mypage/recipes',''],
+];
+const V12=[
+['B1','관리자 회원 관리·대시보드·이름 표시','상','회원 조회 서버가 503 「회원 조회 파트너 설정이 없습니다」로 답합니다. 회원 관리 목록·대시보드 회원 숫자·블랙리스트 등록이 안 되고, 다른 회원 이름이 「-」「@-」「By 139496464」로 보입니다. 운영 서버도 같은지 확인 부탁드립니다.','users.jpg'],
+['B2','앱 전체(로그인 갱신 실패)','중','로그인 갱신이 실패하면 홈·레시피 상세·로그인 화면이 「Application error」로 멈춥니다. 같은 계정 두 화면이 동시에 갱신하면 한쪽이 401로 재현되고, 쿠키를 무효 값으로 바꿔도 재현됩니다. 새로고침하면 로그아웃 상태로 돌아오지만 앱에서는 흰 화면이라 다시 켜야 합니다. 오류 화면 대신 로그아웃 후 로그인 화면으로 보내 주세요.','crash.jpg'],
+['B3','직접 만들기 3단계·레시피 편집 재료','상','AI가 채운 재료의 양이 모두 비어 있고 회색 예시 「200g」이 값처럼 보입니다. 빈 양이 하나라도 있으면 [다음]이 안내 없이 잠깁니다. 빈 칸 표시와 안내를 넣거나 양 없이도 넘어가게 해 주세요.','ai_amount.jpg'],
+['B4','검색 · 이 컬렉션은 어떠세요?','상','검색 결과가 없을 때 추천 컬렉션에 다른 회원의 빈·시험용 컬렉션이 실명·회원번호와 함께 나옵니다. 카드 레시피 수가 모두 0입니다(옛 조회 경로 /api/shop/recipe/collections/public-search 사용). 레시피 1개 이상인 컬렉션만 추천하고 개수를 바로잡아 주세요.','search_coll.jpg'],
+['B5','레시피 카드·상세 수치','상','원본 144개 중 요리시간 「1분」 33개·빈칸 36개, 칼로리 빈칸 79개·1인분 60kcal 미만 14개, 재료 양 빈칸 13개입니다. AI 정리 결과 점검이 필요합니다.',''],
+['B16','관리자 원본 레시피 수정','상','칼로리가 빈 레시피(원본 144개 중 79개)는 어떤 탭을 고쳐도 [저장]이 안내 없이 비활성입니다. 비어 있는 필수 칸을 표시하거나 칼로리 없이도 저장되게 해 주세요.',''],
+['B6','레시피 상세 영상','중','퍼가기 금지 유튜브 영상은 「불러오지 못했어요 · 네트워크 상태를 확인해 주세요」가 뜹니다. 「이 영상은 졸리팟에서 재생할 수 없어요 · 유튜브에서 보기」로 바꿔 주세요.','embed.jpg'],
+['B7','레시피 편집·직접 만들기 칼로리','중','칼로리가 필수인데 저장하면 자동 재계산됩니다(23→191, 156→347). 1인분 기준인지 표시도 없습니다. 필수에서 빼거나 자동 계산값만 보여 주세요.',''],
+['B8','재료 이름(달걀/계란)','중','사진 인식은 「달걀」, 재료 칩은 「계란」으로 담겨 같은 재료가 두 줄이 됩니다. 검색도 「달걀」 2건·「계란」 16건으로 갈립니다. 같은 말로 묶어 주세요.',''],
+['B17','표본 엑셀 양식','중','양식에 「몇 인분」 칸이 없어 표본 레시피 인분이 비고, 관리자 수정·회원 편집이 막힙니다. 인분 칸과 예시 1행을 넣어 주세요(안내문은 예시 행이 있다고 함).',''],
+['B18','원본 최빈값','중','복사본 3개 중 2개 제목을 바꿔도(39행), 복사본 재료가 모두 「애호박」인데 원본만 「주키니」여도(36행) 24분 뒤까지 원본이 바뀌지 않습니다. 정기 작업이면 주기를 알려 주세요.',''],
+['B23','냉장고 영수증 담기','중','영수증 상품명(국산콩두부·서울우유 1L·양반 김)이 재료 이름으로 정리되지 않아 추천에서 빠집니다(국산콩두부만 있으면 두부 레시피 0개, 「두부」를 넣으면 4개).','receipt.jpg'],
+['B10','회원가입 정보 입력','하','가입 화면에 하단 탭바가 떠서 입력칸을 가립니다.','signup_nav.jpg'],
+['B11','홈','하','저장한 레시피가 있는 회원 홈에도 「저장한 레시피는 저장 목록에 모여요 · 마음에 드는 레시피를 저장해 보세요」 카드가 보입니다.',''],
+['B12','삭제된 컬렉션 링크·조리 순서 끌기','하','「Not Found」, 끌기 안내 문장이 영어입니다.',''],
+['B13','관리자 레시피 정보·큐레이션 표','하','1440px 화면에서 노출·삭제 칸이 잘려 가로로 밀어야 보입니다.',''],
+['B14','요리시간 표기','하','「총 360분」 → 「6시간」으로 표기해 주세요.',''],
+['B15','상담 채널','하','channel.io 시작 요청이 403으로 거절됩니다.',''],
+['B19','관리자 레시피 목록 [삭제] 탭','하','레시피명으로 검색하면 지운 레시피가 0건으로 나옵니다(목록에는 있음).',''],
+['B20','관리자 알림 조사','하','「라면을(를)」「#한끼식사 을(를)」「#계란장(으)로」 → 받침에 맞게 한 가지로 표시해 주세요.',''],
+['B21','링크로 레시피 만들기(인스타)','하','인스타 프로필 주소에 「유튜브·인스타 링크만…」 대신 「릴스·게시물 링크를 넣어 주세요」로, 없는 게시물 주소는 입력 단계에서 걸러 주세요.',''],
+];
+const PR={'상':0,'중':1,'하':2};
+const ex=v=>!v?'':(/\.jpg$/.test(v)?BU+v:v);
+const tsvNew=r=>[r[3],r[2],'요청',TODAY,r[4],ex(r[5])].join('\t');
+const tsvOld=b=>[b[1],b[2],'요청','2026-11-09',b[3],b[4]?BU+b[4]:''].join('\t');
+const byPr=(a,f)=>a.slice().sort((x,y)=>PR[f(x)]-PR[f(y)]);
+const SETS={
+ new:()=>byPr(ROWS,r=>r[2]).map(tsvNew),
+ old:()=>byPr(V12,b=>b[2]).map(tsvOld),
+ all:()=>byPr([...V12.map(b=>({p:b[2],t:tsvOld(b)})),...ROWS.map(r=>({p:r[2],t:tsvNew(r)}))],o=>o.p).map(o=>o.t)
+};
+const sec=document.getElementById('sections'); const groups=[...new Set(ROWS.map(r=>r[1]))];
+groups.forEach(g=>{
+ const rows=ROWS.filter(r=>r[1]===g);
+ let h=`<h2>${g} (${rows.length})</h2><table><thead><tr><th style="width:44px">No</th><th>시트에 들어갈 내용</th></tr></thead><tbody>`;
+ rows.forEach(r=>{const i=ROWS.indexOf(r); const img=/\.jpg$/.test(r[5]);
+  h+=`<tr><td class="no">${r[0]}</td><td><button class="cp" data-i="${i}">복사</button> <span class="tag ${r[2]==='상'?'p1':r[2]==='중'?'p2':'p3'}">${r[2]}</span> <b>${r[3]}</b><div class="cmt">${esc(r[4])}${r[5]?'\n예시: '+esc(ex(r[5])):''}</div>`+(r[6]?`<div class="yun">근거: ${esc(r[6])}</div>`:'')+(img?`<div class="shots"><figure${r[5]==='x_admin404.jpg'?' class="wide"':''}><img src="${BU+r[5]}" alt="${esc(r[3])} 화면" loading="lazy"><figcaption>${esc(r[3])}</figcaption></figure></div>`:'')+`</td></tr>`;});
+ sec.insertAdjacentHTML('beforeend',h+'</tbody></table>');
+});
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function copy(txt,b,label){const done=()=>{b.textContent='복사됨';b.classList.add('done');setTimeout(()=>{b.textContent=label;b.classList.remove('done')},1500)};
+ if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,()=>{fallback(txt);done()}); else {fallback(txt);done()}}
+function fallback(t){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}
+sec.addEventListener('click',e=>{const b=e.target.closest('.cp'); if(!b) return; copy(tsvNew(ROWS[+b.dataset.i]),b,'복사');});
+document.querySelectorAll('.cpall').forEach(b=>{const label=b.textContent; b.addEventListener('click',()=>copy(SETS[b.dataset.set]().join('\n'),b,label));});
+</script>
+</body>
+</html>
