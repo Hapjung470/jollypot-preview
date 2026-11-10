@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>졸리팟 개발 앱 화면 검토 6가지 — v1</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{--ink:#212121;--mid:#666666;--line:#E5E7EB;--orange:#FC642D;--green:#145F48;--tip:#F1F8F3;--cream:#FFF5EA;--red:#D64545}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;color:var(--ink);background:#F7F7F5;line-height:1.7;letter-spacing:-0.2px;font-size:16px}
+.wrap{max-width:960px;margin:0 auto;padding:36px 20px 80px}
+h1{font-size:27px;line-height:1.35;font-weight:700}
+.meta{color:var(--mid);font-size:14px;margin-top:8px}
+h2{font-size:21px;font-weight:700;margin:44px 0 12px;padding-top:20px;border-top:1px solid var(--line)}
+h3{font-size:16px;font-weight:700;margin:16px 0 6px}
+p{margin:8px 0}
+.concl{background:var(--tip);border:1px solid #D6E9DC;border-radius:14px;padding:18px 22px;margin:20px 0}
+.concl ol{padding-left:20px}.concl li{margin:7px 0}
+.ans{background:#fff;border-left:4px solid var(--orange);border-radius:8px;padding:12px 16px;margin:12px 0;font-size:15.5px}
+.ans b{color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:12px;overflow:hidden;margin:10px 0}
+th{background:#FAFAFA;text-align:left;font-weight:600;color:var(--mid);font-size:12.5px;padding:9px 10px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid #F0F0F0;vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.n{font-weight:600;white-space:nowrap}
+.bad{color:var(--red);font-weight:600}.good{color:var(--green);font-weight:600}
+figure{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin:12px 0}
+figure img{width:100%;display:block;border-radius:6px}
+figure.narrow{max-width:560px}
+figcaption{font-size:12.5px;color:var(--mid);margin-top:6px}
+ul,ol{padding-left:20px}li{margin:4px 0}
+.cmt{white-space:pre-wrap;background:#FAFAF8;border:1px solid #EEE;border-radius:8px;padding:10px 12px;font-size:13.5px;line-height:1.6;margin-top:6px}
+.cp{border:1px solid #DDD;background:#fff;border-radius:7px;font:inherit;font-size:12px;font-weight:600;padding:3px 9px;cursor:pointer;margin-top:6px}
+.cp.done{background:var(--tip);color:var(--green)}
+.src{font-size:12.5px;color:var(--mid)}
+code{background:#F1F2F4;padding:1px 5px;border-radius:5px;font-size:13px}
+.ver{margin-top:40px;font-size:12px;color:#999}
+</style>
+</head>
+<body><div class="wrap">
+
+<h1>졸리팟 개발 앱 화면 검토 6가지</h1>
+<div class="meta">2026.11.10 · 개발 서버 새 판(H3Ifke…)을 휴대폰 화면(390px, 3배 해상도)으로 열어 치수를 쟀습니다. 「바꾼 뒤」 화면은 실제 개발 앱 화면에 제안만 입혀서 찍은 것입니다(서버 데이터는 건드리지 않음). 아이콘은 개발사가 하단 메뉴에 이미 쓰는 아이콘 묶음(lucide)으로 맞췄습니다.</div>
+
+<div class="concl"><b>결론</b><ol>
+<li><b>6가지 모두 고치는 게 맞습니다.</b> 3번 「내렸을 때 회색 선」만 동작은 맞고 색이 진합니다.</li>
+<li><b>원인은 대부분 하나입니다. 아이콘이 화면마다 다른 묶음에서 왔습니다.</b> 하단 메뉴는 선 아이콘(lucide), 상단은 채운 모양 아이콘·그림 파일이 섞여 있습니다. 색도 #000·#1F1F1F·#515151·#9E9E9E로 4가지입니다. <b>「상단·하단 아이콘은 한 묶음, 한 굵기(1.75), 한 색(잉크 #212121)」</b> 규칙 하나로 1·2·4·5번이 같이 풀립니다.</li>
+<li><b>개발사에 보낼 문장은 항목마다 [복사]로 넣었습니다.</b> 화면에 보이는 문제라 버그 시트에 넣어도 되는 항목들입니다.</li>
+</ol></div>
+
+<!-- 01 -->
+<h2>01. 하단 메뉴 — 글자가 빽빽하고, 아이콘이 위에 붙어 있음</h2>
+<div class="ans"><b>대표님 느낌이 맞습니다.</b> 원인은 글자 사이 간격(자간)이 아닙니다. 자간은 사실상 0이었습니다. <b>글자가 10px로 작고 굵은데 옅은 회색</b>이라 빽빽하고 흐리게 보이는 것입니다. 그리고 <b>53px 높이에 아이콘이 위 끝에서 6px</b>밖에 안 떨어져 있습니다.</div>
+<table>
+<thead><tr><th>재 본 값</th><th>지금</th><th>제안</th><th>이유</th></tr></thead>
+<tbody>
+<tr><td class="n">메뉴 높이</td><td class="bad">53px</td><td>62px (+ 아이폰 아래 여백은 지금처럼 따로)</td><td>위아래 숨 쉴 자리를 만듭니다.</td></tr>
+<tr><td class="n">아이콘 위 여백</td><td class="bad">6px</td><td>9px</td><td>메뉴 윗선과 아이콘이 붙어 보이던 것을 풉니다.</td></tr>
+<tr><td class="n">글자 크기</td><td class="bad">10px</td><td>12px</td><td>우리 가이드의 가장 작은 글자가 12px입니다. 한글은 획이 많아 같은 크기의 영어보다 빽빽해 보입니다(아이폰 기본 메뉴는 10pt지만 영어 기준).</td></tr>
+<tr><td class="n">글자 굵기</td><td>600(전부)</td><td>고른 칸 600 · 나머지 500</td><td>작은 글자를 모두 굵게 쓰면 뭉쳐 보입니다. 고른 칸만 굵게 해야 차이가 납니다.</td></tr>
+<tr><td class="n">안 고른 칸 색</td><td class="bad">#9E9E9E(옅은 회색)</td><td>#666666(미드그레이)</td><td>가이드는 #9E9E9E를 「누를 수 없는 것·안내 글자」에만 씁니다. 메뉴는 누르는 곳이라 미드그레이가 맞습니다.</td></tr>
+<tr><td class="n">아이콘 선 굵기</td><td>1.5</td><td>1.75</td><td>12px 글자와 무게를 맞춥니다. 상단 아이콘도 같은 굵기로 갑니다(2·4번).</td></tr>
+<tr><td class="n">자간</td><td>-0.2%(사실상 0)</td><td>0 그대로</td><td>작은 글자는 자간을 좁히면 더 빽빽해집니다. 가이드의 -0.3px는 제목·본문용입니다.</td></tr>
+<tr><td class="n">칸 간격</td><td>5칸 똑같이 78px</td><td>그대로</td><td>가로 간격은 고르게 나뉘어 있습니다.</td></tr>
+</tbody></table>
+<figure><img src="qa1109/ui/pair_nav.jpg" alt="하단 메뉴 지금과 바꾼 뒤"><figcaption>왼쪽 지금 · 오른쪽 제안(높이 62, 아이콘 위 9px, 글자 12px·500, 안 고른 칸 #666)</figcaption></figure>
+<div class="cmt" id="c1">문제 : 하단 메뉴 글자가 10px·굵기 600·옅은 회색(#9E9E9E)이라 빽빽하고 흐리게 보이고, 높이 53px에 아이콘이 윗선에서 6px만 떨어져 답답합니다.
+제안 : 높이 62px(아래 안전 여백은 지금처럼 별도), 아이콘 위 여백 9px, 글자 12px(고른 칸 600·나머지 500), 안 고른 칸 색 #666666, 아이콘 선 굵기 1.75로 맞춰 주세요. 자간은 0 그대로 두면 됩니다.</div><button class="cp" data-t="c1">개발사 전달 문장 복사</button>
+
+<!-- 02 -->
+<h2>02. 홈 상단 바로가기(냉장고·장바구니) 색</h2>
+<div class="ans"><b>색은 잉크 #212121 하나로 두고, 아이콘을 하단 메뉴와 같은 선 아이콘으로 바꾸는 것을 권합니다.</b> 지금 냉장고는 #1F1F1F, 장바구니는 #000입니다. 둘 다 안을 채운 모양이라 오렌지 테두리 검색창 옆에서 무겁게 보입니다.</div>
+<ul>
+<li><b>오렌지로 칠하지 않습니다.</b> 이 줄의 주인공은 오렌지 테두리 검색창 하나입니다. 아이콘까지 오렌지면 강조가 셋이 되어 아무것도 강조되지 않습니다. 가이드의 「오렌지 = 누르세요(가장 중요한 하나)」와도 맞지 않습니다.</li>
+<li><b>회색(#666)으로 낮추지도 않습니다.</b> 냉장고는 졸리팟의 핵심 기능 입구라, 흐리면 「눌러도 되나?」로 보입니다.</li>
+<li><b>대신 무게를 줄입니다.</b> 같은 잉크색이라도 선 아이콘(굵기 1.75)이면 훨씬 가볍게 보입니다. 하단 메뉴·다른 화면 상단과 같은 묶음이 됩니다.</li>
+<li><b>장바구니에 담긴 개수는 오렌지 동그라미 숫자로 붙입니다.</b> 상품이 있을 때만 보이는 「알림」이라 오렌지를 써도 겹치지 않습니다. 이번 시험 계정 화면에는 개수 표시가 없었는데, 장바구니가 비어 있어서였는지는 확인하지 못했습니다.</li>
+</ul>
+<figure><img src="qa1109/ui/pair_home.jpg" alt="홈 상단 지금과 바꾼 뒤"><figcaption>왼쪽 지금(채운 모양 #1F1F1F·#000) · 오른쪽 제안(선 아이콘, #212121, 굵기 1.75)</figcaption></figure>
+<div class="cmt" id="c2">문제 : 홈 상단 냉장고(#1F1F1F)·장바구니(#000) 아이콘이 안을 채운 모양이라 검색창 옆에서 무겁고, 하단 메뉴·다른 화면 아이콘과 모양이 다릅니다.
+제안 : 하단 메뉴와 같은 선 아이콘(lucide refrigerator·shopping-cart, 24px, 선 굵기 1.75, 잉크 #212121)으로 바꿔 주세요. 장바구니에 상품이 있으면 오른쪽 위에 오렌지(#FC642D) 동그라미 숫자를 붙여 주세요(이미 있다면 색만 맞춰 주세요). 누르는 영역은 44×44px입니다.</div><button class="cp" data-t="c2">개발사 전달 문장 복사</button>
+
+<!-- 03 -->
+<h2>03. 홈에서 내리면 상단에 생기는 회색 선</h2>
+<div class="ans"><b>선이 생기는 동작 자체는 맞습니다.</b> 맨 위에서는 선이 없다가, 내용이 상단 바 밑으로 지나가기 시작할 때 경계를 알려 주는 선입니다. 아이폰 기본 상단 바도 같은 방식입니다. <b>다만 색이 진합니다.</b> 지금은 카드 테두리용 #CCCFD4인데, 구분선용 #E5E7EB로 바꾸면 됩니다.</div>
+<ul>
+<li><b>지금:</b> 내리면 상단 바 아래 1px #CCCFD4 선이 생깁니다. 이 색은 가이드에서 「카드 테두리」 색이라 선이 도드라집니다.</li>
+<li><b>하단 메뉴와 짝이 안 맞습니다.</b> 하단 메뉴 윗선은 #F7F7F7에 옅은 그림자를 씁니다. 위·아래를 같은 무게로 맞추는 게 좋습니다.</li>
+<li><b>화면마다 다릅니다.</b> 컬렉션 화면은 맨 위에서부터 #CCCFD4 선이 늘 있습니다. 「맨 위에서는 선 없음 → 내리면 1px #E5E7EB」를 모든 상단 바의 규칙으로 정하면 됩니다.</li>
+</ul>
+<figure><img src="qa1109/ui/pair_line.jpg" alt="내렸을 때 상단 선 지금과 바꾼 뒤"><figcaption>왼쪽 지금(#CCCFD4) · 오른쪽 제안(#E5E7EB)</figcaption></figure>
+<div class="cmt" id="c3">문제 : 홈을 내리면 상단 바 아래 생기는 선이 카드 테두리 색(#CCCFD4)이라 진하고, 컬렉션 화면은 맨 위에서도 같은 선이 늘 보이는 등 화면마다 다릅니다.
+제안 : 모든 상단 바를 「맨 위에서는 선 없음 → 내용이 밑으로 지나가면 1px #E5E7EB(가이드 구분선 색)」 한 규칙으로 맞춰 주세요.</div><button class="cp" data-t="c3">개발사 전달 문장 복사</button>
+
+<!-- 04 -->
+<h2>04. 마이·레시피 상단의 홈 아이콘이 하단 메뉴 홈과 다름</h2>
+<div class="ans"><b>통일해야 합니다. 그리고 홈 아이콘만이 아니라 뒤로가기 아이콘도 3종류라 함께 맞춰야 합니다.</b></div>
+<table>
+<thead><tr><th>어디</th><th>뒤로가기</th><th>홈</th></tr></thead>
+<tbody>
+<tr><td>마이페이지 · 레시피 상세 · 검색 · 베스트 · 타임특가 · 주문 내역 · 찜 · 카테고리 · 기획전 (9개)</td><td>화살표 그림 파일(back.svg)</td><td>채운 모양 집, <span class="bad">#515151</span>(가이드에 없는 회색)</td></tr>
+<tr><td>상품 상세 · 장바구니 · 냉장고 (3개)</td><td>꺾쇠 「&lt;」(lucide, 굵기 1.3)</td><td class="bad">없음</td></tr>
+<tr><td>컬렉션 (1개)</td><td>다른 화살표(lucide arrow-left)</td><td class="bad">없음</td></tr>
+<tr><td>하단 메뉴</td><td>—</td><td>선 아이콘 집(lucide house, 굵기 1.5)</td></tr>
+</tbody></table>
+<p><b>권하는 규칙:</b> 상단 바 아이콘은 하단 메뉴와 같은 lucide 묶음을 씁니다. 뒤로가기는 「←」(arrow-left), 홈은 하단 메뉴와 같은 집(house)입니다. 24px, 굵기 1.75, 잉크 #212121로 하고, 누르는 영역은 44×44px로 둡니다. 「←」을 고른 이유는 이미 9개 화면이 화살표 모양이라 바꿀 곳이 가장 적기 때문입니다.</p>
+<figure><img src="qa1109/ui/headers_now.jpg" alt="화면별 상단 바 지금"><figcaption>지금: 위에서부터 홈 · 마이페이지 · 레시피 · 상품 상세 · 검색 · 하단 메뉴. 뒤로가기·홈 모양과 색이 제각각입니다.</figcaption></figure>
+<figure><img src="qa1109/ui/pair_my.jpg" alt="마이페이지 상단 지금과 바꾼 뒤"><figcaption>마이페이지: 왼쪽 지금 · 오른쪽 제안(하단 메뉴와 같은 집, 같은 화살표, #212121)</figcaption></figure>
+<div class="cmt" id="c4">문제 : 상단 바 아이콘이 화면마다 다릅니다. 홈은 채운 모양 #515151(하단 메뉴는 선 아이콘), 뒤로가기는 화살표 그림 파일(9개 화면)·꺾쇠「<」(상품 상세·장바구니·냉장고)·다른 화살표(컬렉션) 3종류입니다.
+제안 : 상단 바 아이콘을 하단 메뉴와 같은 lucide 묶음으로 통일해 주세요. 뒤로가기 arrow-left, 홈 house(하단 메뉴와 같은 모양), 검색 search, 장바구니 shopping-cart이고, 모두 24px·선 굵기 1.75·잉크 #212121·누르는 영역 44×44px입니다.</div><button class="cp" data-t="c4">개발사 전달 문장 복사</button>
+
+<!-- 05 -->
+<h2>05. 상품 상세에 홈 아이콘이 없음</h2>
+<div class="ans"><b>추가하는 게 맞습니다.</b> 상품 상세는 카톡 공유 링크·검색·레시피의 재료 장바구니처럼 <b>밖에서 바로 들어오는 화면</b>입니다. 바로 들어온 사람에게는 뒤로 갈 곳이 없어서, 홈이 유일한 출구입니다. 같은 이유로 장바구니·냉장고·컬렉션에도 홈이 없습니다.</div>
+<p><b>어느 화면에 홈을 둘지 규칙</b></p>
+<ul>
+<li><b>하단 메뉴 칸 첫 화면(홈·저장·쇼핑·마이):</b> 뒤로가기·홈 없음. 하단 메뉴가 그 역할을 합니다.</li>
+<li><b>그 아래로 들어간 화면:</b> 뒤로가기 + 홈. 레시피·상품 상세, 장바구니, 냉장고, 컬렉션, 검색 결과, 주문 내역 등입니다.</li>
+<li><b>쓰는 중인 화면:</b> 홈 없음, 뒤로가기(또는 ✕)만. 주문서·결제, 레시피 작성·편집, 링크로 만들기입니다. 홈을 잘못 눌러 쓰던 내용·결제를 잃지 않게 하려는 것입니다.</li>
+<li><b>앞 화면 없이 바로 열렸을 때</b>(공유 링크 등): 뒤로가기를 누르면 홈으로 보냅니다.</li>
+</ul>
+<figure><img src="qa1109/ui/pair_prod.jpg" alt="상품 상세 상단 지금과 바꾼 뒤"><figcaption>상품 상세: 왼쪽 지금(꺾쇠만) · 오른쪽 제안(← + 홈, 4번과 같은 아이콘)</figcaption></figure>
+<div class="cmt" id="c5">문제 : 상품 상세(그리고 장바구니·냉장고·컬렉션) 상단에 홈 아이콘이 없습니다. 상품 상세는 공유 링크로 바로 들어오는 경우가 많아, 뒤로 갈 곳이 없으면 나갈 길이 없습니다.
+제안 : 하단 메뉴 첫 화면(홈·저장·쇼핑·마이)을 뺀 모든 하위 화면에 「뒤로가기 + 홈」을 넣어 주세요. 주문서·결제·레시피 작성/편집처럼 쓰는 중인 화면은 홈 없이 뒤로가기(또는 ✕)만 둡니다. 앞 화면 없이 열렸을 때 뒤로가기는 홈으로 보내 주세요.</div><button class="cp" data-t="c5">개발사 전달 문장 복사</button>
+
+<!-- 06 -->
+<h2>06. 만들기 — 「직접 만들기」 아이콘 색</h2>
+<div class="ans"><b>이질적인 게 맞습니다.</b> 파란 #3276AE 채운 문서 아이콘인데, 이 파랑은 가이드에서 <b>「링크」 전용 색</b>입니다. 졸리팟 화면 어디에도 없는 색이 큰 아이콘으로 들어가 튑니다. <b>오렌지 선 아이콘(공책+펜) + 피치크림 바탕 #FFF5EA</b>을 권합니다.</div>
+<ul>
+<li><b>위 칸 「링크로 만들기」:</b> 유튜브 빨강·인스타 색이라 「남의 영상」이라는 뜻이 바로 읽힙니다.</li>
+<li><b>아래 칸 「직접 만들기」:</b> 졸리팟 안에서 내가 쓰는 것이라 졸리팟 색(오렌지)이 맞습니다. 바탕을 피치크림으로 두면 두 칸이 「밖에서 가져오기 / 졸리팟에서 쓰기」로 구분됩니다.</li>
+<li><b>모양:</b> 「문서 파일」보다 「공책 + 펜」이 「직접 쓴다」에 가깝습니다(lucide notebook-pen, 굵기 1.75).</li>
+</ul>
+<figure class="narrow"><img src="qa1109/ui/pair_create.jpg" alt="만들기 시트 지금과 바꾼 뒤"><figcaption>왼쪽 지금(파란 문서) · 오른쪽 제안(오렌지 공책+펜, 피치크림 바탕)</figcaption></figure>
+<div class="cmt" id="c6">문제 : 레시피 만들기의 「직접 만들기」 아이콘이 파란 #3276AE(가이드의 링크 전용 색) 채운 문서 아이콘이라 화면에서 튑니다.
+제안 : 오렌지 #FC642D 선 아이콘(lucide notebook-pen, 선 굵기 1.75)으로, 아이콘 바탕은 피치크림 #FFF5EA로 바꿔 주세요.</div><button class="cp" data-t="c6">개발사 전달 문장 복사</button>
+
+<h3>같은 화면에서 하나 더: 꺼진 버튼이 흐린 오렌지</h3>
+<p>링크를 넣기 전 [링크로 레시피 만들기] 버튼이 흐린 오렌지입니다(위 그림). 가이드는 꺼진 버튼을 회색 <code>#E5E7EB</code> 바탕 + <code>#9E9E9E</code> 글자로 정하고, 「흐린 오렌지는 여전히 누르라는 것처럼 보인다」며 금지하고 있습니다.</p>
+<div class="cmt" id="c7">문제 : 레시피 만들기의 [링크로 레시피 만들기]가 링크를 넣기 전(누를 수 없을 때) 흐린 오렌지로 보입니다.
+제안 : 가이드 비활성 버튼대로 바탕 #E5E7EB · 글자 #9E9E9E로 바꿔 주세요.</div><button class="cp" data-t="c7">개발사 전달 문장 복사</button>
+
+<h2>참고: 이번에 다시 본 것</h2>
+<ul class="src">
+<li>아이폰 아래 홈 막대 자리(안전 여백)는 개발 앱 스타일에 이미 들어가 있습니다. 메뉴 높이를 늘려도 이 여백은 따로 그대로입니다.</li>
+<li>검토 중에 시험 계정 로그인이 만료되자 홈이 「Application error」로 멈췄습니다. 버그 시트 No 9(로그인 갱신 실패)가 새 판에서도 그대로입니다.</li>
+</ul>
+
+<div class="ver">jollypot-ui-review-1110-v1 · 기준: 개발 서버 판 H3IfkeIuyECZxhCr8vCNs · 디자인 가이드 v2.0.6</div>
+</div>
+<script>
+document.addEventListener('click',async ev=>{const b=ev.target.closest('.cp'); if(!b) return; const t=document.getElementById(b.dataset.t).textContent;
+ try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}
+ b.textContent='복사됨';b.classList.add('done');setTimeout(()=>{b.textContent='개발사 전달 문장 복사';b.classList.remove('done')},1500)});
+</script>
+</body>
+</html>
