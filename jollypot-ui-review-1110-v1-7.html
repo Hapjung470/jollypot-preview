@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>졸리팟 개발 앱 화면 검토 13가지 · 로그인 — v1-7</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{--ink:#212121;--mid:#666666;--line:#E5E7EB;--orange:#FC642D;--green:#145F48;--tip:#F1F8F3;--red:#D64545}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;color:var(--ink);background:#F7F7F5;line-height:1.7;letter-spacing:-0.2px;font-size:16px}
+.wrap{max-width:960px;margin:0 auto;padding:36px 20px 80px}
+h1{font-size:27px;line-height:1.35;font-weight:700}
+.meta{color:var(--mid);font-size:14px;margin-top:8px}
+h2{font-size:21px;font-weight:700;margin:44px 0 6px;padding-top:20px;border-top:1px solid var(--line)}
+p{margin:8px 0}
+.concl{background:#FFF5EA;border:1px solid #F5D9C8;border-radius:14px;padding:18px 22px;margin:20px 0}
+.concl ol{padding-left:20px}.concl li{margin:7px 0}
+.toc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 22px;margin:16px 0}
+.toc ol{padding-left:4px;list-style:none;columns:2;column-gap:28px}.toc li{margin:3px 0;font-size:14.5px}
+.toc a{color:var(--ink)}
+.ans{background:#fff;border-left:4px solid var(--orange);border-radius:8px;padding:12px 16px;margin:12px 0;font-size:15.5px}
+.go{display:inline-block;background:var(--orange);color:#fff;font-weight:600;font-size:14px;border-radius:999px;padding:7px 16px;text-decoration:none;margin-right:6px}
+table{width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:12px;overflow:hidden;margin:10px 0}
+th{background:#FAFAFA;text-align:left;font-weight:600;color:var(--mid);font-size:12.5px;padding:9px 10px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid #F0F0F0;vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.n{font-weight:600}
+.bad{color:#B3261E}.good{color:var(--green);font-weight:600}
+figure{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin:12px 0}
+figure img{width:100%;display:block;border-radius:6px}
+figcaption{font-size:12.5px;color:var(--mid);margin-top:6px}
+ul,ol{padding-left:20px}li{margin:4px 0}
+.src{font-size:12.5px;color:var(--mid);word-break:break-all}
+.rule{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:12px 0}
+.rule ol{padding-left:20px}.rule li{margin:6px 0}
+h3{font-size:17px;font-weight:700;margin:28px 0 6px}
+.q{font-size:13.5px;color:var(--mid);border-left:3px solid var(--line);padding:4px 12px;margin:8px 0}
+.ver{margin-top:40px;font-size:12px;color:#999}
+@media(max-width:640px){.toc ol{columns:1}}
+</style>
+</head>
+<body><div class="wrap">
+<h1>졸리팟 개발 앱 화면 검토 13가지 · 로그인</h1>
+<div class="meta">2026.11.10 · 개발 서버 새 판(H3Ifke…)을 휴대폰 화면(390px)으로 열어 재고, 「제안」 화면은 실제 개발 앱 화면에 이 항목만 바꿔 입혀 찍었습니다(서버 데이터는 건드리지 않음). 항목마다 따로 여는 프로토타입 링크를 달았습니다. 개발사에 보낼 문장은 넣지 않았습니다.</div>
+
+<div class="concl"><b>v1-7: 12번 「로그인」을 새로 넣었습니다.</b> 다른 항목은 v1-6과 같습니다.<ol>
+<li><b>로그인 화면은 하던 화면 위에 뜨는 아래 창 하나로 바꿉니다.</b> 앱은 홈으로 시작합니다. 앱 첫 실행 전체 화면은 잠시 보류합니다.</li>
+<li><b>저장</b>은 누르면 바로 아래 창을 띄웁니다(지금의 확인 창은 없앰). <b>하단 저장 탭</b>은 저장 화면으로 넘어간 뒤 그 위에 창을 띄우고, 닫으면 비회원용 저장 화면이 남습니다.</li>
+<li><b>만들기</b>는 비회원도 링크를 붙여넣게 한 뒤 [링크로 레시피 만들기]를 누를 때 로그인합니다. 로그인 뒤에는 그 링크로 바로 만들기를 시작합니다.</li>
+<li><b>「비회원으로 계속하기」는 구매할 때만</b> 보입니다. 지금 앱이 이미 붙이는 표시(type=guestOrder)를 그대로 씁니다.</li>
+<li>창은 한 번에 하나만 띄웁니다(Apple 디자인 가이드 원문 확인).</li>
+</ol></div>
+<div class="concl"><b>v1-6: 03을 다시 봤습니다.</b> 「상단 바 아래 14px 흐림」은 거둬들이고, <b>선을 없애고 그 자리에 아무것도 두지 않는 안</b>으로 바꿨습니다. 앱 화면 20여 개를 재 보니 선이 있는 곳은 홈·냉장고·컬렉션 세 곳뿐이고 나머지는 이미 선이 없습니다. 29CM·지그재그 모바일 웹도 내려도 상단 바 아래가 비어 있습니다. 03 프로토타입은 새 판(v1-2)입니다.</div>
+<div class="concl"><b>v1-5에서 바뀐 것</b><ol>
+<li><b>개발사 전달 문장은 모두 뺐습니다.</b> 대신 항목마다 프로토타입 링크를 달았습니다(<a href="fix1110/jollypot-v2-fix1110-index-v1-3.html">목록</a>에서 링크만 복사할 수 있음).</li>
+<li><b>02 「맨 위로」 버튼이 프로토타입에서 안 보였던 원인:</b> 휴대폰으로 열면 위 조작 칸 때문에 모형 화면 아래쪽 약 256px가 화면 밖에 있었습니다. 버튼은 나왔지만 안 보이는 자리였습니다. 이제 모형 화면을 창 높이에 맞춰 통째로 줄입니다(아이폰 13 크기에서 버튼이 창 안 566~599px에 보이는 것 확인).</li>
+<li><b>04는 처음 요청대로 「홈 아이콘」만 다룹니다.</b> v1-4의 「상단 아이콘 전부 한 묶음으로」는 범위를 넘었습니다. 재 보니 20개 화면에서 홈 자리는 이미 같고(←는 20px, 홈은 48px), 검색 화면만 66px입니다.</li>
+<li><b>05는 오른쪽 아이콘을 그대로 둡니다.</b> 이전 프로토타입은 상품 상세의 검색·장바구니를 지우고 홈만 오른쪽에 둔 잘못된 그림이었습니다. 이번에 새로 확인한 것: 공유 링크처럼 앞 화면 없이 열면 「←」이 빈 화면(about:blank)으로 나갑니다. 냉장고 「‹」는 늘 홈으로 갑니다.</li>
+<li><b>05-1(새로): 상단 아이콘 두께를 쟀습니다.</b> 세 가지 두께(약 1.1·1.3·1.5px)와 다섯 가지 색(#000·#1F1F1F·#212121·#515151·#9E9E9E)이 섞여 있습니다. 하단 메뉴가 쓰는 1.5px·잉크 하나로 맞춥니다. 그래서 <b>01의 「아이콘 선 1.75」 제안은 거둬들이고 1.5 그대로</b> 둡니다.</li>
+<li><b>03</b>(v1-5 당시): 선 대신 14px 흐림 — v1-6에서 거둬들임.</li>
+<li><b>06 바탕은 회색 그대로.</b> 이전 프로토타입에 남아 있던 크림 바탕을 바로잡았습니다.</li>
+<li><b>10 A-1: 캐릭터와 제목 사이를 보이는 간격 52px → 32px(제목 한 줄 높이)로 좁혔습니다.</b></li>
+<li><b>11은 A안(오렌지 선 카트만) 하나로</b> 정리했습니다. 회색 원·「재료 장보기 한 버튼」은 뺐습니다.</li>
+<li><b>그 밖에 이번에 바로잡은 것:</b> ① 01 — 디자인 가이드 6.10절은 하단 메뉴 안 고른 칸을 #9E9E9E로 적고 있어 제안(#666666)과 다릅니다. 같은 가이드 10.2절(읽는 글자에 #9E9E9E 금지)과도 어긋나 가이드도 고쳐야 합니다. ② 09 — 「아래 버튼 고정」은 잘못이었습니다(이 창에는 아래 버튼이 없음). 「썸네일 48px」도 빼고 지금 크기 그대로 둡니다. ③ 이전 프로토타입이 실제와 달랐던 곳(쇼핑 칸 아이콘이 가방 → 실제는 카트, 영상 줄이 흰색 → 실제는 검정, 마지막 장 둘째 줄 문구가 다름, 시험 계정이 아닌 실명이 들어감)을 모두 실제 화면 캡처로 바꿨습니다.</li>
+</ol></div>
+<div class="toc"><b style="font-size:14px">항목</b><ol><li><a href="#i01">01. 하단 메뉴 — 높이·글자·색</a></li><li><a href="#i02">02. 「맨 위로」 버튼 — 색·크기·위치·나타나는 때</a></li><li><a href="#i02-2">02-2. 하단 메뉴 — 조금만 올려도 다시 나오게</a></li><li><a href="#i03">03. 상단 바 아래 회색 선 — 없앰 (흐림도 두지 않음)</a></li><li><a href="#i04">04. 상단 홈 아이콘 — 하단 메뉴 홈과 같은 모양으로</a></li><li><a href="#i05">05. 홈 아이콘이 없는 화면 — 왼쪽에 「← 홈」, 오른쪽은 그대로</a></li><li><a href="#i05-1">05-1. 상단 아이콘 두께·색 — 모양·자리는 그대로, 1.5px · 잉크로</a></li><li><a href="#i06">06. 「직접 만들기」 아이콘 — 오렌지 공책+펜, 바탕은 회색 그대로</a></li><li><a href="#i06-2">06-2. 링크 넣기 전 버튼 — 흐린 오렌지 → 회색</a></li><li><a href="#i07">07. 저장 — 내려서 볼 때 위에 남는 것은 칩 줄만</a></li><li><a href="#i08">08. 레시피 상세 — 내려서 볼 때 두 줄(116px) → 한 줄(56px)</a></li><li><a href="#i09">09. 컬렉션 담기 창 — 높이는 내용만큼(최대 86%), 줄은 64px</a></li><li><a href="#i10">10. 앱스토어 소개 화면 마지막 장 — 크림 바탕, 캐릭터·제목 한 묶음</a></li><li><a href="#i11">11. 레시피 재료 장바구니 아이콘 — 오렌지 선 카트만</a></li><li><a href="#i12">12. 로그인 — 하던 화면 위 아래 창 하나 (저장·만들기·구매 공통)</a></li></ol></div>
+
+<h2 id="i01">01. 하단 메뉴 — 높이·글자·색</h2>
+<p class="src">공통 > 하단 메뉴</p>
+<div class="ans"><b>글자가 10px로 작고 굵은데 옅은 회색이라 빽빽하고 흐리게 보입니다.</b> 자간(글자 사이)은 0이라 원인이 아닙니다. 높이 53px에 아이콘이 윗선에서 6px만 떨어져 답답합니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-fix01-bottom-nav-v1-1.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix01-bottom-nav-v1-1.html</span></p>
+<table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td class="n">메뉴 높이</td><td class="bad">53px</td><td class="good">62px (아이폰 아래 여백은 지금처럼 따로)</td></tr><tr><td class="n">아이콘 위 여백</td><td class="bad">6px</td><td class="good">9px</td></tr><tr><td class="n">글자 크기</td><td class="bad">10px</td><td class="good">12px</td></tr><tr><td class="n">글자 굵기</td><td class="bad">600 (전부)</td><td class="good">고른 칸 600 · 나머지 500</td></tr><tr><td class="n">안 고른 칸 색</td><td class="bad">#9E9E9E (옅은 회색)</td><td class="good">#666666 (미드그레이)</td></tr><tr><td class="n">아이콘</td><td class="bad">lucide, 선 1.5px</td><td class="good">그대로 (05-1의 기준 두께)</td></tr><tr><td class="n">자간</td><td class="bad">0</td><td class="good">그대로</td></tr><tr><td class="n">가운데 「+」</td><td class="bad">오렌지 56px</td><td class="good">그대로</td></tr></tbody></table>
+<ul><li>디자인 가이드에서 가장 작은 글자는 12px입니다. 한글은 획이 많아 같은 크기의 영어보다 빽빽해 보입니다.</li><li>작은 글자를 모두 굵게 쓰면 뭉쳐 보입니다. 고른 칸만 굵게 해야 차이가 납니다.</li><li>#9E9E9E는 흰 바탕에서 대비가 2.68:1이라, 가이드가 「누를 수 없는 것·입력 안내」에만 쓰라고 합니다. 메뉴 글자는 읽고 누르는 글자라 #666666(5.74:1)이 맞습니다.</li><li><b>가이드도 함께 고쳐야 합니다.</b> 가이드 6.10절은 하단 메뉴 안 고른 칸을 #9E9E9E로 적고 있어, 같은 가이드 10.2절(읽는 글자에 #9E9E9E 금지)과 서로 다릅니다.</li></ul>
+<figure><img src="fix1110/img/f01.jpg" alt="홈 화면 하단 메뉴(2배 확대). 왼쪽 지금 · 오른쪽 제안" loading="lazy"><figcaption>홈 화면 하단 메뉴(2배 확대). 왼쪽 지금 · 오른쪽 제안</figcaption></figure>
+<h2 id="i02">02. 「맨 위로」 버튼 — 색·크기·위치·나타나는 때</h2>
+<p class="src">홈·쇼핑·레시피 상세 > 오른쪽 아래 맨 위로 버튼</p>
+<div class="ans"><b>흰 바탕 + 회색 테두리 + 잉크 화살표, 44px로 바꾸고 하단 메뉴와 함께 움직이게 합니다.</b> 지금 색 #89A17F는 가이드가 폐기한 세이지 그린 계열이고, 흰 화살표 대비가 2.81:1로 아이콘 기준 3:1에 못 미칩니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-fix02-scroll-top-v1-1.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix02-scroll-top-v1-1.html</span></p>
+<table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td class="n">바탕</td><td class="bad">#89A17F (폐기한 세이지 그린 계열)</td><td class="good">흰색 #FFFFFF</td></tr><tr><td class="n">테두리·그림자</td><td class="bad">테두리 없음 · 그림자 있음</td><td class="good">1px #CCCFD4 테두리 · 그림자 없음</td></tr><tr><td class="n">화살표</td><td class="bad">흰색 (대비 2.81:1)</td><td class="good">잉크 #212121, lucide arrow-up, 선 1.5px (대비 16.1:1)</td></tr><tr><td class="n">크기</td><td class="bad">42×42px</td><td class="good">44×44px</td></tr><tr><td class="n">오른쪽 여백</td><td class="bad">20px</td><td class="good">16px</td></tr><tr><td class="n">아래 위치 (홈·쇼핑)</td><td class="bad">늘 화면 아래 90px (메뉴가 숨어도 그대로)</td><td class="good">메뉴 보일 때: 메뉴 위 16px / 메뉴 숨으면: 화면 아래 24px (+아이폰 아래 여백)</td></tr><tr><td class="n">아래 위치 (레시피 상세)</td><td class="bad">아래 버튼 줄과 7px</td><td class="good">아래 버튼 줄 위 16px</td></tr><tr><td class="n">나타나는 때</td><td class="bad">약 300px 내렸을 때</td><td class="good">약 1,600px (두 화면쯤) 내렸을 때</td></tr></tbody></table>
+<ul><li>화면의 주인공은 가운데 오렌지 「+」입니다. 색 있는 동그라미가 하나 더 있으면 서로 다툽니다. 「맨 위로」는 보조 버튼이라 가이드의 보조 버튼 색(흰 바탕·회색 테두리·잉크)이 맞습니다.</li><li>가이드는 「그림자와 테두리를 같이 쓰지 않고 테두리만」입니다. 사진 위에서도 테두리로 경계가 보입니다.</li><li>지금은 조금만 내려도 바로 떠서 늘 화면을 가립니다. 맨 위로 돌아갈 필요는 꽤 내려간 뒤에 생깁니다.</li><li>레시피 상세에서는 아래 버튼 줄과 7px밖에 안 떨어져 잘못 누르기 쉽습니다.</li></ul>
+<figure><img src="fix1110/img/11_now.jpg" alt="레시피 상세(밥솥 족발) 지금: 초록 버튼이 아래 버튼 줄 바로 위(7px)에 붙어 있습니다." loading="lazy"><figcaption>레시피 상세(밥솥 족발) 지금: 초록 버튼이 아래 버튼 줄 바로 위(7px)에 붙어 있습니다.</figcaption></figure>
+<h2 id="i02-2">02-2. 하단 메뉴 — 조금만 올려도 다시 나오게</h2>
+<p class="src">홈·쇼핑 > 하단 메뉴</p>
+<div class="ans"><b>홈·쇼핑을 내리면 하단 메뉴가 숨는데, 다시 올려도(960px까지 재 봄) 돌아오지 않고 맨 위에서만 나타납니다.</b> 그동안 다른 칸(저장·쇼핑·마이)이나 「+」로 갈 길이 없습니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-fix02b-nav-return-v1-1.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix02b-nav-return-v1-1.html</span></p>
+<table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td class="n">다시 나오는 때</td><td class="bad">맨 위에 닿았을 때만</td><td class="good">약 12px만 올려도 바로</td></tr><tr><td class="n">맨 아래에 닿았을 때</td><td class="bad">숨은 채</td><td class="good">다시 보임</td></tr><tr><td class="n">숨는 때</td><td class="bad">내릴 때 (그대로)</td><td class="good">그대로</td></tr></tbody></table>
+<ul><li>하단 메뉴는 앱 안에서 가장 자주 쓰는 길입니다. 숨겼다면 「돌아가고 싶다」는 신호(조금 올리기)에 바로 답해야 합니다. 인스타그램·쿠팡 등 대부분의 앱이 이렇게 합니다.</li><li>맨 아래에 닿으면 더 볼 것이 없으니, 다음 행동(다른 칸으로 가기)을 위해 메뉴를 보여 줍니다.</li></ul>
+
+<h2 id="i03">03. 상단 바 아래 회색 선 — 없앰 (흐림도 두지 않음)</h2>
+<p class="src">홈·냉장고·컬렉션 > 상단 바 아래 선</p>
+<div class="ans"><b>상단 바 아래 선을 없애고, 그 자리에 아무것도 두지 않습니다(흐림 없음).</b> 개발 앱 화면 20여 개를 재 보니 선이 있는 곳은 홈·냉장고(내리면 생김)·컬렉션(늘 있음) 세 곳뿐이고, 마이페이지·레시피 상세·상품 상세·장바구니·검색·베스트 등 나머지는 이미 선이 없습니다. 세 곳만 나머지와 같게 맞춥니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-fix03-header-line-v1-2.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix03-header-line-v1-2.html</span></p>
+<table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td class="n">홈</td><td class="bad">내리면 상단 바 아래 1px #CCCFD4</td><td class="good">없음</td></tr><tr><td class="n">냉장고</td><td class="bad">내리면 1px #CCCFD4 (맨 위에서는 투명)</td><td class="good">없음</td></tr><tr><td class="n">컬렉션</td><td class="bad">맨 위부터 늘 1px #CCCFD4</td><td class="good">없음</td></tr><tr><td class="n">그 밖의 상단 바 (마이·레시피 상세·상품 상세·장바구니·검색·베스트 등)</td><td class="bad">선 없음</td><td class="good">그대로</td></tr><tr><td class="n">선 대신 넣는 것</td><td class="bad">—</td><td class="good">없음 (그림자·흐림도 두지 않음)</td></tr><tr><td class="n">쇼핑 칸 아래 회색 줄</td><td class="bad">1px #EAEAEA</td><td class="good">그대로 (상단 바가 아니라 쇼핑 분류 탭의 줄)</td></tr></tbody></table>
+<ul><li>앱 안에서 같은 상단 바인데 세 화면만 선이 있어 화면을 오갈 때마다 줄이 생겼다 없어졌다 합니다. 이미 선이 없는 쪽이 대부분이라, 세 곳만 고치면 됩니다.</li><li>홈 상단은 노른자 캐릭터와 오렌지 테두리 검색창이 이미 굵은 띠를 만들어, 선이 없어도 어디까지가 상단 바인지 보입니다.</li><li>다른 쇼핑 앱도 같습니다. 29CM·지그재그 모바일 웹은 내려도 상단 바 아래에 선·그림자·흐림을 두지 않고 내용이 바로 지나갑니다(11/10 실제로 내려 보며 확인). 만개의레시피만 늘 회색 선이 있습니다.</li><li>v1-3~v1-5에서 제안한 「아래 14px 흐림」은 거둬들입니다. 사진 위에 뿌연 띠가 생겨, 선을 없앤 뜻이 흐려졌습니다.</li></ul>
+<figure><img src="fix1110/img/f03.jpg" alt="실제 개발 앱 화면에 입혀 찍음(위쪽만 확대). 위에서부터 홈(내린 상태) · 냉장고(내린 상태) · 컬렉션(맨 위). 왼쪽 지금 · 오른쪽 제안" loading="lazy"><figcaption>실제 개발 앱 화면에 입혀 찍음(위쪽만 확대). 위에서부터 홈(내린 상태) · 냉장고(내린 상태) · 컬렉션(맨 위). 왼쪽 지금 · 오른쪽 제안</figcaption></figure><figure><img src="fix1110/img/f03_bench.jpg" alt="다른 앱 모바일 웹을 내렸을 때. 29CM · 지그재그는 상단 바 아래가 비어 있고, 만개의레시피는 늘 회색 선" loading="lazy"><figcaption>다른 앱 모바일 웹을 내렸을 때. 29CM · 지그재그는 상단 바 아래가 비어 있고, 만개의레시피는 늘 회색 선</figcaption></figure>
+<h2 id="i04">04. 상단 홈 아이콘 — 하단 메뉴 홈과 같은 모양으로</h2>
+<p class="src">마이페이지·레시피 상세·검색 등 20개 화면 > 상단 바 홈 아이콘</p>
+<div class="ans"><b>홈 아이콘 모양만 하단 메뉴의 홈과 같게 바꿉니다. 자리는 지금처럼 「←」 바로 옆입니다.</b> 지금 상단 홈은 다른 묶음의 채운 선 아이콘(#515151)이라 하단 메뉴 홈(선 아이콘)과 모양·색이 다릅니다. 다른 아이콘은 화면마다 쓰임새가 달라 이 항목에서 바꾸지 않습니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-fix04-home-icon-v1-1.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix04-home-icon-v1-1.html</span></p>
+<table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td class="n">홈 모양</td><td class="bad">채운 선 집 (다른 아이콘 묶음, 선 1.5px)</td><td class="good">하단 메뉴와 같은 lucide house</td></tr><tr><td class="n">홈 색</td><td class="bad">#515151 (가이드에 없는 회색)</td><td class="good">잉크 #212121</td></tr><tr><td class="n">홈 크기·두께</td><td class="bad">24px · 1.5px</td><td class="good">24px · 1.5px (그대로)</td></tr><tr><td class="n">홈 자리</td><td class="bad">「←」 오른쪽 4px (왼쪽에서 48px) · 검색 화면만 66px</td><td class="good">모든 화면 48px (검색 화면도 같게)</td></tr><tr><td class="n">다른 아이콘(검색·장바구니·공유)</td><td class="bad">—</td><td class="good">이 항목에서는 그대로 (두께·색은 05-1)</td></tr><tr><td class="n">해당 화면</td><td class="bad">마이페이지·레시피 상세·검색·베스트·신상품·타임특가·기획전·주문 내역·찜·최근 본 상품·쿠폰·리뷰·내 레시피·회원정보 변경·적립금·배송지·취소/반품 등</td><td class="good">같음</td></tr></tbody></table>
+<ul><li>처음 요청은 「마이·레시피 상단 홈 아이콘이 졸리팟(하단 메뉴) 홈 아이콘과 다르다」였습니다. 같은 「홈」인데 모양이 둘이면 다른 곳으로 가는 버튼처럼 보입니다.</li><li>자리는 이미 20개 화면이 같습니다(←는 왼쪽 20px, 홈은 48px). 검색 화면만 홈이 66px에 있어 간격이 넓으니 같이 맞춥니다.</li><li>v1-4에서 「상단 아이콘 전부를 한 묶음으로 바꾸자」고 한 것은 요청 범위를 넘었습니다. 검색·장바구니·공유처럼 쓰임새가 다른 아이콘은 지금 자리 그대로 둡니다.</li></ul>
+<figure><img src="fix1110/img/f04.jpg" alt="상단 바만 확대(2배). 위에서부터 마이페이지 · 레시피 상세 · 검색 · 베스트 랭킹. 왼쪽 지금 · 오른쪽 제안(홈 모양만, 검색 화면은 자리도)" loading="lazy"><figcaption>상단 바만 확대(2배). 위에서부터 마이페이지 · 레시피 상세 · 검색 · 베스트 랭킹. 왼쪽 지금 · 오른쪽 제안(홈 모양만, 검색 화면은 자리도)</figcaption></figure>
+<h2 id="i05">05. 홈 아이콘이 없는 화면 — 왼쪽에 「← 홈」, 오른쪽은 그대로</h2>
+<p class="src">상품 상세·장바구니·냉장고·컬렉션 > 상단 바</p>
+<div class="ans"><b>왼쪽은 마이페이지와 같은 「← 홈」 묶음, 오른쪽은 화면마다 지금 쓰는 아이콘 그대로입니다.</b> 상품 상세의 검색·장바구니는 그대로 둡니다. 지금 이 4개 화면은 홈이 없고, 공유 링크로 바로 열면 「←」이 빈 화면으로 나갑니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-fix05-home-icon-add-v1-1.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix05-home-icon-add-v1-1.html</span></p>
+<table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td class="n">왼쪽</td><td class="bad">꺾쇠 「‹」(lucide 1.3px) 하나 · 컬렉션은 다른 화살표</td><td class="good">「←」 + 홈 (마이페이지와 같은 아이콘·자리: 20px · 48px)</td></tr><tr><td class="n">오른쪽 — 상품 상세</td><td class="bad">검색 · 장바구니</td><td class="good">그대로</td></tr><tr><td class="n">오른쪽 — 장바구니</td><td class="bad">없음</td><td class="good">그대로</td></tr><tr><td class="n">오른쪽 — 냉장고 · 컬렉션</td><td class="bad">⋮ (관리·더보기)</td><td class="good">그대로</td></tr><tr><td class="n">제목 자리</td><td class="bad">가운데</td><td class="good">그대로 (홈을 넣어도 밀리지 않게)</td></tr><tr><td class="n">앞 화면 없이 열었을 때 「←」</td><td class="bad">빈 화면(about:blank)으로 나감 — 실제로 눌러 확인</td><td class="good">홈으로 보냄</td></tr><tr><td class="n">냉장고 「‹」</td><td class="bad">어디서 들어가도 늘 홈으로 감(이름도 「홈으로 돌아가기」)</td><td class="good">「←」은 앞 화면으로, 홈은 홈으로 — 둘을 나눔</td></tr><tr><td class="n">쓰는 중인 화면</td><td class="bad">—</td><td class="good">주문서·결제·레시피 작성/편집은 홈 없이 「←」(또는 ✕)만</td></tr></tbody></table>
+<ul><li>상품 상세는 카톡 공유·검색·레시피 재료 장바구니처럼 밖에서 바로 들어오는 화면입니다. 바로 들어온 사람에게는 홈이 유일한 출구입니다.</li><li>상단 바 오른쪽은 화면마다 쓰임새가 다릅니다(상품은 검색·장바구니, 냉장고는 관리). 그래서 오른쪽은 건드리지 않고, 「어디서나 같은 자리」가 필요한 뒤로·홈만 왼쪽에 맞춥니다.</li><li>쓰는 중인 화면에 홈을 두면 잘못 눌러 쓰던 글이나 결제를 잃을 수 있습니다.</li></ul>
+<figure><img src="fix1110/img/f05.jpg" alt="상단 바만 확대(2배). 위에서부터 상품 상세 · 장바구니 · 냉장고 · 컬렉션. 왼쪽 지금 · 오른쪽 제안. 「←」 그림은 마이페이지 것을 그대로 썼습니다(두께는 05-1에서 맞춤)." loading="lazy"><figcaption>상단 바만 확대(2배). 위에서부터 상품 상세 · 장바구니 · 냉장고 · 컬렉션. 왼쪽 지금 · 오른쪽 제안. 「←」 그림은 마이페이지 것을 그대로 썼습니다(두께는 05-1에서 맞춤).</figcaption></figure>
+<h2 id="i05-1">05-1. 상단 아이콘 두께·색 — 모양·자리는 그대로, 1.5px · 잉크로</h2>
+<p class="src">공통 > 상단 바 아이콘 (04·05 화면 전체)</p>
+<div class="ans"><b>재 보니 실제로 다릅니다. 상단 아이콘은 세 가지 두께(약 1.1·1.3·1.5px)와 다섯 가지 색이 섞여 있습니다.</b> 마이페이지 한 줄 안에서도 「←」·검색·장바구니는 약 1.1px인데 홈만 1.5px이라 홈이 더 굵어 보입니다. 하단 메뉴가 이미 쓰는 1.5px·잉크 하나로 맞춥니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-fix05b-icon-weight-v1.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix05b-icon-weight-v1.html</span></p>
+<table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td class="n">「←」 뒤로가기 그림 (마이 등 20개 화면)</td><td class="bad">약 1.1px · #212121</td><td class="good">1.5px · #212121 (lucide arrow-left)</td></tr><tr><td class="n">홈 (같은 20개 화면)</td><td class="bad">1.5px · #515151</td><td class="good">1.5px · #212121 (04: lucide house)</td></tr><tr><td class="n">검색 · 장바구니 · 공유 (마이·베스트·상품 상세 등)</td><td class="bad">약 1.1px · #000000, 크기 20·22·18px</td><td class="good">1.5px · #212121, 24px 상자 (lucide search · shopping-cart · share-2)</td></tr><tr><td class="n">「‹」 꺾쇠 (상품 상세·장바구니·냉장고)</td><td class="bad">1.3px · #000000 / #212121</td><td class="good">「←」 1.5px · #212121 (다른 화면과 같은 모양)</td></tr><tr><td class="n">컬렉션 「←」 · 「⋮」</td><td class="bad">1.3px · #212121</td><td class="good">1.5px · #212121</td></tr><tr><td class="n">홈 상단 냉장고 · 장바구니</td><td class="bad">약 1.0~1.1px · #1F1F1F / #000000</td><td class="good">1.5px · #212121 (lucide refrigerator · shopping-cart)</td></tr><tr><td class="n">하단 메뉴</td><td class="bad">1.5px · #9E9E9E / #FC642D (lucide)</td><td class="good">그대로 — 이 값이 기준</td></tr><tr><td class="n">그대로 두는 것</td><td class="bad">—</td><td class="good">홈 캐릭터, 검색창 안 돋보기(입력칸의 일부)</td></tr></tbody></table>
+<ul><li>같은 줄의 아이콘 두께가 다르면 굵은 하나(홈)가 튀어 보입니다. 대표님이 느낀 「두께감 차이」가 실제로 약 0.4px(3분의 1쯤) 차이였습니다.</li><li>기준을 1.5px로 잡은 이유: 하단 메뉴(lucide)와 상단 홈이 이미 1.5px이라 바꿀 곳이 가장 적고, 앱 위·아래 아이콘이 같은 무게가 됩니다.</li><li>색도 #000·#1F1F1F·#212121·#515151이 섞여 있습니다. 가이드는 순검정 #000을 금지하고 잉크 #212121로 통일합니다.</li><li>아이콘 모양은 쓰임새대로 둡니다(검색은 돋보기, 장바구니는 카트). 바뀌는 것은 「같은 묶음·같은 두께·같은 색」뿐입니다.</li></ul>
+<figure><img src="fix1110/img/f051.jpg" alt="화면별 상단 바(2배 확대). 왼쪽 지금 · 오른쪽 제안. 두께는 아이콘 원본을 받아 8배 확대로 재고, 아는 두께로 그린 lucide 아이콘으로 잣대를 만들어 맞춰 봤습니다." loading="lazy"><figcaption>화면별 상단 바(2배 확대). 왼쪽 지금 · 오른쪽 제안. 두께는 아이콘 원본을 받아 8배 확대로 재고, 아는 두께로 그린 lucide 아이콘으로 잣대를 만들어 맞춰 봤습니다.</figcaption></figure>
+<h2 id="i06">06. 「직접 만들기」 아이콘 — 오렌지 공책+펜, 바탕은 회색 그대로</h2>
+<p class="src">레시피 만들기 > 직접 만들기</p>
+<div class="ans"><b>아이콘만 오렌지 선 아이콘(공책+펜)으로 바꾸고, 바탕은 지금 회색 #F7F7F7 그대로 둡니다.</b> 지금 파란 #3276AE는 가이드에서 「링크」 전용 색이라, 졸리팟 화면 어디에도 없는 색이 큰 아이콘으로 들어가 튑니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-fix06-create-icon-v1-1.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix06-create-icon-v1-1.html</span></p>
+<table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td class="n">아이콘</td><td class="bad">파란 #3276AE 채운 문서 그림 (41px)</td><td class="good">오렌지 #FC642D 선 아이콘 lucide notebook-pen (41px, 선 굵기 1.75)</td></tr><tr><td class="n">아이콘 바탕</td><td class="bad">#F7F7F7 · 70px · 둥글기 16px</td><td class="good">그대로 (위 칸과 같음)</td></tr></tbody></table>
+<ul><li>두 칸은 같은 종류(레시피 만드는 방법)라 같은 틀이어야 나란히 고르는 선택지로 읽힙니다. 차이는 아이콘이 보여 주면 됩니다(위: 유튜브·인스타 색 / 아래: 졸리팟 오렌지).</li><li>「문서 파일」보다 「공책 + 펜」이 「직접 쓴다」에 가깝습니다.</li><li>v1에서 제안한 크림 바탕은 맞지 않습니다. 크림은 이 화면에서 「담아뒀어요」 같은 알림 바탕으로 쓰여, 아래 칸만 추천처럼 보일 수 있습니다.</li></ul>
+<figure><img src="fix1110/img/f06.jpg" alt="레시피 만들기 창(실제 화면에 입혀 찍음). 왼쪽 지금 · 오른쪽 제안" loading="lazy"><figcaption>레시피 만들기 창(실제 화면에 입혀 찍음). 왼쪽 지금 · 오른쪽 제안</figcaption></figure>
+<h2 id="i06-2">06-2. 링크 넣기 전 버튼 — 흐린 오렌지 → 회색</h2>
+<p class="src">레시피 만들기 > [링크로 레시피 만들기] 버튼</p>
+<div class="ans"><b>누를 수 없을 때는 회색으로 보여 줍니다.</b> 지금은 오렌지 버튼을 40%로 흐리게만 해서, 누를 수 있는 버튼처럼 보입니다. 가이드는 흐린 오렌지 비활성을 금지합니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-fix06b-disabled-button-v1-1.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix06b-disabled-button-v1-1.html</span></p>
+<table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td class="n">링크 넣기 전</td><td class="bad">오렌지 #FC642D · 흐림(투명도 0.4) · 흰 글자</td><td class="good">바탕·테두리 #E5E7EB · 글자 #9E9E9E · 흐림 없음</td></tr><tr><td class="n">링크 넣은 뒤</td><td class="bad">오렌지 · 흰 글자</td><td class="good">그대로</td></tr><tr><td class="n">크기</td><td class="bad">높이 55px · 둥글기 10px · 15px·600</td><td class="good">그대로</td></tr></tbody></table>
+<ul><li>가이드 4.0절 3번: 비활성 버튼은 #E5E7EB 바탕 + #9E9E9E 글자, 「흐린 오렌지는 여전히 누르라는 것처럼 보인다」며 금지합니다.</li><li>회색이었다가 링크를 넣는 순간 오렌지로 바뀌면 「이제 누를 수 있다」가 바로 보입니다.</li></ul>
+<figure><img src="fix1110/img/f062.jpg" alt="레시피 만들기 창의 링크 칸(실제 화면에 입혀 찍음). 지금 · 제안 · 링크 넣은 뒤" loading="lazy"><figcaption>레시피 만들기 창의 링크 칸(실제 화면에 입혀 찍음). 지금 · 제안 · 링크 넣은 뒤</figcaption></figure>
+<h2 id="i07">07. 저장 — 내려서 볼 때 위에 남는 것은 칩 줄만</h2>
+<p class="src">저장 > 내려서 볼 때 (모두·레시피·컬렉션·상품 칩)</p>
+<div class="ans"><b>내릴 때는 칩 줄(모두·레시피·컬렉션·상품)만 위에 붙이고, 작은 제목 줄은 숨깁니다.</b> 지금은 작은 제목 「○○님의 저장 목록」(50px)과 칩 줄(46px)이 함께 남아 96px을 차지하고, 실명도 계속 보입니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-fix07-save-sticky-v1-1.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix07-save-sticky-v1-1.html</span></p>
+<table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td class="n">내렸을 때 위에 남는 것</td><td class="bad">제목 줄 50px + 칩 줄 46px = 96px</td><td class="good">칩 줄 46px만</td></tr><tr><td class="n">제목 줄이 다시 나오는 때</td><td class="bad">—</td><td class="good">조금이라도 올리면 (맨 위에서는 늘)</td></tr><tr><td class="n">칩 줄 아래</td><td class="bad">선 없음</td><td class="good">1px #E5E7EB (칩 줄만 남았을 때)</td></tr><tr><td class="n">제목 글</td><td class="bad">○○님의 저장 목록</td><td class="good">이 항목에서는 그대로 (저장 화면 프로토타입에서 「저장」 제안)</td></tr></tbody></table>
+<ul><li>고른 칩이 「지금 무엇을 보는지」를 알려 주고, 그 자리에서 바로 바꿀 수도 있습니다. 제목은 같은 일을 한 번 더 하는 줄입니다.</li><li>50px만큼 사진이 더 보입니다. 저장 화면은 사진을 훑어보는 곳이라 이 50px이 큽니다.</li><li>내려서 보는 내내 실명이 맨 위에 남던 것도 줄어듭니다.</li></ul>
+<figure><img src="qa1109/ui/pair_save.jpg" alt="저장을 내렸을 때(실제 화면에 입혀 찍음). 왼쪽 지금(제목 50 + 칩 46) · 오른쪽 제안(칩 46만)" loading="lazy"><figcaption>저장을 내렸을 때(실제 화면에 입혀 찍음). 왼쪽 지금(제목 50 + 칩 46) · 오른쪽 제안(칩 46만)</figcaption></figure>
+<h2 id="i08">08. 레시피 상세 — 내려서 볼 때 두 줄(116px) → 한 줄(56px)</h2>
+<p class="src">레시피 상세 > 내려서 볼 때 (상단 바 + 영상 줄)</p>
+<div class="ans"><b>내릴 때는 상단 바를 숨기고 영상 줄 하나만 위에 고정합니다. 영상 줄 맨 앞에 「←」을 넣습니다.</b> 지금은 상단 바(←·홈·레시피·검색, 60px)와 영상 줄(56px)이 함께 고정돼 116px, 화면의 약 14%를 씁니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-fix08-recipe-sticky-v1-1.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix08-recipe-sticky-v1-1.html</span></p>
+<table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td class="n">내렸을 때 고정</td><td class="bad">상단 바 60px + 영상 줄 56px = 116px</td><td class="good">영상 줄 56px만</td></tr><tr><td class="n">영상 줄 왼쪽</td><td class="bad">회색 ▶ 동그라미</td><td class="good">「←」 뒤로가기 (흰색, 24px, 1.5px)</td></tr><tr><td class="n">영상 줄 오른쪽</td><td class="bad">영상보기 (오렌지)</td><td class="good">▶ 영상보기 (오렌지)</td></tr><tr><td class="n">영상 줄 바탕·글자</td><td class="bad">#212121 · 요리 이름 흰 글자</td><td class="good">그대로</td></tr><tr><td class="n">상단 바가 다시 나오는 때</td><td class="bad">—</td><td class="good">조금이라도 올리면 (홈·검색 포함)</td></tr></tbody></table>
+<ul><li>조리 순서를 보며 따라 할 때 화면이 가장 아쉽습니다. 60px만큼 순서 한 줄이 더 보입니다.</li><li>내려서 볼 때 필요한 것은 「뒤로」와 「영상보기」뿐입니다. 홈·검색은 조금만 올리면 돌아옵니다.</li><li>왼쪽 ▶ 동그라미와 오른쪽 「영상보기」가 같은 일을 해서 두 번 들어가 있습니다. ▶를 「영상보기」 앞에 붙여 하나로 합칩니다.</li></ul>
+<figure><img src="fix1110/img/08_now_scrolled.jpg" alt="레시피 상세(계란 미역국)를 내렸을 때 지금: 상단 바와 영상 줄이 함께 고정됩니다." loading="lazy"><figcaption>레시피 상세(계란 미역국)를 내렸을 때 지금: 상단 바와 영상 줄이 함께 고정됩니다.</figcaption></figure><figure><img src="qa1109/ui/pair_detail.jpg" alt="실제 화면에 입혀 찍은 비교. 왼쪽 지금(60 + 56) · 오른쪽 제안(「←」 넣은 영상 줄 56만)" loading="lazy"><figcaption>실제 화면에 입혀 찍은 비교. 왼쪽 지금(60 + 56) · 오른쪽 제안(「←」 넣은 영상 줄 56만)</figcaption></figure>
+<h2 id="i09">09. 컬렉션 담기 창 — 높이는 내용만큼(최대 86%), 줄은 64px</h2>
+<p class="src">레시피 상세 > 저장 > 컬렉션 담기 창</p>
+<div class="ans"><b>창 높이를 컬렉션 수에 맞추고(최대 화면의 86%), 줄 높이를 80px에서 64px로 줄입니다.</b> 지금은 컬렉션이 1개든 12개든 같은 높이라, 많을 때는 2.5개만 보이고 1개일 때는 아래가 비어 있습니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-fix09-collection-sheet-v1-1.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix09-collection-sheet-v1-1.html</span></p>
+<table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td class="n">창 높이</td><td class="bad">컬렉션 수와 관계없이 같음 (목록 칸 205px)</td><td class="good">내용만큼 늘어나되 최대 화면의 86%</td></tr><tr><td class="n">컬렉션 줄 높이</td><td class="bad">80px</td><td class="good">64px (썸네일 크기는 그대로)</td></tr><tr><td class="n">한 번에 보이는 줄</td><td class="bad">약 2.5개</td><td class="good">12개일 때 약 7개</td></tr><tr><td class="n">고정하는 것</td><td class="bad">—</td><td class="good">위 「담아뒀어요」 안내 · 「저장」 제목 줄 (목록만 움직임)</td></tr><tr><td class="n">10개가 넘으면</td><td class="bad">—</td><td class="good">제목 줄 아래 「컬렉션 찾기」 입력칸</td></tr><tr><td class="n">순서</td><td class="bad">—</td><td class="good">최근에 담은 컬렉션이 위</td></tr><tr><td class="n">제목 줄 버튼</td><td class="bad">새 저장</td><td class="good">+ 새 컬렉션</td></tr></tbody></table>
+<ul><li>컬렉션이 많은 사람일수록 이 창을 자주 씁니다. 2.5개만 보이면 매번 안에서 밀어야 합니다.</li><li>86%는 아이폰 기본 시트를 크게 펼친 높이와 비슷해, 뒤의 레시피가 살짝 보여 「창」이라는 것이 남습니다.</li><li>「새 저장」은 무엇을 하는지 알기 어렵습니다. 컬렉션을 새로 만드는 버튼이라 「+ 새 컬렉션」이 맞습니다.</li><li>v1-4에 「아래 버튼 고정」이라고 적었던 것은 잘못입니다. 이 창에는 아래 버튼이 없습니다.</li></ul>
+<figure><img src="qa1109/ui/pair_sheet.jpg" alt="컬렉션 12개일 때(화면에서만 복제, 데이터는 만들지 않음). 왼쪽 지금 · 오른쪽 제안" loading="lazy"><figcaption>컬렉션 12개일 때(화면에서만 복제, 데이터는 만들지 않음). 왼쪽 지금 · 오른쪽 제안</figcaption></figure><figure><img src="fix1110/img/sheet1_now.jpg" alt="컬렉션 1개일 때 지금: 같은 높이라 아래가 비어 있습니다." loading="lazy"><figcaption>컬렉션 1개일 때 지금: 같은 높이라 아래가 비어 있습니다.</figcaption></figure>
+<h2 id="i10">10. 앱스토어 소개 화면 마지막 장 — 크림 바탕, 캐릭터·제목 한 묶음</h2>
+<p class="src">앱스토어 소개 화면 > 마지막 장 (피그마 「시안2」 7번째)</p>
+<div class="ans"><b>바탕을 앞 6장과 같은 크림으로 바꾸고, 「졸리팟」 글씨는 빼고 캐릭터 → 제목 2줄 → 부제를 한 묶음으로 화면 가운데보다 조금 위(약 45%)에 둡니다.</b> 캐릭터와 제목 사이는 제목 한 줄 높이만큼으로 좁혀 한 묶음으로 보이게 합니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-fix10-appstore-last-v1-1.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix10-appstore-last-v1-1.html</span></p>
+<table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td class="n">바탕</td><td class="bad">주황 #FC642D (흰 글자 대비 3.0:1)</td><td class="good">크림 #FFF7F2 (앞 6장과 같음)</td></tr><tr><td class="n">제목 크기</td><td class="bad">다른 장 제목보다 약 20% 작음</td><td class="good">다른 장 제목과 같은 크기</td></tr><tr><td class="n">제목 색</td><td class="bad">두 줄 모두 흰색</td><td class="good">「가족이 웃는 한끼,」 오렌지 · 「졸리팟이 곁에서 도울게요」 잉크</td></tr><tr><td class="n">부제</td><td class="bad">흰색</td><td class="good">미드그레이 #666666</td></tr><tr><td class="n">「졸리팟」 글씨</td><td class="bad">맨 아래 작은 글씨</td><td class="good">뺌 (제목 둘째 줄과 앱 이름에 이미 있음)</td></tr><tr><td class="n">캐릭터</td><td class="bad">위쪽에 따로</td><td class="good">제목 폭의 약 40%로 키워 제목 바로 위</td></tr><tr><td class="n">캐릭터와 제목 사이</td><td class="bad">—</td><td class="good">보이는 간격 = 제목 한 줄 높이 (캐릭터 그림 아래 끝 ~ 제목 글자 윗끝). v1-3 안보다 약 40% 좁힘</td></tr><tr><td class="n">묶음 위치</td><td class="bad">—</td><td class="good">묶음 가운데가 화면 높이의 약 45%</td></tr></tbody></table>
+<ul><li>흰 글자는 주황 위에서 대비가 3.0:1이라 작은 부제가 잘 안 읽힙니다.</li><li>크림 6장 뒤에 주황 한 장이 오면, 넘기던 사람에게 다른 광고처럼 보일 수 있습니다.</li><li>캐릭터와 제목이 멀면 둘이 따로 노는 것처럼 보입니다. 간격을 제목 한 줄 높이로 맞추면 「캐릭터가 하는 말」처럼 한 덩어리로 읽힙니다.</li><li>사람 눈은 화면 정가운데를 실제보다 아래로 느껴, 묶음을 살짝 올려야 가운데로 보입니다.</li></ul>
+<figure><img src="qa1109/ui/figma_now.jpg" alt="피그마 「시안2」 뒤쪽 4장(보기 권한으로 열어 확대). 마지막 장만 주황입니다." loading="lazy"><figcaption>피그마 「시안2」 뒤쪽 4장(보기 권한으로 열어 확대). 마지막 장만 주황입니다.</figcaption></figure><figure><img src="fix1110/img/f10.jpg" alt="간격 비교(비율 모형). v1-3 A-1(보이는 간격 52) · 40 · 제안 32(제목 한 줄 높이)" loading="lazy"><figcaption>간격 비교(비율 모형). v1-3 A-1(보이는 간격 52) · 40 · 제안 32(제목 한 줄 높이)</figcaption></figure>
+<h2 id="i11">11. 레시피 재료 장바구니 아이콘 — 오렌지 선 카트만</h2>
+<p class="src">레시피 상세 > 재료 목록 > 장바구니 아이콘</p>
+<div class="ans"><b>채운 오렌지 「카트+」를 오렌지 선 카트(20px, 동그라미 없음)로 바꾸고, 물에는 버튼을 넣지 않습니다.</b> 재료가 많으면(밥솥 족발 14개) 진한 아이콘이 재료 이름보다 먼저 보여 지저분합니다. 선 카트로만 바꿔도 진한 오렌지 면적이 53% 줄어듭니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-fix11-ingredient-cart-v1.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix11-ingredient-cart-v1.html</span></p>
+<table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td class="n">아이콘 모양</td><td class="bad">채운 오렌지 「카트+」 24px</td><td class="good">오렌지 #FC642D 선 카트 (lucide shopping-cart) 20px · 선 굵기 1.75 (화면에서 약 1.5px, 05-1과 같은 두께) · 동그라미 바탕 없음</td></tr><tr><td class="n">진한 오렌지 면적 (같은 화면)</td><td class="bad">16,960점</td><td class="good">8,012점 (−53%)</td></tr><tr><td class="n">누르는 영역</td><td class="bad">24×24px</td><td class="good">44×44px (줄 높이 56px는 그대로)</td></tr><tr><td class="n">물·얼음물</td><td class="bad">「뜨거운 물」에도 버튼 있음</td><td class="good">버튼 없음</td></tr><tr><td class="n">화면 읽기 이름</td><td class="bad">없음 (읽어 주는 이름 빈칸)</td><td class="good">「(재료 이름) 쿠팡에서 보기」</td></tr></tbody></table>
+<ul><li>지저분함의 가장 큰 몫은 「채운 면 + 플러스」입니다. 그림 파일 하나만 바꾸면 돼 개발이 가장 작습니다.</li><li>졸리팟 오렌지는 그대로 살려 「여기서 살 수 있다」는 신호는 남깁니다.</li><li>물은 사는 재료가 아니라 버튼이 있으면 오히려 이상합니다.</li><li>누르는 영역 24px은 손가락 기준(44px)보다 작습니다. 아이콘은 작게, 누르는 칸은 넉넉하게 둡니다.</li></ul>
+<figure><img src="fix1110/img/f11.jpg" alt="레시피 상세 밥솥 족발 재료 14개(실제 화면에 입혀 찍음). 왼쪽 지금 · 오른쪽 제안" loading="lazy"><figcaption>레시피 상세 밥솥 족발 재료 14개(실제 화면에 입혀 찍음). 왼쪽 지금 · 오른쪽 제안</figcaption></figure>
+<h2 id="i12">12. 로그인 — 하던 화면 위 아래 창 하나 (저장·만들기·구매 공통)</h2>
+<p class="src">공통 > 로그인 (저장 버튼·하단 저장 탭·마이 탭·관심 상품·+ 만들기·구매하기·장바구니 주문·선물하기)</p>
+<div class="ans"><b>지금은 로그인이 걸리는 곳마다 넘어가는 방식이 다르고, 대부분 화면이 통째로 로그인 화면으로 바뀝니다.</b> 손님이 하던 일(고른 옵션·붙여넣은 링크·보던 레시피)이 화면에서 사라져 「다른 데로 끌려갔다」고 느낍니다. 로그인 화면을 <b>하던 화면 위에 뜨는 아래 창 하나</b>로 바꾸고, 앱은 홈으로 시작합니다.</div>
+<p><a class="go" href="fix1110/jollypot-v2-login-v1-8.html">프로토타입 열기 →</a> <span class="src">https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-login-v1-8.html</span></p>
+<p class="src">프로토타입 맨 위에서 「들어온 곳」「로그인이 걸린 곳」「Apple 버튼」을 바꿔 보고, 「지금 개발 앱」을 누르면 지금 화면과 비교됩니다. 배경은 모두 개발 앱 실제 화면입니다.</p>
+
+<h3>지금 개발 앱 (비회원으로 눌러 실측)</h3>
+<table><thead><tr><th>누른 곳</th><th>지금</th><th>재현 주소 (로그아웃 상태)</th></tr></thead><tbody>
+<tr><td class="n">레시피 「저장」</td><td class="bad">「로그인이 필요합니다」 확인 창 → [로그인하기] → 로그인 화면. 로그인 뒤 레시피로 돌아오지만 <b>저장은 안 된 채</b>(다시 눌러야 함)</td><td class="src">https://d1nmxpjaa8tlrm.cloudfront.net/recipes/754</td></tr>
+<tr><td class="n">하단 「저장」 탭</td><td class="bad">바로 로그인 화면 (/login?returnUrl=/recipes/scrap)</td><td class="src">https://d1nmxpjaa8tlrm.cloudfront.net/ → 하단 저장</td></tr>
+<tr><td class="n">하단 「마이」 탭</td><td class="bad">바로 로그인 화면 (/login?returnUrl=/mypage)</td><td class="src">https://d1nmxpjaa8tlrm.cloudfront.net/ → 하단 마이</td></tr>
+<tr><td class="n">하단 「+」 만들기</td><td class="bad">「로그인이 필요합니다」 확인 창. 만들기 창은 볼 수 없음</td><td class="src">https://d1nmxpjaa8tlrm.cloudfront.net/ → 하단 +</td></tr>
+<tr><td class="n">직접 만들기 주소</td><td class="bad">바로 로그인 화면 (/login?returnUrl=/recipes/write)</td><td class="src">https://d1nmxpjaa8tlrm.cloudfront.net/recipes/write</td></tr>
+<tr><td class="n">관심 상품(하트)</td><td class="bad">「로그인 후 이용하실 수 있습니다」 확인 창</td><td class="src">https://d1nmxpjaa8tlrm.cloudfront.net/products/137337700</td></tr>
+<tr><td class="n">구매하기 · 장바구니 주문 · 선물하기</td><td>확인 창 없이 로그인 화면 (/login?returnUrl=/order/주문서번호&amp;type=guestOrder). 로그인 뒤 <span class="good">고른 옵션 그대로 주문서</span>. 단 <b class="bad">「비회원 주문하기」 버튼이 835px 자리라 하단 메뉴(790px~) 밑에 가려짐</b>, 소셜 버튼은 571px부터</td><td class="src">https://d1nmxpjaa8tlrm.cloudfront.net/products/137337700 → 옵션 → 구매하기</td></tr>
+</tbody></table>
+<p>로그인 뒤 원래 화면으로 돌아가는 기능(returnUrl)은 <b>이미 잘 됩니다.</b> 아래 창도 이 값을 그대로 쓰면 됩니다.</p>
+
+<h3 id="i12-1">12-1. 기본 정책</h3>
+<div class="rule"><ol>
+<li><b>로그인 화면은 아래 창 하나.</b> 로그인이 필요한 순간, 하던 화면 위에 띄웁니다. 앱은 홈으로 시작하고, 첫 실행 전체 로그인 화면은 <b>잠시 보류</b>합니다.</li>
+<li><b>/login 주소로 바로 들어와도 전체 화면을 쓰지 않습니다.</b> 돌아갈 화면(returnUrl) 위에 창을 띄우고, 돌아갈 곳이 없으면 홈 위에 띄웁니다. (알림 링크·로그인이 풀린 손님·/recipes/write 직접 주소 등)</li>
+<li><b>창은 한 번에 하나만.</b> 다른 창(만들기 창·옵션 창 등)이 열려 있으면 그 창을 내리고 같은 자리에 로그인 창을 올립니다. 어두운 배경은 그대로 둡니다. ✕·쓸어내리기·휴대폰 뒤로가기는 <b>원래 창으로 돌아가며 입력값은 그대로</b>입니다. 창 안에 「← 뒤로」는 두지 않습니다.</li>
+<li><b>문구는 하나.</b> 상품·레시피에 따라 바꾸지 않습니다. 제목 「로그인하고 계속하기」 · 부제 「로그인하면 보던 화면으로 돌아와요」.</li>
+<li><b>로그인 뒤에는 돌아갈 곳(returnUrl)으로</b> 갑니다. 처음 가입하면 지금 약관 화면을 거친 뒤 돌아갑니다(카카오는 카카오 동의 화면에서 약관까지 한 번에).</li>
+<li><b>로그인 창이 올라오기 전에 키보드를 내립니다.</b></li>
+</ol></div>
+<p class="q">Apple 디자인 가이드 「Sheets」: 「Display only one sheet at a time… If something people do within a sheet results in another sheet appearing, close the first sheet before displaying the new one. If necessary, you can display the first sheet again after people dismiss the second one.」<br>같은 가이드 「Managing accounts」: 「Delay sign-in for as long as possible… a shopping app might let people browse as much as they want, requiring sign-in only when they're ready to make a purchase.」</p>
+
+<p><b>버튼 순서 — 브라우저 이름표(UA) 한 번 보고 정합니다.</b></p>
+<table><thead><tr><th>들어온 곳 (UA에 있는 글자)</th><th>맨 위 큰 버튼</th><th>둘째</th><th>Apple</th><th>말풍선</th></tr></thead><tbody>
+<tr><td class="n">인스타·페이스북·스레드 안 (Instagram · FBAN · FBAV · Barcelona)</td><td class="good">네이버</td><td>카카오</td><td>없음</td><td>⚡ 네이버 앱으로 바로 가입</td></tr>
+<tr><td class="n">카톡·네이버 앱·밴드 등 다른 앱 안 (KAKAOTALK · NAVER · BAND …)</td><td class="good">카카오</td><td>네이버</td><td>없음</td><td>⚡ 3초 만에 빠른 회원가입</td></tr>
+<tr><td class="n">졸리팟 앱(안드로이드) · 크롬 · 사파리</td><td class="good">카카오</td><td>네이버</td><td>없음</td><td>⚡ 3초 만에 빠른 회원가입</td></tr>
+<tr><td class="n">졸리팟 앱(아이폰)</td><td class="good">카카오</td><td>네이버</td><td>있음 (12-5)</td><td>⚡ 3초 만에 빠른 회원가입</td></tr>
+<tr><td class="n">이 휴대폰에 지난 로그인 기록이 있으면 (있으면 좋음)</td><td class="good">그 방법</td><td>나머지</td><td>위와 같음</td><td>지난번에 쓴 방법이에요 + 「최근 사용」 표시</td></tr>
+</tbody></table>
+<ul>
+<li>인스타 안 브라우저에서는 카카오가 아이디·비밀번호를 묻고, 네이버는 네이버 앱으로 바로 넘어갑니다. 그래서 인스타·페이스북 안에서만 네이버를 위로 둡니다.</li>
+<li>그 밖은 카카오가 위입니다. 10월 가입의 84%가 카카오싱크이고, 약관 동의·채널 추가를 카카오 화면 한 장에서 받습니다.</li>
+<li>카카오는 둘째 자리여도 큰 버튼으로 둡니다(동그라미로 줄이지 않음).</li>
+<li>「3초」는 카카오가 위일 때만 씁니다. 네이버는 네이버 동의 뒤 우리 약관 화면이 한 번 더 나와서입니다.</li>
+<li>지난 로그인 기록을 위로 올리면 같은 사람이 계정을 둘 만드는 일을 막습니다. 인스타 안에서도 카카오로 한 번 로그인한 사람은 다음부터 바로 됩니다.</li>
+</ul>
+
+<p><b>창 모양 (실제 앱의 옵션 선택 창과 같은 틀)</b></p>
+<table><thead><tr><th>항목</th><th>값</th></tr></thead><tbody>
+<tr><td class="n">창</td><td>흰 바탕 · 위 모서리 20px · 손잡이 40×4px · 오른쪽 위 ✕ · 좌우 여백 20px · 뒤 어두운 배경 50%</td></tr>
+<tr><td class="n">제목 / 부제</td><td>20px 700 「로그인하고 계속하기」 / 14px #666666 「로그인하면 보던 화면으로 돌아와요」</td></tr>
+<tr><td class="n">말풍선</td><td>14px 700 · 흰 바탕 · #CCCFD4 테두리 · 꼬리가 맨 위 버튼을 가리킴(버튼과 10px)</td></tr>
+<tr><td class="n">맨 위 버튼</td><td>높이 56px · 16px 700 · 모서리 8px</td></tr>
+<tr><td class="n">둘째·Apple 버튼</td><td>높이 52px · 15px 600 · 모서리 8px · 버튼 사이 8px</td></tr>
+<tr><td class="n">비회원으로 계속하기</td><td>구매일 때만 · 높이 50px · 흰 바탕 · #CCCFD4 테두리 · 15px 600</td></tr>
+<tr><td class="n">맨 아래</td><td>「아이디로 로그인 | 아이디로 가입」 14px #666666. 아이디로 로그인은 따로 화면(아이디·비밀번호·아이디 저장·아이디 찾기·비밀번호 찾기), 아이디로 가입은 약관 화면으로 바로(가입 방법 고르는 화면은 건너뜀)</td></tr>
+<tr><td class="n">창 높이</td><td>Apple 없음 404px · Apple 있음 464px (구매일 때 +58px). 어느 경우든 뒤 화면이 위쪽 절반 남짓 보임</td></tr>
+<tr><td class="n">버튼 글자</td><td>「카카오로 계속하기」「네이버로 계속하기」「Apple로 계속하기」 (지금은 「~로 로그인」. 손님 대부분이 처음 오는 사람이라 가입까지 아우르는 말로)</td></tr>
+</tbody></table>
+<figure><img src="fix1110/img/f12a.jpg" alt="왼쪽 지금 로그인 화면 · 제안 아래 창 세 가지(앱·크롬 / 인스타 안 / 아이폰 앱)" loading="lazy"><figcaption>왼쪽 지금 로그인 화면 · 오른쪽 제안 아래 창: 앱·크롬(카카오 위) / 인스타 안(네이버 위) / 아이폰 앱(Apple 포함). 모두 구매하기에서 연 모습</figcaption></figure>
+
+<h3 id="i12-2">12-2. 저장을 눌렀을 때</h3>
+<table><thead><tr><th>누른 곳</th><th>지금</th><th>제안</th></tr></thead><tbody>
+<tr><td class="n">레시피 「저장」 버튼</td><td class="bad">확인 창 → 한 번 더 눌러 로그인 화면 → 돌아와도 저장 안 됨</td><td class="good">누르면 바로 아래 창. 로그인하면 레시피로 돌아오고 <b>저장까지 끝낸 상태</b>(「저장했어요」 알림)</td></tr>
+<tr><td class="n">하단 「저장」 탭</td><td class="bad">바로 전체 로그인 화면</td><td class="good">저장 화면으로 넘어간 뒤(탭이 바뀐 것을 먼저 보여 줌) 그 위에 아래 창. ✕로 닫으면 <b>비회원용 저장 화면</b>이 남음. 로그인하면 그 자리가 내 저장 목록</td></tr>
+<tr><td class="n">하단 「마이」 탭</td><td class="bad">바로 전체 로그인 화면</td><td class="good">창을 자동으로 띄우지 않음. 비회원용 마이 화면(맨 위 로그인 칸 · 비회원 주문 조회 · 고객센터)을 보여 주고, 로그인 칸을 누르면 아래 창</td></tr>
+<tr><td class="n">관심 상품(하트)</td><td class="bad">「로그인 후 이용하실 수 있습니다」 확인 창</td><td class="good">바로 아래 창. 로그인하면 관심 상품 등록까지 끝낸 상태</td></tr>
+</tbody></table>
+<p><b>비회원용 저장 화면</b>: 제목 「저장」 · 칩(모두·레시피·컬렉션·상품) 그대로 · 가운데 마스코트 얼굴 88px · 「마음에 드는 레시피를 저장하면 여기에 모여요」(18px 700) · 「로그인하면 어느 휴대폰에서든 저장한 레시피·상품을 꺼내 볼 수 있어요」(14px #666666) · [로그인하고 시작하기](오렌지, 누르면 아래 창).</p>
+<ul>
+<li>하단 탭은 길을 찾는 버튼이라, 누르자마자 로그인 화면으로 바뀌면 손님은 「잘못 눌렀다」고 느낍니다. 무엇이 쌓이는 곳인지 먼저 보여 줍니다.</li>
+<li>마이 탭은 비회원도 주문 조회·고객센터를 쓰려고 들어옵니다. 창을 자동으로 띄우면 이 손님들이 막힙니다.</li>
+<li>저장·하트는 「누른 것을 끝내 주는 것」까지가 한 묶음입니다. 지금처럼 돌아와서 다시 누르게 하면 로그인한 보람이 없습니다.</li>
+</ul>
+<figure><img src="fix1110/img/f12b.jpg" alt="하단 저장 탭과 레시피 저장 버튼, 지금과 제안" loading="lazy"><figcaption>하단 저장 탭: 지금(전체 로그인 화면) → 제안(저장 화면 위 아래 창 · 닫으면 비회원용 저장 화면). 레시피 저장 버튼: 지금(확인 창) → 제안(바로 아래 창)</figcaption></figure>
+
+<h3 id="i12-3">12-3. 만들기를 눌렀을 때</h3>
+<div class="rule"><ol>
+<li><b>비회원도 하단 「+」로 「레시피 만들기」 창을 엽니다.</b> 링크를 붙여넣고 [링크로 레시피 만들기]를 누를 때 로그인합니다. 링크를 붙여넣은 손님은 마음을 이미 먹은 손님이라, 이때 묻는 로그인은 「마지막 한 단계」로 느껴집니다.</li>
+<li><b>만들기 창을 내리고 같은 자리에 로그인 창을 올립니다</b>(두 창을 겹치지 않음). ✕·쓸어내리기·뒤로가기는 <b>링크가 들어 있는 만들기 창</b>으로 돌아갑니다.</li>
+<li><b>붙여넣은 링크를 돌아갈 곳에 실어 둡니다</b>(예: <span class="src">/?modal=recipe-create&amp;link=…</span>). 카카오·네이버 로그인은 다른 앱에 다녀오느라 화면이 새로 열려 입력이 사라지기 때문입니다. <b>로그인이 끝나면 다시 누르지 않아도 바로 만들기를 시작</b>합니다(버튼 「레시피를 만들고 있어요」).</li>
+<li><b>로그인 창을 띄우기 전에 링크 모양만 먼저 봅니다.</b> 인스타 릴스·게시물(instagram.com/reel·/p), 유튜브(쇼츠·youtube.com·youtu.be)가 아니면 로그인 대신 「이 링크는 만들 수 없어요」. 휴대폰 안에서 글자만 보는 검사라 비용이 없습니다.</li>
+<li><b>「직접 레시피 만들기」는 그 버튼을 누를 때 로그인</b>합니다. 4단계를 쓰는 긴 작업이라, 다 쓴 뒤에 로그인시키면 쓴 글이 날아갈 위험이 큽니다(지금 「저장됨」 자동 저장도 회원이어야 됨).</li>
+<li>만들기에서는 「비회원으로 계속하기」를 보이지 않습니다(12-4).</li>
+</ol></div>
+<p class="src">다음 단계 후보(이번 범위 아님): 같은 링크가 이미 레시피로 만들어져 있으면 비회원에게도 결과를 바로 보여 주고, 저장할 때 로그인. AI 비용이 들지 않지만 같은 링크를 찾아 주는 기능이 필요합니다.</p>
+<figure><img src="fix1110/img/f12c.jpg" alt="만들기: 지금 확인 창, 제안 링크 넣기 → 로그인 창 → 로그인 뒤 바로 만들기" loading="lazy"><figcaption>지금(+ 누르면 확인 창) → 제안 ① 링크 붙여넣기 ② [링크로 레시피 만들기]를 누르면 만들기 창 대신 로그인 창 ③ 로그인 뒤 그 링크로 바로 만들기 시작</figcaption></figure>
+
+<h3 id="i12-4">12-4. 구매·비회원</h3>
+<ul>
+<li><b>「비회원으로 계속하기」는 구매할 때만 보입니다.</b> 비회원이 끝까지 할 수 있는 일은 구매뿐입니다. 저장·댓글·만들기·하트에 두면 손님은 비회원으로도 되는 줄 알고 눌렀다가 창만 닫힙니다.</li>
+<li>구매 경로 세 곳(바로 구매 · 장바구니 주문 · 선물하기)이 <b>모두 이미 type=guestOrder 표시를 붙여</b> 로그인으로 옵니다. 아래 창은 「이 표시가 있으면 비회원 버튼을 보인다」 하나만 따르면 됩니다.</li>
+<li>누르면 지금처럼 비회원 주문서로 갑니다(고른 옵션 그대로). 비회원 주문서는 이름·이메일·휴대폰·주문 비밀번호 2번·배송지를 손으로 넣습니다. 그래서 카카오를 크게, 비회원은 테두리 버튼으로 작게 둡니다.</li>
+<li><b>「비회원 주문 조회」 입구를 옮겨야 합니다.</b> 지금은 전체 로그인 화면 아래에만 있어, 로그인이 아래 창 하나가 되면 입구가 사라집니다. 마이 탭 비회원 화면 · 주문 완료 화면 · 주문 알림톡 링크 세 곳에 둡니다. (9월 주문의 6.1%가 비회원)</li>
+<li><b>비회원 장바구니가 로그인하면 사라집니다.</b> 비회원으로 담은 뒤 로그인하니 회원 장바구니가 비어 있었습니다. 로그인할 때 비회원 장바구니를 회원 장바구니로 옮겨야 합니다. (장바구니에서 바로 주문하면 주문서가 먼저 만들어져 괜찮음)</li>
+</ul>
+<figure><img src="fix1110/img/f12d.jpg" alt="구매: 지금 로그인 화면(비회원 버튼 가려짐), 제안 구매 창과 저장 창" loading="lazy"><figcaption>지금(구매하기 → 로그인 화면, 비회원 주문하기는 하단 메뉴 밑) → 제안(구매: 비회원으로 계속하기 있음 / 저장: 없음)</figcaption></figure>
+
+<h3 id="i12-5">12-5. Apple 로그인</h3>
+<ul>
+<li><b>졸리팟 아이폰 앱 안에서만 보입니다.</b> 인스타·카톡 안·크롬·안드로이드 앱에서는 뺍니다. 그쪽은 앱스토어 심사 대상이 아닙니다.</li>
+<li>프로토타입은 Apple 있음 / 없음 두 벌로 볼 수 있습니다(맨 위 「Apple 버튼」).</li>
+<li><b>「심사 때만 두고 나중에 뺀다」는 위험합니다.</b> 심사 기준 4.8은 카카오·네이버 같은 소셜 로그인으로 계정을 만들게 하면, 이름·이메일만 받고 이메일을 숨길 수 있고 광고 추적을 하지 않는 로그인을 <b>함께</b> 두라고 합니다. 졸리팟은 예외 다섯 가지에 해당하지 않고, 앱 업데이트도 매번 심사합니다. 빼면 다음 업데이트 때 반려될 수 있고, 이미 Apple로 가입한 회원(10월 가입의 0.1%)이 로그인할 길도 사라집니다.</li>
+<li>권하는 안: <b>아이폰 앱에서는 계속 두고</b>, 나머지 환경에서는 뺍니다. 손님 대부분이 「Apple 없음」 창을 봅니다. 아이폰 앱에서 드는 값은 창 높이 60px 정도입니다.</li>
+</ul>
+<p class="q">App Store 심사 기준 4.8(2026-10-16판): 「Apps that use a third-party or social login service… must also offer as an equivalent option another login service with the following features: limits data collection to the user's name and email address; allows users to keep their email address private…; does not collect interactions with your app for advertising purposes without consent.」</p>
+
+<h3 id="i12-6">12-6. 함께 발견한 것 (로그인 밖 · 버그 시트 등록 여부 결정 필요)</h3>
+<ul>
+<li>상품 「선물하기」를 눌러도 옵션 창 버튼이 [장바구니]·[구매하기]뿐입니다. 선물 흐름이 따로 없는 것으로 보입니다(주문서에서 나뉘는지는 확인 필요).</li>
+<li>시험 계정으로 저장 목록을 열 때마다 「레시피를 정리하지 못했어요」 창이 다시 뜹니다. 한 번 실패한 링크 상태가 지워지지 않는 것으로 보입니다.</li>
+<li>원본 로고 그림(jollypot_mascot_wide_font)은 바탕이 투명이 아니라 흰색이고 옅은 회색 상자가 깔려 있어, 로그인 화면에서 로고 뒤에 희미한 네모가 보입니다. 바탕이 투명한 파일로 바꿔야 합니다.</li>
+</ul>
+
+<h3 id="i12-7">12-7. 확인 필요 · 2주 측정</h3>
+<ul>
+<li>네이버 앱 안 브라우저에서 카카오싱크가 바로 되는지 (대표님 확인 내용 반영, 기기로는 미확인) · 스레드·밴드·라인 안 브라우저 동작</li>
+<li>카카오싱크로 받은 배송지·전화번호가 샵바이 주문서에 자동으로 채워지는지 · 샵바이에 비회원 장바구니를 회원 장바구니로 옮기는 기능이 있는지</li>
+<li>구글 머티리얼 디자인(안드로이드 가이드) 원문은 페이지가 열리지 않아 확인하지 못했습니다.</li>
+<li><b>2주 동안 볼 숫자</b>: 들어온 곳(인스타 안 / 그 밖)별 「창을 본 사람 중 로그인까지 끝낸 비율」 · 구매에서 뜬 창을 보고 그냥 나간 비율 · 비회원 주문 비율(지금 6.1%) · 「+ 만들기」에서 링크를 넣은 뒤 로그인까지 끝낸 비율</li>
+</ul>
+<h2>참고</h2>
+<ul class="src">
+<li>검토 중에 시험 계정 로그인이 두 번 만료돼 홈이 「Application error」로 멈췄습니다. 버그 시트 No 9(로그인 갱신 실패)가 새 판에서도 그대로입니다.</li>
+<li>아이콘 두께는 개발 앱이 쓰는 아이콘 원본을 받아 8배로 그려 쟀고, 같은 방법으로 아는 두께(1.0~2.0px)의 lucide 아이콘을 재서 잣대로 삼았습니다.</li>
+<li>v1-4까지의 내용(이전 안·비교 안)은 <a href="jollypot-ui-review-1110-v1-4.html">v1-4</a>에 그대로 있습니다.</li>
+</ul>
+<div class="ver">jollypot-ui-review-1110-v1-7 · 앞 문서: jollypot-ui-review-1110-v1-6 · 12번 프로토타입: jollypot-v2-login-v1-8 · 기준: 개발 서버 판 H3IfkeIuyECZxhCr8vCNs · 디자인 가이드 v2.0.6</div>
+</div></body></html>
