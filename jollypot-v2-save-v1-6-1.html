@@ -41,6 +41,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .hdr-btn{height:34px;padding:0 13px;border-radius:999px;border:1px solid var(--color-border);background:#fff;font-size:14px;font-weight:600;display:flex;align-items:center;gap:4px}
 .hdr-btn .p{font-size:17px;line-height:1}
 .hdr-text{height:40px;padding:0 6px;font-size:15px;font-weight:600;color:var(--color-text-primary)}
+.hdr-new{display:flex;align-items:center;gap:3px;min-height:44px}.hdr-new .p{font-size:20px;font-weight:500;line-height:1;margin-top:-1px}
 .chips{flex:none;display:flex;gap:8px;padding:2px 16px 12px;overflow-x:auto}
 .chips::-webkit-scrollbar{height:0}
 .chip{flex:none;height:36px;padding:0 16px;border-radius:999px;border:1px solid var(--color-border);background:#fff;font-size:14px;font-weight:500;display:flex;align-items:center}
@@ -114,10 +115,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .cgrid .ccover{height:auto;aspect-ratio:1/1}
 .ccard{position:relative}
 .picked .ccover{box-shadow:inset 0 0 0 2px var(--color-secondary)}
-/* 새 컬렉션 카드: 가이드 「빈 상태 점선 = #CCCFD4」 · 컬렉션 카드와 같은 크기 */
-.ccard.new .ccover{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:#fff;border:1.5px dashed var(--color-border);color:var(--color-text-secondary)}
-.ccard.new .plus{width:36px;height:36px;border-radius:50%;background:var(--color-surface);color:var(--color-primary);font-size:24px;font-weight:500;display:flex;align-items:center;justify-content:center;line-height:1}
-.ccard.new .n{color:var(--color-text-primary)}
 .yolk{width:40px;height:40px;border-radius:50%;background:var(--color-brand);position:relative}
 .yolk::before,.yolk::after{content:"";position:absolute;top:15px;width:5px;height:6px;border-radius:50%;background:var(--color-text-primary)}
 .yolk::before{left:12px}.yolk::after{right:12px}
@@ -216,11 +213,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   ① 떠 있는 검정 「편집」 버튼 없음. 목록 머리 오른쪽 「선택」 → 표지에 체크 동그라미 → 아래 행동 줄 「○○에 담기 · 저장에서 빼기」. 표지를 길게 눌러도 고르기 시작(0.5초).<br>
   ② 「저장에서 빼기」는 확인 창 없이 바로 빼고, 알림의 「되돌리기」로 살림(되돌릴 수 있으니 묻지 않음). 「삭제」라는 말은 쓰지 않음 — 레시피가 지워지는 게 아님.<br>
   ③ 제목은 「저장」. 「○○님의 저장 목록」은 가입 때 닉네임을 받지 않아 실명이 나옴.<br>
-  ④ (v1-6-1 덮어쓰기로 바뀜) 「+ 새 컬렉션」은 헤더가 아니라 컬렉션 자리 첫 칸 점선 카드.<br>
+  ④ (v1-6-1 덮어쓰기로 바뀜) 「+ 새 컬렉션」은 컬렉션 탭에서만 헤더 오른쪽 글자 버튼.<br>
   ⑤ 묶음 이름은 「컬렉션」 확정(11/08 대표 결정, 레시피북과 비교 검토 후).<br>
   <b>v1-5 → v1-6</b>: 컬렉션 화면에도 「선택」. 고른 뒤 할 일은 「컬렉션 삭제」 하나(이름 바꾸기는 컬렉션 안에서 하나씩). 지워도 안의 레시피는 저장에 그대로 → 확인 창 없이 지우고 「되돌리기」.<br>
   <b>v1-6 → v1-6-1</b>: 「저장 취소」 → 「저장에서 빼기」(「담기」와 짝, 고르기 「취소」와 혼동 방지, 레시피가 지워지는 게 아님). 컬렉션은 「컬렉션 삭제」 유지.<br>
-  <b>v1-6-1 덮어쓰기(11/10)</b>: 헤더 「+ 새 컬렉션」 알약 버튼을 없애고 컬렉션 자리 첫 칸 「＋ 새 컬렉션」 점선 카드로 옮김. 이유: 흰 바탕+회색 테두리 알약은 바로 아래 안 고른 필터 칩(가이드 #5-1)과 모양이 같아 「필터 하나 더」로 읽힘 · 상품 탭에서도 보여 맥락이 없음. 점선 = 가이드 「빈 상태 점선 #CCCFD4」, 담기 시트 「새 컬렉션 만들기」(점선 칸)와 같은 모양. 모두 탭은 컬렉션이 0개여도 레시피가 있으면 이 카드를 보여 줌. 컬렉션 탭 빈 상태는 「새 컬렉션 만들기」 버튼.<br>
+  <b>v1-6-1 덮어쓰기(11/10)</b>: 헤더 「+ 새 컬렉션」 알약 버튼 삭제. 알약은 바로 아래 안 고른 필터 칩(가이드 #5-1)과 모양이 같아 「필터 하나 더」로 읽히고, 모두·레시피·상품 탭에도 늘 보였음. 컬렉션은 만드는 때보다 보는 때가 훨씬 많아 만들기 칸을 늘 두지 않음 → <b>컬렉션 탭에서만</b> 헤더 오른쪽에 테두리 없는 「+ 새 컬렉션」 글자 버튼(고르기 모드 「완료」와 같은 모양, 인스타 저장 화면 오른쪽 위 「+」와 같은 자리). 컬렉션이 0개면 본문 「새 컬렉션 만들기」 버튼만. 주로 만드는 길은 레시피 저장·담기 시트의 「새 컬렉션 만들기」 그대로.<br>
   ⑥ 가이드 v2.0.6 정리: 비활성 버튼 흐린 오렌지 → 회색, 알림 민트 체크·12px 모서리 → 알약, 섹션 머리 600·「모두 보기」 → 원형 화살표, 회색 글자 #666, 이름 중복 경고 레드.</p>
   <p class="proto-version">jollypot-v2-save-v1-6-1</p>
 </div>
@@ -331,7 +328,6 @@ function ccover(c){
   return `<div class="ccover">${c.e.slice(0,4).map((x,i)=>`<span class="g${[4,2,5,1][i]}">${x}</span>`).join("")}</div>`;
 }
 const ccard=c=>{ const on=picked.has(c.id); return `<button class="ccard${on?" picked":""}" data-cid="${c.id}"><div style="position:relative">${ccover(c)}${sel()?`<span class="ck">${on?"✓":""}</span>`:""}</div><p class="n">${c.n}</p><p class="m">레시피 ${c.k}개</p></button>`; };
-const newCard=()=>sel()?"":`<button class="ccard new" data-open aria-label="새 ${N()} 만들기"><div class="ccover"><span class="plus">+</span></div><p class="n">새 ${N()}</p><p class="m">주제별로 모아요</p></button>`;
 function pcard(p){
   const sale=Math.round(p.o*(100-p.r)/100/100)*100, on=picked.has(p.id);
   return `<button class="pcard${p.end?" ended":""}${on?" picked":""}" data-pid="${p.id}"><div class="pthumb" role="img" aria-label="상품 썸네일">${p.e}${p.end?`<span class="ended-chip">딜 종료</span>`:""}${sel()?`<span class="ck">${on?"✓":""}</span>`:""}</div>
@@ -347,8 +343,8 @@ function viewAll(){
   if(!R.length&&!C.length&&S.pending!=="on")
     return emptyBox("아직 저장한 레시피가 없어요","마음에 드는 레시피에서 저장을 누르거나<br>영상 링크로 레시피를 만들어 보세요.","레시피 만들기");
   let h=banner();
-  if(C.length||R.length) h+=`<section class="sec"><div class="sec-h"><h2>${N()}<span class="n">${C.length}</span></h2>${C.length?`<button class="arrow" data-go="collection" aria-label="${N()} 모두 보기">${ARROW}</button>`:""}</div>
-    <div class="row">${newCard()}${C.map(ccard).join("")}</div></section>`;
+  if(C.length) h+=`<section class="sec"><div class="sec-h"><h2>${N()}<span class="n">${C.length}</span></h2><button class="arrow" data-go="collection" aria-label="${N()} 모두 보기">${ARROW}</button></div>
+    <div class="row">${C.map(ccard).join("")}</div></section>`;
   if(R.length||S.pending==="on") h+=`<section class="sec"><div class="sec-h"><h2>레시피<span class="n">${R.length+(S.pending==="on"?1:0)}</span></h2>${tools(R.length?"recipe":"","저장한 순")}</div>${rgrid(R)}</section>`;
   return h;
 }
@@ -361,7 +357,7 @@ function viewCollection(){
   const C=cols();
   if(!C.length) return emptyBox(`아직 ${N()}${josa(N(),"이","가")} 없어요`,`저장한 레시피를 주제별로 모아 보세요.<br>아이 반찬, 주말 브런치처럼요.`,`새 ${N()} 만들기`,true);
   return `<section class="sec"><div class="sec-h"><h2>${N()}<span class="n">${C.length}</span></h2>${sel()?"":tools("collection","최근 담은 순")}</div>
-    <div class="cgrid">${newCard()}${C.map(ccard).join("")}</div></section>`;
+    <div class="cgrid">${C.map(ccard).join("")}</div></section>`;
 }
 function viewProduct(){
   const P=prods();
@@ -371,7 +367,8 @@ function viewProduct(){
 
 function renderHeader(){
   if(!sel()){
-    $("hdr").innerHTML=`<h1>저장</h1>`;   // 「+ 새 컬렉션」은 컬렉션 자리 첫 칸으로 옮김(필터 칩과 모양이 같아 헷갈림)
+    const canNew=S.filter==="collection"&&cols().length>0;   // 만들기는 컬렉션을 보는 탭에서만 · 빈 상태는 본문 버튼
+    $("hdr").innerHTML=`<h1>저장</h1>${canNew?`<button class="hdr-text hdr-new" data-open aria-label="새 ${N()} 만들기"><span class="p">+</span>새 ${N()}</button>`:""}`;
     $("chips").hidden=false; $("selbar").hidden=true;
     $("chips").innerHTML=[["all","모두"],["recipe","레시피"],["collection",N()],["product","상품"]]
       .map(([f,l])=>`<button class="chip${S.filter===f?" active":""}" data-f="${f}">${l}</button>`).join("");
