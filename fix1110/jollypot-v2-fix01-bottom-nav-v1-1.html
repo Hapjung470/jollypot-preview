@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>01 하단 메뉴 — 높이·글자·색</title>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{--o:#FC642D;--ink:#212121;--mid:#666666;--lt:#9E9E9E;--line:#E5E7EB;--bd:#CCCFD4;--page:#ECECEC;
+--pb:#1E1E2E;--pon:#5B6ABF;--poff:#2D2D3D;--pofft:#8888A0;--plab:#CCCCDD;color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:"Pretendard Variable",Pretendard,"Noto Sans KR",-apple-system,"Apple SD Gothic Neo",sans-serif;-webkit-font-smoothing:antialiased;background:var(--page);color:var(--ink);
+ display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 16px 60px;letter-spacing:-.3px}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.proto-bar{width:min(390px,100%);background:var(--pb);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.proto-label{font-size:11px;font-weight:600;color:var(--plab);margin-bottom:6px}
+.proto-toggles{display:flex;flex-direction:column;gap:6px}
+.proto-toggle{width:100%;padding:9px 10px;border-radius:9px;background:var(--poff);color:var(--pofft);font-size:13px;font-weight:600;text-align:left}
+.proto-toggle.active{background:var(--pon);color:#fff}
+.proto-note{font-size:12px;line-height:1.6;color:var(--pofft);border-top:1px solid #3A3A4E;padding-top:10px}
+.proto-version{font-size:12px;color:var(--plab);word-break:break-all}
+/* 휴대폰 화면: 390×844를 그대로 그리고, 창 높이에 맞춰 통째로 줄임(아래쪽이 화면 밖으로 밀리지 않게) */
+.stage{position:relative;flex:none}
+.phone{position:absolute;left:0;top:0;width:390px;height:844px;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.12);transform-origin:0 0;letter-spacing:-.2px}
+.sc{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.sc::-webkit-scrollbar{width:0}
+.shot{display:block;width:390px;height:844px}
+.spec{min-width:0;width:min(760px,100%);background:#fff;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:12px;line-height:1.65;font-size:14px}
+.spec h1{font-size:20px;line-height:1.35}
+.spec .meta{font-size:12px;color:var(--mid)}
+.spec .lead{font-size:15px;background:#F7F7F8;border-radius:10px;padding:12px 14px}
+.spec h2{font-size:15px;margin-top:6px}
+.spec ul{padding-left:18px}.spec li{margin:3px 0}
+.tbl{overflow-x:auto;min-width:0;max-width:100%}
+.spec table{border-collapse:collapse;width:100%;min-width:480px;font-size:13px}
+.spec th,.spec td{text-align:left;vertical-align:top;padding:8px;border-bottom:1px solid var(--line)}
+.spec th{color:var(--mid);font-weight:500;font-size:12px}
+.spec td.now{color:#B3261E}.spec td.new{color:#145F48;font-weight:600}
+.shots{display:flex;flex-direction:column;gap:6px}
+.shots img{width:100%;border-radius:10px;border:1px solid var(--line)}
+.cap{font-size:12px;color:var(--mid)}
+.note{font-size:12px;color:var(--mid)}
+.toast{position:absolute;left:16px;right:16px;bottom:110px;background:rgba(33,33,33,.94);color:#fff;font-size:14px;line-height:1.5;padding:12px 16px;border-radius:999px;z-index:60;text-align:center}
+.pill{position:absolute;left:50%;transform:translateX(-50%);background:rgba(33,33,33,.86);color:#fff;font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px;z-index:50;white-space:nowrap;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="proto-bar">
+ <div><p class="proto-label">보기</p><div class="proto-toggles" data-g="mode"><button class="proto-toggle" data-v="now">지금 (개발 앱)</button><button class="proto-toggle active" data-v="new">제안</button></div></div>
+ <p class="proto-note">「지금 / 제안」을 눌러 화면 아래 하단 메뉴를 비교하세요.</p>
+ <p class="proto-version">jollypot-v2-fix01-bottom-nav-v1-1 · 근거: jollypot-ui-review-1110-v1-5 01번</p>
+</div>
+<div class="stage" id="stage"><div class="phone" id="phone"></div></div>
+<div class="spec">
+ <p class="meta">졸리팟 화면 수정 요청 01 · 공통 > 하단 메뉴</p>
+ <h1>하단 메뉴 — 높이·글자·색</h1>
+ <p class="lead"><b>글자가 10px로 작고 굵은데 옅은 회색이라 빽빽하고 흐리게 보입니다.</b> 자간(글자 사이)은 0이라 원인이 아닙니다. 높이 53px에 아이콘이 윗선에서 6px만 떨어져 답답합니다.</p>
+ <h2>바꿀 값</h2>
+ <div class="tbl"><table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td>메뉴 높이</td><td class='now'>53px</td><td class='new'>62px (아이폰 아래 여백은 지금처럼 따로)</td></tr><tr><td>아이콘 위 여백</td><td class='now'>6px</td><td class='new'>9px</td></tr><tr><td>글자 크기</td><td class='now'>10px</td><td class='new'>12px</td></tr><tr><td>글자 굵기</td><td class='now'>600 (전부)</td><td class='new'>고른 칸 600 · 나머지 500</td></tr><tr><td>안 고른 칸 색</td><td class='now'>#9E9E9E (옅은 회색)</td><td class='new'>#666666 (미드그레이)</td></tr><tr><td>아이콘</td><td class='now'>lucide, 선 1.5px</td><td class='new'>그대로 (05-1의 기준 두께)</td></tr><tr><td>자간</td><td class='now'>0</td><td class='new'>그대로</td></tr><tr><td>가운데 「+」</td><td class='now'>오렌지 56px</td><td class='new'>그대로</td></tr></tbody></table></div>
+ <h2>이렇게 바꾸는 이유</h2><ul><li>디자인 가이드에서 가장 작은 글자는 12px입니다. 한글은 획이 많아 같은 크기의 영어보다 빽빽해 보입니다.</li><li>작은 글자를 모두 굵게 쓰면 뭉쳐 보입니다. 고른 칸만 굵게 해야 차이가 납니다.</li><li>#9E9E9E는 흰 바탕에서 대비가 2.68:1이라, 가이드가 「누를 수 없는 것·입력 안내」에만 쓰라고 합니다. 메뉴 글자는 읽고 누르는 글자라 #666666(5.74:1)이 맞습니다.</li><li><b>가이드도 함께 고쳐야 합니다.</b> 가이드 6.10절은 하단 메뉴 안 고른 칸을 #9E9E9E로 적고 있어, 같은 가이드 10.2절(읽는 글자에 #9E9E9E 금지)과 서로 다릅니다.</li></ul>
+ <h2>실제 개발 앱 화면</h2><div class="shots"><img src="img/f01.jpg" alt="홈 화면 하단 메뉴(2배 확대). 왼쪽 지금 · 오른쪽 제안"><p class="cap">홈 화면 하단 메뉴(2배 확대). 왼쪽 지금 · 오른쪽 제안</p></div>
+ <p class="note">위 휴대폰 화면의 「지금」은 개발 앱 실제 화면(또는 실제 화면을 잘라 붙인 것)이고, 「제안」은 같은 화면에 이 항목만 바꿔 입힌 것입니다.</p>
+</div>
+<div id="toast"></div>
+<script>
+const ICONS={"arrowUp": "<path d=\"m5 12 7-7 7 7\" /> <path d=\"M12 19V5\" />", "arrowLeft": "<path d=\"m12 19-7-7 7-7\" /> <path d=\"M19 12H5\" />", "house": "<path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\" /> <path d=\"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\" />", "plus": "<path d=\"M5 12h14\" /> <path d=\"M12 5v14\" />", "search": "<circle cx=\"11\" cy=\"11\" r=\"8\" /> <path d=\"m21 21-4.3-4.3\" />", "cart": "<circle cx=\"8\" cy=\"21\" r=\"1\" /> <circle cx=\"19\" cy=\"21\" r=\"1\" /> <path d=\"M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12\" />", "bookmark": "<path d=\"m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z\" />", "user": "<circle cx=\"12\" cy=\"8\" r=\"5\" /> <path d=\"M20 21a8 8 0 0 0-16 0\" />", "x": "<path d=\"M18 6 6 18\" /> <path d=\"m6 6 12 12\" />", "dots": "<circle cx=\"12\" cy=\"12\" r=\"1\" /> <circle cx=\"12\" cy=\"5\" r=\"1\" /> <circle cx=\"12\" cy=\"19\" r=\"1\" />"};
+function ic(n,o={}){const s=o.size||24,w=o.w||1.5,c=o.c||'#212121';return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" style="display:block">${ICONS[n]}</svg>`}
+const S={"mode": "new"};
+function setProto(g,v){document.querySelectorAll(`.proto-toggles[data-g="${g}"] .proto-toggle`).forEach(b=>b.classList.toggle('active',b.dataset.v===v))}
+document.addEventListener('click',e=>{const t=e.target.closest('.proto-toggle');if(!t)return;const g=t.parentElement.dataset.g;S[g]=t.dataset.v;setProto(g,t.dataset.v);render()});
+// 휴대폰 화면 크기 맞추기
+function fit(){const st=document.getElementById('stage'),ph=document.getElementById('phone');const aw=Math.min(390,document.documentElement.clientWidth-32);const ah=window.innerHeight-24;const s=Math.min(1,aw/390,ah/844);
+ ph.style.transform=`scale(${s})`;st.style.width=Math.round(390*s)+'px';st.style.height=Math.round(844*s)+'px'}
+addEventListener('resize',fit);addEventListener('load',fit);if(window.visualViewport)visualViewport.addEventListener('resize',fit);fit();setTimeout(fit,300);
+// 휴대폰 화면을 만졌다 뗐을 때 일부가 화면 밖이면 휴대폰 전체가 보이게 맞춤
+function align(){const r=document.getElementById('stage').getBoundingClientRect();if(r.top<-2||r.bottom>innerHeight+2)scrollBy({top:r.top-12,behavior:'smooth'})}
+document.getElementById('stage').addEventListener('touchend',()=>setTimeout(align,60),{passive:true});
+document.getElementById('stage').addEventListener('mouseup',()=>setTimeout(align,60));
+// 실제 개발 앱 하단 메뉴(지금 값): 높이 53, 아이콘 위 6px, 글자 10px·600·#9E9E9E, 가운데 + 56px
+function nav(o={}){const act=o.active||'home';const it=(k,n,l)=>{const a=k===act,c=a?'#FC642D':'#9E9E9E';return `<div style="width:78px;height:53px;display:flex;flex-direction:column;align-items:center;padding-top:6px"><div>${ic(n,{c})}</div><div style="margin-top:4px;font-size:10px;line-height:14px;font-weight:600;color:${c};letter-spacing:0">${l}</div></div>`};
+ return `<div id="navbar" style="position:absolute;left:0;right:0;bottom:0;height:53px;background:#fff;border-top:1px solid #F7F7F7;box-shadow:0 -4px 8px rgba(0,0,0,.06);display:flex;z-index:20;transition:transform .25s">${it('home','house','홈')}${it('save','bookmark','저장')}<div style="width:78px;position:relative"><span style="position:absolute;left:11px;top:-18px;width:56px;height:56px;border-radius:50%;background:#FC642D;box-shadow:0 2px 16px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center">${ic('plus',{c:'#fff',w:1.8})}</span></div>${it('shop','cart','쇼핑')}${it('my','user','마이')}</div>`}
+function toast(msg){const t=document.getElementById('toast');if(!t)return;t.innerHTML=`<div class="toast">${msg}</div>`;clearTimeout(window._tt);window._tt=setTimeout(()=>t.innerHTML='',2600)}
+
+const SRC={"_": {"now": "img/01_now.jpg", "new": "img/01_new.jpg"}};
+function render(){const key=S.opt||'_';const src=SRC[key][S.mode];document.getElementById('phone').innerHTML=`<img class="shot" src="${src}" alt="개발 앱 화면">`+(window.EXTRA?EXTRA():'')}
+
+render();
+</script>
+</body>
+</html>

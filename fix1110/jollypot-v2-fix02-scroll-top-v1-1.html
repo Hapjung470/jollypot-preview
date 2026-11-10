@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>02 「맨 위로」 버튼 — 색·크기·위치·나타나는 때</title>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{--o:#FC642D;--ink:#212121;--mid:#666666;--lt:#9E9E9E;--line:#E5E7EB;--bd:#CCCFD4;--page:#ECECEC;
+--pb:#1E1E2E;--pon:#5B6ABF;--poff:#2D2D3D;--pofft:#8888A0;--plab:#CCCCDD;color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:"Pretendard Variable",Pretendard,"Noto Sans KR",-apple-system,"Apple SD Gothic Neo",sans-serif;-webkit-font-smoothing:antialiased;background:var(--page);color:var(--ink);
+ display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 16px 60px;letter-spacing:-.3px}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.proto-bar{width:min(390px,100%);background:var(--pb);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.proto-label{font-size:11px;font-weight:600;color:var(--plab);margin-bottom:6px}
+.proto-toggles{display:flex;flex-direction:column;gap:6px}
+.proto-toggle{width:100%;padding:9px 10px;border-radius:9px;background:var(--poff);color:var(--pofft);font-size:13px;font-weight:600;text-align:left}
+.proto-toggle.active{background:var(--pon);color:#fff}
+.proto-note{font-size:12px;line-height:1.6;color:var(--pofft);border-top:1px solid #3A3A4E;padding-top:10px}
+.proto-version{font-size:12px;color:var(--plab);word-break:break-all}
+/* 휴대폰 화면: 390×844를 그대로 그리고, 창 높이에 맞춰 통째로 줄임(아래쪽이 화면 밖으로 밀리지 않게) */
+.stage{position:relative;flex:none}
+.phone{position:absolute;left:0;top:0;width:390px;height:844px;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.12);transform-origin:0 0;letter-spacing:-.2px}
+.sc{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.sc::-webkit-scrollbar{width:0}
+.shot{display:block;width:390px;height:844px}
+.spec{min-width:0;width:min(760px,100%);background:#fff;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:12px;line-height:1.65;font-size:14px}
+.spec h1{font-size:20px;line-height:1.35}
+.spec .meta{font-size:12px;color:var(--mid)}
+.spec .lead{font-size:15px;background:#F7F7F8;border-radius:10px;padding:12px 14px}
+.spec h2{font-size:15px;margin-top:6px}
+.spec ul{padding-left:18px}.spec li{margin:3px 0}
+.tbl{overflow-x:auto;min-width:0;max-width:100%}
+.spec table{border-collapse:collapse;width:100%;min-width:480px;font-size:13px}
+.spec th,.spec td{text-align:left;vertical-align:top;padding:8px;border-bottom:1px solid var(--line)}
+.spec th{color:var(--mid);font-weight:500;font-size:12px}
+.spec td.now{color:#B3261E}.spec td.new{color:#145F48;font-weight:600}
+.shots{display:flex;flex-direction:column;gap:6px}
+.shots img{width:100%;border-radius:10px;border:1px solid var(--line)}
+.cap{font-size:12px;color:var(--mid)}
+.note{font-size:12px;color:var(--mid)}
+.toast{position:absolute;left:16px;right:16px;bottom:110px;background:rgba(33,33,33,.94);color:#fff;font-size:14px;line-height:1.5;padding:12px 16px;border-radius:999px;z-index:60;text-align:center}
+.pill{position:absolute;left:50%;transform:translateX(-50%);background:rgba(33,33,33,.86);color:#fff;font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px;z-index:50;white-space:nowrap;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="proto-bar">
+ <div><p class="proto-label">보기</p><div class="proto-toggles" data-g="mode"><button class="proto-toggle" data-v="now">지금 (개발 앱)</button><button class="proto-toggle active" data-v="new">제안</button></div></div><div><p class="proto-label">화면</p><div class="proto-toggles" data-g="opt"><button class="proto-toggle active" data-v="home">홈</button><button class="proto-toggle" data-v="detail">레시피 상세</button></div></div>
+ <p class="proto-note">휴대폰 화면 안을 위로 밀어 내려 보세요. 지금은 300px, 제안은 1,600px 내리면 오른쪽 아래에 버튼이 나옵니다. 버튼을 누르면 맨 위로 갑니다. 하단 메뉴는 두 경우 모두 02-2 제안대로 움직입니다.</p>
+ <p class="proto-version">jollypot-v2-fix02-scroll-top-v1-1 · 근거: jollypot-ui-review-1110-v1-5 02번</p>
+</div>
+<div class="stage" id="stage"><div class="phone" id="phone"></div></div>
+<div class="spec">
+ <p class="meta">졸리팟 화면 수정 요청 02 · 홈·쇼핑·레시피 상세 > 오른쪽 아래 맨 위로 버튼</p>
+ <h1>「맨 위로」 버튼 — 색·크기·위치·나타나는 때</h1>
+ <p class="lead"><b>흰 바탕 + 회색 테두리 + 잉크 화살표, 44px로 바꾸고 하단 메뉴와 함께 움직이게 합니다.</b> 지금 색 #89A17F는 가이드가 폐기한 세이지 그린 계열이고, 흰 화살표 대비가 2.81:1로 아이콘 기준 3:1에 못 미칩니다.</p>
+ <h2>바꿀 값</h2>
+ <div class="tbl"><table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td>바탕</td><td class='now'>#89A17F (폐기한 세이지 그린 계열)</td><td class='new'>흰색 #FFFFFF</td></tr><tr><td>테두리·그림자</td><td class='now'>테두리 없음 · 그림자 있음</td><td class='new'>1px #CCCFD4 테두리 · 그림자 없음</td></tr><tr><td>화살표</td><td class='now'>흰색 (대비 2.81:1)</td><td class='new'>잉크 #212121, lucide arrow-up, 선 1.5px (대비 16.1:1)</td></tr><tr><td>크기</td><td class='now'>42×42px</td><td class='new'>44×44px</td></tr><tr><td>오른쪽 여백</td><td class='now'>20px</td><td class='new'>16px</td></tr><tr><td>아래 위치 (홈·쇼핑)</td><td class='now'>늘 화면 아래 90px (메뉴가 숨어도 그대로)</td><td class='new'>메뉴 보일 때: 메뉴 위 16px / 메뉴 숨으면: 화면 아래 24px (+아이폰 아래 여백)</td></tr><tr><td>아래 위치 (레시피 상세)</td><td class='now'>아래 버튼 줄과 7px</td><td class='new'>아래 버튼 줄 위 16px</td></tr><tr><td>나타나는 때</td><td class='now'>약 300px 내렸을 때</td><td class='new'>약 1,600px (두 화면쯤) 내렸을 때</td></tr></tbody></table></div>
+ <h2>이렇게 바꾸는 이유</h2><ul><li>화면의 주인공은 가운데 오렌지 「+」입니다. 색 있는 동그라미가 하나 더 있으면 서로 다툽니다. 「맨 위로」는 보조 버튼이라 가이드의 보조 버튼 색(흰 바탕·회색 테두리·잉크)이 맞습니다.</li><li>가이드는 「그림자와 테두리를 같이 쓰지 않고 테두리만」입니다. 사진 위에서도 테두리로 경계가 보입니다.</li><li>지금은 조금만 내려도 바로 떠서 늘 화면을 가립니다. 맨 위로 돌아갈 필요는 꽤 내려간 뒤에 생깁니다.</li><li>레시피 상세에서는 아래 버튼 줄과 7px밖에 안 떨어져 잘못 누르기 쉽습니다.</li></ul>
+ <h2>실제 개발 앱 화면</h2><div class="shots"><img src="img/11_now.jpg" alt="레시피 상세(밥솥 족발) 지금: 초록 버튼이 아래 버튼 줄 바로 위(7px)에 붙어 있습니다."><p class="cap">레시피 상세(밥솥 족발) 지금: 초록 버튼이 아래 버튼 줄 바로 위(7px)에 붙어 있습니다.</p></div>
+ <p class="note">위 휴대폰 화면은 실제 개발 앱 화면(상단 바·본문·아래 버튼 줄)을 잘라 붙이고, 버튼과 하단 메뉴만 움직이게 만든 모형입니다.</p>
+</div>
+<div id="toast"></div>
+<script>
+const ICONS={"arrowUp": "<path d=\"m5 12 7-7 7 7\" /> <path d=\"M12 19V5\" />", "arrowLeft": "<path d=\"m12 19-7-7 7-7\" /> <path d=\"M19 12H5\" />", "house": "<path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\" /> <path d=\"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\" />", "plus": "<path d=\"M5 12h14\" /> <path d=\"M12 5v14\" />", "search": "<circle cx=\"11\" cy=\"11\" r=\"8\" /> <path d=\"m21 21-4.3-4.3\" />", "cart": "<circle cx=\"8\" cy=\"21\" r=\"1\" /> <circle cx=\"19\" cy=\"21\" r=\"1\" /> <path d=\"M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12\" />", "bookmark": "<path d=\"m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z\" />", "user": "<circle cx=\"12\" cy=\"8\" r=\"5\" /> <path d=\"M20 21a8 8 0 0 0-16 0\" />", "x": "<path d=\"M18 6 6 18\" /> <path d=\"m6 6 12 12\" />", "dots": "<circle cx=\"12\" cy=\"12\" r=\"1\" /> <circle cx=\"12\" cy=\"5\" r=\"1\" /> <circle cx=\"12\" cy=\"19\" r=\"1\" />"};
+function ic(n,o={}){const s=o.size||24,w=o.w||1.5,c=o.c||'#212121';return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" style="display:block">${ICONS[n]}</svg>`}
+const S={"mode": "new", "opt": "home"};
+function setProto(g,v){document.querySelectorAll(`.proto-toggles[data-g="${g}"] .proto-toggle`).forEach(b=>b.classList.toggle('active',b.dataset.v===v))}
+document.addEventListener('click',e=>{const t=e.target.closest('.proto-toggle');if(!t)return;const g=t.parentElement.dataset.g;S[g]=t.dataset.v;setProto(g,t.dataset.v);render()});
+// 휴대폰 화면 크기 맞추기
+function fit(){const st=document.getElementById('stage'),ph=document.getElementById('phone');const aw=Math.min(390,document.documentElement.clientWidth-32);const ah=window.innerHeight-24;const s=Math.min(1,aw/390,ah/844);
+ ph.style.transform=`scale(${s})`;st.style.width=Math.round(390*s)+'px';st.style.height=Math.round(844*s)+'px'}
+addEventListener('resize',fit);addEventListener('load',fit);if(window.visualViewport)visualViewport.addEventListener('resize',fit);fit();setTimeout(fit,300);
+// 휴대폰 화면을 만졌다 뗐을 때 일부가 화면 밖이면 휴대폰 전체가 보이게 맞춤
+function align(){const r=document.getElementById('stage').getBoundingClientRect();if(r.top<-2||r.bottom>innerHeight+2)scrollBy({top:r.top-12,behavior:'smooth'})}
+document.getElementById('stage').addEventListener('touchend',()=>setTimeout(align,60),{passive:true});
+document.getElementById('stage').addEventListener('mouseup',()=>setTimeout(align,60));
+// 실제 개발 앱 하단 메뉴(지금 값): 높이 53, 아이콘 위 6px, 글자 10px·600·#9E9E9E, 가운데 + 56px
+function nav(o={}){const act=o.active||'home';const it=(k,n,l)=>{const a=k===act,c=a?'#FC642D':'#9E9E9E';return `<div style="width:78px;height:53px;display:flex;flex-direction:column;align-items:center;padding-top:6px"><div>${ic(n,{c})}</div><div style="margin-top:4px;font-size:10px;line-height:14px;font-weight:600;color:${c};letter-spacing:0">${l}</div></div>`};
+ return `<div id="navbar" style="position:absolute;left:0;right:0;bottom:0;height:53px;background:#fff;border-top:1px solid #F7F7F7;box-shadow:0 -4px 8px rgba(0,0,0,.06);display:flex;z-index:20;transition:transform .25s">${it('home','house','홈')}${it('save','bookmark','저장')}<div style="width:78px;position:relative"><span style="position:absolute;left:11px;top:-18px;width:56px;height:56px;border-radius:50%;background:#FC642D;box-shadow:0 2px 16px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center">${ic('plus',{c:'#fff',w:1.8})}</span></div>${it('shop','cart','쇼핑')}${it('my','user','마이')}</div>`}
+function toast(msg){const t=document.getElementById('toast');if(!t)return;t.innerHTML=`<div class="toast">${msg}</div>`;clearTimeout(window._tt);window._tt=setTimeout(()=>t.innerHTML='',2600)}
+
+let sy=0,last=0,acc=0,navHidden=false;
+function render(){const d=S.opt==='detail';const ph=document.getElementById('phone');
+ ph.innerHTML=`<div class="sc" id="sc"><div style="height:${d?60:62}px"></div><img src="${d?'img/recipe_body.jpg':'img/home_body.jpg'}" style="display:block;width:390px" alt="본문"><div style="height:${d?90:60}px"></div></div>
+ <img src="${d?'img/recipe_header.png':'img/home_header.png'}" style="position:absolute;top:0;left:0;width:390px;z-index:10" alt="상단 바">
+ ${d?`<img id="vb" src="img/recipe_videobar.png" style="position:absolute;top:60px;left:0;width:390px;z-index:9;display:none" alt="영상 줄">`:''}
+ ${d?`<img src="img/recipe_footer.png" style="position:absolute;bottom:0;left:0;width:390px;z-index:20" alt="아래 버튼 줄">`:nav()}
+ <button id="up" aria-label="맨 위로" style="position:absolute;border-radius:50%;display:none;align-items:center;justify-content:center;z-index:30;transition:bottom .25s"></button>
+ <div class="pill" id="pos" style="top:${d?126:72}px"></div>`;
+ const sc=document.getElementById('sc');sc.scrollTop=sy;
+ sc.addEventListener('scroll',()=>{const y=sc.scrollTop;if(!d){if(y>last){acc=0;if(y>60)navHidden=true}else{acc+=last-y;if(acc>=12)navHidden=false}if(y+sc.clientHeight>=sc.scrollHeight-2||y<=0)navHidden=false}last=y;sy=y;paint()});
+ document.getElementById('up').onclick=()=>sc.scrollTo({top:0,behavior:'smooth'});paint()}
+function paint(){const d=S.opt==='detail',p=S.mode==='new',th=p?1600:300,u=document.getElementById('up');
+ const nb=document.getElementById('navbar');if(nb)nb.style.transform=navHidden?'translateY(calc(100% + 24px))':'none';
+ const vb=document.getElementById('vb');if(vb)vb.style.display=sy>220?'block':'none';
+ const bottom=d?(p?83+16:83+7):(p?(navHidden?24:53+16):90);
+ u.style.cssText+=p?';width:44px;height:44px;right:16px;background:#FFFFFF;border:1px solid #CCCFD4;box-shadow:none':';width:42px;height:42px;right:20px;background:#89A17F;border:none;box-shadow:0 2px 8px rgba(0,0,0,.18)';
+ u.style.bottom=bottom+'px';u.style.display=sy>th?'flex':'none';u.innerHTML=ic('arrowUp',{c:p?'#212121':'#FFFFFF',w:1.5,size:p?24:22});
+ document.getElementById('pos').textContent=`내린 거리 ${Math.round(sy).toLocaleString()}px · 버튼은 ${th.toLocaleString()}px부터`}
+
+render();
+</script>
+</body>
+</html>

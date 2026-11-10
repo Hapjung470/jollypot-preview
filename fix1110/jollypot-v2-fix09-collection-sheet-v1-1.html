@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>09 컬렉션 담기 창 — 높이는 내용만큼(최대 86%), 줄은 64px</title>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{--o:#FC642D;--ink:#212121;--mid:#666666;--lt:#9E9E9E;--line:#E5E7EB;--bd:#CCCFD4;--page:#ECECEC;
+--pb:#1E1E2E;--pon:#5B6ABF;--poff:#2D2D3D;--pofft:#8888A0;--plab:#CCCCDD;color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:"Pretendard Variable",Pretendard,"Noto Sans KR",-apple-system,"Apple SD Gothic Neo",sans-serif;-webkit-font-smoothing:antialiased;background:var(--page);color:var(--ink);
+ display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 16px 60px;letter-spacing:-.3px}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.proto-bar{width:min(390px,100%);background:var(--pb);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.proto-label{font-size:11px;font-weight:600;color:var(--plab);margin-bottom:6px}
+.proto-toggles{display:flex;flex-direction:column;gap:6px}
+.proto-toggle{width:100%;padding:9px 10px;border-radius:9px;background:var(--poff);color:var(--pofft);font-size:13px;font-weight:600;text-align:left}
+.proto-toggle.active{background:var(--pon);color:#fff}
+.proto-note{font-size:12px;line-height:1.6;color:var(--pofft);border-top:1px solid #3A3A4E;padding-top:10px}
+.proto-version{font-size:12px;color:var(--plab);word-break:break-all}
+/* 휴대폰 화면: 390×844를 그대로 그리고, 창 높이에 맞춰 통째로 줄임(아래쪽이 화면 밖으로 밀리지 않게) */
+.stage{position:relative;flex:none}
+.phone{position:absolute;left:0;top:0;width:390px;height:844px;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.12);transform-origin:0 0;letter-spacing:-.2px}
+.sc{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.sc::-webkit-scrollbar{width:0}
+.shot{display:block;width:390px;height:844px}
+.spec{min-width:0;width:min(760px,100%);background:#fff;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:12px;line-height:1.65;font-size:14px}
+.spec h1{font-size:20px;line-height:1.35}
+.spec .meta{font-size:12px;color:var(--mid)}
+.spec .lead{font-size:15px;background:#F7F7F8;border-radius:10px;padding:12px 14px}
+.spec h2{font-size:15px;margin-top:6px}
+.spec ul{padding-left:18px}.spec li{margin:3px 0}
+.tbl{overflow-x:auto;min-width:0;max-width:100%}
+.spec table{border-collapse:collapse;width:100%;min-width:480px;font-size:13px}
+.spec th,.spec td{text-align:left;vertical-align:top;padding:8px;border-bottom:1px solid var(--line)}
+.spec th{color:var(--mid);font-weight:500;font-size:12px}
+.spec td.now{color:#B3261E}.spec td.new{color:#145F48;font-weight:600}
+.shots{display:flex;flex-direction:column;gap:6px}
+.shots img{width:100%;border-radius:10px;border:1px solid var(--line)}
+.cap{font-size:12px;color:var(--mid)}
+.note{font-size:12px;color:var(--mid)}
+.toast{position:absolute;left:16px;right:16px;bottom:110px;background:rgba(33,33,33,.94);color:#fff;font-size:14px;line-height:1.5;padding:12px 16px;border-radius:999px;z-index:60;text-align:center}
+.pill{position:absolute;left:50%;transform:translateX(-50%);background:rgba(33,33,33,.86);color:#fff;font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px;z-index:50;white-space:nowrap;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="proto-bar">
+ <div><p class="proto-label">보기</p><div class="proto-toggles" data-g="mode"><button class="proto-toggle" data-v="now">지금 (개발 앱)</button><button class="proto-toggle active" data-v="new">제안</button></div></div><div><p class="proto-label">컬렉션 수</p><div class="proto-toggles" data-g="opt"><button class="proto-toggle" data-v="1">1개</button><button class="proto-toggle" data-v="4">4개</button><button class="proto-toggle active" data-v="12">12개 (10개가 넘을 때)</button></div></div>
+ <p class="proto-note">컬렉션 수를 바꿔 보세요. 지금은 몇 개든 같은 높이이고, 제안은 개수만큼 늘어나다 화면의 86%에서 멈춥니다. 목록은 창 안에서 위로 밀어 볼 수 있습니다.</p>
+ <p class="proto-version">jollypot-v2-fix09-collection-sheet-v1-1 · 근거: jollypot-ui-review-1110-v1-5 09번</p>
+</div>
+<div class="stage" id="stage"><div class="phone" id="phone"></div></div>
+<div class="spec">
+ <p class="meta">졸리팟 화면 수정 요청 09 · 레시피 상세 > 저장 > 컬렉션 담기 창</p>
+ <h1>컬렉션 담기 창 — 높이는 내용만큼(최대 86%), 줄은 64px</h1>
+ <p class="lead"><b>창 높이를 컬렉션 수에 맞추고(최대 화면의 86%), 줄 높이를 80px에서 64px로 줄입니다.</b> 지금은 컬렉션이 1개든 12개든 같은 높이라, 많을 때는 2.5개만 보이고 1개일 때는 아래가 비어 있습니다.</p>
+ <h2>바꿀 값</h2>
+ <div class="tbl"><table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td>창 높이</td><td class='now'>컬렉션 수와 관계없이 같음 (목록 칸 205px)</td><td class='new'>내용만큼 늘어나되 최대 화면의 86%</td></tr><tr><td>컬렉션 줄 높이</td><td class='now'>80px</td><td class='new'>64px (썸네일 크기는 그대로)</td></tr><tr><td>한 번에 보이는 줄</td><td class='now'>약 2.5개</td><td class='new'>12개일 때 약 7개</td></tr><tr><td>고정하는 것</td><td class='now'>—</td><td class='new'>위 「담아뒀어요」 안내 · 「저장」 제목 줄 (목록만 움직임)</td></tr><tr><td>10개가 넘으면</td><td class='now'>—</td><td class='new'>제목 줄 아래 「컬렉션 찾기」 입력칸</td></tr><tr><td>순서</td><td class='now'>—</td><td class='new'>최근에 담은 컬렉션이 위</td></tr><tr><td>제목 줄 버튼</td><td class='now'>새 저장</td><td class='new'>+ 새 컬렉션</td></tr></tbody></table></div>
+ <h2>이렇게 바꾸는 이유</h2><ul><li>컬렉션이 많은 사람일수록 이 창을 자주 씁니다. 2.5개만 보이면 매번 안에서 밀어야 합니다.</li><li>86%는 아이폰 기본 시트를 크게 펼친 높이와 비슷해, 뒤의 레시피가 살짝 보여 「창」이라는 것이 남습니다.</li><li>「새 저장」은 무엇을 하는지 알기 어렵습니다. 컬렉션을 새로 만드는 버튼이라 「+ 새 컬렉션」이 맞습니다.</li><li>v1-4에 「아래 버튼 고정」이라고 적었던 것은 잘못입니다. 이 창에는 아래 버튼이 없습니다.</li></ul>
+ <h2>실제 개발 앱 화면</h2><div class="shots"><img src="../qa1109/ui/pair_sheet.jpg" alt="컬렉션 12개일 때(화면에서만 복제, 데이터는 만들지 않음). 왼쪽 지금 · 오른쪽 제안"><p class="cap">컬렉션 12개일 때(화면에서만 복제, 데이터는 만들지 않음). 왼쪽 지금 · 오른쪽 제안</p><img src="img/sheet1_now.jpg" alt="컬렉션 1개일 때 지금: 같은 높이라 아래가 비어 있습니다."><p class="cap">컬렉션 1개일 때 지금: 같은 높이라 아래가 비어 있습니다.</p></div>
+ <p class="note">위 휴대폰 화면은 실제 레시피 상세 화면 위에, 실제 담기 창과 같은 모양으로 그린 모형입니다. 컬렉션 이름·개수는 보여 주기 위한 예시입니다.</p>
+</div>
+<div id="toast"></div>
+<script>
+const ICONS={"arrowUp": "<path d=\"m5 12 7-7 7 7\" /> <path d=\"M12 19V5\" />", "arrowLeft": "<path d=\"m12 19-7-7 7-7\" /> <path d=\"M19 12H5\" />", "house": "<path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\" /> <path d=\"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\" />", "plus": "<path d=\"M5 12h14\" /> <path d=\"M12 5v14\" />", "search": "<circle cx=\"11\" cy=\"11\" r=\"8\" /> <path d=\"m21 21-4.3-4.3\" />", "cart": "<circle cx=\"8\" cy=\"21\" r=\"1\" /> <circle cx=\"19\" cy=\"21\" r=\"1\" /> <path d=\"M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12\" />", "bookmark": "<path d=\"m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z\" />", "user": "<circle cx=\"12\" cy=\"8\" r=\"5\" /> <path d=\"M20 21a8 8 0 0 0-16 0\" />", "x": "<path d=\"M18 6 6 18\" /> <path d=\"m6 6 12 12\" />", "dots": "<circle cx=\"12\" cy=\"12\" r=\"1\" /> <circle cx=\"12\" cy=\"5\" r=\"1\" /> <circle cx=\"12\" cy=\"19\" r=\"1\" />"};
+function ic(n,o={}){const s=o.size||24,w=o.w||1.5,c=o.c||'#212121';return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" style="display:block">${ICONS[n]}</svg>`}
+const S={"mode": "new", "opt": "12"};
+function setProto(g,v){document.querySelectorAll(`.proto-toggles[data-g="${g}"] .proto-toggle`).forEach(b=>b.classList.toggle('active',b.dataset.v===v))}
+document.addEventListener('click',e=>{const t=e.target.closest('.proto-toggle');if(!t)return;const g=t.parentElement.dataset.g;S[g]=t.dataset.v;setProto(g,t.dataset.v);render()});
+// 휴대폰 화면 크기 맞추기
+function fit(){const st=document.getElementById('stage'),ph=document.getElementById('phone');const aw=Math.min(390,document.documentElement.clientWidth-32);const ah=window.innerHeight-24;const s=Math.min(1,aw/390,ah/844);
+ ph.style.transform=`scale(${s})`;st.style.width=Math.round(390*s)+'px';st.style.height=Math.round(844*s)+'px'}
+addEventListener('resize',fit);addEventListener('load',fit);if(window.visualViewport)visualViewport.addEventListener('resize',fit);fit();setTimeout(fit,300);
+// 휴대폰 화면을 만졌다 뗐을 때 일부가 화면 밖이면 휴대폰 전체가 보이게 맞춤
+function align(){const r=document.getElementById('stage').getBoundingClientRect();if(r.top<-2||r.bottom>innerHeight+2)scrollBy({top:r.top-12,behavior:'smooth'})}
+document.getElementById('stage').addEventListener('touchend',()=>setTimeout(align,60),{passive:true});
+document.getElementById('stage').addEventListener('mouseup',()=>setTimeout(align,60));
+// 실제 개발 앱 하단 메뉴(지금 값): 높이 53, 아이콘 위 6px, 글자 10px·600·#9E9E9E, 가운데 + 56px
+function nav(o={}){const act=o.active||'home';const it=(k,n,l)=>{const a=k===act,c=a?'#FC642D':'#9E9E9E';return `<div style="width:78px;height:53px;display:flex;flex-direction:column;align-items:center;padding-top:6px"><div>${ic(n,{c})}</div><div style="margin-top:4px;font-size:10px;line-height:14px;font-weight:600;color:${c};letter-spacing:0">${l}</div></div>`};
+ return `<div id="navbar" style="position:absolute;left:0;right:0;bottom:0;height:53px;background:#fff;border-top:1px solid #F7F7F7;box-shadow:0 -4px 8px rgba(0,0,0,.06);display:flex;z-index:20;transition:transform .25s">${it('home','house','홈')}${it('save','bookmark','저장')}<div style="width:78px;position:relative"><span style="position:absolute;left:11px;top:-18px;width:56px;height:56px;border-radius:50%;background:#FC642D;box-shadow:0 2px 16px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center">${ic('plus',{c:'#fff',w:1.8})}</span></div>${it('shop','cart','쇼핑')}${it('my','user','마이')}</div>`}
+function toast(msg){const t=document.getElementById('toast');if(!t)return;t.innerHTML=`<div class="toast">${msg}</div>`;clearTimeout(window._tt);window._tt=setTimeout(()=>t.innerHTML='',2600)}
+
+const NAMES=['내가 좋아하는 레시피','주말 브런치','야식','자취요리','아이 반찬','10분 저녁','손님 초대','캠핑 요리','도시락','명절 음식','간식','국·찌개'];
+let q='';
+function rowsHTML(list,h){return list.map((x,i)=>{const heart=x==='내가 좋아하는 레시피';return `<div style="height:${h}px;display:flex;align-items:center;gap:14px;padding:0 20px;border-bottom:1px solid #F0F0F2"><div style="width:40px;height:40px;border-radius:10px;background:#FFF5EA;display:flex;align-items:center;justify-content:center;font-size:18px;flex:none">${heart?'❤️':'📁'}</div><div style="flex:1;min-width:0"><div style="font-size:16px;color:#212121;line-height:1.3">${x}</div><div style="font-size:13px;color:#9E9E9E;margin-top:2px">${heart?0:3}개</div></div><span style="width:28px;height:28px;border-radius:50%;border:1.5px solid #CCCFD4;display:flex;align-items:center;justify-content:center;flex:none">${ic('plus',{c:'#9E9E9E',size:18})}</span></div>`}).join('')}
+function render(){const p=S.mode==='new',n=+S.opt;const all=NAMES.slice(0,n);const list=all.filter(x=>!q||x.includes(q));
+ const rowH=p?64:80,search=p&&n>10;
+ const top=`<div style="height:24px;display:flex;justify-content:center;padding-top:8px"><span style="width:56px;height:4px;border-radius:2px;background:#DDDDDD"></span></div>
+  <div style="height:44px;display:flex;justify-content:flex-end;align-items:center;padding:0 16px">${ic('x',{size:26,c:'#212121'})}</div>
+  <div style="margin:0 20px;background:#FFF5EA;border-radius:16px;height:86px;display:flex;align-items:center;gap:12px;padding:0 16px"><div style="width:60px;height:60px;border-radius:8px;background:linear-gradient(135deg,#3B3B3B,#8E7A55);flex:none"></div><div style="flex:1"><div style="font-size:16px;font-weight:600">레시피에 담아뒀어요</div><div style="font-size:13px;color:#666;margin-top:3px">저장에 담아 정리해 보세요</div></div><svg width="22" height="26" viewBox="0 0 22 26"><path d="M2 2h18v22l-9-6-9 6z" fill="#FC642D"/></svg></div>
+  <div style="height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 20px"><b style="font-size:18px">저장</b><span style="font-size:16px;font-weight:600;color:#FC642D">${p?'+ 새 컬렉션':'새 저장'}</span></div>
+  ${search?`<div style="padding:0 20px 8px"><div style="height:40px;border-radius:10px;background:#F1F2F4;display:flex;align-items:center;gap:8px;padding:0 12px">${ic('search',{size:18,c:'#9E9E9E'})}<input id="q" value="${q}" placeholder="컬렉션 찾기" style="flex:1;border:none;outline:none;background:none;font:inherit;font-size:15px"></div></div>`:''}`;
+ const topH=24+44+86+64+(search?48:0);const max=Math.round(844*.86);
+ const listH=p?Math.min(list.length*rowH+24,max-topH):205;const sheetH=p?topH+listH:408;
+ document.getElementById('phone').innerHTML=`<img class="shot" src="img/h_recipe_now.jpg" alt="레시피 상세"><div style="position:absolute;inset:0;background:rgba(0,0,0,.45)"></div>
+ <div style="position:absolute;left:0;right:0;bottom:0;height:${sheetH}px;background:#fff;border-radius:20px 20px 0 0;display:flex;flex-direction:column;overflow:hidden">${top}<div class="sc" style="position:relative;flex:1;padding-bottom:24px">${rowsHTML(list,rowH)}</div></div>
+ <div class="pill" style="top:16px">창 높이 ${sheetH}px (화면의 ${Math.round(sheetH/844*100)}%) · 보이는 줄 약 ${Math.min(list.length,(listH-24)/rowH).toFixed(1)}개</div>`;
+ const qi=document.getElementById('q');if(qi){qi.oninput=()=>{q=qi.value;render();const n2=document.getElementById('q');n2.focus();n2.setSelectionRange(q.length,q.length)}}}
+
+render();
+</script>
+</body>
+</html>
