@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>14 홈 레시피 카드 썸네일 — 세로 영상은 세로 원본 그림으로(띠 없이 3:4)</title>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{--o:#FC642D;--ink:#212121;--mid:#666666;--lt:#9E9E9E;--line:#E5E7EB;--bd:#CCCFD4;--page:#ECECEC;
+--pb:#1E1E2E;--pon:#5B6ABF;--poff:#2D2D3D;--pofft:#8888A0;--plab:#CCCCDD;color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:"Pretendard Variable",Pretendard,"Noto Sans KR",-apple-system,"Apple SD Gothic Neo",sans-serif;-webkit-font-smoothing:antialiased;background:var(--page);color:var(--ink);
+ display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 16px 60px;letter-spacing:-.3px}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.proto-bar{width:min(390px,100%);background:var(--pb);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.proto-label{font-size:11px;font-weight:600;color:var(--plab);margin-bottom:6px}
+.proto-toggles{display:flex;flex-direction:column;gap:6px}
+.proto-toggle{width:100%;padding:9px 10px;border-radius:9px;background:var(--poff);color:var(--pofft);font-size:13px;font-weight:600;text-align:left}
+.proto-toggle.active{background:var(--pon);color:#fff}
+.proto-note{font-size:12px;line-height:1.6;color:var(--pofft);border-top:1px solid #3A3A4E;padding-top:10px}
+.proto-version{font-size:12px;color:var(--plab);word-break:break-all}
+/* 휴대폰 화면: 390×844를 그대로 그리고, 창 높이에 맞춰 통째로 줄임(아래쪽이 화면 밖으로 밀리지 않게) */
+.stage{position:relative;flex:none}
+.phone{position:absolute;left:0;top:0;width:390px;height:844px;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.12);transform-origin:0 0;letter-spacing:-.2px}
+.sc{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.sc::-webkit-scrollbar{width:0}
+.shot{display:block;width:390px;height:844px}
+.spec{min-width:0;width:min(760px,100%);background:#fff;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:12px;line-height:1.65;font-size:14px}
+.spec h1{font-size:20px;line-height:1.35}
+.spec .meta{font-size:12px;color:var(--mid)}
+.spec .lead{font-size:15px;background:#F7F7F8;border-radius:10px;padding:12px 14px}
+.spec h2{font-size:15px;margin-top:6px}
+.spec ul{padding-left:18px}.spec li{margin:3px 0}
+.tbl{overflow-x:auto;min-width:0;max-width:100%}
+.spec table{border-collapse:collapse;width:100%;min-width:480px;font-size:13px}
+.spec th,.spec td{text-align:left;vertical-align:top;padding:8px;border-bottom:1px solid var(--line)}
+.spec th{color:var(--mid);font-weight:500;font-size:12px}
+.spec td.now{color:#B3261E}.spec td.new{color:#145F48;font-weight:600}
+.shots{display:flex;flex-direction:column;gap:6px}
+.shots img{width:100%;border-radius:10px;border:1px solid var(--line)}
+.cap{font-size:12px;color:var(--mid)}
+.note{font-size:12px;color:var(--mid)}
+.toast{position:absolute;left:16px;right:16px;bottom:110px;background:rgba(33,33,33,.94);color:#fff;font-size:14px;line-height:1.5;padding:12px 16px;border-radius:999px;z-index:60;text-align:center}
+.pill{position:absolute;left:50%;transform:translateX(-50%);background:rgba(33,33,33,.86);color:#fff;font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px;z-index:50;white-space:nowrap;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="proto-bar">
+ <div><p class="proto-label">보기</p><div class="proto-toggles" data-g="mode"><button class="proto-toggle" data-v="now">지금 (개발 앱)</button><button class="proto-toggle active" data-v="new">제안</button></div></div><div><p class="proto-label">화면</p><div class="proto-toggles" data-g="opt"><button class="proto-toggle active" data-v="grid">이런 레시피는 어때요? (대표님 캡처 화면)</button><button class="proto-toggle" data-v="hot">화제의 레시피</button></div></div>
+ <p class="proto-note">「지금 / 제안」을 번갈아 눌러 카드 사진 양옆의 검정·흐림 띠를 보세요. 카드 칸 크기는 바꾸지 않았습니다.</p>
+ <p class="proto-version">jollypot-v2-fix14-home-thumbnail-v1 · 근거: jollypot-ui-review-1110-v1-11 14번</p>
+</div>
+<div class="stage" id="stage"><div class="phone" id="phone"></div></div>
+<div class="spec">
+ <p class="meta">졸리팟 화면 수정 요청 14 · 홈 (이런 레시피는 어때요?·화제의 레시피·최근에 저장한 레시피) > 레시피 카드 사진</p>
+ <h1>홈 레시피 카드 썸네일 — 세로 영상은 세로 원본 그림으로(띠 없이 3:4)</h1>
+ <p class="lead"><b>카드 칸은 이미 3:4입니다. 길쭉해 보이는 것은 그림 파일 안에 박힌 띠 때문입니다.</b> 세로 영상(쇼츠)인데 유튜브의 가로 그림(480×360·1280×720)을 받아 와서, 가운데 세로 화면 양옆에 검정·흐림 띠가 붙어 있습니다. 칸을 3:4로 잘라도 띠가 그림 안에 있어 같이 보입니다. <b>세로 영상은 유튜브의 세로 원본 그림으로 받고, 검은 띠가 남은 그림은 저장할 때 띠를 잘라 3:4로 저장</b>하면 됩니다.</p>
+ <h2>바꿀 값</h2>
+ <div class="tbl"><table><thead><tr><th>항목</th><th>지금 (개발 앱에서 잰 값)</th><th>제안</th></tr></thead><tbody><tr><td>카드 칸</td><td class='now'>3:4 · 꽉 채우기 (136×182 · 166×221 · 173×231)</td><td class='new'>그대로</td></tr><tr><td>세로 영상(쇼츠)의 그림</td><td class='now'>가로 그림 hqdefault(480×360) · maxresdefault(1280×720) — 홈 44장 중 6장</td><td class='new'>유튜브 세로 원본 oardefault.jpg (없으면 oar2.jpg), 1080×1920</td></tr><tr><td>이미 세로 원본을 쓰는 레시피</td><td class='now'>13장 (594·627·833·905 등)</td><td class='new'>그대로 — 같은 방식으로 맞춤</td></tr><tr><td>세로 원본에도 검은 띠가 있거나 세로 원본이 없을 때</td><td class='now'>띠째로 저장 — 3장 (594·493·870)</td><td class='new'>저장할 때 가장자리의 검은 한 가지 색 줄을 잘라 냄</td></tr><tr><td>저장하는 그림 비율</td><td class='now'>제각각 (480×360 ~ 1206×2144)</td><td class='new'>3:4 (가이드 12.1 「원본 자산은 3:4로 저장」)</td></tr><tr><td>가로 영상(일반 동영상)</td><td class='now'>가로 그림</td><td class='new'>그대로 (3:4로 가운데를 자르면 띠 없음)</td></tr><tr><td>이미 만든 레시피</td><td class='now'>—</td><td class='new'>한 번 일괄로 다시 받기 (지금 홈에 보이는 44장 중 9장)</td></tr></tbody></table></div>
+ <h2>이렇게 바꾸는 이유</h2><ul><li>칸 모양을 바꾸는 것으로는 안 풀립니다. 9:16처럼 더 길쭉하게 하면 한 화면에 카드가 적게 보이고, 가로 영상은 더 많이 잘립니다. 그림을 바로잡는 게 맞습니다.</li><li>같은 앱 안에서 이미 13장이 세로 원본을 쓰고 있어, 개발사가 쓰는 방식을 나머지에도 맞추면 됩니다. 9장이 가로 그림으로 남은 이유는 확인하지 못했습니다(막 올린 쇼츠는 세로 원본 그림이 늦게 생겨 가로 그림으로 넘어간 것으로 보입니다 — 추정).</li><li>세로 원본(9:16)을 3:4로 자르면 위아래가 12.5%씩 잘립니다. 맨 위·아래에 글자가 있으면 일부 잘립니다(392 된장찌개 제목). 지금 세로 원본 13장도 같은 방식입니다.</li><li>878은 세로 원본이 없어 두 번째 세로 그림(oar2)을 쓰면 다른 장면이 나옵니다. 같은 장면을 원하면 지금 그림의 가운데 세로 부분만 잘라 쓸 수 있지만, 폭이 약 200px라 흐립니다.</li><li>띠가 있는 레시피(테스트 앱): <a href="https://d1nmxpjaa8tlrm.cloudfront.net/recipes/884">884 계란말이</a> · <a href="https://d1nmxpjaa8tlrm.cloudfront.net/recipes/880">880</a> · <a href="https://d1nmxpjaa8tlrm.cloudfront.net/recipes/878">878</a> · <a href="https://d1nmxpjaa8tlrm.cloudfront.net/recipes/850">850 김치찌개</a> · <a href="https://d1nmxpjaa8tlrm.cloudfront.net/recipes/594">594 계란볶음밥</a> · <a href="https://d1nmxpjaa8tlrm.cloudfront.net/recipes/433">433 꽃게탕</a> · <a href="https://d1nmxpjaa8tlrm.cloudfront.net/recipes/392">392 된장찌개</a> · <a href="https://d1nmxpjaa8tlrm.cloudfront.net/recipes/493">493</a> · <a href="https://d1nmxpjaa8tlrm.cloudfront.net/recipes/870">870 애호박채전</a></li></ul>
+ <h2>실제 개발 앱 화면</h2><div class="shots"><img src="img/f12_grid.jpg" alt="홈 「이런 레시피는 어때요?」(대표님 캡처와 같은 자리, 실제 화면에 그림만 바꿔 찍음). 왼쪽 지금 · 오른쪽 제안"><p class="cap">홈 「이런 레시피는 어때요?」(대표님 캡처와 같은 자리, 실제 화면에 그림만 바꿔 찍음). 왼쪽 지금 · 오른쪽 제안</p><img src="img/f12_cards.jpg" alt="띠가 있던 9장. 왼쪽 지금 앱이 3:4로 잘라 보여 주는 모습 · 오른쪽 바꾼 뒤"><p class="cap">띠가 있던 9장. 왼쪽 지금 앱이 3:4로 잘라 보여 주는 모습 · 오른쪽 바꾼 뒤</p><img src="img/f12_hot.jpg" alt="홈 「화제의 레시피」. 왼쪽 지금 · 오른쪽 제안"><p class="cap">홈 「화제의 레시피」. 왼쪽 지금 · 오른쪽 제안</p></div>
+ <p class="note">위 휴대폰 화면의 「지금」은 개발 앱 실제 화면(또는 실제 화면을 잘라 붙인 것)이고, 「제안」은 같은 화면에 이 항목만 바꿔 입힌 것입니다.</p>
+</div>
+<div id="toast"></div>
+<script>
+const ICONS={"arrowUp": "<path d=\"m5 12 7-7 7 7\" /> <path d=\"M12 19V5\" />", "arrowLeft": "<path d=\"m12 19-7-7 7-7\" /> <path d=\"M19 12H5\" />", "house": "<path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\" /> <path d=\"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\" />", "plus": "<path d=\"M5 12h14\" /> <path d=\"M12 5v14\" />", "search": "<circle cx=\"11\" cy=\"11\" r=\"8\" /> <path d=\"m21 21-4.3-4.3\" />", "cart": "<circle cx=\"8\" cy=\"21\" r=\"1\" /> <circle cx=\"19\" cy=\"21\" r=\"1\" /> <path d=\"M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12\" />", "bookmark": "<path d=\"m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z\" />", "user": "<circle cx=\"12\" cy=\"8\" r=\"5\" /> <path d=\"M20 21a8 8 0 0 0-16 0\" />", "x": "<path d=\"M18 6 6 18\" /> <path d=\"m6 6 12 12\" />", "dots": "<circle cx=\"12\" cy=\"12\" r=\"1\" /> <circle cx=\"12\" cy=\"5\" r=\"1\" /> <circle cx=\"12\" cy=\"19\" r=\"1\" />"};
+function ic(n,o={}){const s=o.size||24,w=o.w||1.5,c=o.c||'#212121';return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" style="display:block">${ICONS[n]}</svg>`}
+const S={"mode": "new", "opt": "grid"};
+function setProto(g,v){document.querySelectorAll(`.proto-toggles[data-g="${g}"] .proto-toggle`).forEach(b=>b.classList.toggle('active',b.dataset.v===v))}
+document.addEventListener('click',e=>{const t=e.target.closest('.proto-toggle');if(!t)return;const g=t.parentElement.dataset.g;S[g]=t.dataset.v;setProto(g,t.dataset.v);render()});
+// 휴대폰 화면 크기 맞추기
+function fit(){const st=document.getElementById('stage'),ph=document.getElementById('phone');const aw=Math.min(390,document.documentElement.clientWidth-32);const ah=window.innerHeight-24;const s=Math.min(1,aw/390,ah/844);
+ ph.style.transform=`scale(${s})`;st.style.width=Math.round(390*s)+'px';st.style.height=Math.round(844*s)+'px'}
+addEventListener('resize',fit);addEventListener('load',fit);if(window.visualViewport)visualViewport.addEventListener('resize',fit);fit();setTimeout(fit,300);
+// 휴대폰 화면을 만졌다 뗐을 때 일부가 화면 밖이면 휴대폰 전체가 보이게 맞춤
+function align(){const r=document.getElementById('stage').getBoundingClientRect();if(r.top<-2||r.bottom>innerHeight+2)scrollBy({top:r.top-12,behavior:'smooth'})}
+document.getElementById('stage').addEventListener('touchend',()=>setTimeout(align,60),{passive:true});
+document.getElementById('stage').addEventListener('mouseup',()=>setTimeout(align,60));
+// 실제 개발 앱 하단 메뉴(지금 값): 높이 53, 아이콘 위 6px, 글자 10px·600·#9E9E9E, 가운데 + 56px
+function nav(o={}){const act=o.active||'home';const it=(k,n,l)=>{const a=k===act,c=a?'#FC642D':'#9E9E9E';return `<div style="width:78px;height:53px;display:flex;flex-direction:column;align-items:center;padding-top:6px"><div>${ic(n,{c})}</div><div style="margin-top:4px;font-size:10px;line-height:14px;font-weight:600;color:${c};letter-spacing:0">${l}</div></div>`};
+ return `<div id="navbar" style="position:absolute;left:0;right:0;bottom:0;height:53px;background:#fff;border-top:1px solid #F7F7F7;box-shadow:0 -4px 8px rgba(0,0,0,.06);display:flex;z-index:20;transition:transform .25s">${it('home','house','홈')}${it('save','bookmark','저장')}<div style="width:78px;position:relative"><span style="position:absolute;left:11px;top:-18px;width:56px;height:56px;border-radius:50%;background:#FC642D;box-shadow:0 2px 16px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center">${ic('plus',{c:'#fff',w:1.8})}</span></div>${it('shop','cart','쇼핑')}${it('my','user','마이')}</div>`}
+function toast(msg){const t=document.getElementById('toast');if(!t)return;t.innerHTML=`<div class="toast">${msg}</div>`;clearTimeout(window._tt);window._tt=setTimeout(()=>t.innerHTML='',2600)}
+
+const SRC={"grid": {"now": "img/12_grid_now.jpg", "new": "img/12_grid_new.jpg"}, "hot": {"now": "img/12_hot_now.jpg", "new": "img/12_hot_new.jpg"}};
+function render(){const key=S.opt||'_';const src=SRC[key][S.mode];document.getElementById('phone').innerHTML=`<img class="shot" src="${src}" alt="개발 앱 화면">`+(window.EXTRA?EXTRA():'')}
+
+render();
+</script>
+</body>
+</html>
