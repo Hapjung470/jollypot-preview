@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex, nofollow">
+<title>졸리팟 화면 수정 프로토타입 1110</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{--o:#FC642D;--ink:#212121;--mid:#666666;--lt:#9E9E9E;--line:#E5E7EB;--bd:#CCCFD4;--peach:#FFF5EA;--page:#ECECEC;
+--pb:#1E1E2E;--pon:#5B6ABF;--poff:#2D2D3D;--pofft:#8888A0;--plab:#CCCCDD;color-scheme:light}
+[hidden]{display:none!important}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:"Pretendard Variable",Pretendard,"Noto Sans KR",-apple-system,"Apple SD Gothic Neo",sans-serif;-webkit-font-smoothing:antialiased;background:var(--page);color:var(--ink);
+ display:flex;flex-direction:column;align-items:center;gap:20px;padding-block:28px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));letter-spacing:-.3px}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.proto-bar{width:min(390px,100%);background:var(--pb);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.proto-label{font-size:11px;font-weight:600;color:var(--plab);margin-bottom:8px}
+.proto-toggles{display:flex;gap:8px;flex-wrap:wrap}
+.proto-toggle{flex:1;min-width:70px;padding:9px 6px;border-radius:9px;background:var(--poff);color:var(--pofft);font-size:12px;font-weight:600}
+.proto-toggle.active{background:var(--pon);color:#fff}
+.proto-note{font-size:11px;line-height:1.6;color:var(--pofft);border-top:1px solid #3A3A4E;padding-top:10px}
+.proto-version{font-size:12px;color:var(--plab)}
+.phone{width:min(390px,100%);height:844px;max-height:calc(100vh - 40px);min-height:620px;background:#fff;border-radius:28px;overflow:hidden;position:relative;box-shadow:0 10px 40px rgba(0,0,0,.12)}
+.sc{position:absolute;inset:0;overflow-y:auto}
+.sc::-webkit-scrollbar{width:0}
+.spec{min-width:0;width:min(760px,100%);background:#fff;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px;line-height:1.65;font-size:14px}
+.spec h1{font-size:20px;line-height:1.35}
+.spec .meta{font-size:12px;color:var(--mid)}
+.spec h2{font-size:15px;margin-top:4px}
+.tbl{overflow-x:auto;min-width:0;max-width:100%}
+.spec table{border-collapse:collapse;width:100%;min-width:480px;font-size:13px}
+.spec th,.spec td{text-align:left;vertical-align:top;padding:8px;border-bottom:1px solid var(--line)}
+.spec th{color:var(--mid);font-weight:500;font-size:12px}
+.spec td.now{color:#B3261E}
+.msg{background:#F7F7F8;border-radius:10px;padding:12px 14px;white-space:pre-wrap;font-size:13px}
+.cp{align-self:flex-start;border:1px solid var(--bd);background:#fff;border-radius:8px;font-size:12px;font-weight:600;padding:6px 12px}
+.shots{display:flex;flex-direction:column;gap:10px}
+.shots img{width:100%;border-radius:10px;border:1px solid var(--line)}
+.note{font-size:12px;color:var(--mid)}
+/* 앱 공통 */
+.ic{display:inline-flex;align-items:center;justify-content:center}
+.hdr{position:sticky;top:0;z-index:5;background:#fff;height:56px;display:flex;align-items:center;padding:0 6px;gap:2px}
+.hdr .t{flex:1;text-align:center;font-size:17px;font-weight:600}
+.hb{width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.card{margin:0 16px 14px;border-radius:14px;height:150px;background:linear-gradient(135deg,#F3E2C9,#E0B98A)}
+.card.b{background:linear-gradient(135deg,#E6EFD8,#AFC98F)}.card.c{background:linear-gradient(135deg,#F7D4C2,#E39A79)}
+.row{margin:0 16px 12px;height:16px;border-radius:6px;background:#F0F0F2}
+.row.s{width:60%}
+.toast{position:absolute;left:16px;right:16px;bottom:96px;background:var(--ink);color:#fff;font-size:13px;padding:12px 14px;border-radius:12px;z-index:30}
+
+.wrap{width:min(760px,100%);display:flex;flex-direction:column;gap:16px}
+.wrap h1{font-size:22px} .wrap p{font-size:14px;line-height:1.65;color:#444}
+ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+li{background:#fff;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+li a{flex:1;min-width:240px;display:flex;gap:10px;align-items:baseline;text-decoration:none;color:inherit;flex-wrap:wrap}
+li b{font-size:15px;color:#FC642D;min-width:36px} li span{font-size:15px;font-weight:600} li em{font-style:normal;font-size:12px;color:#666;width:100%;padding-left:46px}
+li .cp{margin:0}
+</style></head><body><div class="wrap">
+<h1>졸리팟 화면 수정 프로토타입 (11/10 검토분)</h1>
+<p>항목마다 따로 열리는 프로토타입입니다. 각 페이지 위쪽에서 「지금 / 제안」을 눌러 비교하고, 아래에서 전달 문장·바꿀 값·실제 캡처를 볼 수 있습니다. 근거 문서: <a href="../jollypot-ui-review-1110-v1-2.html">jollypot-ui-review-1110-v1-2</a></p>
+<p><b>구글 시트에 넣는 법</b>: 「이 줄 복사」 후 피드백 시트의 화면 칸(B열)을 누르고 붙여넣으면 화면 · 1차 피드백 · 예시(프로토타입 링크) 3칸이 한 번에 들어갑니다. 전부 넣을 때는 아래 「12줄 한꺼번에 복사」.</p>
+<button class="cp" data-t="all" data-l="12줄 한꺼번에 복사">12줄 한꺼번에 복사</button><pre id="all" hidden>&quot;공통 &gt; 하단 메뉴&quot;	&quot;현상: 하단 메뉴 글자가 10px·굵기 600·옅은 회색(#9E9E9E)이라 빽빽하고 흐리게 보이고, 높이 53px에 아이콘이 윗선에서 6px만 떨어져 답답합니다.
+
+요청: 높이 62px(아래 안전 여백은 지금처럼 별도), 아이콘 위 여백 9px, 글자 12px(고른 칸 600·나머지 500), 안 고른 칸 색 #666666, 아이콘 선 굵기 1.75로 맞춰 주세요. 자간은 0 그대로 두면 됩니다.
+
+확인 방법: 하단 메뉴 높이 62px, 아이콘 위 9px, 글자 12px(고른 칸 600·나머지 500), 안 고른 칸 #666666, 아이콘 선 굵기 1.75&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix01-bottom-nav-v1.html&quot;&quot;,&quot;&quot;프로토타입 01&quot;&quot;)&quot;
+&quot;홈·쇼핑·레시피 상세 &gt; 맨 위로 버튼&quot;	&quot;현상: 오른쪽 아래 「맨 위로」(최상단으로 이동) 버튼이 디자인 가이드에서 폐기한 세이지 그린 계열(#89A17F)이고, 흰 화살표 대비가 2.81:1(아이콘 기준 3:1 미달)입니다. 42px로 작고, 하단 메뉴가 숨어도 아래 90px에 그대로 떠 있습니다. 약 300px만 내려도 나타나고, 레시피 상세에서는 아래 버튼 줄과 7px만 떨어져 있습니다.
+
+요청: 흰 바탕 #FFFFFF + 1px #CCCFD4 테두리(그림자 없음) + 잉크 #212121 화살표(lucide arrow-up, 굵기 1.75), 44×44px, 오른쪽 16px로 바꿔 주세요. 하단 메뉴가 보일 때는 메뉴 위 16px, 숨었을 때는 화면 아래 24px(+안전 여백)로 함께 움직여 주세요. 두 화면쯤(약 1,600px) 내렸을 때 나타나게 하고, 레시피 상세에서는 아래 버튼 줄 위 16px에 두어 주세요.
+
+확인 방법: 흰 바탕·#CCCFD4 테두리·잉크 화살표 44px, 약 1,600px 내렸을 때 나타남, 메뉴 보일 때 메뉴 위 16px·숨으면 아래 24px, 레시피 상세는 아래 버튼 줄 위 16px&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix02-scroll-top-v1.html&quot;&quot;,&quot;&quot;프로토타입 02&quot;&quot;)&quot;
+&quot;홈·쇼핑 &gt; 하단 메뉴&quot;	&quot;현상: 홈·쇼핑을 내리면 하단 메뉴가 숨는데, 다시 올려도(960px) 돌아오지 않고 맨 위에서만 나타납니다. 그동안 다른 칸이나 「+」(레시피 만들기)로 갈 수 없습니다.
+
+요청: 조금이라도(약 12px) 올리면 하단 메뉴가 바로 다시 나오게 해 주세요. 맨 아래에 닿았을 때도 다시 보이게 해 주세요.
+
+확인 방법: 홈·쇼핑을 내려 메뉴가 숨은 뒤 약 12px만 올려도 메뉴가 다시 나옴, 맨 아래에 닿아도 다시 나옴&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix02b-nav-return-v1.html&quot;&quot;,&quot;&quot;프로토타입 02-2&quot;&quot;)&quot;
+&quot;공통 &gt; 상단 바&quot;	&quot;현상: 홈을 내리면 상단 바 아래 생기는 선이 카드 테두리 색(#CCCFD4)이라 진하고, 컬렉션 화면은 맨 위에서도 같은 선이 늘 보이는 등 화면마다 다릅니다.
+
+요청: 모든 상단 바를 「맨 위에서는 선 없음 → 내용이 밑으로 지나가면 1px #E5E7EB(가이드 구분선 색)」 한 규칙으로 맞춰 주세요.
+
+확인 방법: 모든 상단 바가 맨 위에서는 선 없음, 내리면 1px #E5E7EB&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix03-header-line-v1.html&quot;&quot;,&quot;&quot;프로토타입 03&quot;&quot;)&quot;
+&quot;공통 &gt; 상단 바 아이콘&quot;	&quot;현상: 상단 바 아이콘이 화면마다 다릅니다. 홈은 채운 모양 #515151(하단 메뉴는 선 아이콘), 뒤로가기는 화살표 그림 파일(9개 화면)·꺾쇠「&lt;」(상품 상세·장바구니·냉장고)·다른 화살표(컬렉션) 3종류입니다.
+
+요청: 상단 바 아이콘을 하단 메뉴와 같은 lucide 묶음으로 통일해 주세요. 뒤로가기 arrow-left, 홈 house(하단 메뉴와 같은 모양), 검색 search, 장바구니 shopping-cart이고, 모두 24px·선 굵기 1.75·잉크 #212121·누르는 영역 44×44px입니다.
+
+확인 방법: 모든 상단 바 뒤로가기=arrow-left, 홈=하단 메뉴와 같은 house, 24px·선 굵기 1.75·#212121, 누르는 영역 44×44px. 홈 상단 냉장고·장바구니도 선 아이콘&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix04-header-icons-v1.html&quot;&quot;,&quot;&quot;프로토타입 04&quot;&quot;)&quot;
+&quot;상품 상세·장바구니·냉장고·컬렉션 &gt; 상단 바&quot;	&quot;현상: 상품 상세(그리고 장바구니·냉장고·컬렉션) 상단에 홈 아이콘이 없습니다. 상품 상세는 공유 링크로 바로 들어오는 경우가 많아, 뒤로 갈 곳이 없으면 나갈 길이 없습니다.
+
+요청: 하단 메뉴 첫 화면(홈·저장·쇼핑·마이)을 뺀 모든 하위 화면에 「뒤로가기 + 홈」을 넣어 주세요. 주문서·결제·레시피 작성/편집처럼 쓰는 중인 화면은 홈 없이 뒤로가기(또는 ✕)만 둡니다. 앞 화면 없이 열렸을 때 뒤로가기는 홈으로 보내 주세요.
+
+확인 방법: 하단 메뉴 첫 화면은 아이콘 없음, 하위 화면은 ←+홈, 주문서·결제·작성 화면은 ←(또는 ✕)만, 공유 링크로 바로 열면 ←가 홈으로&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix05-home-icon-rule-v1.html&quot;&quot;,&quot;&quot;프로토타입 05&quot;&quot;)&quot;
+&quot;레시피 만들기 &gt; 직접 만들기&quot;	&quot;현상: 레시피 만들기의 「직접 만들기」 아이콘이 파란 #3276AE(가이드의 링크 전용 색) 채운 문서 아이콘이라 화면에서 튑니다.
+
+요청: 오렌지 #FC642D 선 아이콘(lucide notebook-pen, 선 굵기 1.75)으로, 아이콘 바탕은 피치크림 #FFF5EA로 바꿔 주세요.
+
+확인 방법: 직접 만들기 아이콘이 오렌지 #FC642D 선 아이콘(notebook-pen, 1.75), 바탕 #FFF5EA&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix06-create-icon-v1.html&quot;&quot;,&quot;&quot;프로토타입 06&quot;&quot;)&quot;
+&quot;레시피 만들기 &gt; 링크로 만들기 버튼&quot;	&quot;현상: 레시피 만들기의 [링크로 레시피 만들기]가 링크를 넣기 전(누를 수 없을 때) 흐린 오렌지로 보입니다.
+
+요청: 가이드 비활성 버튼대로 바탕 #E5E7EB · 글자 #9E9E9E로 바꿔 주세요.
+
+확인 방법: 링크 입력 전 [링크로 레시피 만들기] 바탕 #E5E7EB·글자 #9E9E9E, 링크 입력하면 오렌지&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix06b-disabled-button-v1.html&quot;&quot;,&quot;&quot;프로토타입 06-2&quot;&quot;)&quot;
+&quot;저장 &gt; 내려서 볼 때&quot;	&quot;현상: 저장 화면을 내리면 작은 제목 「○○님의 저장 목록」(50px)과 칩 줄(46px)이 함께 위에 남아 96px을 차지하고, 실명도 계속 보입니다.
+
+요청: 내려서 볼 때는 칩 줄(모두·레시피·컬렉션·상품)만 위에 붙이고 제목 줄은 숨겨 주세요. 조금이라도 올리면 제목 줄이 다시 나오게 해 주세요. 칩 줄 아래에는 1px #E5E7EB 선을 둡니다.
+
+확인 방법: 저장을 내리면 위에 칩 줄만 남고(46px, 아래 1px #E5E7EB), 조금 올리면 제목 줄이 돌아옴. 제목은 「저장」&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix07-save-sticky-v1.html&quot;&quot;,&quot;&quot;프로토타입 07&quot;&quot;)&quot;
+&quot;레시피 상세 &gt; 내려서 볼 때&quot;	&quot;현상: 레시피 상세를 내리면 상단 바(60px)와 영상 줄(56px)이 함께 고정돼 116px(화면의 약 14%)을 차지합니다. 조리 순서를 보며 따라 할 때 화면이 좁습니다.
+
+요청: 내려서 볼 때는 상단 바를 숨기고 영상 줄 하나만 위에 고정해 주세요. 영상 줄 맨 앞에 뒤로가기 「←」을 넣고, 왼쪽 ▶ 동그라미는 빼고 오른쪽을 「▶ 영상보기」로 해 주세요. 조금이라도 올리면 상단 바(홈·검색 포함)가 다시 나오게 해 주세요.
+
+확인 방법: 레시피 상세를 내리면 영상 줄 하나(56px)만 고정, 맨 앞 ←, 오른쪽 「▶ 영상보기」, 조금 올리면 상단 바 돌아옴&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix08-recipe-sticky-v1.html&quot;&quot;,&quot;&quot;프로토타입 08&quot;&quot;)&quot;
+&quot;레시피 상세 &gt; 저장 &gt; 컬렉션 담기 창&quot;	&quot;현상: 레시피를 저장할 때 열리는 컬렉션 담기 창이 컬렉션 수와 관계없이 높이 384px(화면의 45%)로 고정입니다. 목록 칸이 205px뿐이라 컬렉션이 2.5개만 보이고(줄 80px), 컬렉션이 10개를 넘으면 찾기 어렵습니다. 창 제목 줄의 「새 저장」은 무엇을 하는지 알기 어렵습니다.
+
+요청: 창 높이는 내용만큼 늘어나되 최대 화면의 86%로 해 주세요. 컬렉션 줄은 64px(썸네일 48px)로 줄이고, 위 「+ 새 컬렉션」 줄과 아래 버튼은 고정합니다. 컬렉션이 10개를 넘으면 목록 위에 「컬렉션 찾기」 입력칸을 두고, 최근에 담은 컬렉션이 위로 오게 해 주세요. 「새 저장」은 「+ 새 컬렉션」으로 바꿔 주세요.
+
+확인 방법: 컬렉션 12개일 때 창이 화면의 86%까지 늘고 줄 64px로 8~9개 보임, 10개 넘으면 「컬렉션 찾기」, 제목 줄 「+ 새 컬렉션」&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix09-collection-sheet-v1.html&quot;&quot;,&quot;&quot;프로토타입 09&quot;&quot;)&quot;
+&quot;앱스토어 소개 화면 &gt; 마지막 장 (피그마 시안2)&quot;	&quot;요청: 마지막 장(시안2 7번째) 수정 요청 :
+① 바탕을 앞 6장과 같은 크림(#FFF7F2)으로 바꿔 주세요. 주황 위 흰 글자는 대비 3.0:1이라 부제가 잘 안 읽힙니다.
+② 제목 2줄은 지금처럼 같은 크기로 두되 다른 장 제목과 같은 크기로 키우고, 「가족이 웃는 한끼,」를 오렌지로 강조해 주세요.
+③ 캐릭터와 「졸리팟」을 한 묶음(로고)으로 가운데 크게 두고, 그 아래에 제목·부제를 두어 주세요. 맨 아래 작은 「졸리팟」은 뺍니다.
+
+확인 방법: 마지막 장 바탕 #FFF7F2, 제목이 다른 장과 같은 크기·「가족이 웃는 한끼,」 오렌지, 캐릭터+「졸리팟」 로고 묶음 가운데&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix10-appstore-last-v1.html&quot;&quot;,&quot;&quot;프로토타입 10&quot;&quot;)&quot;</pre>
+<ul><li><a href="jollypot-v2-fix01-bottom-nav-v1.html"><b>01</b><span>하단 메뉴 — 높이·글자·색</span><em>공통 &gt; 하단 메뉴</em></a>
+<button class="cp" data-t="r01" data-l="이 줄 복사">이 줄 복사</button><pre id="r01" hidden>&quot;공통 &gt; 하단 메뉴&quot;	&quot;현상: 하단 메뉴 글자가 10px·굵기 600·옅은 회색(#9E9E9E)이라 빽빽하고 흐리게 보이고, 높이 53px에 아이콘이 윗선에서 6px만 떨어져 답답합니다.
+
+요청: 높이 62px(아래 안전 여백은 지금처럼 별도), 아이콘 위 여백 9px, 글자 12px(고른 칸 600·나머지 500), 안 고른 칸 색 #666666, 아이콘 선 굵기 1.75로 맞춰 주세요. 자간은 0 그대로 두면 됩니다.
+
+확인 방법: 하단 메뉴 높이 62px, 아이콘 위 9px, 글자 12px(고른 칸 600·나머지 500), 안 고른 칸 #666666, 아이콘 선 굵기 1.75&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix01-bottom-nav-v1.html&quot;&quot;,&quot;&quot;프로토타입 01&quot;&quot;)&quot;</pre></li><li><a href="jollypot-v2-fix02-scroll-top-v1.html"><b>02</b><span>「맨 위로」 버튼 — 색·크기·위치·나타나는 때</span><em>홈·쇼핑·레시피 상세 &gt; 맨 위로 버튼</em></a>
+<button class="cp" data-t="r02" data-l="이 줄 복사">이 줄 복사</button><pre id="r02" hidden>&quot;홈·쇼핑·레시피 상세 &gt; 맨 위로 버튼&quot;	&quot;현상: 오른쪽 아래 「맨 위로」(최상단으로 이동) 버튼이 디자인 가이드에서 폐기한 세이지 그린 계열(#89A17F)이고, 흰 화살표 대비가 2.81:1(아이콘 기준 3:1 미달)입니다. 42px로 작고, 하단 메뉴가 숨어도 아래 90px에 그대로 떠 있습니다. 약 300px만 내려도 나타나고, 레시피 상세에서는 아래 버튼 줄과 7px만 떨어져 있습니다.
+
+요청: 흰 바탕 #FFFFFF + 1px #CCCFD4 테두리(그림자 없음) + 잉크 #212121 화살표(lucide arrow-up, 굵기 1.75), 44×44px, 오른쪽 16px로 바꿔 주세요. 하단 메뉴가 보일 때는 메뉴 위 16px, 숨었을 때는 화면 아래 24px(+안전 여백)로 함께 움직여 주세요. 두 화면쯤(약 1,600px) 내렸을 때 나타나게 하고, 레시피 상세에서는 아래 버튼 줄 위 16px에 두어 주세요.
+
+확인 방법: 흰 바탕·#CCCFD4 테두리·잉크 화살표 44px, 약 1,600px 내렸을 때 나타남, 메뉴 보일 때 메뉴 위 16px·숨으면 아래 24px, 레시피 상세는 아래 버튼 줄 위 16px&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix02-scroll-top-v1.html&quot;&quot;,&quot;&quot;프로토타입 02&quot;&quot;)&quot;</pre></li><li><a href="jollypot-v2-fix02b-nav-return-v1.html"><b>02-2</b><span>하단 메뉴 — 올리면 다시 나오게</span><em>홈·쇼핑 &gt; 하단 메뉴</em></a>
+<button class="cp" data-t="r02-2" data-l="이 줄 복사">이 줄 복사</button><pre id="r02-2" hidden>&quot;홈·쇼핑 &gt; 하단 메뉴&quot;	&quot;현상: 홈·쇼핑을 내리면 하단 메뉴가 숨는데, 다시 올려도(960px) 돌아오지 않고 맨 위에서만 나타납니다. 그동안 다른 칸이나 「+」(레시피 만들기)로 갈 수 없습니다.
+
+요청: 조금이라도(약 12px) 올리면 하단 메뉴가 바로 다시 나오게 해 주세요. 맨 아래에 닿았을 때도 다시 보이게 해 주세요.
+
+확인 방법: 홈·쇼핑을 내려 메뉴가 숨은 뒤 약 12px만 올려도 메뉴가 다시 나옴, 맨 아래에 닿아도 다시 나옴&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix02b-nav-return-v1.html&quot;&quot;,&quot;&quot;프로토타입 02-2&quot;&quot;)&quot;</pre></li><li><a href="jollypot-v2-fix03-header-line-v1.html"><b>03</b><span>상단 바 아래 선 — 색과 나오는 때</span><em>공통 &gt; 상단 바</em></a>
+<button class="cp" data-t="r03" data-l="이 줄 복사">이 줄 복사</button><pre id="r03" hidden>&quot;공통 &gt; 상단 바&quot;	&quot;현상: 홈을 내리면 상단 바 아래 생기는 선이 카드 테두리 색(#CCCFD4)이라 진하고, 컬렉션 화면은 맨 위에서도 같은 선이 늘 보이는 등 화면마다 다릅니다.
+
+요청: 모든 상단 바를 「맨 위에서는 선 없음 → 내용이 밑으로 지나가면 1px #E5E7EB(가이드 구분선 색)」 한 규칙으로 맞춰 주세요.
+
+확인 방법: 모든 상단 바가 맨 위에서는 선 없음, 내리면 1px #E5E7EB&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix03-header-line-v1.html&quot;&quot;,&quot;&quot;프로토타입 03&quot;&quot;)&quot;</pre></li><li><a href="jollypot-v2-fix04-header-icons-v1.html"><b>04</b><span>상단 바 아이콘 — 한 묶음·한 굵기·한 색</span><em>공통 &gt; 상단 바 아이콘</em></a>
+<button class="cp" data-t="r04" data-l="이 줄 복사">이 줄 복사</button><pre id="r04" hidden>&quot;공통 &gt; 상단 바 아이콘&quot;	&quot;현상: 상단 바 아이콘이 화면마다 다릅니다. 홈은 채운 모양 #515151(하단 메뉴는 선 아이콘), 뒤로가기는 화살표 그림 파일(9개 화면)·꺾쇠「&lt;」(상품 상세·장바구니·냉장고)·다른 화살표(컬렉션) 3종류입니다.
+
+요청: 상단 바 아이콘을 하단 메뉴와 같은 lucide 묶음으로 통일해 주세요. 뒤로가기 arrow-left, 홈 house(하단 메뉴와 같은 모양), 검색 search, 장바구니 shopping-cart이고, 모두 24px·선 굵기 1.75·잉크 #212121·누르는 영역 44×44px입니다.
+
+확인 방법: 모든 상단 바 뒤로가기=arrow-left, 홈=하단 메뉴와 같은 house, 24px·선 굵기 1.75·#212121, 누르는 영역 44×44px. 홈 상단 냉장고·장바구니도 선 아이콘&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix04-header-icons-v1.html&quot;&quot;,&quot;&quot;프로토타입 04&quot;&quot;)&quot;</pre></li><li><a href="jollypot-v2-fix05-home-icon-rule-v1.html"><b>05</b><span>하위 화면에 「뒤로 + 홈」</span><em>상품 상세·장바구니·냉장고·컬렉션 &gt; 상단 바</em></a>
+<button class="cp" data-t="r05" data-l="이 줄 복사">이 줄 복사</button><pre id="r05" hidden>&quot;상품 상세·장바구니·냉장고·컬렉션 &gt; 상단 바&quot;	&quot;현상: 상품 상세(그리고 장바구니·냉장고·컬렉션) 상단에 홈 아이콘이 없습니다. 상품 상세는 공유 링크로 바로 들어오는 경우가 많아, 뒤로 갈 곳이 없으면 나갈 길이 없습니다.
+
+요청: 하단 메뉴 첫 화면(홈·저장·쇼핑·마이)을 뺀 모든 하위 화면에 「뒤로가기 + 홈」을 넣어 주세요. 주문서·결제·레시피 작성/편집처럼 쓰는 중인 화면은 홈 없이 뒤로가기(또는 ✕)만 둡니다. 앞 화면 없이 열렸을 때 뒤로가기는 홈으로 보내 주세요.
+
+확인 방법: 하단 메뉴 첫 화면은 아이콘 없음, 하위 화면은 ←+홈, 주문서·결제·작성 화면은 ←(또는 ✕)만, 공유 링크로 바로 열면 ←가 홈으로&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix05-home-icon-rule-v1.html&quot;&quot;,&quot;&quot;프로토타입 05&quot;&quot;)&quot;</pre></li><li><a href="jollypot-v2-fix06-create-icon-v1.html"><b>06</b><span>「직접 만들기」 아이콘 색·모양</span><em>레시피 만들기 &gt; 직접 만들기</em></a>
+<button class="cp" data-t="r06" data-l="이 줄 복사">이 줄 복사</button><pre id="r06" hidden>&quot;레시피 만들기 &gt; 직접 만들기&quot;	&quot;현상: 레시피 만들기의 「직접 만들기」 아이콘이 파란 #3276AE(가이드의 링크 전용 색) 채운 문서 아이콘이라 화면에서 튑니다.
+
+요청: 오렌지 #FC642D 선 아이콘(lucide notebook-pen, 선 굵기 1.75)으로, 아이콘 바탕은 피치크림 #FFF5EA로 바꿔 주세요.
+
+확인 방법: 직접 만들기 아이콘이 오렌지 #FC642D 선 아이콘(notebook-pen, 1.75), 바탕 #FFF5EA&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix06-create-icon-v1.html&quot;&quot;,&quot;&quot;프로토타입 06&quot;&quot;)&quot;</pre></li><li><a href="jollypot-v2-fix06b-disabled-button-v1.html"><b>06-2</b><span>누를 수 없는 버튼 색</span><em>레시피 만들기 &gt; 링크로 만들기 버튼</em></a>
+<button class="cp" data-t="r06-2" data-l="이 줄 복사">이 줄 복사</button><pre id="r06-2" hidden>&quot;레시피 만들기 &gt; 링크로 만들기 버튼&quot;	&quot;현상: 레시피 만들기의 [링크로 레시피 만들기]가 링크를 넣기 전(누를 수 없을 때) 흐린 오렌지로 보입니다.
+
+요청: 가이드 비활성 버튼대로 바탕 #E5E7EB · 글자 #9E9E9E로 바꿔 주세요.
+
+확인 방법: 링크 입력 전 [링크로 레시피 만들기] 바탕 #E5E7EB·글자 #9E9E9E, 링크 입력하면 오렌지&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix06b-disabled-button-v1.html&quot;&quot;,&quot;&quot;프로토타입 06-2&quot;&quot;)&quot;</pre></li><li><a href="jollypot-v2-fix07-save-sticky-v1.html"><b>07</b><span>저장 — 내릴 때 칩 줄만 남기기</span><em>저장 &gt; 내려서 볼 때</em></a>
+<button class="cp" data-t="r07" data-l="이 줄 복사">이 줄 복사</button><pre id="r07" hidden>&quot;저장 &gt; 내려서 볼 때&quot;	&quot;현상: 저장 화면을 내리면 작은 제목 「○○님의 저장 목록」(50px)과 칩 줄(46px)이 함께 위에 남아 96px을 차지하고, 실명도 계속 보입니다.
+
+요청: 내려서 볼 때는 칩 줄(모두·레시피·컬렉션·상품)만 위에 붙이고 제목 줄은 숨겨 주세요. 조금이라도 올리면 제목 줄이 다시 나오게 해 주세요. 칩 줄 아래에는 1px #E5E7EB 선을 둡니다.
+
+확인 방법: 저장을 내리면 위에 칩 줄만 남고(46px, 아래 1px #E5E7EB), 조금 올리면 제목 줄이 돌아옴. 제목은 「저장」&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix07-save-sticky-v1.html&quot;&quot;,&quot;&quot;프로토타입 07&quot;&quot;)&quot;</pre></li><li><a href="jollypot-v2-fix08-recipe-sticky-v1.html"><b>08</b><span>레시피 상세 — 내릴 때 한 줄(56px)</span><em>레시피 상세 &gt; 내려서 볼 때</em></a>
+<button class="cp" data-t="r08" data-l="이 줄 복사">이 줄 복사</button><pre id="r08" hidden>&quot;레시피 상세 &gt; 내려서 볼 때&quot;	&quot;현상: 레시피 상세를 내리면 상단 바(60px)와 영상 줄(56px)이 함께 고정돼 116px(화면의 약 14%)을 차지합니다. 조리 순서를 보며 따라 할 때 화면이 좁습니다.
+
+요청: 내려서 볼 때는 상단 바를 숨기고 영상 줄 하나만 위에 고정해 주세요. 영상 줄 맨 앞에 뒤로가기 「←」을 넣고, 왼쪽 ▶ 동그라미는 빼고 오른쪽을 「▶ 영상보기」로 해 주세요. 조금이라도 올리면 상단 바(홈·검색 포함)가 다시 나오게 해 주세요.
+
+확인 방법: 레시피 상세를 내리면 영상 줄 하나(56px)만 고정, 맨 앞 ←, 오른쪽 「▶ 영상보기」, 조금 올리면 상단 바 돌아옴&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix08-recipe-sticky-v1.html&quot;&quot;,&quot;&quot;프로토타입 08&quot;&quot;)&quot;</pre></li><li><a href="jollypot-v2-fix09-collection-sheet-v1.html"><b>09</b><span>컬렉션 담기 창 — 높이·줄 높이·찾기</span><em>레시피 상세 &gt; 저장 &gt; 컬렉션 담기 창</em></a>
+<button class="cp" data-t="r09" data-l="이 줄 복사">이 줄 복사</button><pre id="r09" hidden>&quot;레시피 상세 &gt; 저장 &gt; 컬렉션 담기 창&quot;	&quot;현상: 레시피를 저장할 때 열리는 컬렉션 담기 창이 컬렉션 수와 관계없이 높이 384px(화면의 45%)로 고정입니다. 목록 칸이 205px뿐이라 컬렉션이 2.5개만 보이고(줄 80px), 컬렉션이 10개를 넘으면 찾기 어렵습니다. 창 제목 줄의 「새 저장」은 무엇을 하는지 알기 어렵습니다.
+
+요청: 창 높이는 내용만큼 늘어나되 최대 화면의 86%로 해 주세요. 컬렉션 줄은 64px(썸네일 48px)로 줄이고, 위 「+ 새 컬렉션」 줄과 아래 버튼은 고정합니다. 컬렉션이 10개를 넘으면 목록 위에 「컬렉션 찾기」 입력칸을 두고, 최근에 담은 컬렉션이 위로 오게 해 주세요. 「새 저장」은 「+ 새 컬렉션」으로 바꿔 주세요.
+
+확인 방법: 컬렉션 12개일 때 창이 화면의 86%까지 늘고 줄 64px로 8~9개 보임, 10개 넘으면 「컬렉션 찾기」, 제목 줄 「+ 새 컬렉션」&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix09-collection-sheet-v1.html&quot;&quot;,&quot;&quot;프로토타입 09&quot;&quot;)&quot;</pre></li><li><a href="jollypot-v2-fix10-appstore-last-v1.html"><b>10</b><span>앱스토어 마지막 장 — 바탕·제목·로고</span><em>앱스토어 소개 화면 &gt; 마지막 장 (피그마 시안2)</em></a>
+<button class="cp" data-t="r10" data-l="이 줄 복사">이 줄 복사</button><pre id="r10" hidden>&quot;앱스토어 소개 화면 &gt; 마지막 장 (피그마 시안2)&quot;	&quot;요청: 마지막 장(시안2 7번째) 수정 요청 :
+① 바탕을 앞 6장과 같은 크림(#FFF7F2)으로 바꿔 주세요. 주황 위 흰 글자는 대비 3.0:1이라 부제가 잘 안 읽힙니다.
+② 제목 2줄은 지금처럼 같은 크기로 두되 다른 장 제목과 같은 크기로 키우고, 「가족이 웃는 한끼,」를 오렌지로 강조해 주세요.
+③ 캐릭터와 「졸리팟」을 한 묶음(로고)으로 가운데 크게 두고, 그 아래에 제목·부제를 두어 주세요. 맨 아래 작은 「졸리팟」은 뺍니다.
+
+확인 방법: 마지막 장 바탕 #FFF7F2, 제목이 다른 장과 같은 크기·「가족이 웃는 한끼,」 오렌지, 캐릭터+「졸리팟」 로고 묶음 가운데&quot;	&quot;=HYPERLINK(&quot;&quot;https://hapjung470.github.io/jollypot-preview/fix1110/jollypot-v2-fix10-appstore-last-v1.html&quot;&quot;,&quot;&quot;프로토타입 10&quot;&quot;)&quot;</pre></li></ul>
+<p class="proto-version" style="color:#666">jollypot-v2-fix1110-index-v1</p>
+</div>
+<script>
+document.addEventListener('click',e=>{const c=e.target.closest('.cp');if(!c)return;const el=document.getElementById(c.dataset.t);const txt=el.textContent;
+const done=()=>{c.textContent='복사했어요';setTimeout(()=>c.textContent=c.dataset.l,1500)};
+try{navigator.clipboard.writeText(txt).then(done,()=>{el.hidden=false;const r=document.createRange();r.selectNodeContents(el);getSelection().removeAllRanges();getSelection().addRange(r);done()})}catch(_){done()}});
+</script></body></html>
