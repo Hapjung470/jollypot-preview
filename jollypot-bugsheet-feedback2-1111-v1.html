@@ -1,0 +1,169 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>통합테스트 — 버그 시트 2차 피드백·시나리오 재확인 제안 (11/11)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard Variable',Pretendard,sans-serif;background:#F7F7F5;color:#212121;line-height:1.65;letter-spacing:-.2px;font-size:15px}
+.wrap{max-width:1040px;margin:0 auto;padding:32px 16px 80px}
+h1{font-size:25px;line-height:1.35} h2{font-size:20px;margin:40px 0 8px;padding-top:18px;border-top:1px solid #E5E7EB}
+p{margin:8px 0} .meta{color:#666;font-size:13.5px;margin-top:6px}
+.concl{background:#FFF5EA;border:1px solid #F5D9C8;border-radius:14px;padding:16px 20px;margin:18px 0} .concl ol{padding-left:20px} .concl li{margin:6px 0}
+.warn{background:#FDEDED;border:1px solid #F3C5C5;border-radius:14px;padding:16px 20px;margin:18px 0}
+.tbl{overflow-x:auto} table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;font-size:14px;min-width:640px}
+th{background:#FAFAFA;text-align:left;color:#666;font-weight:600;font-size:12.5px;padding:9px 10px;border-bottom:1px solid #E5E7EB}
+td{padding:10px;border-bottom:1px solid #F0F0F0;vertical-align:top} td.n{font-weight:700;white-space:nowrap;width:56px}
+td:nth-child(2){width:30%} .sub{color:#666;font-size:12.5px;margin-top:4px} .chk{color:#145F48;font-size:12.5px;margin-top:2px;font-weight:600}
+.paste{background:#FAFAF8;border:1px solid #EEE;border-radius:8px;padding:8px 10px;font-size:13.5px;line-height:1.6}
+.cp{margin-top:6px;border:1px solid #CCCFD4;background:#fff;border-radius:999px;font:inherit;font-size:12.5px;font-weight:600;padding:4px 12px;cursor:pointer}
+.cp.done{background:#F1F8F3;color:#145F48;border-color:#F1F8F3}
+.ver{margin-top:36px;font-size:12px;color:#999}
+</style></head><body><div class="wrap">
+<h1>통합테스트 — 버그 시트 2차 피드백 · 시나리오 재확인 제안</h1>
+<div class="meta">2026.11.11 · 버그 시트 1~64번과 통합 시나리오 5~49행(4명 결과)을 끝까지 읽고, 개발사가 「반영했다」고 답한 것을 11/11 23시 개발 서버(새 판 gfHv8X…)에서 직접 다시 봤습니다. 시트에는 쓰지 않았습니다. 「복사」를 누르면 칸에 붙여 넣을 글이 그대로 복사됩니다.</div>
+<div class="concl"><b>먼저 볼 것 5가지</b><ol>
+<li><b>실제로 들어간 것 4개:</b> 3번(추천 컬렉션), 8번(이름 가림), 2번(「분량 (선택)」), 1번 일부(관리자 회원 목록 열림).</li>
+<li><b>「반영했다」는데 아직 그대로인 것:</b> 5번 옛 경로는 아직 로그인 없이 열립니다. 4번 392 「총 1분」·144 「0 kcal」도 그대로입니다.</li>
+<li><b>「디자인 반영」 항목은 개발 서버엔 아직 없습니다</b>(39·40·43·44·46·52·53 모두 이전 모습). 피그마 주소와 개발 예정일을 같이 물어보는 글로 썼습니다.</li>
+<li><b>개발사 질문 넷에 답했습니다:</b> 2번 ③ 칩 동작, 4번 「AI 추정」 표시, 41·49·50번 「기획 확인 필요」(모두 레몬트리 확정으로 답).</li>
+<li><b>40번 답변(선 1.2px)이 42번(1.5px)과 어긋납니다.</b> 1.5px로 맞추자고 썼고, 홈 60px은 받아들여 41번도 같게 맞추자고 했습니다.</li>
+</ol></div>
+<p class="meta">보안과 관련된 결정 사항 하나는 공개 페이지라 이 문서에 넣지 않고, 대화에서 따로 드렸습니다.</p>
+<h2>① 버그 시트 — 2차 피드백(K열)에 붙여 넣을 글</h2>
+<p class="meta">개발사가 1차 답변을 단 줄만 골랐습니다. 답변이 없는 줄은 비워 두면 됩니다.</p>
+<div class="tbl"><table><thead><tr><th>No</th><th>화면 · 개발사 답변 · 확인</th><th>붙여 넣을 글</th></tr></thead><tbody><tr><td class="n">1</td><td>관리자 회원 관리·대시보드·이름 표시<div class="sub">개발사: 샵바이 연결 성공 · 조회 로직 정리는 나중에</div><div class="chk">11/11 확인: 회원 목록 열림 · 이름 가림 정상 · 대시보드 회원 숫자는 「–」</div></td><td><pre id="a0" hidden>확인 결과 :
+• 관리자 회원 목록이 열립니다(11/11 23시).
+• 댓글·컬렉션 작성자도 「이**트」「조*훈」처럼 가린 이름으로 나옵니다.
+• 대시보드 「오늘 신규 가입」·최근 7일/30일 방문은 아직 「–」입니다. 「회원 가입 추이」는 「회원 지표를 준비하고 있습니다」입니다.
+
+요청 :
+• 대시보드 회원 숫자와 가입 추이도 연결해 주세요.
+• 조회 로직 정리는 동의합니다. 예정일을 알려 주세요.
+• 블랙리스트 등록(시나리오 22행)은 개발사 시험 계정으로 다시 확인해 주세요.</pre><div class="paste"><div>확인 결과 :</div><div>• 관리자 회원 목록이 열립니다(11/11 23시).</div><div>• 댓글·컬렉션 작성자도 「이**트」「조*훈」처럼 가린 이름으로 나옵니다.</div><div>• 대시보드 「오늘 신규 가입」·최근 7일/30일 방문은 아직 「–」입니다. 「회원 가입 추이」는 「회원 지표를 준비하고 있습니다」입니다.</div><div>&nbsp;</div><div>요청 :</div><div>• 대시보드 회원 숫자와 가입 추이도 연결해 주세요.</div><div>• 조회 로직 정리는 동의합니다. 예정일을 알려 주세요.</div><div>• 블랙리스트 등록(시나리오 22행)은 개발사 시험 계정으로 다시 확인해 주세요.</div></div><button class="cp" data-t="a0">복사</button></td></tr><tr><td class="n">2</td><td>직접 만들기 3단계·레시피 편집 재료<div class="sub">개발사: 분량 선택 반영 · ③ 칩 동작 설명 요청</div><div class="chk">11/11 확인: 「분량 (선택)」 문구가 앱에 들어간 것 확인</div></td><td><pre id="a1" hidden>확인 결과 :
+• 「분량 (선택)」이 앱에 들어간 것을 확인했습니다.
+
+답변(③ 칩) :
+• 분량 칸을 누르면, 칸 바로 아래에 자주 쓰는 양 6개를 칩 한 줄로 보여 주세요: 약간 · 조금 · 적당량 · 1큰술 · 1작은술 · 1개.
+• 칩을 누르면 그 글자가 칸에 들어갑니다. 이미 쓴 글자가 있으면 바꿉니다. 직접 입력도 그대로 됩니다.
+• 다른 칸으로 옮기면 칩은 사라집니다.
+• 우선순위는 낮습니다. 일정이 빠듯하면 다음으로 미뤄도 됩니다.</pre><div class="paste"><div>확인 결과 :</div><div>• 「분량 (선택)」이 앱에 들어간 것을 확인했습니다.</div><div>&nbsp;</div><div>답변(③ 칩) :</div><div>• 분량 칸을 누르면, 칸 바로 아래에 자주 쓰는 양 6개를 칩 한 줄로 보여 주세요: 약간 · 조금 · 적당량 · 1큰술 · 1작은술 · 1개.</div><div>• 칩을 누르면 그 글자가 칸에 들어갑니다. 이미 쓴 글자가 있으면 바꿉니다. 직접 입력도 그대로 됩니다.</div><div>• 다른 칸으로 옮기면 칩은 사라집니다.</div><div>• 우선순위는 낮습니다. 일정이 빠듯하면 다음으로 미뤄도 됩니다.</div></div><button class="cp" data-t="a1">복사</button></td></tr><tr><td class="n">3</td><td>검색 · 이 컬렉션은 어떠세요?<div class="sub">개발사: 반영 완료</div><div class="chk">11/11 확인: 레시피 1개 이상·가린 이름으로 나옴 — 확인 완료</div></td><td><pre id="a2" hidden>확인 결과 :
+• 검색 결과가 없을 때 추천 컬렉션이 레시피 1개 이상인 것만, 가린 이름으로 나옵니다(예: 「@Q****일 · 레시피 3개」).
+• 확인 완료입니다.</pre><div class="paste"><div>확인 결과 :</div><div>• 검색 결과가 없을 때 추천 컬렉션이 레시피 1개 이상인 것만, 가린 이름으로 나옵니다(예: 「@Q****일 · 레시피 3개」).</div><div>• 확인 완료입니다.</div></div><button class="cp" data-t="a2">복사</button></td></tr><tr><td class="n">4</td><td>레시피 카드·상세 수치<div class="sub">개발사: AI 교차 검증 반영 · 칩 숨기기 남음 · 「AI 추정」 병기 질문</div><div class="chk">11/11 확인: 392 「총 1분」·144 「0 kcal」 그대로</div></td><td><pre id="a3" hidden>확인 결과 :
+• 11/11 23시 기준 392 「총 1분」, 144 「0 kcal」이 아직 그대로입니다.
+
+답변(AI 추정) :
+• 좋습니다. 영상을 보고 AI가 추정한 값을 넣어 주세요.
+• 칩·카드에는 「약 450kcal」처럼 「약」만 붙여 주세요.
+• 「AI 추정」은 영양정보 창에 한 줄로만 넣어 주세요(「AI가 영상과 재료로 추정한 값이에요」). 칩마다 붙이면 카드가 복잡해집니다.
+• 이미 만든 레시피도 같은 방법으로 한 번 다시 계산해 주세요(392·144 포함).
+• 추정도 못 하면 말씀하신 대로 칩을 숨깁니다.
+
+요청 :
+• 칩 숨기기(프런트) 예정일을 알려 주세요.</pre><div class="paste"><div>확인 결과 :</div><div>• 11/11 23시 기준 392 「총 1분」, 144 「0 kcal」이 아직 그대로입니다.</div><div>&nbsp;</div><div>답변(AI 추정) :</div><div>• 좋습니다. 영상을 보고 AI가 추정한 값을 넣어 주세요.</div><div>• 칩·카드에는 「약 450kcal」처럼 「약」만 붙여 주세요.</div><div>• 「AI 추정」은 영양정보 창에 한 줄로만 넣어 주세요(「AI가 영상과 재료로 추정한 값이에요」). 칩마다 붙이면 카드가 복잡해집니다.</div><div>• 이미 만든 레시피도 같은 방법으로 한 번 다시 계산해 주세요(392·144 포함).</div><div>• 추정도 못 하면 말씀하신 대로 칩을 숨깁니다.</div><div>&nbsp;</div><div>요청 :</div><div>• 칩 숨기기(프런트) 예정일을 알려 주세요.</div></div><button class="cp" data-t="a3">복사</button></td></tr><tr><td class="n">5</td><td>옛 공개 조회 경로<div class="sub">개발사: 반영 완료</div><div class="chk">11/11 확인: 회원번호·아이디는 빠짐 · 옛 경로 2개는 아직 열려 있음</div></td><td><pre id="a4" hidden>확인 결과 :
+• 응답에서 회원번호·로그인 아이디 칸이 빠진 것을 확인했습니다.
+• 그런데 옛 경로 2개는 아직 열려 있습니다. 로그인 없이 불러도 200으로 답합니다(11/11 23시).
+  - /api/shop/recipe/public-search : 레시피 50건
+  - /api/shop/recipe/collections/public-search : 컬렉션 685건(회원마다 있는 빈 기본 컬렉션 포함)
+
+요청 :
+• 앱 화면은 새 경로(/api/v2/…)를 씁니다. 쓰지 않는 옛 경로 2개는 닫아 주세요.
+• 계속 써야 하는 곳이 있으면 어디인지 알려 주세요.</pre><div class="paste"><div>확인 결과 :</div><div>• 응답에서 회원번호·로그인 아이디 칸이 빠진 것을 확인했습니다.</div><div>• 그런데 옛 경로 2개는 아직 열려 있습니다. 로그인 없이 불러도 200으로 답합니다(11/11 23시).</div><div>  - /api/shop/recipe/public-search : 레시피 50건</div><div>  - /api/shop/recipe/collections/public-search : 컬렉션 685건(회원마다 있는 빈 기본 컬렉션 포함)</div><div>&nbsp;</div><div>요청 :</div><div>• 앱 화면은 새 경로(/api/v2/…)를 씁니다. 쓰지 않는 옛 경로 2개는 닫아 주세요.</div><div>• 계속 써야 하는 곳이 있으면 어디인지 알려 주세요.</div></div><button class="cp" data-t="a4">복사</button></td></tr><tr><td class="n">8</td><td>댓글·컬렉션 작성자 이름(실명)<div class="sub">개발사: 반영 완료</div><div class="chk">11/11 확인: 가린 이름 정상 · 발행 계정 이름도 가려짐</div></td><td><pre id="a5" hidden>확인 결과 :
+• 댓글·답글 멘션·컬렉션 작성자가 가린 이름으로 나옵니다(「이**트」「@김**트」).
+
+요청 :
+• 관리자가 직접 등록할 때 고르는 발행 계정 이름도 가려집니다(레시피 875 「QA 관리자 된장찌개」 → 「맛*생」).
+• 발행 계정은 사람 이름이 아니라 채널 이름이라, 가리지 말고 그대로 보여 주세요.</pre><div class="paste"><div>확인 결과 :</div><div>• 댓글·답글 멘션·컬렉션 작성자가 가린 이름으로 나옵니다(「이**트」「@김**트」).</div><div>&nbsp;</div><div>요청 :</div><div>• 관리자가 직접 등록할 때 고르는 발행 계정 이름도 가려집니다(레시피 875 「QA 관리자 된장찌개」 → 「맛*생」).</div><div>• 발행 계정은 사람 이름이 아니라 채널 이름이라, 가리지 말고 그대로 보여 주세요.</div></div><button class="cp" data-t="a5">복사</button></td></tr><tr><td class="n">38</td><td>하단 메뉴 — 조금만 올려도 다시 나오게<div class="sub">개발사: 개발단에 반영 요청</div><div class="chk">11/11 확인: —</div></td><td><pre id="a6" hidden>요청 :
+• 개발 반영 예정일을 알려 주세요.</pre><div class="paste"><div>요청 :</div><div>• 개발 반영 예정일을 알려 주세요.</div></div><button class="cp" data-t="a6">복사</button></td></tr><tr><td class="n">39</td><td>상단 바 아래 회색 선 — 없앰<div class="sub">개발사: 디자인 반영 · 개발단 전달</div><div class="chk">11/11 확인: 개발 서버는 아직 선이 생김</div></td><td><pre id="a7" hidden>확인 결과 :
+• 개발 서버는 아직 홈을 내리면 #CCCFD4 선이 생깁니다(11/11 23시).
+
+요청 :
+• 홈·냉장고·컬렉션 세 곳 모두 개발 반영 예정일을 알려 주세요.</pre><div class="paste"><div>확인 결과 :</div><div>• 개발 서버는 아직 홈을 내리면 #CCCFD4 선이 생깁니다(11/11 23시).</div><div>&nbsp;</div><div>요청 :</div><div>• 홈·냉장고·컬렉션 세 곳 모두 개발 반영 예정일을 알려 주세요.</div></div><button class="cp" data-t="a7">복사</button></td></tr><tr><td class="n">40</td><td>상단 홈 아이콘 — 하단 메뉴 홈과 같은 모양으로<div class="sub">개발사: 선 1.2px · 누르는 칸 44px · 홈 왼쪽 60px 적용</div><div class="chk">11/11 확인: 개발 서버는 아직 이전 아이콘(홈 48px·#515151)</div></td><td><pre id="a8" hidden>확인 결과 :
+• 개발 서버는 아직 이전 아이콘입니다(11/11 23시, 마이페이지 홈 48px·채운 선 #515151). 디자인에 반영하신 것으로 이해했습니다.
+
+요청 :
+• 홈 60px은 좋습니다. ←·홈 두 개의 누르는 칸 44px이 겹치지 않게 하려는 뜻으로 이해했습니다. 41번(홈이 없던 화면)도 같은 60px로 맞춰 주세요.
+• 선 두께는 1.2px 대신 1.5px로 해 주세요. 하단 메뉴가 1.5px이고, 42번에서 상단 아이콘을 모두 1.5px로 맞추기로 했습니다. 홈만 1.2px이면 다시 두께가 섞입니다.
+• 피그마 화면 주소와 개발 반영 예정일을 알려 주세요.</pre><div class="paste"><div>확인 결과 :</div><div>• 개발 서버는 아직 이전 아이콘입니다(11/11 23시, 마이페이지 홈 48px·채운 선 #515151). 디자인에 반영하신 것으로 이해했습니다.</div><div>&nbsp;</div><div>요청 :</div><div>• 홈 60px은 좋습니다. ←·홈 두 개의 누르는 칸 44px이 겹치지 않게 하려는 뜻으로 이해했습니다. 41번(홈이 없던 화면)도 같은 60px로 맞춰 주세요.</div><div>• 선 두께는 1.2px 대신 1.5px로 해 주세요. 하단 메뉴가 1.5px이고, 42번에서 상단 아이콘을 모두 1.5px로 맞추기로 했습니다. 홈만 1.2px이면 다시 두께가 섞입니다.</div><div>• 피그마 화면 주소와 개발 반영 예정일을 알려 주세요.</div></div><button class="cp" data-t="a8">복사</button></td></tr><tr><td class="n">41</td><td>홈 아이콘이 없는 화면 — 왼쪽에 「← 홈」<div class="sub">개발사: 기획 확인 필요</div><div class="chk">11/11 확인: —</div></td><td><pre id="a9" hidden>답변 :
+• 레몬트리 기획 확정입니다. 그대로 진행해 주세요.
+• 홈 자리는 40번 답변과 같은 60px으로 맞춥니다.
+• 확인 순서: ① 상품 상세·장바구니·냉장고·컬렉션 왼쪽에 「← 홈」 ② 앞 화면 없이 열었을 때 「←」은 홈으로 ③ 냉장고 「‹」도 같은 규칙 ④ 주문서·결제·작성 화면은 홈 없이 「←」(또는 ✕)만.
+• 더 확인할 것이 있으면 질문을 항목으로 적어 주세요. 바로 답하겠습니다.</pre><div class="paste"><div>답변 :</div><div>• 레몬트리 기획 확정입니다. 그대로 진행해 주세요.</div><div>• 홈 자리는 40번 답변과 같은 60px으로 맞춥니다.</div><div>• 확인 순서: ① 상품 상세·장바구니·냉장고·컬렉션 왼쪽에 「← 홈」 ② 앞 화면 없이 열었을 때 「←」은 홈으로 ③ 냉장고 「‹」도 같은 규칙 ④ 주문서·결제·작성 화면은 홈 없이 「←」(또는 ✕)만.</div><div>• 더 확인할 것이 있으면 질문을 항목으로 적어 주세요. 바로 답하겠습니다.</div></div><button class="cp" data-t="a9">복사</button></td></tr><tr><td class="n">43</td><td>「직접 만들기」 아이콘 — 오렌지 공책+펜<div class="sub">개발사: 디자인 반영</div><div class="chk">11/11 확인: 개발 서버는 아직 파란 문서 그림</div></td><td><pre id="a10" hidden>확인 결과 :
+• 개발 서버는 아직 파란 문서 그림입니다(11/11 23시).
+
+요청 :
+• 피그마 화면 주소와 개발 반영 예정일을 알려 주세요.</pre><div class="paste"><div>확인 결과 :</div><div>• 개발 서버는 아직 파란 문서 그림입니다(11/11 23시).</div><div>&nbsp;</div><div>요청 :</div><div>• 피그마 화면 주소와 개발 반영 예정일을 알려 주세요.</div></div><button class="cp" data-t="a10">복사</button></td></tr><tr><td class="n">44</td><td>링크 넣기 전 버튼 — 흐린 오렌지 → 회색<div class="sub">개발사: 디자인 반영</div><div class="chk">11/11 확인: 개발 서버는 아직 오렌지 40%</div></td><td><pre id="a11" hidden>확인 결과 :
+• 개발 서버는 아직 오렌지를 40%로 흐리게 한 버튼입니다(11/11 23시).
+
+요청 :
+• 개발 반영 예정일을 알려 주세요.</pre><div class="paste"><div>확인 결과 :</div><div>• 개발 서버는 아직 오렌지를 40%로 흐리게 한 버튼입니다(11/11 23시).</div><div>&nbsp;</div><div>요청 :</div><div>• 개발 반영 예정일을 알려 주세요.</div></div><button class="cp" data-t="a11">복사</button></td></tr><tr><td class="n">45</td><td>저장 — 내려서 볼 때 칩 줄만<div class="sub">개발사: 개발단 전달</div><div class="chk">11/11 확인: —</div></td><td><pre id="a12" hidden>요청 :
+• 개발 반영 예정일을 알려 주세요.
+• 1차 피드백의 「03번과 같은 규칙」은 이 시트 39번(상단 바 아래 선 없앰)입니다.</pre><div class="paste"><div>요청 :</div><div>• 개발 반영 예정일을 알려 주세요.</div><div>• 1차 피드백의 「03번과 같은 규칙」은 이 시트 39번(상단 바 아래 선 없앰)입니다.</div></div><button class="cp" data-t="a12">복사</button></td></tr><tr><td class="n">46</td><td>레시피 상세 — 내려서 볼 때 한 줄(56px)만<div class="sub">개발사: 디자인 반영</div><div class="chk">11/11 확인: 개발 서버는 아직 두 줄(60+56px) 고정</div></td><td><pre id="a13" hidden>확인 결과 :
+• 개발 서버는 아직 상단 바 60px과 영상 줄 56px이 함께 고정됩니다(11/11 23시).
+
+요청 :
+• 개발 반영 예정일을 알려 주세요.</pre><div class="paste"><div>확인 결과 :</div><div>• 개발 서버는 아직 상단 바 60px과 영상 줄 56px이 함께 고정됩니다(11/11 23시).</div><div>&nbsp;</div><div>요청 :</div><div>• 개발 반영 예정일을 알려 주세요.</div></div><button class="cp" data-t="a13">복사</button></td></tr><tr><td class="n">47</td><td>컬렉션 담기 창 — 높이는 내용만큼(최대 86%)<div class="sub">개발사: 디자인 반영</div><div class="chk">11/11 확인: —</div></td><td><pre id="a14" hidden>요청 :
+• 피그마 화면 주소와 개발 반영 예정일을 알려 주세요.
+• 컬렉션 12개일 때 한 화면에 보이는 줄 수도 함께 알려 주세요(제안 기준 약 7줄).</pre><div class="paste"><div>요청 :</div><div>• 피그마 화면 주소와 개발 반영 예정일을 알려 주세요.</div><div>• 컬렉션 12개일 때 한 화면에 보이는 줄 수도 함께 알려 주세요(제안 기준 약 7줄).</div></div><button class="cp" data-t="a14">복사</button></td></tr><tr><td class="n">48</td><td>레시피 재료 장바구니 아이콘 — 오렌지 선 카트만<div class="sub">개발사: 백엔드 수정 예정 · 디자인 반영 · 줄 높이는 축소 유지</div><div class="chk">11/11 확인: —</div></td><td><pre id="a15" hidden>답변 :
+• 줄 높이는 지금처럼 줄인 상태로 두는 게 맞습니다. 1차 피드백의 「56px」은 줄이기 전 값이었습니다.
+• 다만 누르는 칸은 44×44px을 지켜 주세요. 줄 높이가 44px보다 낮으면, 위아래 줄과 겹치지 않게 가로로만 넓혀도 됩니다.
+
+요청 :
+• 백엔드 수정(물·얼음물 버튼 빼기)과 개발 반영 예정일을 알려 주세요.</pre><div class="paste"><div>답변 :</div><div>• 줄 높이는 지금처럼 줄인 상태로 두는 게 맞습니다. 1차 피드백의 「56px」은 줄이기 전 값이었습니다.</div><div>• 다만 누르는 칸은 44×44px을 지켜 주세요. 줄 높이가 44px보다 낮으면, 위아래 줄과 겹치지 않게 가로로만 넓혀도 됩니다.</div><div>&nbsp;</div><div>요청 :</div><div>• 백엔드 수정(물·얼음물 버튼 빼기)과 개발 반영 예정일을 알려 주세요.</div></div><button class="cp" data-t="a15">복사</button></td></tr><tr><td class="n">49</td><td>로그인 — 하던 화면 위 아래 창 하나<div class="sub">개발사: 기획 확인 필요</div><div class="chk">11/11 확인: —</div></td><td><pre id="a16" hidden>답변 :
+• 레몬트리 기획 확정입니다. 그대로 진행해 주세요.
+• 59번(하단 저장·마이)·60번(만들기)·63번(가입 단계 줄이기)이 이 로그인 창을 함께 씁니다. 한 묶음으로 봐 주세요.
+• 진행 순서 제안: 49 → 59 → 60 → 63 → 50.
+• 1차 피드백 안의 「12번·13번」은 프로토타입 번호입니다. 이 시트에서는 49번·50번입니다.
+• 더 확인할 것이 있으면 질문을 항목으로 적어 주세요. 바로 답하겠습니다.</pre><div class="paste"><div>답변 :</div><div>• 레몬트리 기획 확정입니다. 그대로 진행해 주세요.</div><div>• 59번(하단 저장·마이)·60번(만들기)·63번(가입 단계 줄이기)이 이 로그인 창을 함께 씁니다. 한 묶음으로 봐 주세요.</div><div>• 진행 순서 제안: 49 → 59 → 60 → 63 → 50.</div><div>• 1차 피드백 안의 「12번·13번」은 프로토타입 번호입니다. 이 시트에서는 49번·50번입니다.</div><div>• 더 확인할 것이 있으면 질문을 항목으로 적어 주세요. 바로 답하겠습니다.</div></div><button class="cp" data-t="a16">복사</button></td></tr><tr><td class="n">50</td><td>인스타·페북·스레드 안에서만 네이버를 맨 위로<div class="sub">개발사: 기획 확인 필요</div><div class="chk">11/11 확인: —</div></td><td><pre id="a17" hidden>답변 :
+• 레몬트리 기획 확정입니다. 49번이 먼저 들어간 뒤 진행해 주세요.
+• 1차 피드백의 「12번 창」은 이 시트 49번 로그인 창입니다.
+• 스레드 앱 안 브라우저 이름표에 「Barcelona」가 들어가는지 실제 기기로 확인해 주세요.
+• 켜고 끄는 조건을 한 줄로 두어 주세요. 적용 전 2주·후 2주를 비교한 뒤 나쁘면 끄겠습니다.</pre><div class="paste"><div>답변 :</div><div>• 레몬트리 기획 확정입니다. 49번이 먼저 들어간 뒤 진행해 주세요.</div><div>• 1차 피드백의 「12번 창」은 이 시트 49번 로그인 창입니다.</div><div>• 스레드 앱 안 브라우저 이름표에 「Barcelona」가 들어가는지 실제 기기로 확인해 주세요.</div><div>• 켜고 끄는 조건을 한 줄로 두어 주세요. 적용 전 2주·후 2주를 비교한 뒤 나쁘면 끄겠습니다.</div></div><button class="cp" data-t="a17">복사</button></td></tr><tr><td class="n">51</td><td>홈 레시피 카드 썸네일 — 세로 원본 그림<div class="sub">개발사: 개발단 전달</div><div class="chk">11/11 확인: —</div></td><td><pre id="a18" hidden>요청 :
+• 개발 반영 예정일을 알려 주세요.
+• 이미 만든 레시피 9장(884·880·878·850·594·433·392·493·870)도 한 번에 다시 받아 주세요.</pre><div class="paste"><div>요청 :</div><div>• 개발 반영 예정일을 알려 주세요.</div><div>• 이미 만든 레시피 9장(884·880·878·850·594·433·392·493·870)도 한 번에 다시 받아 주세요.</div></div><button class="cp" data-t="a18">복사</button></td></tr><tr><td class="n">52</td><td>하단 메뉴 — 높이·글자·색<div class="sub">개발사: 디자인 반영</div><div class="chk">11/11 확인: 개발 서버는 아직 53px·10px·#9E9E9E</div></td><td><pre id="a19" hidden>확인 결과 :
+• 개발 서버는 아직 하단 메뉴 53px, 글자 10px, 안 고른 칸 #9E9E9E입니다(11/11 23시).
+
+요청 :
+• 피그마 화면 주소와 개발 반영 예정일을 알려 주세요.</pre><div class="paste"><div>확인 결과 :</div><div>• 개발 서버는 아직 하단 메뉴 53px, 글자 10px, 안 고른 칸 #9E9E9E입니다(11/11 23시).</div><div>&nbsp;</div><div>요청 :</div><div>• 피그마 화면 주소와 개발 반영 예정일을 알려 주세요.</div></div><button class="cp" data-t="a19">복사</button></td></tr><tr><td class="n">53</td><td>「맨 위로」 버튼<div class="sub">개발사: 디자인 반영</div><div class="chk">11/11 확인: 개발 서버는 아직 #89A17F·42px·아래 90px</div></td><td><pre id="a20" hidden>확인 결과 :
+• 개발 서버는 아직 #89A17F·42px·화면 아래 90px입니다(11/11 23시).
+
+요청 :
+• 개발 반영 예정일을 알려 주세요.</pre><div class="paste"><div>확인 결과 :</div><div>• 개발 서버는 아직 #89A17F·42px·화면 아래 90px입니다(11/11 23시).</div><div>&nbsp;</div><div>요청 :</div><div>• 개발 반영 예정일을 알려 주세요.</div></div><button class="cp" data-t="a20">복사</button></td></tr></tbody></table></div>
+<h2>② 버그 시트 — 다른 칸</h2>
+<div class="tbl"><table><thead><tr><th>No</th><th>어디에</th><th>붙여 넣을 글</th></tr></thead><tbody><tr><td class="n">6 · 7 · 34</td><td>상 · 예정일 빈칸<div class="sub">2차 피드백(K열)</div></td><td><pre id="b0" hidden>요청 :
+• 우선순위 「상」인데 예정일이 비어 있습니다. 예정일을 알려 주세요.</pre><div class="paste"><div>요청 :</div><div>• 우선순위 「상」인데 예정일이 비어 있습니다. 예정일을 알려 주세요.</div></div><button class="cp" data-t="b0">복사</button></td></tr><tr><td class="n">54</td><td>1차 피드백 보완(G열 끝에 덧붙이기)<div class="sub">실측</div></td><td><pre id="b1" hidden>(11/11 실측) 상품 상세를 내리면 상단 바는 0~56px, 「상품 정보·리뷰·상품 문의」 탭 줄은 60px부터 붙습니다. 그 사이 4px 틈으로 아래 내용이 비칩니다.
+→ 탭 줄이 붙는 자리를 상단 바 높이(56px)에 맞춰 주세요.</pre><div class="paste"><div>(11/11 실측) 상품 상세를 내리면 상단 바는 0~56px, 「상품 정보·리뷰·상품 문의」 탭 줄은 60px부터 붙습니다. 그 사이 4px 틈으로 아래 내용이 비칩니다.</div><div>→ 탭 줄이 붙는 자리를 상단 바 높이(56px)에 맞춰 주세요.</div></div><button class="cp" data-t="b1">복사</button></td></tr><tr><td class="n">62</td><td>1차 피드백 보완(G열)<div class="sub">번호</div></td><td><pre id="b2" hidden>(덧붙임) 제안의 「17번과 같은 알림」은 이 시트 61번입니다.</pre><div class="paste"><div>(덧붙임) 제안의 「17번과 같은 알림」은 이 시트 61번입니다.</div></div><button class="cp" data-t="b2">복사</button></td></tr><tr><td class="n">64</td><td>1차 피드백 보완(G열 끝에 덧붙이기)<div class="sub">실측</div></td><td><pre id="b3" hidden>(11/11 실측) 쇼핑 카드의 브랜드 이름이 카드 폭 전체(154×14px) 링크로 사진과 상품명 사이에 있습니다. 누르면 브랜드 검색(/search?…brandNos=…)으로 갑니다.
+→ 카드 어디를 눌러도 상품 상세로 가게 하고, 브랜드 모아보기는 상품 상세의 브랜드 이름에서 하게 해 주세요.</pre><div class="paste"><div>(11/11 실측) 쇼핑 카드의 브랜드 이름이 카드 폭 전체(154×14px) 링크로 사진과 상품명 사이에 있습니다. 누르면 브랜드 검색(/search?…brandNos=…)으로 갑니다.</div><div>→ 카드 어디를 눌러도 상품 상세로 가게 하고, 브랜드 모아보기는 상품 상세의 브랜드 이름에서 하게 해 주세요.</div></div><button class="cp" data-t="b3">복사</button></td></tr></tbody></table></div>
+<h3 style="margin:16px 0 6px;font-size:15px">우선순위(D열)가 비어 있는 줄</h3>
+<div class="tbl"><table><thead><tr><th>No</th><th>제안</th><th>이유</th></tr></thead><tbody><tr><td class="n">61</td><td><b>중</b></td><td>다시 누르면 저장이 풀리는 문제라, 손님이 헷갈리는 일이 바로 생깁니다.</td></tr><tr><td class="n">62</td><td><b>중</b></td><td>같은 기능이 아이콘 둘·이름 셋입니다. 61번과 같이 고치면 한 번에 끝납니다.</td></tr><tr><td class="n">63</td><td><b>상</b></td><td>10월 가입의 84%가 카카오라, 가입 단계를 줄이면 가입 완료가 바로 늘어납니다.</td></tr><tr><td class="n">64</td><td><b>하</b></td><td>잘못 눌러도 뒤로 오면 되지만, 쇼핑 화면 전체에 있어 자주 생깁니다.</td></tr></tbody></table></div>
+<h2>③ 통합 시나리오 — 조영훈 코멘트(I열)에 덧붙일 재확인</h2>
+<p class="meta">시나리오에 이미 쓴 내용은 버그 시트로 옮기지 않았습니다. 바뀐 결과만 짧게 덧붙입니다. 30행은 윤미란 이사님 코멘트를 재현한 것이라, 대표님 코멘트 칸에 「재현 확인」으로 남기면 됩니다.</p>
+<div class="tbl"><table><thead><tr><th>행</th><th>시나리오</th><th>붙여 넣을 글</th></tr></thead><tbody><tr><td class="n">9행</td><td>레시피 보기 · 다른 회원 컬렉션</td><td><pre id="c0" hidden>[11/11 재확인]
+1) 회원번호 → 「@Q****일」처럼 가린 이름으로 바뀜(반영).
+2) 추천 카드 레시피 수 정상(「레시피 3개」, 반영).
+3) 없는 컬렉션 주소는 아직 「Not Found」(영어)만 보입니다.</pre><div class="paste"><div>[11/11 재확인]</div><div>1) 회원번호 → 「@Q****일」처럼 가린 이름으로 바뀜(반영).</div><div>2) 추천 카드 레시피 수 정상(「레시피 3개」, 반영).</div><div>3) 없는 컬렉션 주소는 아직 「Not Found」(영어)만 보입니다.</div></div><button class="cp" data-t="c0">복사</button></td></tr><tr><td class="n">12행</td><td>링크로 만든 레시피 편집</td><td><pre id="c1" hidden>[11/11 재확인]
+2) 재료 양 「분량 (선택)」 반영 확인(버그 시트 2번).
+1) 칼로리 다시 계산·3) 저장 중 표시는 아직 다시 보지 못했습니다(버그 시트 11번).</pre><div class="paste"><div>[11/11 재확인]</div><div>2) 재료 양 「분량 (선택)」 반영 확인(버그 시트 2번).</div><div>1) 칼로리 다시 계산·3) 저장 중 표시는 아직 다시 보지 못했습니다(버그 시트 11번).</div></div><button class="cp" data-t="c1">복사</button></td></tr><tr><td class="n">14행</td><td>링크로 레시피 만들기</td><td><pre id="c2" hidden>[11/11 재확인]
+1) 「완료되면 알려드릴게요」 문구가 아직 앱에 있습니다.</pre><div class="paste"><div>[11/11 재확인]</div><div>1) 「완료되면 알려드릴게요」 문구가 아직 앱에 있습니다.</div></div><button class="cp" data-t="c2">복사</button></td></tr><tr><td class="n">15행</td><td>등록할 수 없는 링크 · 이미 있는 링크</td><td><pre id="c3" hidden>[11/11 재확인]
+1) 「스크랩북」 문구가 아직 앱에 있습니다.</pre><div class="paste"><div>[11/11 재확인]</div><div>1) 「스크랩북」 문구가 아직 앱에 있습니다.</div></div><button class="cp" data-t="c3">복사</button></td></tr><tr><td class="n">17행</td><td>직접 레시피 만들기</td><td><pre id="c4" hidden>[11/11 재확인]
+3) 상세 작성자 「-」 → 「조*훈」으로 나옴(반영, 레시피 427).
+저장 목록 카드 출처 「내가 만든 레시피」는 다시 확인이 필요합니다.</pre><div class="paste"><div>[11/11 재확인]</div><div>3) 상세 작성자 「-」 → 「조*훈」으로 나옴(반영, 레시피 427).</div><div>저장 목록 카드 출처 「내가 만든 레시피」는 다시 확인이 필요합니다.</div></div><button class="cp" data-t="c4">복사</button></td></tr><tr><td class="n">19행</td><td>댓글 · 답글</td><td><pre id="c5" hidden>[11/11 재확인]
+1) 작성자 「-」·멘션 「@-」 → 「이**트」·「@김**트」로 나옴(반영).</pre><div class="paste"><div>[11/11 재확인]</div><div>1) 작성자 「-」·멘션 「@-」 → 「이**트」·「@김**트」로 나옴(반영).</div></div><button class="cp" data-t="c5">복사</button></td></tr><tr><td class="n">22행</td><td>댓글 신고 → 블랙리스트</td><td><pre id="c6" hidden>[11/11 재확인]
+회원 조회가 연결돼 다시 확인할 수 있게 됐습니다.
+블랙리스트는 시험 계정(test1~4)으로만 확인하겠습니다.</pre><div class="paste"><div>[11/11 재확인]</div><div>회원 조회가 연결돼 다시 확인할 수 있게 됐습니다.</div><div>블랙리스트는 시험 계정(test1~4)으로만 확인하겠습니다.</div></div><button class="cp" data-t="c6">복사</button></td></tr><tr><td class="n">47행</td><td>회원 조회 → 상세</td><td><pre id="c7" hidden>[11/11 재확인]
+1) 회원 관리 목록이 열립니다. 결과를 「개선 완료」로 바꿔도 됩니다.</pre><div class="paste"><div>[11/11 재확인]</div><div>1) 회원 관리 목록이 열립니다. 결과를 「개선 완료」로 바꿔도 됩니다.</div></div><button class="cp" data-t="c7">복사</button></td></tr><tr><td class="n">48행</td><td>대시보드 지표</td><td><pre id="c8" hidden>[11/11 재확인]
+1) 「오늘 신규 가입」·리텐션은 아직 「–」, 가입 추이는 「회원 지표를 준비하고 있습니다」 그대로입니다.</pre><div class="paste"><div>[11/11 재확인]</div><div>1) 「오늘 신규 가입」·리텐션은 아직 「–」, 가입 추이는 「회원 지표를 준비하고 있습니다」 그대로입니다.</div></div><button class="cp" data-t="c8">복사</button></td></tr><tr><td class="n">30행</td><td>검색 태그 필터 (윤미란 이사님 코멘트 재현)</td><td><pre id="c9" hidden>[11/11 재현 확인] 띄어쓰기를 넣으면 결과가 0건입니다.
+「된장찌개」 5건 / 「된장 찌개」 0건, 「계란말이」 2건 / 「계란 말이」 0건.
+같은 날 「달걀」 2건 / 「계란」 19건으로 버그 시트 12번도 그대로입니다.</pre><div class="paste"><div>[11/11 재현 확인] 띄어쓰기를 넣으면 결과가 0건입니다.</div><div>「된장찌개」 5건 / 「된장 찌개」 0건, 「계란말이」 2건 / 「계란 말이」 0건.</div><div>같은 날 「달걀」 2건 / 「계란」 19건으로 버그 시트 12번도 그대로입니다.</div></div><button class="cp" data-t="c9">복사</button></td></tr></tbody></table></div>
+<h2>④ 손대지 않은 것과 이유</h2>
+<ul style="padding-left:20px" class="meta">
+<li>송원휘 9·13·19행 「다른 기기 앱 설치 안 됨」: 앱 배포·설치 문제라 버그 시트가 아니라 개발사에 따로 물어볼 일입니다.</li>
+<li>송원휘 6행(검색 뒤 키보드가 결과를 가림), 윤미란 19행(댓글 입력이 키보드에 가림): 실제 휴대폰에서만 재현돼 이번에 확인하지 못했습니다. 시나리오에 이미 적혀 있어 그대로 둡니다.</li>
+<li>윤미란 11·46행, 송원휘 12·14·15행 문의·확인 요청: 개발사가 시나리오에서 답할 질문이라 손대지 않았습니다.</li>
+<li>버그 시트 9~37번(개발사 답변 없음): 2차 피드백을 쓸 것이 없습니다. 「상」인데 예정일이 빈 6·7·34번만 ②에 넣었습니다.</li>
+</ul>
+<div class="ver">jollypot-bugsheet-feedback2-1111-v1 · 근거: 구글 시트 「졸리팟 통합테스트 시나리오」(버그 시트 1~64번, 통합 시나리오 5~49행) · 개발 서버 판 gfHv8XC7_pZ1j4ARzNvsW · 11/11 23시 확인</div>
+</div>
+<script>
+document.addEventListener('click',async e=>{const b=e.target.closest('.cp');if(!b)return;const t=document.getElementById(b.dataset.t).textContent;
+ try{await navigator.clipboard.writeText(t)}catch(_){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}
+ b.textContent='복사했어요';b.classList.add('done');setTimeout(()=>{b.textContent='복사';b.classList.remove('done')},1500)});
+</script></body></html>
