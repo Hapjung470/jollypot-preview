@@ -1,0 +1,136 @@
+<!doctype html>
+<style>[hidden]{display:none!important}</style>
+<meta name="robots" content="noindex, nofollow">
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>졸리팟 실험으로 정하기 — 준비물 칸 첫 실험안</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+/* 결론 → 실험 원칙 5개 → 준비물 실험 카드(가설·대상·나누기·지표·판정선) → 최소 구현 → 기록할 동작 → 일정 → 다음 실험 → 실험 장부 양식 */
+:root{--o:#FC642D;--g:#145F48;--ink:#212121;--mid:#666666;--bd:#CCCFD4;--dv:#E5E7EB;--pc:#FFF5EA;--tip:#F1F8F3;--bg:#F6F6F4;--r:#D64545}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-size:16px;line-height:1.7;letter-spacing:-.2px}
+.wrap{max-width:820px;margin:0 auto;padding:26px 16px 70px}
+h1{font-size:24px;line-height:1.35;margin:0 0 6px}
+.meta{font-size:13px;color:var(--mid)}
+h2{font-size:19px;margin:36px 0 8px;padding-top:14px;border-top:1px solid var(--dv)}
+h3{font-size:16px;margin:18px 0 6px}
+.lead{background:#fff;border:1px solid var(--bd);border-left:4px solid var(--o);border-radius:10px;padding:14px 18px;margin:16px 0}
+.lead ol{margin:6px 0 0;padding-left:20px}.lead li{margin:6px 0}
+.tblw{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;width:100%;min-width:540px;font-size:14px;background:#fff}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--dv)}
+th{font-size:12.5px;color:var(--mid);font-weight:500}
+td:first-child{font-weight:600;white-space:nowrap}
+ul,ol{padding-left:20px}li{margin:5px 0}
+.card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px 18px;margin:12px 0}
+.card .h{font-weight:700;font-size:16.5px;margin-bottom:4px}
+.card p{margin:5px 0;font-size:15px}
+.k{display:inline-block;min-width:64px;font-size:12.5px;font-weight:600;color:var(--mid)}
+.kill{color:var(--r);font-weight:600}.go{color:var(--g);font-weight:600}.mid{color:#B07A00;font-weight:600}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0;font-size:14px}
+.flow span{background:var(--pc);border-radius:999px;padding:5px 12px}
+.flow b{color:var(--mid);font-weight:400}
+.small{font-size:13px;color:var(--mid)}
+code{font-size:13px;background:#fff;border:1px solid var(--dv);border-radius:4px;padding:0 4px}
+</style></head><body><div class="wrap">
+<h1>실험으로 정하기 — 준비물 칸 첫 실험안</h1>
+<p class="meta">2026-11-13 · 대표님 제안 「인기 레시피 20개에만 넣어 일주일 보고, 의미 없으면 폐기·있으면 전체 개발」을 실행안으로 · 개발 앱 실측(측정 도구 연결 여부, 저장 많은 순 20개의 준비물 구성)</p>
+
+<div class="lead"><b>결론: 대표님 방식이 맞습니다. 다만 세 가지를 더해야 「의미 없네 / 있네」를 믿을 수 있습니다.</b>
+<ol>
+<li><b>판정선을 실험 전에 적어 둡니다.</b> 결과를 보고 나서 기준을 정하면, 어떤 숫자든 「의미 있다」로 읽게 됩니다.</li>
+<li><b>같은 20개 레시피에서 손님을 반으로 나눕니다.</b> 반은 준비물 칸을 보고, 반은 지금 그대로 봅니다. 그래야 「만드는 법을 덜 읽게 됐나」 같은 부작용도 잴 수 있습니다. 오픈 초반에는 유입이 매주 크게 바뀌어서, 「지난주 vs 이번 주」 비교는 믿기 어렵습니다.</li>
+<li><b>기간이 아니라 사람 수로 끝냅니다.</b> 「일주일 또는 준비물 칸을 본 사람 1,000명 중 늦은 쪽」. 사람이 적은데 일주일이 됐다고 판정하면 우연을 결론으로 삼게 됩니다.</li>
+</ol>
+<p style="margin:8px 0 0"><b>시작 시점:</b> 지금 개발 앱의 「저장 많은 순」 1위는 저장 8개이고, QA 테스트 레시피가 섞여 있습니다. 실제 손님이 들어오는 <b>오픈 뒤 2주차</b>에 시작합니다. 첫 주는 지금 화면의 기준 숫자(재료 카트 아이콘 누른 비율 등)를 모읍니다. 앱에는 이미 구글 애널리틱스가 연결돼 있어 기록 장치를 새로 들일 필요는 없습니다.</p></div>
+
+<h2>실험 원칙 다섯 (모든 실험에 같게)</h2>
+<ol>
+<li><b>가설은 「누가 · 무엇을 하면 · 무엇이 늘어난다」 한 문장.</b> 「좋아질 것이다」는 가설이 아닙니다.</li>
+<li><b>숫자 하나로 판정합니다(주 지표).</b> 그리고 떨어지면 안 되는 숫자(지킬 지표)를 1~2개 정합니다.</li>
+<li><b>판정선 세 칸: 폐기 / 한 번 고쳐 다시 / 확정.</b> 실험 전에 대표님이 서명하듯 확정합니다. 결과가 애매해도 선을 낮추지 않습니다.</li>
+<li><b>최소로 만듭니다.</b> AI 자동화·관리자 화면·예쁜 마감은 확정 뒤에 합니다. 실험 때는 사람이 채운 표로 충분합니다.</li>
+<li><b>한 화면에 한 실험.</b> 같은 레시피 화면에서 두 실험을 동시에 돌리면 무엇 때문인지 가릴 수 없습니다.</li>
+</ol>
+
+<h2>준비물 칸 실험 카드</h2>
+<div class="card">
+<div class="h">가설 1 — 보통 준비물(팬·볼·냄비)</div>
+<p><span class="k">가설</span>레시피를 연 손님이 준비물 칸을 보면, 칩을 눌러 크기 안내를 확인하고 일부는 쿠팡으로 간다.</p>
+<p><span class="k">대상</span>오픈 1주차 조회 상위 20개 레시피(QA 레시피 제외). 지금 개발 앱 상위 20개로 보면 팬 10개·볼 10개·냄비 4개 레시피에 나오고, 집에 없을 도구가 나오는 건 2개(거품기·채칼)뿐입니다. <b>그래서 이 실험은 사실상 「보통 칩」 실험입니다.</b></p>
+<p><span class="k">나누기</span>기기마다 정해지는 번호로 반반. 같은 사람은 실험 내내 같은 화면을 봅니다.</p>
+<p><span class="k">주 지표</span><b>준비물 칸을 본 사람 중 칩을 하나라도 누른 비율</b></p>
+<p><span class="k">비교 기준</span>같은 화면의 재료 카트 아이콘(지금 쿠팡으로 가는 버튼)을 누른 비율. 처음 하는 기능이라 「몇 %면 좋다」는 바깥 기준이 없습니다. 그래서 같은 화면 안의 이미 있는 버튼과 견줍니다.</p>
+<p><span class="k">지킬 지표</span>만드는 법 끝까지 내린 비율 · 레시피 저장 비율. 준비물을 본 쪽이 안 본 쪽보다 10% 넘게(상대) 낮으면 주 지표와 상관없이 폐기합니다.</p>
+<p><span class="k">손님 목소리</span>아래 창 맨 아래에 「이 안내가 도움이 됐나요? 👍 👎」 한 줄. 누르는 사람만 답합니다.</p>
+</div>
+<div class="tblw"><table><thead><tr><th>판정</th><th>조건 (실험 전에 확정)</th><th>다음 행동</th></tr></thead><tbody>
+<tr><td class="kill">폐기</td><td>칩 누른 비율이 재료 카트 아이콘의 1/4 미만, 또는 지킬 지표가 10% 넘게 떨어짐</td><td>준비물 칸 개발 중단. AI 정리에서 「가전 종류·불 사용」 두 칸만 남겨 에프 모음에 씀</td></tr>
+<tr><td class="mid">한 번 고쳐 다시</td><td>1/4 이상 ~ 1/2 미만, 또는 👍 비율 70% 미만</td><td>문구·모양 하나만 바꿔 1주 더(한 번만). 그래도 이 칸이면 폐기</td></tr>
+<tr><td class="go">확정</td><td>재료 카트 아이콘의 1/2 이상 + 👍 70% 이상 + 지킬 지표 유지</td><td>전체 레시피로 확대, AI 자동 채우기·도구 사전 개발</td></tr>
+</tbody></table></div>
+<p class="small">「1/4·1/2·70%」는 제 제안값입니다. 대표님이 실험 전에 고쳐 확정하면 됩니다. 확정한 뒤에는 바꾸지 않습니다.</p>
+
+<div class="card">
+<div class="h">가설 2 — 집에 없을 도구 (따로, 나중에)</div>
+<p><span class="k">가설</span>사각 틀·채칼처럼 집에 없을 도구를 미리 알려 주면, 손님이 「대신하는 법」을 보고 끝까지 만든다(또는 산다).</p>
+<p><span class="k">문제</span>인기 20개에는 이런 레시피가 2개뿐이라 일주일에 판정할 만큼 사람이 모이지 않습니다. 가설 1과 섞으면 결과가 흐려집니다.</p>
+<p><span class="k">방법</span>가설 1 판정 뒤, 집에 없을 도구가 나오는 레시피 전체(지금 12개)에 4주 동안 켜 둡니다. 「대신하는 법」을 본 사람의 「만들었어요」 비율과 상품 클릭을 셉니다.</p>
+</div>
+
+<h2>필요한 사람 수</h2>
+<ul>
+<li><b>B쪽(준비물 칸이 보인 쪽)에서 1,000명</b>이 칸을 보면, 누른 비율이 5%일 때 오차가 앞뒤 약 1.4%p입니다. 「1/4 미만이냐 1/2 이상이냐」를 가르기에 충분합니다.</li>
+<li>나누기를 반반으로 하니 20개 레시피 상세 조회가 모두 합쳐 약 2,000회(사람 기준) 필요합니다. 하루 약 300회면 일주일, 적으면 2주까지 늘립니다. 2주에도 못 채우면 판정하지 않고 오픈 유입이 늘 때까지 미룹니다(선을 낮추지 않음).</li>
+</ul>
+
+<h2>최소로 만들 것 (실험용)</h2>
+<div class="tblw"><table><thead><tr><th>만들 것</th><th>실험 때</th><th>확정 뒤에</th></tr></thead><tbody>
+<tr><td>준비물 내용</td><td>20개 레시피 표를 사람이 채움(이름·처음 쓰는 단계·크기 안내 한 줄). 제가 초안을 만들고 요리 담당이 확인</td><td>AI가 레시피 정리할 때 자동으로</td></tr>
+<tr><td>화면</td><td>칩 한 줄 + 누르면 아래 창(크기 안내 + 상품 1개 + 「쿠팡에서 보기」 + 👍👎)</td><td>큰 썸네일 줄·「이미 있어요」·다른 상품</td></tr>
+<tr><td>상품</td><td>팬·볼·냄비·체 4개만 사람이 고름(11/13 기준표 그대로)</td><td>도구 사전 전체</td></tr>
+<tr><td>반반 나누기</td><td>기기 번호 끝자리 짝수/홀수</td><td>실험 도구 정식 도입 여부는 그때 판단</td></tr>
+<tr><td>쿠팡 링크</td><td>자리 표식(subId) <code>prep_test</code> 하나</td><td>도구별 표식</td></tr>
+</tbody></table></div>
+
+<h2>기록할 동작 (구글 애널리틱스 이벤트)</h2>
+<div class="tblw"><table><thead><tr><th>이름</th><th>언제</th><th>함께 남길 값</th></tr></thead><tbody>
+<tr><td><code>exp_group</code></td><td>레시피 화면을 열 때</td><td>실험 이름 · A/B · 레시피 번호</td></tr>
+<tr><td><code>prep_view</code></td><td>준비물 칸이 화면에 절반 이상 보였을 때(B만)</td><td>레시피 번호 · 준비물 개수</td></tr>
+<tr><td><code>prep_chip_tap</code></td><td>칩을 눌렀을 때</td><td>도구 이름</td></tr>
+<tr><td><code>prep_coupang_tap</code></td><td>아래 창의 「쿠팡에서 보기」</td><td>도구 이름</td></tr>
+<tr><td><code>prep_feedback</code></td><td>👍 또는 👎</td><td>도구 이름 · 좋아요/싫어요</td></tr>
+<tr><td><code>ingredient_cart_tap</code></td><td>재료 카트 아이콘(비교 기준, A·B 모두)</td><td>재료 이름</td></tr>
+<tr><td><code>steps_end_view</code></td><td>만드는 법 마지막 단계가 보였을 때(A·B 모두)</td><td>레시피 번호</td></tr>
+</tbody></table></div>
+<p class="small">저장은 이미 서버에 남으니 따로 안 만들어도 됩니다. 이벤트 이름은 개발사가 쓰는 규칙에 맞춰 바꿔도 됩니다.</p>
+
+<h2>일정</h2>
+<div class="flow"><span>오픈 전: 판정선 확정·20개 표·이벤트</span><b>→</b><span>오픈 1주차: 기준 숫자 모으기(준비물 칸 없음)</span><b>→</b><span>2주차: 반반 실험</span><b>→</b><span>1,000명 차면 다음 날 30분 판정 회의</span><b>→</b><span>폐기 / 한 번 고침 / 확정</span></div>
+
+<h2>같은 방식으로 돌릴 다음 실험</h2>
+<p><b>큰 기능일수록 「버튼만 먼저」로 봅니다.</b> 버튼을 누르면 「곧 열려요 · 열리면 알려 드릴게요」를 보여 주고, 누른 비율과 알림 신청 비율을 셉니다. 개발 전에 수요를 잽니다.</p>
+<div class="tblw"><table><thead><tr><th>순서</th><th>실험</th><th>버튼만 먼저</th><th>주 지표</th></tr></thead><tbody>
+<tr><td>1</td><td>재료 한 번에 담기</td><td>재료 칸 아래 「재료 한 번에 담기」 → 「곧 열려요 · 알림 받기」</td><td>재료 칸을 본 사람 중 누른 비율 · 알림 신청 비율</td></tr>
+<tr><td>2</td><td>「에어프라이어로」 모음</td><td>홈에 칩 하나 → 이미 있는 에프 레시피 목록(새 개발 거의 없음)</td><td>칩 누른 비율 · 그 목록에서 레시피 연 비율</td></tr>
+<tr><td>3</td><td>준비물 칸(이 문서)</td><td>위 실험 카드</td><td>칩 누른 비율</td></tr>
+<tr><td>4</td><td>공구 상품 → 레시피</td><td>공구 상품 화면에 「이 팬으로 만드는 레시피 3개」</td><td>상품 화면 → 레시피 누른 비율 · 구매 비율(같은 공구, 이전 회차와 비교)</td></tr>
+</tbody></table></div>
+<p class="small">레시피 화면에서는 한 번에 한 실험(원칙 5). 1번과 3번은 같은 화면이라 차례로 돌립니다.</p>
+
+<h2>실험 장부 양식 (구글 시트 한 줄 = 실험 하나)</h2>
+<div class="tblw"><table><thead><tr><th>칸</th><th>예 (준비물 칸)</th></tr></thead><tbody>
+<tr><td>번호·이름</td><td>E01 준비물 칸 · 보통 칩</td></tr>
+<tr><td>가설</td><td>준비물 칸을 보면 칩을 눌러 크기 안내를 보고, 일부는 쿠팡으로 간다</td></tr>
+<tr><td>대상·나누기</td><td>조회 상위 20개 레시피 · 기기 번호 반반</td></tr>
+<tr><td>주 지표·비교 기준</td><td>칩 누른 비율 · 재료 카트 아이콘 누른 비율</td></tr>
+<tr><td>지킬 지표</td><td>만드는 법 끝까지 내린 비율 · 저장 비율(상대 −10% 넘으면 폐기)</td></tr>
+<tr><td>판정선(실험 전 확정)</td><td>폐기 1/4 미만 · 다시 1/4~1/2 · 확정 1/2 이상 + 👍 70%</td></tr>
+<tr><td>필요 사람 수·기간</td><td>B쪽 1,000명 · 1~2주</td></tr>
+<tr><td>최소 구현</td><td>사람이 채운 20개 표 · 칩 + 아래 창 · 이벤트 7개</td></tr>
+<tr><td>결과·판정·다음 행동</td><td>(실험 뒤 기입)</td></tr>
+<tr><td>배운 것</td><td>(숫자 밖에서 알게 된 것 한 줄)</td></tr>
+</tbody></table></div>
+<p class="small">확인하지 못한 것: 오픈 일정과 첫 주 예상 유입 · 개발사가 반반 나누기를 붙이는 데 드는 시간 · 구글 애널리틱스 이벤트를 개발사가 이미 어떤 이름으로 쓰고 있는지.</p>
+</div></body></html>
