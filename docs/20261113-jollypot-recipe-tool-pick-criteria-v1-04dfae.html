@@ -1,0 +1,125 @@
+<!doctype html>
+<style>[hidden]{display:none!important}</style>
+<meta name="robots" content="noindex, nofollow">
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>준비물 썸네일 상품 고르는 기준 v1</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+/* 결론 → 쿠팡 검색 그대로 쓰면 생기는 일(실측) → 1단계 도구 → 2단계 상품 → 7개 도구에 적용 → 운영 */
+:root{--o:#FC642D;--g:#145F48;--ink:#212121;--mid:#666666;--bd:#CCCFD4;--dv:#E5E7EB;--pc:#FFF5EA;--tip:#F1F8F3;--bg:#F6F6F4;--r:#D64545}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-size:16px;line-height:1.7;letter-spacing:-.2px}
+.wrap{max-width:860px;margin:0 auto;padding:26px 16px 70px}
+h1{font-size:24px;line-height:1.35;margin:0 0 6px}
+.meta{font-size:13px;color:var(--mid)}
+h2{font-size:19px;margin:36px 0 8px;padding-top:14px;border-top:1px solid var(--dv)}
+h3{font-size:16px;margin:20px 0 6px}
+.lead{background:#fff;border:1px solid var(--bd);border-left:4px solid var(--o);border-radius:10px;padding:14px 18px;margin:16px 0}
+.lead ol{margin:6px 0 0;padding-left:20px}.lead li{margin:6px 0}
+.tblw{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:13.5px;background:#fff}
+th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--dv)}
+th{font-size:12px;color:var(--mid);font-weight:500}
+td:first-child{font-weight:600;white-space:nowrap}
+ul,ol{padding-left:20px}li{margin:5px 0}
+.small{font-size:13px;color:var(--mid)}
+.card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:12px 16px;margin:10px 0}
+.card .h{font-weight:600;font-size:15.5px}
+.card p{margin:4px 0;font-size:14.5px}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0;font-size:14px}
+.flow span{background:var(--pc);border-radius:999px;padding:5px 12px}
+.flow b{color:var(--mid);font-weight:400}
+.fix{background:#fff;border:1px solid var(--bd);border-left:4px solid var(--r);border-radius:10px;padding:10px 14px;margin:12px 0;font-size:14.5px}
+.pick{font-weight:600;color:var(--g)}
+</style></head><body><div class="wrap">
+<h1>준비물 썸네일에 올릴 상품 하나 — 고르는 기준</h1>
+<p class="meta">2026-11-13 · 졸리팟 공개 레시피 163개 단계 글 전수 · 졸리팟에 나오는 특별 도구 7개를 쿠팡에서 검색해 첫 화면 상위 12개씩, 84개 상품을 읽음(광고 표시·도착일·리뷰 수·가격·사진 주소) · 가격과 리뷰 수는 11/13 기준</p>
+
+<div class="lead"><b>결론: AI가 쿠팡을 검색해서 하나를 고르게 하면 안 됩니다. 상품은 정해진 기준으로 「도구 사전」에 미리 골라 두고, AI는 레시피를 읽고 그중 맞는 것을 「맞추기」만 합니다.</b>
+<ol>
+<li><b>쿠팡 검색 결과를 그대로 쓰면 둘 중 하나는 광고입니다.</b> 84개 중 42개(50%)에 「광고」가 붙어 있었습니다. 검색 1위를 고르면 광고비 낸 상품이 레시피 추천처럼 보입니다.</li>
+<li><b>이름만으로 찾으면 다른 물건이 섞입니다.</b> 「거품기」 상위 12개 중 8개가 우유 거품용 전동 기계였습니다. 계란찜 레시피에 필요한 건 손 거품기입니다. 「무스비 틀」 12개 중 5개는 삼각김밥 틀이나 김밥 재료 꾸러미였습니다.</li>
+<li><b>그래서 기준은 두 단계입니다.</b> ① 어떤 준비물에 사진을 붙일까(도구) ② 그 도구의 어떤 상품을 붙일까(상품). ①은 AI가 레시피마다, ②는 사람이 도구마다 한 번 정하고 한 달에 한 번 고칩니다.</li>
+</ol></div>
+
+<div class="fix"><b>지난 답 바로잡기:</b> v2-1에서 「쿠팡 판매자 상품 사진(주소에 vendor_inventory)은 쿠팡 밖에서 안 열린다」고 썼습니다. 오늘 다시 시험해 보니 판매자 상품 사진 2개 모두 열렸습니다(직매입·기타 종류도 전부 열림). 그때 안 열린 1개는 주소 끝에 파일 형식(.jpg 등)이 없는 사진이었습니다. 규칙을 「직매입 사진만」에서 「자동 점검으로 실제 열리는 사진만」으로 고칩니다.</div>
+
+<h2>쿠팡 검색 상위 12개를 그대로 쓰면 (실측)</h2>
+<div class="tblw"><table><thead><tr><th>도구</th><th>광고</th><th>내일 도착</th><th>리뷰 수 (가운데 값)</th><th>가격 폭</th><th>다른 물건이 섞임</th><th>모든 거르기 통과</th></tr></thead><tbody>
+<tr><td>무스비 틀</td><td>6/12</td><td>11</td><td>367</td><td>1,560~13,800원</td><td>삼각김밥 틀·꼬마 김밥 키트·무스비 김 5개</td><td>3개</td></tr>
+<tr><td>와플메이커</td><td>6/12</td><td>11</td><td>66</td><td>10,900~54,510원</td><td>세로형·붕어빵 겸용 섞임</td><td>3개</td></tr>
+<tr><td>채칼</td><td>6/12</td><td>7</td><td>425</td><td>5,340~66,540원</td><td>6종 세트(66,540원)</td><td>3개</td></tr>
+<tr><td>야채 다지기</td><td>6/12</td><td>11</td><td>854</td><td>8,360~<b>179,000원</b></td><td>업소용 10리터(광고 1위)</td><td>5개</td></tr>
+<tr><td>거품기</td><td>6/12</td><td>11</td><td><b>20</b></td><td>4,950~23,990원</td><td><b>우유 거품용 전동 8개</b></td><td>2개</td></tr>
+<tr><td>찜기</td><td>6/12</td><td>12</td><td>1,198</td><td>3,540~37,800원</td><td>계란 전용 찜기·대형 찜냄비 섞임</td><td>6개</td></tr>
+<tr><td>사각 계란말이팬</td><td>6/12</td><td>12</td><td>1,059</td><td>10,940~38,400원</td><td>3구 에그팬 세트</td><td>6개</td></tr>
+</tbody></table></div>
+<ul>
+<li><b>광고는 도구마다 정확히 6/12였습니다.</b> 쿠팡 검색 첫 화면은 광고 자리가 섞이도록 짜여 있다는 뜻입니다.</li>
+<li><b>「내일 도착」은 84개 중 75개(89%)라 거르는 힘이 약합니다.</b> 대신 해외 배송(2주)을 걸러 내는 데는 씁니다.</li>
+<li><b>가격 폭이 도구마다 수 배~20배입니다.</b> 다지기는 8,360원부터 179,000원(업소용)까지 섞여 있습니다.</li>
+<li>「모든 거르기 통과」는 아래 2단계의 거르기 ①~⑤를 다 통과한 상품 수입니다. 12개 중 2~6개만 남습니다.</li>
+</ul>
+
+<h2>1단계 — 어떤 준비물에 사진을 붙일까 (AI가 레시피마다)</h2>
+<p><b>지금 졸리팟 레시피 163개 중 집에 없을 수 있는 도구가 나오는 12개는 모두 그런 도구가 딱 1개였습니다.</b> 그래서 지금은 1단계가 쉽습니다. 레시피가 늘어 2개 이상 나오는 경우를 위해 순서를 정해 둡니다.</p>
+<ol>
+<li><b>집에 흔한 것은 사진을 붙이지 않습니다.</b> 칼·도마·숟가락·접시·볼·팬·냄비, 그리고 소모품(비닐장갑·랩·키친타월). 만개의레시피는 도마·접시까지 「구매」를 붙이지만, 우리의식탁 실측에서 도구 매출 중 레시피 연결분은 3.4%였습니다.</li>
+<li><b>없으면 레시피가 안 되는 것이 먼저입니다</b>(와플 기계). 그다음은 결과가 달라지는 것(사각 용기: 모양), 그다음이 편해지는 것(채칼·다지기: 시간).</li>
+<li><b>손님 답으로 고칩니다.</b> 도구마다 「이미 있어요」 누른 비율이 높으면 그 도구는 「집에 흔한 것」으로 옮깁니다. 처음 정한 목록보다 손님 답이 정확합니다.</li>
+<li><b>같으면 먼저 나오는 단계</b>의 도구.</li>
+</ol>
+
+<h2>2단계 — 그 도구의 어떤 상품을 붙일까 (사람이 도구마다 한 번)</h2>
+<div class="flow"><span>쿠팡 검색 상위 상품</span><b>→</b><span>거르기 ①~⑤</span><b>→</b><span>남은 것에 점수 ⑥~⑨</span><b>→</b><span>사람이 1~3개 확정해 사전에 넣음</span><b>→</b><span>AI는 레시피에 맞는 크기 하나를 고름</span></div>
+
+<h3>거르기 (하나라도 걸리면 뺌)</h3>
+<div class="card"><div class="h">① 광고 자리 상품은 뺍니다</div><p>84개 중 42개가 광고였습니다. 광고 1위가 업소용 10리터 다지기(179,000원)였던 것처럼, 광고 자리는 레시피와 상관없이 돈을 낸 순서입니다. 우리가 「이 레시피에 맞는 물건」이라고 보여 주는 자리에 올리면 신뢰를 잃습니다.</p></div>
+<div class="card"><div class="h">② 레시피에서 쓰는 것과 같은 종류여야 합니다</div><p>도구 이름이 같아도 쓰임이 다릅니다. 계란 풀기 → 손 거품기(우유 거품기 X). 마늘·고추 조금 → 손으로 돌리는 다지기(2리터 전동 X). 네모 주먹밥 → 사각 틀(삼각 틀 X). 한치 찌기 → 냄비 위에 얹는 찜판(계란 전용 찜기 X). 도구 사전에 도구마다 「종류」 한 줄을 적고 그 종류만 남깁니다.</p></div>
+<div class="card"><div class="h">③ 내일 도착 (해외 배송 제외)</div><p>89%가 통과해서 거르는 힘은 약하지만, 해외 배송이 섞이는 것은 막습니다. 11월에 정리한 추정으로는 배송이 2주면 사는 비율이 30~45% 떨어집니다.</p></div>
+<div class="card"><div class="h">④ 리뷰 100개 이상</div><p>리뷰가 적은 상품은 좋은지 나쁜지 모릅니다. 와플메이커 광고 1·2위는 리뷰 5개였습니다. 같은 물건의 1개·2개 묶음은 리뷰를 함께 쓰니(키친아트 계란말이팬 두 크기 모두 24,842개), 리뷰 수는 「상품 묶음」 기준으로 봅니다.</p></div>
+<div class="card"><div class="h">⑤ 사진이 우리 화면에서 실제로 열려야 합니다 · 전기 제품은 KC 인증</div><p>사진 주소는 자동으로 한 번 불러 보고, 안 열리면 뺍니다. 와플메이커·전동 다지기처럼 전기를 쓰는 제품은 상품 화면에 KC 인증 표시가 있어야 합니다(상세 화면 확인은 사람이 함).</p></div>
+
+<h3>점수 (남은 것끼리 비교)</h3>
+<div class="card"><div class="h">⑥ 리뷰가 많을수록 (가장 큰 점수)</div><p>많이 팔리고 문제가 적었다는 가장 확실한 숫자입니다. 오늘 본 것 중 리뷰가 1만 개 넘는 상품이 5개 있었습니다(키친구 스핀 다지기 20,892 · 코멧 스핀 다지기 19,963 · 무디타 슬라이서 13,617 · 키친아트 계란말이팬 24,842 · 코멧 왕계란말이팬 15,526).</p></div>
+<div class="card"><div class="h">⑦ 가격은 남은 것들의 가운데쯤</div><p>가장 싼 것은 품질 불만이 많고, 가장 비싼 것은 「레시피 하나 해 보려고」 사기엔 부담입니다. 남은 상품 가격의 아래 4분의 1~위 4분의 1 사이를 고릅니다.</p></div>
+<div class="card"><div class="h">⑧ 레시피 크기에 맞게</div><p>2개 분량 주먹밥이면 스몰 틀 1개, 4인분이면 라지. 모닝빵 샌드위치면 빵이 들어가는 24cm 팬. 사전에 크기별로 1~3개를 넣어 두고 AI가 레시피의 분량·재료 크기를 보고 고릅니다. <b>AI가 하는 일은 여기까지입니다.</b></p></div>
+<div class="card"><div class="h">⑨ 다른 레시피에도 쓰이는 것</div><p>무스비 틀은 김밥 속 모양 잡기에도, 와플 기계는 크로플·토스트에도 씁니다. 한 번 사서 여러 번 쓰는 물건이 손님에게도 좋고, 우리에게는 같은 링크가 여러 레시피에 붙습니다. 단, 여러 개 묶은 세트(채칼 6종 66,540원)는 뺍니다.</p></div>
+
+<h3>점수에 넣지 않는 것</h3>
+<ul>
+<li><b>수수료:</b> 도구는 모두 쿠팡 주방 분류(3.1%)라 상품끼리 차이가 없습니다. 차이가 있더라도 넣지 않습니다. 「돈 되는 순」으로 고르는 순간 추천이 광고가 됩니다.</li>
+<li><b>쿠팡 검색 순위:</b> 광고와 쿠팡 사정이 섞인 순서입니다.</li>
+<li><b>최저가</b>, <b>브랜드 인지도만</b>.</li>
+</ul>
+<p><b>예외 하나: 레몬트리 공구 상품이 있으면 위 기준보다 먼저입니다.</b> 우리가 고르고 우리가 책임지는 상품이기 때문입니다. 공구가 끝나면 사전의 쿠팡 상품으로 돌아갑니다.</p>
+
+<h2>오늘 기준을 적용하면 (7개 도구)</h2>
+<div class="tblw"><table><thead><tr><th>도구 (졸리팟 레시피)</th><th>종류 ②</th><th>고른 상품</th><th>이유</th></tr></thead><tbody>
+<tr><td>사각 용기 (시오콘부 주먹밥)</td><td>사각 무스비 틀</td><td class="pick">도블레 무스비 김밥틀 스몰 1개 · 5,900원</td><td>통과 3개 중 리뷰 최다(5,187). 2개 분량이라 스몰. 4인분 레시피면 같은 묶음의 라지</td></tr>
+<tr><td>와플 기계 (와플기계 계란밥)</td><td>가로형 와플 기계</td><td class="pick">유파 와플메이커 EKW-915WS · 22,000원</td><td>통과 3개(유파 2,947 · 쿠진아트 3,966 · 단미 2,221). 쿠진아트는 세로형이라 밥 반죽을 펴기 어렵고 54,510원으로 가장 비쌈. KC 표시는 상세 화면 확인 필요</td></tr>
+<tr><td>채칼 (무 솥밥·감자채볶음·오이 샌드위치)</td><td>손 채칼(채썰기)</td><td class="pick">무디타 마그넷 스테인리스 슬라이서 세트 · 13,950원</td><td>통과 3개 중 리뷰 최다(13,617), 가격은 가운데. 레시피 3개에 같은 링크</td></tr>
+<tr><td>다지기 (땡초쌈장·마늘 목살구이)</td><td>손으로 돌리는 소형</td><td class="pick">키친구 스핀 야채다지기 · 10,560원</td><td>리뷰 20,892. 청양고추 150g·마늘 정도라 전동 2리터는 과함. 코멧 스핀(19,963, 8,360원)이 2순위</td></tr>
+<tr><td>거품기 (뚝배기·전자레인지 계란찜)</td><td>손 거품기(스텐 와이어)</td><td class="pick">스타베이커리 스텐 거품기 중형 · 5,200원</td><td>12개 중 손 거품기는 4개뿐. 그중 광고가 아니고 리뷰 100개 넘는 것 2개 중 리뷰 최다(2,619)</td></tr>
+<tr><td>찜기 (한치 야채말이)</td><td>냄비 위에 얹는 찜판</td><td class="pick">코멧 키친 스테인레스 찜기 소형 22.5cm · 3,540원</td><td>리뷰 6,779. 집에 있는 냄비에 얹어 씀. 계란 전용 찜기는 다른 종류라 뺌</td></tr>
+<tr><td>사각팬 (모닝빵 샌드위치)</td><td>사각 계란말이팬</td><td class="pick">키친아트 오페라 계란말이팬 24cm · 13,220원</td><td>리뷰 24,842. 모닝빵이 들어가는 크기라 18cm 대신 24cm</td></tr>
+</tbody></table></div>
+<p class="small">가격·리뷰 수는 11/13 쿠팡 검색 화면 그대로이고 바뀝니다. 별점은 검색 화면에서 읽히지 않아 빠졌습니다(사전에 넣을 때 상품 화면에서 4.5 이상인지 확인).</p>
+
+<h2>운영 — 사전은 손님 반응으로 고칩니다</h2>
+<ul>
+<li><b>한 달에 한 번 사전 점검:</b> 품절·사진 열림·리뷰 수·가격 변동. 품절이면 같은 기준으로 다음 상품.</li>
+<li><b>상품마다 쿠팡 자리 표식을 따로 붙여</b> 누른 비율과 7일 주문을 봅니다. 도구 하나에 후보가 둘이면 손님을 반씩 나눠 보여 주고, 4주 뒤 주문이 많은 쪽을 남깁니다.</li>
+<li><b>월 거래액이 넘어야 하는 선을 넘는 도구는 공구 후보</b>로 넘깁니다(11/1 소싱 기준선). 그 뒤로는 썸네일 자리가 졸리팟 상품이 됩니다.</li>
+<li><b>AI가 사전에 없는 도구를 찾으면</b> 사진 없이 칩만 띄우고, 관리자 화면에 「사전에 없는 도구」로 쌓습니다. 사람이 위 기준으로 상품을 골라 넣을 때까지 사진은 붙지 않습니다.</li>
+</ul>
+
+<h2>하지 않을 것</h2>
+<ul>
+<li>AI가 손님이 볼 때마다 쿠팡을 검색해 1위를 붙이기 — 둘 중 하나는 광고, 다른 물건이 섞임, 검색 API는 분당 50회 제한</li>
+<li>수수료 높은 순, 최저가 순으로 고르기</li>
+<li>한 레시피에 상품 사진 여러 개(준비물 칸에는 1개, 여러 개는 만드는 법 끝 카드 줄에서)</li>
+</ul>
+<p class="small">확인하지 못한 것: 별점 · 전기 제품의 KC 표시(상세 화면) · 쿠팡 검색 화면이 사람마다 다르게 나오는지(이번엔 수집용 크롬 한 곳에서만 봄) · 사진 주소를 앱에 그대로 띄워도 되는지에 대한 쿠팡 답(서면 문의 예정).</p>
+</div></body></html>
