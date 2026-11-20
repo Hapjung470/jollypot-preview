@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex, nofollow">
+<title>상품 상세 v1-18-18-1 — 개발 요청서</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--o:#FC642D;--ink:#212121;--mid:#666666;--line:#E5E7EB;--bd:#CCCFD4;--g:#145F48}
+body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;background:#ECECEC;color:var(--ink);letter-spacing:-.2px;display:flex;flex-direction:column;align-items:center}
+.proto-bar{width:100%;background:#1E1E2E;padding:10px 14px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.proto-bar .lab{font-size:12px;color:#CCCCDD;font-weight:600}
+.proto-bar button{background:#2D2D3D;color:#8888A0;border:none;border-radius:8px;padding:7px 11px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
+.proto-bar button.active{background:#5B6ABF;color:#fff}
+.proto-bar .ver{margin-left:auto;font-size:11.5px;color:#8888A0}
+@media (max-width:620px){.proto-bar .ver{flex:0 0 100%;margin-left:0;text-align:right}}
+.doc{width:min(560px,100%);background:#fff;border-radius:16px;padding:22px 18px;margin:12px 0 60px;display:flex;flex-direction:column;gap:12px;font-size:14px;line-height:1.7}
+@media (max-width:600px){.doc{border-radius:0;margin:0 0 40px}}
+.doc h1{font-size:20px;line-height:1.4}
+.doc h2{font-size:17px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.doc h3{font-size:15px;margin-top:4px}
+.doc .lead{background:#FFF5EA;border-radius:12px;padding:12px 14px;font-size:15px}
+.doc ul,.doc ol{padding-left:18px}.doc li{margin:4px 0}
+.doc .meta{font-size:12px;color:var(--mid);word-break:break-all}
+.tbl{overflow-x:auto;max-width:100%}
+.doc table{border-collapse:collapse;width:100%;min-width:520px;font-size:13px;line-height:1.55}
+.doc th,.doc td{text-align:left;vertical-align:top;padding:7px 6px;border-bottom:1px solid var(--line)}
+.doc th{color:var(--mid);font-weight:500;font-size:12px;white-space:nowrap}
+.now{color:#B3261E}.new{color:var(--g);font-weight:600}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;margin-right:4px;vertical-align:1px}
+.t1{background:#FDECEC;color:#B3261E}.t2{background:#FFF5EA;color:#C2410C}.t3{background:#F1F8F3;color:var(--g)}
+.shot{width:100%;max-width:390px;border:1px solid var(--line);border-radius:10px;display:block}
+.cap{font-size:12px;color:var(--mid);margin-top:-4px}
+.warn{background:#F7F7F8;border-radius:10px;padding:10px 12px;font-size:13px}
+.hint{font-size:12px;line-height:1.6;color:var(--mid)}
+
+
+
+.toc{background:#F7F7F8;border-radius:12px;padding:12px 14px}.toc a{color:#3276AE;text-decoration:none}
+.part{font-size:19px!important;border-top:3px solid var(--ink)!important;margin-top:22px!important}
+.dec{background:#F1F8F3;border-radius:10px;padding:10px 12px}
+.doc td b{font-weight:600}.doc h2{font-size:17px}.n{color:var(--mid);font-size:12px}
+.doc td b{font-weight:600}.doc h2{font-size:17px}.n{color:var(--mid);font-size:12px}
+.doc td b{font-weight:600}.doc h2{font-size:17px}.n{color:var(--mid);font-size:12px}
+.doc td b{font-weight:600}.doc h2{font-size:17px}.n{color:var(--mid);font-size:12px}
+.doc td b{font-weight:600}.doc h2{font-size:17px}.n{color:var(--mid);font-size:12px}
+</style></head><body>
+<div class="proto-bar"><span class="lab">화면으로</span><button onclick="location.href='jollypot-v2-pdp-live-fix-v1-18-18-1.html'">리뷰 있음</button><button onclick="location.href='jollypot-v2-pdp-live-fix-v1-18-18-1-rev1.html'">리뷰 1개</button><button onclick="location.href='jollypot-v2-pdp-live-fix-v1-18-18-1-rev0.html'">리뷰 0개</button><button onclick="location.href='jollypot-v2-pdp-live-fix-v1-18-18-1-now.html'">지금(운영)</button><button class="active">개발 요청서</button><span class="ver">jollypot-v2-pdp-live-fix-v1-18-18-1-doc</span></div>
+<div class="doc">
+ <p class="meta">jollypot-v2-pdp-live-fix-v1-18-18-1-doc · 2026-11-20 · 예시 상품 137645007</p>
+ <h1>상품 상세 — 개발 요청서</h1>
+ <p class="lead">화면 모양은 프로토 「리뷰 있음」이 기준입니다(390px). 색 · 모양은 디자인 가이드 2.0.8을 따르고, 베스트 칩은 §4.0 #7-1입니다. 프로토 위쪽 어두운 판은 확인용이라 만들지 않습니다. 프로토의 리뷰 · 숫자 · 날짜는 예시입니다.</p>
+ <h2>0. 프로토 보는 법</h2>
+ <p class="hint">맨 위 어두운 판은 확인용 조작 판입니다(만들지 않음). 숫자 · 리뷰 · 날짜는 예시입니다.</p>
+<div class="tbl"><table><tr><th>조작 판 칸</th><th>쓰는 법</th></tr><tr><td>보기</td><td>「리뷰 12개 · 리뷰 1개 · 리뷰 0개」는 제안 화면, 「지금(운영)」은 현재 운영 화면입니다. 리뷰 수에 따라 달라지는 곳을 비교해 보세요.</td></tr><tr><td>바로가기 · 리뷰 누르면</td><td>펼치는 칸(더보기 · 혜택 · 배송 안내)과 리뷰 · 사진을 눌렀을 때 열리는 화면으로 바로 갑니다. 「개발 요청서」는 이 문서입니다.</td></tr><tr><td>넣은 요소 · 켜고 끄기</td><td>칩을 누르면 그 요소가 빠진 화면이 됩니다. 데이터가 없어 안 보일 때의 모양과 여백을 확인하는 용도입니다.</td></tr><tr><td>리뷰 카드 사진</td><td>왼쪽이 확정안입니다. 오른쪽은 비교용입니다.</td></tr><tr><td>구매 수 · 타임특가 · 배송일 · 배송비 (예시)</td><td>상태를 바꿔 문구와 숨김 규칙을 봅니다. 「함께 담으면 무료배송」은 배송비 「조건부 무료」를 고르면 나옵니다(바로가기 「함께 담으면 무료배송」도 같음).</td></tr></table></div>
+ <h2>1. 화면 — 위에서 아래</h2>
+<div class="tbl"><table><tr><th>자리</th><th>보여 줄 것</th><th>데이터</th><th>안 보이는 때</th></tr><tr><td>사진 위</td><td>「오늘 <b>N명이 구매</b>했어요」 또는 「최근 1주간 <b>N명이 구매</b>했어요」 흰 알약(숫자 · 「명이 구매」만 오렌지). <b>리뷰 수와 상관없이</b> 나옴</td><td>서버 집계(4번의 1). 오늘 = 한국 시각 0시부터 지금까지</td><td>오늘 30명 이상이면 「오늘」, 아니면 최근 7일 30명 이상이면 「최근 1주간」, 둘 다 미만이면 숨김</td></tr><tr><td>사진 바로 아래 띠</td><td>높이 40px · 사진을 덮지 않음. 문구는 3번 표</td><td>판매 기간 saleStartYmdt · saleEndYmdt, 즉시할인 종료 immediateDiscountEndYmdt. 남은 시간은 <b>서버 시각</b> 기준</td><td>판매 기간 없음 · 7일 넘게 남음</td></tr><tr><td>상품명 아래</td><td>별 + 평점 + 「리뷰 N개」(밑줄) → 누르면 리뷰 전체 화면</td><td>reviewRate · 리뷰 수</td><td>리뷰 0개</td></tr><tr><td>가격</td><td>정가(취소선) · 할인율(오렌지) · 판매가. <b>가격 줄에 쿠폰 · 적립 단추 없음</b></td><td>상품 가격</td><td>—</td></tr><tr><td>가격 아래</td><td>「↑ 행사가 끝나면 N원 비싸져요」 알약</td><td>즉시할인 종료일이 있을 때 그 할인 금액</td><td>할인 종료일 없음</td></tr><tr><td>1px 선 아래 「혜택」</td><td>「최대 Np 적립 ⌄」 → 펼치면 ① 구매 Np · 등급명 % (판매가 기준) ② 리뷰 사진 300p · 글 100p (10자 이상) ③ 등급이 오르면 최대 3% (금달걀)</td><td>최대 = 구매 적립 + 사진 리뷰 적립. 비회원은 가장 낮은 등급(흰달걀 0.2%), 회원은 자기 등급. 소수점 버림</td><td>판매 종료. <b>③ 등급 줄은 샵바이 등급 조건을 고치기 전까지 숨김</b></td></tr><tr><td>배송비</td><td>배송비 · 택배사</td><td>배송비 템플릿 · deliveryCompanyType</td><td>—</td></tr><tr><td>배송비 안 초록 상자</td><td>「<b>11/24(화)</b> 발송 예정」 + 둘째 줄 + ⓘ. 상자를 누르면 「발송 예정일 안내」 판: 판매자가 정한 발송 일정이에요 / 발송 뒤 보통 다음 날 도착해요. 지난 2주 졸리팟 주문의 93%가 발송 다음 날까지 도착했어요 / 택배사 · 지역 사정에 따라 늦어질 수 있어요</td><td>배송지정일 deliveryDate · 예약판매 reservationData. 계산은 3번 표</td><td>설정 없음 · 기간 지남 · 판매 종료</td></tr><tr><td>함께 담으면 무료배송</td><td>제목 + 원형 화살표 · 「N원 더 담으면 배송비 3,000원이 무료예요」 · 진행 막대 4px · 같은 묶음 상품 6개 옆으로 넘김(그림 112px · 이름 2줄 고정 · 가격 · 담기). 제목 누르면 전체 화면(2열 8개)</td><td>장바구니 deliveryGroups의 buyAmt · aboveDeliveryAmt. 이미 담긴 같은 묶음 금액도 뺌. 상품은 같은 배송비 묶음</td><td>조건부 무료 아님 · 이미 넘음 · 판매 종료</td></tr><tr><td>리뷰 카드</td><td>「리뷰 N →」 + 「★ 평점 N으로 만족도가 높은 상품이에요」 + 카드 최대 5장 옆으로 넘김. 카드: 흰 바탕 · 1px #E5E7EB · 높이 156px · 별 다섯 개 + 베스트 칩 · 이름 · 날짜 · 사진 76px 왼쪽 · 글 4줄</td><td>리뷰 목록 order.by=BEST_REVIEW 앞 5개</td><td>카드: 리뷰 0개. 만족도 줄: 리뷰 5개 미만 또는 평점 4.5 미만. 리뷰 1개면 카드 1장 + 「리뷰 전체보기」 칸</td></tr><tr><td>탭 줄</td><td>「상품 정보 · 리뷰 N개」 바로가기 두 칸. 위에 붙으면 지금 보는 칸이 진한 글씨 + 잉크 밑줄. 내릴 때 상단 바 숨김 · 올리면 다시 나옴</td><td>—</td><td>—</td></tr><tr><td>상품 정보</td><td>판매자 상세. 960px에서 접고 「상품 정보 더보기」(높이 48px · 1px #CCCFD4)</td><td>상품 상세</td><td>—</td></tr><tr><td>아래 리뷰 칸</td><td>「리뷰 N →」 · 별 + 평점 · 사진 4칸(마지막 칸 「더보기 +N」) · 리뷰 3개 · 「리뷰 N개 전체보기」</td><td>위와 같은 목록</td><td>사진 4장 미만이면 있는 만큼 · 리뷰 0개면 「아직 리뷰가 없어요」 한 줄(위아래 50px)</td></tr><tr><td>배송/교환/환불 안내(접힘)</td><td>5번 표</td><td>—</td><td>빈 칸의 줄은 숨김</td></tr><tr><td>문의 N(접힘)</td><td>비밀글 목록 · 문의하기</td><td>상품 문의</td><td>—</td></tr><tr><td>졸리팟 베스트 상품</td><td>제목 + 원형 화살표 · 2열 카드 <b>짝수 개</b></td><td><b>몰 전체 인기순(order.by=POPULAR)</b>. 대표 사진이 같은 상품은 하나만</td><td>—</td></tr><tr><td>아래 고정 줄</td><td>저장(숫자) · 선물하기 · 구매하기. 판매 종료 「앵콜 알림 받기」 · 오픈 예정 「오픈 알림 받기」</td><td>—</td><td>—</td></tr></table></div>
+ <h2>2. 누르면 가는 곳</h2>
+<div class="tbl"><table><tr><th>누른 곳</th><th>열리는 것</th></tr><tr><td>상품명 아래 「리뷰 N개」 · 리뷰 제목 「리뷰 N →」 · 「리뷰 전체보기」</td><td>리뷰 전체 화면 맨 위</td></tr><tr><td>리뷰 카드 한 장 · 아래 리뷰 한 개</td><td>리뷰 전체 화면의 그 리뷰 자리</td></tr><tr><td>아래 사진 한 장</td><td>사진 크게 보기 「사진 1/N」 + 그 리뷰 글 · 좌우로 넘김</td></tr><tr><td>사진 「더보기 +N」 · 전체 화면 「사진 N →」</td><td>사진 모아보기(3칸 격자) → 누르면 크게 보기</td></tr><tr><td>탭 「상품 정보 · 리뷰」</td><td>이 화면 안에서 그 자리로 이동</td></tr><tr><td>혜택 줄 · 배송 안내 · 문의</td><td>그 자리에서 펼치고 접음(화살표 뒤집힘)</td></tr><tr><td>「함께 담으면」 담기</td><td>옵션 없으면 바로 담김. 옵션 있으면 아래에서 「옵션 선택」 판 — <b>운영 앱 구매 판과 같은 부품</b>, 동작은 아래 표. 담은 뒤 판이 닫히고 알림 「장바구니에 담았어요 · 무료배송까지 N원」 2.4초 · 카드 단추 「담았어요 N개 ✓」(딥그린, N = 담은 수량 합) · 장바구니 숫자 · 남은 금액 · 막대. 넘으면 「무료배송이 됐어요 · 배송비 3,000원 아꼈어요」 + 막대 딥그린</td></tr><tr><td>앵콜 · 오픈 알림 받기</td><td>단추가 「알림 신청했어요 ✓」로 바뀌고 알림이 뜸 — 앵콜: 「앵콜 판매가 시작되면 한 번 알려 드릴게요」 · 오픈: 「판매가 시작되면 한 번 알려 드릴게요」</td></tr><tr><td>1,600px 넘게 내리면</td><td>오른쪽 아래 「맨 위로」 원형 단추(44px)</td></tr></table></div>
+ <p class="hint">전체 화면 · 판은 졸리팟 틀(왼쪽 위 ←, 가운데 제목)입니다. 열 때 주소 표시를 붙여 <b>휴대폰 뒤로 가기가 위에 열린 것부터 하나씩 닫게</b> 합니다. 뒤로 가기로 상품 화면을 떠나지 않습니다.</p>
+ <p class="warn"><b>리뷰 전체 화면 순서:</b> 「리뷰 N」 · 별 + 평점 → 사진 띠 「사진 N →」 → 거르기 「전체 N · 사진 리뷰 N」 + 정렬(추천순 · 최신순 · 별점 낮은순, 추천순 = 베스트순) → 목록(별 다섯 개 · 베스트 칩 · 이름 · 날짜 · 옵션 · 글 3줄 넘으면 「더보기」 · 사진). 도움돼요 · 댓글 · 평점 비율 막대는 넣지 않습니다.</p>
+ <h3>「함께 담으면」 옵션 판</h3>
+<div class="tbl"><table><tr><th>언제</th><th>어떻게</th></tr><tr><td>옵션을 누르면</td><td><b>누를 때마다 줄이 추가</b>됨. 줄: 옵션명(두 단계면 「카키 / 130사이즈」) · ✕ 삭제 · − 수량 + (최소 1) · 금액</td></tr><tr><td>처음 열 때</td><td>옵션 목록이 <b>펼쳐진 채</b> 열림. 하나 고르면 목록이 접히고 칸이 비워짐(다시 누르면 펼침)</td></tr><tr><td>같은 옵션을 다시 고르면</td><td>새 줄 대신 <b>그 줄 수량 +1</b> · 줄이 잠깐 연한 초록 · 알림 「같은 옵션이라 수량을 1개 늘렸어요」 — 운영 앱 구매 판도 같이 바꿔 주세요(지금은 반응 없음)</td></tr><tr><td>두 단계 옵션(labels 2개)</td><td>「색상 선택」 → 「사이즈 선택」 칸을 차례로. 앞 칸을 고르기 전엔 뒤 칸 회색. 앞 칸 값에 맞는 것만 다음 칸에 나옴. 한 단계 옵션 이름이 「선택」이면 「옵션 선택」으로</td></tr><tr><td>품절 옵션</td><td>회색 글자 + 오른쪽 「품절」 · 못 누름(saleType SOLDOUT · forcedSoldOut · stockCnt 0). 두 단계면 아래 조합이 모두 품절일 때 앞 칸 값도 품절</td></tr><tr><td>추가 금액</td><td>옵션명 오른쪽에 「+1,000원」 / 「−6,000원」(addPrice)</td></tr><tr><td>판 아래</td><td>무료배송 막대: 줄이 바뀔 때마다 「담으면 무료배송까지 N원 남아요」 / 「담으면 무료배송이 돼요 · 배송비 3,000원 아껴요」(딥그린). 고르기 전엔 「무료배송까지 N원 남았어요」 · 「합계 (N개) N원」</td></tr><tr><td>단추</td><td><b>「장바구니 담기」 하나</b>(구매하기 없음 — 그 상품만 결제되면 묶음 무료배송이 깨짐). 줄이 없으면 가이드 §4.0 #3 회색(#E5E7EB · #9E9E9E)</td></tr><tr><td>알림 자리</td><td>판이 열려 있으면 판 바로 위, 닫혀 있으면 아래 구매 줄 위. 판을 열 때 앞 알림은 지움</td></tr></table></div>
+ <h2>3. 상태별 문구</h2>
+ <h3>판매 기간 띠 (날짜는 예시)</h3>
+<div class="tbl"><table><tr><th>상태</th><th>띠 왼쪽</th><th>띠 오른쪽</th><th>아래 단추</th></tr><tr><td>오늘 마감(24시간 안)</td><td>⏱ 오늘 밤 12시 판매 마감</td><td><b>시:분:초</b> 남음(1초마다)</td><td>구매하기</td></tr><tr><td>1~7일 남음</td><td>⏱ 11/20(금) 밤 12시 판매 마감</td><td>N일 남음</td><td>구매하기</td></tr><tr><td>할인 마감(판매는 계속)</td><td>⏱ 할인 마감까지</td><td>시:분:초 남음 + 가격 아래 「비싸져요」</td><td>구매하기</td></tr><tr><td>판매 종료</td><td>판매가 끝났어요(띠 회색 #666666)</td><td>앵콜되면 알려 드려요</td><td>앵콜 알림 받기</td></tr><tr><td>오픈 예정</td><td>⏱ 오픈 예정 · 11/20(금) 오전 10시</td><td>D-N</td><td>오픈 알림 받기</td></tr></table></div>
+ <p class="hint">띠는 잉크 #212121, 숫자는 오렌지. 「타임특가」라는 이름은 띠에 쓰지 않습니다. <b>판매 종료면 혜택 · 발송 예정 · 함께 담으면을 숨깁니다.</b></p>
+ <h3>발송 예정 상자 (날짜는 11/18 기준 예시)</h3>
+<div class="tbl"><table><tr><th>샵바이 설정</th><th>첫 줄</th><th>둘째 줄</th><th>날짜</th></tr><tr><td>예약판매(가장 먼저 봄)</td><td><b>11/25(수)</b>부터 순차 발송</td><td>예약 상품이에요</td><td>배송 시작일</td></tr><tr><td>기간 — 시작 전</td><td><b>11/23(월)</b>부터 순차 발송</td><td>모아서 한꺼번에 보내는 상품이에요</td><td>시작일(영업일로 밈)</td></tr><tr><td>기간 — 기간 안</td><td><b>11/27(금)</b>까지 순차 발송</td><td>같음</td><td>종료일</td></tr><tr><td>주문일 기준 N일</td><td><b>11/20(금)</b> 발송 예정</td><td>보통 발송 다음 날 도착해요</td><td>오늘 + N영업일</td></tr><tr><td>요일</td><td><b>11/19(목)</b> 발송 예정</td><td>보통 발송 다음 날 도착해요 · 화·목요일에 발송해요</td><td>(N영업일 뒤 또는 다음 영업일) 뒤 첫 지정 요일</td></tr></table></div>
+ <p class="hint">영업일 = 토 · 일 · 공휴일 제외(공공 「특일 정보」 자료). 날짜는 딥그린 굵게, 상자는 #F1F8F3. 기간이 지났으면 띄우지 않습니다.</p>
+ <h2>4. 서버 · 데이터 작업</h2>
+ <ol><li><b>구매 수 집계 — 1분마다</b>(목표: 30번째 결제 완료 → 화면 표시까지 약 2분 안). ① 1분마다 샵바이 주문 조회(GET /orders)로 최근 3분 사이 결제 완료 · 취소 · 환불된 주문을 받아 졸리팟 표(주문번호 · 상품번호 · 구매자 · 상태 · 결제 시각)에 덮어씀(2분 겹쳐 읽어 빠짐 방지, 주문번호로 중복 방지). <b>앞 실행이 아직 돌고 있으면 이번 실행은 건너뜀</b>(잠금). 돌릴 곳은 AWS — 지금 쓰는 서버의 정기 작업 또는 EventBridge Scheduler → Lambda 중 편한 쪽(Lambda면 동시 실행 수를 1로 묶어 겹쳐 돌기를 막음) ② 상품별 「오늘 인원」 · 「최근 7일 인원」은 이 표에서 셈. 인원 = 회원은 회원번호로 1명, 비회원은 주문 1건 = 1명. 입금대기 · 취소 · 환불은 뺌 ③ 매일 새벽 한 번 최근 7일 주문을 처음부터 다시 받아 표를 바로잡음 ④ 상품 화면은 숫자를 60초 캐시로 읽음(조회 수만큼 서버를 부르지 않게). 샵바이 판매 수 칸은 누적이고 지금 −999(숨김)라 쓸 수 없음</li><li><b>베스트 리뷰 자동 지정</b> — 매일 밤 상품마다 「사진 있음 · 글 20자 이상 · 별 4점 이상」 최신 3개를 베스트로, 나머지 일반으로(PUT /reviews/best-review, 한 번에 1,000개). 리뷰 3개 미만 상품은 지정 안 함. MD가 관리자에서 직접 고른 것은 따로 표시해 덮어쓰지 않음. 베스트에 적립금 없음</li><li><b>앵콜 · 오픈 알림</b> — 신청은 샵바이 재입고 알림 API로 받고, 발송은 졸리팟 서버가 알림톡으로(앵콜 판매 시작 · 오픈 때 한 번씩. 카카오 규정상 미리 알림 · 재알림 불가)</li><li><b>영업일 계산</b> — 공휴일 자료(공공 특일 정보)</li><li><b>졸리팟 베스트 상품</b> — 지금 「같은 카테고리 인기순」 → 몰 전체 인기순(POPULAR)으로, 대표 사진이 같은 상품 하나만 · 짝수 개</li></ol>
+ <h2>5. 배송/교환/환불 안내 — 줄마다 샵바이 칸</h2>
+<div class="tbl"><table><tr><th>화면 줄</th><th>샵바이 칸</th><th>비었을 때</th></tr><tr><td>배송 방법 · 택배사</td><td>deliveryType · deliveryCompanyType</td><td>택배사 비면 「택배」만</td></tr><tr><td>배송비 「3,000원 (70,000원 이상 무료)」</td><td>deliveryConditionType · deliveryAmt · criteria · deliveryFeeRanges · perOrderCnt</td><td>—</td></tr><tr><td>「결제할 때 함께 내요」</td><td>prepaid</td><td>착불이면 「받을 때 내요」</td></tr><tr><td>묶음배송</td><td>deliveryCombinationYn</td><td>—</td></tr><tr><td>제주 · 도서산간</td><td>usesAreaFee · details[].extraDeliveryAmt</td><td>「추가 배송비 없음」</td></tr><tr><td>반품 배송비(편도) · 교환 배송비(왕복 = 편도 × 2)</td><td>returnDeliveryAmt</td><td>—</td></tr><tr><td>보내실 곳</td><td>returnWarehouseNo → 입출고 주소</td><td>줄 숨김</td></tr><tr><td>신청 기간 · 안 되는 경우 · 환불 시점 · 방법</td><td>샵바이 칸 없음 — 프로토 문구 그대로 고정(전자상거래법 기준)</td><td>—</td></tr><tr><td>판매자 안내(배송 · 교환 · 환불 · A/S)</td><td>productGuides[] (DELIVERY · EXCHANGE · REFUND · AFTER_SERVICE)</td><td>칸째 숨김. 글만 뽑아 졸리팟 글꼴로</td></tr><tr><td>판매자 정보</td><td>partner: companyName · representative.name · business.registrationNo · onlineMarketingDeclarationNo · office.address · phoneNo · email</td><td>빈 줄 숨김</td></tr><tr><td>「받으신 상품에 문제가 있나요?」 안내</td><td>고정 문구 + 「문의」로</td><td>—</td></tr></table></div>
+ <h2>6. 여백 규칙</h2>
+<div class="tbl"><table><tr><th>간격</th><th>언제</th><th>예</th></tr><tr><td>4px</td><td>한 정보의 두 줄</td><td>정가 → 판매가 · 배송비 → 택배사</td></tr><tr><td>8px</td><td>같은 묶음 안 다른 정보</td><td>상품명 → 별점 · 택배사 → 발송 상자</td></tr><tr><td>14px</td><td>섹션 제목 → 내용</td><td>「리뷰 N」 → 카드 · 별점 요약</td></tr><tr><td>16px</td><td>묶음 → 묶음 · 탭 줄 → 첫 내용</td><td>별점 → 정가 · 혜택 → 배송비</td></tr><tr><td>20px</td><td>큰 사진 → 글 · 1px 선 위아래</td><td>사진(또는 띠) → 상품명 · 판매가 → 선 → 혜택</td></tr><tr><td>24px</td><td>10px 회색 띠 위아래(섹션 경계)</td><td>배송 칸 → 띠 → 리뷰 · 더보기 단추 → 띠</td></tr></table></div>
+ <p class="hint"><b>모두 눈에 보이는 간격</b>(글자 끝 ↔ 글자 끝, 선 · 사진 · 단추는 테두리)입니다. CSS로 옮길 때 글자 줄 높이 안의 빈칸을 빼 주세요(14px 글자 · 줄 높이 20px이면 위아래 3px씩). 요소가 빠지면 앞뒤 관계로 다시 맞춥니다. 좌우 여백 16px.</p>
+ <h2>7. 확인해 주실 것</h2>
+ <ol><li>샵바이 주문 조회 API의 호출 한도(1분에 1~2번 부름) · 「상태가 바뀐 시각」으로 조회되는지</li><li>베스트순(BEST_REVIEW) 정렬에서 <b>베스트끼리 · 일반끼리의 순서</b>가 최신순인지(명세에 없음). 아니면 졸리팟에서 다시 정렬</li><li>무료배송 상품을 단순 변심으로 반품할 때 샵바이가 실제로 청구하는 반품 배송비(화면은 왕복으로 안내)</li></ol>
+ <h2>8. 기록(이벤트) 요청</h2>
+ <p>구매 수 알약 노출(오늘/최근 1주간 · 숫자) · 상세 조회 · 구매하기 누름 · 탭 누름 · 리뷰 카드 넘김 · 리뷰 전체 화면 열림 · 「함께 담으면」 담기 · 배송 안내 펼침 · 문의하기 누름 · 앵콜 · 오픈 알림 신청 — 상품 번호 · 회원/비회원 · 시각을 함께 남겨 주세요.</p>
+</div>
+</body></html>
