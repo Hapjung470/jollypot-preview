@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex, nofollow">
+<title>상품 상세 v1-19-2 — 개발 요청서</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--o:#FC642D;--ink:#212121;--mid:#666666;--line:#E5E7EB;--bd:#CCCFD4;--g:#145F48}
+body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;background:#ECECEC;color:var(--ink);letter-spacing:-.2px;display:flex;flex-direction:column;align-items:center}
+.proto-bar{width:100%;background:#1E1E2E;padding:10px 14px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.proto-bar .lab{font-size:12px;color:#CCCCDD;font-weight:600}
+.proto-bar button{background:#2D2D3D;color:#8888A0;border:none;border-radius:8px;padding:7px 11px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
+.proto-bar button.active{background:#5B6ABF;color:#fff}
+.proto-bar .ver{margin-left:auto;font-size:11.5px;color:#8888A0}
+@media (max-width:620px){.proto-bar .ver{flex:0 0 100%;margin-left:0;text-align:right}}
+.doc{width:min(560px,100%);background:#fff;border-radius:16px;padding:22px 18px;margin:12px 0 60px;display:flex;flex-direction:column;gap:12px;font-size:14px;line-height:1.7}
+@media (max-width:600px){.doc{border-radius:0;margin:0 0 40px}}
+.doc h1{font-size:20px;line-height:1.4}
+.doc h2{font-size:17px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.doc h3{font-size:15px;margin-top:4px}
+.doc .lead{background:#FFF5EA;border-radius:12px;padding:12px 14px;font-size:15px}
+.doc ul,.doc ol{padding-left:18px}.doc li{margin:4px 0}
+.doc .meta{font-size:12px;color:var(--mid);word-break:break-all}
+.tbl{overflow-x:auto;max-width:100%}
+.doc table{border-collapse:collapse;width:100%;min-width:520px;font-size:13px;line-height:1.55}
+.doc th,.doc td{text-align:left;vertical-align:top;padding:7px 6px;border-bottom:1px solid var(--line)}
+.doc th{color:var(--mid);font-weight:500;font-size:12px;white-space:nowrap}
+.now{color:#B3261E}.new{color:var(--g);font-weight:600}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;margin-right:4px;vertical-align:1px}
+.t1{background:#FDECEC;color:#B3261E}.t2{background:#FFF5EA;color:#C2410C}.t3{background:#F1F8F3;color:var(--g)}
+.shot{width:100%;max-width:390px;border:1px solid var(--line);border-radius:10px;display:block}
+.cap{font-size:12px;color:var(--mid);margin-top:-4px}
+.warn{background:#F7F7F8;border-radius:10px;padding:10px 12px;font-size:13px}
+.hint{font-size:12px;line-height:1.6;color:var(--mid)}
+
+
+
+.toc{background:#F7F7F8;border-radius:12px;padding:12px 14px}.toc a{color:#3276AE;text-decoration:none}
+.part{font-size:19px!important;border-top:3px solid var(--ink)!important;margin-top:22px!important}
+.dec{background:#F1F8F3;border-radius:10px;padding:10px 12px}
+.doc td b{font-weight:600}.doc h2{font-size:17px}.n{color:var(--mid);font-size:12px}
+.doc td b{font-weight:600}.doc h2{font-size:17px}.n{color:var(--mid);font-size:12px}
+.doc td b{font-weight:600}.doc h2{font-size:17px}.n{color:var(--mid);font-size:12px}
+.doc td b{font-weight:600}.doc h2{font-size:17px}.n{color:var(--mid);font-size:12px}
+.doc td b{font-weight:600}.doc h2{font-size:17px}.n{color:var(--mid);font-size:12px}
+</style></head><body>
+<div class="proto-bar"><span class="lab">화면으로</span><button onclick="location.href='jollypot-v2-pdp-live-fix-v1-19-2.html'">리뷰 있음</button><button onclick="location.href='jollypot-v2-pdp-live-fix-v1-19-2-rev1.html'">리뷰 1개</button><button onclick="location.href='jollypot-v2-pdp-live-fix-v1-19-2-rev0.html'">리뷰 0개</button><button onclick="location.href='jollypot-v2-pdp-live-fix-v1-19-2-now.html'">지금(운영)</button><button class="active">개발 요청서</button><span class="ver">jollypot-v2-pdp-live-fix-v1-19-2-doc</span></div>
+<div class="doc">
+ <p class="meta">jollypot-v2-pdp-live-fix-v1-19-2-doc · 2026-11-23</p>
+ <h1>상품 상세 — 개발 요청서</h1>
+ <p class="lead"><b>앱이 이미 받아 오는 샵바이 데이터로 화면만 고칩니다.</b> 서버 작업 없음 · 새 호출은 <code>GET /member-grades</code> 하나. 기준 화면은 프로토 「리뷰 있음」(390px), 색 · 모양은 디자인 가이드 2.0.8(베스트 칩 §4.0 #7-1). 프로토 위쪽 어두운 판은 확인용이고, 리뷰 · 숫자 · 날짜는 예시입니다.</p>
+ <h2>1. 고칠 곳 — 위에서 아래</h2>
+<div class="tbl"><table><tr><th>자리</th><th>보여 줄 것</th><th>데이터</th><th>안 보일 때</th></tr><tr><td>판매 기간 띠<br>(사진 바로 아래 · 40px)</td><td>오늘 마감 「⏱ 오늘 밤 12시 판매 마감 · <b>시:분:초</b> 남음」 · 1~7일 「⏱ 11/25(화) 밤 12시 판매 마감 · N일 남음」 · 할인 마감 「⏱ 할인 마감까지 · 시:분:초」 · 판매 종료 회색 띠 「판매가 끝났어요」 · 오픈 예정 「⏱ 오픈 예정 · 날짜 오전 10시 · D-N」. 「타임특가」 글자 없음</td><td>saleStartYmdt · saleEndYmdt · immediateDiscountEndYmdt. 남은 시간은 서버 시각</td><td>판매 기간 없음 · 7일 넘게 남음</td></tr><tr><td>상품명 아래</td><td>별 + 평점 + 「리뷰 N개」(누르면 리뷰 전체 화면)</td><td>reviewRate · counter.reviewCnt</td><td>리뷰 0개</td></tr><tr><td>가격 아래</td><td>「↑ 행사가 끝나면 N원 비싸져요」 알약</td><td>immediateDiscountEndYmdt · immediateDiscountAmt</td><td>할인 종료일 없음</td></tr><tr><td>혜택</td><td>「최대 Np 적립 ⌄」 → 펼침: ① 구매 Np · 등급명 % (판매가 기준) ② 리뷰 사진 300p · 글 100p (10자 이상) ③ 등급이 오르면 최대 3% (금달걀)</td><td>회원: accumulationRateOfMember · 비회원: <code>GET /member-grades</code> 가장 낮은 등급 적립률(하루 캐시) · 리뷰: photoReviewAccumulationAmt · /malls 리뷰 적립. 최대 = 구매 + 사진 리뷰, 소수점 버림</td><td>판매 종료. ③은 졸리팟이 등급 조건을 고친 뒤에 켬</td></tr><tr><td>배송비</td><td>「3,000원 (70,000원 이상 무료)」 · 택배사</td><td>deliveryFee.defaultDeliveryConditionLabel · deliveryCompanyTypeLabel</td><td>—</td></tr><tr><td>리뷰 카드<br>(운영 「사진 리뷰」 띠 자리)</td><td>「리뷰 N →」 + 「★ 평점 N으로 만족도가 높은 상품이에요」 + 카드 최대 5장 옆으로 넘김(흰 바탕 · 1px #E5E7EB · 156px · 별 다섯 개 + 베스트 칩 · 이름 · 날짜 · 사진 76px 왼쪽 · 글 4줄)</td><td>product-reviews <code>order.by=BEST_REVIEW</code> 앞 5개 · 베스트 칩 = bestReviewYn(관리자에서 지정)</td><td>카드: 리뷰 0개 · 만족도 줄: 리뷰 5개 미만 또는 평점 4.5 미만 · 리뷰 1개면 카드 1장 + 「리뷰 전체보기」 칸</td></tr><tr><td>아래 리뷰 칸</td><td>「리뷰 N →」 · 별 + 평점 · 사진 4칸(마지막 「더보기 +N」) · 리뷰 3개 · 「리뷰 N개 전체보기」. 도움돼요 · 댓글 없음</td><td>같은 리뷰 목록</td><td>사진 4장 미만이면 있는 만큼 · 리뷰 0개면 「아직 리뷰가 없어요」</td></tr><tr><td>배송/교환/환불 안내(접힘)</td><td>3번 표 + 판매자 정보</td><td>상품 응답</td><td>빈 줄 숨김</td></tr><tr><td>졸리팟 베스트 상품<br>(운영 「오늘의 인기 상품」 자리)</td><td>2열 카드 · 짝수 개</td><td><code>/products/search</code> <code>order.by=POPULAR</code>(몰 전체). 대표 사진이 같은 상품은 하나만</td><td>—</td></tr><tr><td>아래 고정 줄</td><td>판매 종료 「판매가 끝났어요」 · 오픈 예정 「오픈 예정이에요」 — 못 누르는 회색(#E5E7EB · 글자 #9E9E9E)</td><td>판매 상태 · 기간</td><td>—</td></tr><tr><td>구매 옵션 판(운영)</td><td>같은 옵션을 다시 고르면 그 줄 수량 +1 · 알림 「같은 옵션이라 수량을 1개 늘렸어요」</td><td>—</td><td>—</td></tr></table></div>
+ <h2>2. 누르면 가는 곳</h2>
+<div class="tbl"><table><tr><th>누른 곳</th><th>열리는 것</th></tr><tr><td>「리뷰 N개」 · 「리뷰 N →」 · 「전체보기」</td><td>리뷰 전체 화면 맨 위</td></tr><tr><td>리뷰 카드 · 아래 리뷰 하나</td><td>리뷰 전체 화면의 그 리뷰 자리</td></tr><tr><td>사진 하나</td><td>사진 크게 보기 「사진 1/N」 + 그 리뷰 글 · 좌우 넘김</td></tr><tr><td>「더보기 +N」 · 전체 화면 「사진 N →」</td><td>사진 모아보기(3칸) → 누르면 크게 보기</td></tr><tr><td>혜택 · 배송 안내 · 문의</td><td>그 자리에서 펼침/접힘</td></tr></table></div>
+ <p class="hint">리뷰 전체 화면: 「리뷰 N」 · 별 + 평점 → 사진 띠 → 「전체 N · 사진 리뷰 N」 + 정렬(추천순=베스트순 · 최신순 · 별점 낮은순) → 목록(글 3줄 넘으면 「더보기」). 전체 화면 · 판은 왼쪽 위 ←, 휴대폰 뒤로 가기는 위에 열린 것부터 하나씩 닫음.</p>
+ <h2>3. 배송/교환/환불 안내 — 샵바이 칸</h2>
+<div class="tbl"><table><tr><th>화면 줄</th><th>샵바이 칸</th></tr><tr><td>배송 방법 · 택배사</td><td>deliveryType · deliveryCompanyType</td></tr><tr><td>배송비 · 「결제할 때 함께 내요」</td><td>deliveryConditionType · deliveryAmt · aboveDeliveryAmt · deliveryPrePayment(착불이면 「받을 때 내요」)</td></tr><tr><td>제주 · 도서산간</td><td>remoteDeliveryAreaFees(없으면 「추가 배송비 없음」)</td></tr><tr><td>반품 배송비(편도) · 교환 배송비(편도 × 2)</td><td>returnDeliveryAmt</td></tr><tr><td>보내실 곳</td><td>returnWarehouse.addressStr</td></tr><tr><td>신청 기간 · 안 되는 경우 · 환불 시점 · 방법</td><td>고정 문구(프로토 그대로)</td></tr><tr><td>판매자 안내(배송 · 교환 · 환불 · A/S)</td><td>deliveryGuide · exchangeGuide · refundGuide · afterServiceGuide(글만 뽑아 졸리팟 글꼴)</td></tr><tr><td>판매자 정보</td><td>partner: companyName · ownerName · businessRegistrationNo · onlineMarketingBusinessDeclarationNo · officeAddressLabel · phoneNo · email</td></tr></table></div>
+ <h2>4. 여백</h2>
+ <p>눈에 보이는 간격 기준(글자 끝 ↔ 글자 끝) 4 · 8 · 14 · 16 · 20 · 24px — 한 정보 두 줄 4 · 같은 묶음 8 · 제목 → 내용 14 · 묶음 → 묶음 16 · 사진 → 글 · 1px 선 위아래 20 · 회색 띠 위아래 24. 좌우 16px. CSS에서는 글자 줄 높이 안 빈칸을 빼 주세요.</p>
+ <h2>5. 확인해 주실 것</h2>
+ <ol><li>BEST_REVIEW 정렬에서 베스트끼리 · 일반끼리 순서가 최신순인지(명세에 없음)</li><li>무료배송 상품 단순 변심 반품 때 실제 청구 반품 배송비(화면은 왕복 안내)</li><li>배포 날 GA4 장바구니 담기 기록이 끊기지 않는지(지금 화면 클래스 이름을 읽어 잡음)</li></ol>
+</div>
+</body></html>
